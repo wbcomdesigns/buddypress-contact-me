@@ -100,4 +100,43 @@ class Buddypress_Contact_Me_Public {
 
 	}
 
+	/**
+	 * Register a new tab in member's profile - Contact Me
+	 *
+	 * @since    1.0.1
+	 */
+	public function bp_contact_me_tab() {
+		if ( bp_displayed_user_id() != bp_loggedin_user_id() ) {
+			bp_core_new_nav_item(
+				array(
+					'name'                    => esc_html__( 'Contact Me', 'buddypress-contact-me' ),
+					'slug'                    => 'contact-me',
+					'screen_function'         => array( $this, 'bp_contact_me_show_screen' ),
+					'position'                => 80,
+					'default_subnav_slug'     => 'contact-me',
+					'show_for_displayed_user' => true,
+				)
+			);
+		}
+	}
+
+	/**
+	 * Bp_contact_me_show_screen
+	 *
+	 * @return void
+	 */
+	public function bp_contact_me_show_screen() {
+		add_action( 'bp_template_content', array( $this, 'bp_contact_me_tab_function_to_show_content' ) );
+		bp_core_load_template( apply_filters( 'bp_core_template_plugin', 'members/single/plugins' ) );
+	}
+
+	/**
+	 * Bp_contact_me_tab_function_to_show_content
+	 *
+	 * @return void
+	 */
+	public function bp_contact_me_tab_function_to_show_content() {
+		include 'partials/bp-contact-me-tab-content.php';
+	}
+
 }
