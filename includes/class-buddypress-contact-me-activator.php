@@ -30,7 +30,14 @@ class Buddypress_Contact_Me_Activator {
 	 * @since    1.0.0
 	 */
 	public static function activate() {
-
+		$contact_me_option_setting = get_user_meta( get_current_user_id(), 'contact_me_button' );
+		if ( false == $contact_me_option_setting || '' == $contact_me_option_setting ) {
+			$all_users = get_users();
+			foreach( $all_users as $all_userdata ){
+				$all_users_id = $all_userdata->ID;
+				update_user_meta( $all_users_id, 'contact_me_button', 'on' );
+			}
+		}
 	}
 
 }
