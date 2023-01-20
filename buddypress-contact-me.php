@@ -77,6 +77,5 @@ function run_buddypress_contact_me() {
 
 	$plugin = new Buddypress_Contact_Me();
 	$plugin->run();
-
 }
 run_buddypress_contact_me();
