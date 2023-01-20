@@ -11,6 +11,11 @@
  * @package    Buddypress_Contact_Me
  * @subpackage Buddypress_Contact_Me/public/partials
  */
+$min  = 1;
+$max  = 300;
+$num1 = rand( $min, $max );
+$num2 = rand( $min, $max );
+$sum  = $num1 + $num2;
 ?>
 <div class="bp-content-me-container">
     <h3><?php esc_html_e("Contact Me Form", 'bp-contact-me'); ?></h3>
@@ -22,13 +27,13 @@
             <label for="bp_contact_me_message"><?php esc_html_e('Message:', 'bp-contact-me'); ?>
                 <textarea name="bp_contact_me_msg" rows="10" cols="100" required></textarea>
             </label>
-            <label for="quiz" class="col-sm-3 col-form-label">
+            <label for="captchasum" class="captchasum">
                 <?php echo $num1 . '+' . $num2; ?>?
             </label>
-            <div class="col-sm-9">
-                <input type="text" class="form-control quiz-control" id="quiz">
+            <div class="bp_contact_me_captcha_text">
+                <input type="text" class="form-control captcha-control" id="captcha-val">
             </div>
-            <input name="bp_contact_me_form_save" class="bp-contact-me-btn btn button button-primary button-large" type="submit" value="<?php echo esc_attr__('Submit', 'bp-contact-me'); ?>" disabled/>
+            <input data-captcha="<?php echo $sum; ?>" name="bp_contact_me_form_save" class="bp-contact-me-btn" type="submit" value="<?php echo esc_attr__('Submit', 'bp-contact-me'); ?>"/>
         </form>
     </div>
 </div>
