@@ -17,25 +17,42 @@ $num1 = rand( $min, $max );
 $num2 = rand( $min, $max );
 $sum  = $num1 + $num2;
 if( isset( $_POST['bp_contact_me_form_save'] ) ){
-    $bp_display_user_id = bp_displayed_user_id();
-    $bp_contact_me_subject = $_POST['bp_contact_me_subject'];
-    $bp_contact_me_msg = $_POST['bp_contact_me_msg'];
-    update_user_meta( $bp_display_user_id, 'contact_me_user_sub', $bp_contact_me_subject );
-    update_user_meta( $bp_display_user_id, 'contact_me_user_msg', $bp_contact_me_msg );
+    global $wpdb;
+    $bp_sender_user_id      = get_current_user_id();
+    $bp_display_user_id     = bp_displayed_user_id();
+    $bp_contact_me_subject  = $_POST['bp_contact_me_subject'];
+    $bp_contact_me_msg      = $_POST['bp_contact_me_msg'];
+    $bp_contact_me_table    = $wpdb->prefix.'contact_me';
+    $insert_data_contact_me = $wpdb->insert( 
+        $bp_contact_me_table, 
+        array( 
+            'sender'    => $bp_sender_user_id,
+            'reciever'  => $bp_display_user_id, 
+            'subject'   => $bp_contact_me_subject, 
+            'message'   => $bp_contact_me_msg
+        ), 
+        array( 
+            '%d', 
+            '%d', 
+            '%s', 
+            '%s'
+        ) 
+    );
+     if( isset( $insert_data_contact_me ) && '' !== $insert_data_contact_me ){
+        $get_contact_id = $wpdb->insert_id;
+        do_action('bp_contact_me_form_save',$get_contact_id,  $bp_display_user_id); 
+    }  
 }
-$bp_display_user_id = bp_displayed_user_id();
-$contact_me_user_sub = get_user_meta( $bp_display_user_id, 'contact_me_user_sub' );
-$contact_me_user_msg = get_user_meta( $bp_display_user_id, 'contact_me_user_msg' );
 ?>
 <div class="bp-content-me-container">
     <h3><?php esc_html_e("Contact Me Form", 'bp-contact-me'); ?></h3>
     <div class="bp-member-blog-post-form">
         <form id="bp-member-post" class="bp-contact-me-form" method="post" action="" enctype="multipart/form-data" >
             <label for="bp_contact_me_subject"><?php esc_html_e('Subject:', 'bp-contact-me'); ?>
-                <input type="text" name="bp_contact_me_subject" value="<?php echo isset( $contact_me_user_sub[0] ) ? $contact_me_user_sub[0] : '';?>" required/>
+                <input type="text" name="bp_contact_me_subject" value="<?php echo isset( $contact_me_user_data[0] ) ? $contact_me_user_data[0] : '';?>" required/>
             </label>
             <label for="bp_contact_me_message"><?php esc_html_e('Message:', 'bp-contact-me'); ?>
-                <textarea name="bp_contact_me_msg" rows="10" cols="100" required><?php echo isset( $contact_me_user_msg[0] ) ? $contact_me_user_msg[0] : '';?></textarea>
+                <textarea name="bp_contact_me_msg" rows="10" cols="100" required><?php echo isset( $contact_me_user_data[1] ) ? $contact_me_user_data[1] : '';?></textarea>
             </label>
             <label for="captchasum" class="captchasum">
                 <?php echo $num1 . '+' . $num2; ?>?
