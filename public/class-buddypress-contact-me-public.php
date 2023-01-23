@@ -187,7 +187,7 @@ class Buddypress_Contact_Me_Public {
 	 */
 	public function bp_contact_me_notification_format( $action, $item_id, $secondary_item_id, $total_items, $format = 'string' ) {
 		$user_id        = bp_loggedin_user_id();
-		$user_link		= bp_core_get_userlink( $user_id )		
+		$user_link		= bp_core_get_userlink( $user_id );	
 		if ( 'bcm_user_notifications_action' === $action ) {
 			$notification_string = sprintf( __( ' %1$s wants to contact you.', 'bp-contact-me' ), $user_id );
 			if ( 'string' === $format ) {
