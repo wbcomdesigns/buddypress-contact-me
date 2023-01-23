@@ -175,6 +175,9 @@ class Buddypress_Contact_Me {
 		$this->loader->add_action( 'bp_setup_nav', $plugin_public, 'bp_contact_me_tab' );
 		$this->loader->add_action( 'bp_core_general_settings_before_submit', $plugin_public, 'bp_contact_me_button' );
 		$this->loader->add_action( 'bp_core_general_settings_after_save', $plugin_public, 'bp_contact_enbale_disable_option_save' );
+		$this->loader->add_action( 'bp_notifications_get_registered_components', $plugin_public, 'bp_contact_me_notifications_get_registered_components' );
+		$this->loader->add_filter( 'bp_notifications_get_notifications_for_user', $plugin_public, 'bp_contact_me_notification_format', 999, 5 );
+		$this->loader->add_action( 'bp_contact_me_form_save', $plugin_public, 'bp_contact_me_notification', 10, 2 );
 	}
 
 	/**

@@ -168,4 +168,55 @@ class Buddypress_Contact_Me_Public {
 		update_user_meta( bp_loggedin_user_id(), 'contact_me_button', $contact_me_data );
 	}
 
+	/**
+	 * Function will trigger to register notification component
+	 */
+	public function bp_contact_me_notifications_get_registered_components( $component_names = array() ){
+		// Force $component_names to be an array.
+		if ( ! is_array( $component_names ) ) {
+				$component_names = array();
+		}
+		// Add 'buddypress_member_review' component to registered components array.
+		array_push( $component_names, 'bcm_user_notifications' );
+		// Return component's with 'buddypress_member_review' appended.
+		return $component_names;
+	}
+
+	/**
+	 * Function will trigger format notifications
+	 */
+	public function bp_contact_me_notification_format( $action, $item_id, $secondary_item_id, $total_items, $format = 'string' ) {
+		$user_id        = bp_loggedin_user_id();
+		$user_link		= bp_core_get_userlink( $user_id )		
+		if ( 'bcm_user_notifications_action' === $action ) {
+			$notification_string = sprintf( __( ' %1$s wants to contact you.', 'bp-contact-me' ), $user_id );
+			if ( 'string' === $format ) {
+				$return = "<a href='#'>". $notification_string . "</a>";
+			} else {
+				$return = array(
+					'text' => $notification_string,
+					'link' => $user_link,
+				);
+			}		 	
+		}
+		return $return;
+	}
+
+	/**
+	 * Function will trigger notifications to member users
+	 */
+	public function bp_contact_me_notification($get_contact_id,  $bp_display_user_id) {
+		$args = array(
+			'user_id'           => $bp_display_user_id,
+			'item_id'           => $get_contact_id,
+			'secondary_item_id' => $bp_display_user_id,
+			'component_name'    => 'bcm_user_notifications',
+			'component_action'  => 'bcm_user_notifications_action',
+			'date_notified'     => bp_core_current_time(),
+			'is_new'            => 1,
+			'allow_duplicate'   => true,
+		);
+		bp_notifications_add_notification( $args );
+	}
+
 }
