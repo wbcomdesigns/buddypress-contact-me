@@ -222,4 +222,18 @@ class Buddypress_Contact_Me_Public {
 		bp_notifications_add_notification( $args );
 	}
 
+	/**
+	 * Function will trigger to send email notifiction
+	 */
+	public function bp_contact_me_email( $get_contact_id,  $bp_display_user_id ){
+		$current_user_id 	= get_current_user_id();
+		$author_name        = get_the_author_meta( 'display_name', $current_user_id );
+		$to 				= get_the_author_meta( 'user_email', $bp_display_user_id );
+		$reply_to			= get_the_author_meta( 'user_email', $current_user_id );
+		$subject	 		= __( 'Contact', 'buddypress-member-blog-pro' );
+		$content 			= sprintf( __( '%1$s wants to contact you.', 'bp-contact-me' ), $author_name );
+		$headers 			= 'Reply-To: ' . $reply_to . "\r\n" . 'X-Mailer: ';
+		wp_mail( $to, $subject, $content, $headers );
+	}
+
 }
