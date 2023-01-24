@@ -188,9 +188,9 @@ class Buddypress_Contact_Me_Public {
 	public function bp_contact_me_notification_format( $action, $item_id, $secondary_item_id, $total_items, $format = 'string' ) {
 		global $wpdb;
 		$get_contact_row 	= $wpdb->get_row( $wpdb->prepare( "SELECT * FROM `{$wpdb->prefix}contact_me` WHERE id = $item_id" ) );	
-		$sender_id 			= $get_contact_row->sender;
+		$sender_id 			= isset( $get_contact_row->sender ) ? $get_contact_row->sender : '';
 		$sender_data 		= get_userdata( $sender_id );
-		$author_name 		= $sender_data->data->user_login;
+		$author_name 		= isset( $sender_data->data->user_login ) ? $sender_data->data->user_login : '';
 		if ( 'bcm_user_notifications_action' === $action ) {
 			$notification_string = sprintf( __( ' %1$s wants to contact you.', 'bp-contact-me' ), $author_name );
 			if ( 'string' === $format ) {

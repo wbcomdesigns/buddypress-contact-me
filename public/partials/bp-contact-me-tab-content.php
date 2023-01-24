@@ -40,19 +40,31 @@ if( isset( $_POST['bp_contact_me_form_save'] ) ){
     );
      if( isset( $insert_data_contact_me ) && '' !== $insert_data_contact_me ){
         $get_contact_id = $wpdb->insert_id;
-        do_action('bp_contact_me_form_save',$get_contact_id,  $bp_display_user_id); 
-    }  
+        do_action('bp_contact_me_form_save',$get_contact_id,  $bp_display_user_id);
+    }
+    
 }
 ?>
 <div class="bp-content-me-container">
     <h3><?php esc_html_e("Contact Me Form", 'bp-contact-me'); ?></h3>
     <div class="bp-member-blog-post-form">
+        <?php
+        global $wpdb;
+        $loggedin_user_id   = get_current_user_id();
+        $displayed_id       = bp_displayed_user_id();
+        $get_contact_row    = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM `{$wpdb->prefix}contact_me` WHERE reciever = $displayed_id" ) );
+        if( $displayed_id == $get_contact_row->reciever ){
+            $contact_sub = isset( $get_contact_row->subject ) ? $get_contact_row->subject : '';
+            $contact_msg = isset( $get_contact_row->message ) ? $get_contact_row->message : '';
+        }
+        
+        ?>
         <form id="bp-member-post" class="bp-contact-me-form" method="post" action="" enctype="multipart/form-data" >
             <label for="bp_contact_me_subject"><?php esc_html_e('Subject:', 'bp-contact-me'); ?>
-                <input type="text" name="bp_contact_me_subject" value="<?php echo isset( $contact_me_user_data[0] ) ? $contact_me_user_data[0] : '';?>" required/>
+                <input type="text" name="bp_contact_me_subject" value="<?php echo esc_attr( $contact_sub );?>" required/>
             </label>
             <label for="bp_contact_me_message"><?php esc_html_e('Message:', 'bp-contact-me'); ?>
-                <textarea name="bp_contact_me_msg" rows="10" cols="100" required><?php echo isset( $contact_me_user_data[1] ) ? $contact_me_user_data[1] : '';?></textarea>
+                <textarea name="bp_contact_me_msg" rows="10" cols="100" required><?php echo $contact_msg; ?></textarea>
             </label>
             <label for="captchasum" class="captchasum">
                 <?php echo $num1 . '+' . $num2; ?>?
