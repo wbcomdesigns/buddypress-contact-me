@@ -52,10 +52,12 @@ if( isset( $_POST['bp_contact_me_form_save'] ) ){
         global $wpdb;
         $loggedin_user_id   = get_current_user_id();
         $displayed_id       = bp_displayed_user_id();
-        $get_contact_row    = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM `{$wpdb->prefix}contact_me` WHERE reciever = $displayed_id" ) );
-        if( $displayed_id == $get_contact_row->reciever ){
-            $contact_sub = isset( $get_contact_row->subject ) ? $get_contact_row->subject : '';
-            $contact_msg = isset( $get_contact_row->message ) ? $get_contact_row->message : '';
+        $get_contact_row    = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM `{$wpdb->prefix}contact_me` WHERE sender = $loggedin_user_id" ) );
+        foreach( $get_contact_row as $get_contact_row_val  ){
+           if( $displayed_id == $get_contact_row_val->reciever ){
+                $contact_sub = isset( $get_contact_row_val->subject ) ? $get_contact_row_val->subject : '';
+                $contact_msg = isset( $get_contact_row_val->message ) ? $get_contact_row_val->message : '';
+            }
         }
         
         ?>
