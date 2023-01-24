@@ -186,10 +186,13 @@ class Buddypress_Contact_Me_Public {
 	 * Function will trigger format notifications
 	 */
 	public function bp_contact_me_notification_format( $action, $item_id, $secondary_item_id, $total_items, $format = 'string' ) {
-		$user_id        = bp_loggedin_user_id();
-		$user_link		= bp_core_get_userlink( $user_id );	
+		global $wpdb;
+		$get_contact_row 	= $wpdb->get_row( $wpdb->prepare( "SELECT * FROM `{$wpdb->prefix}contact_me` WHERE id = $item_id" ) );	
+		$sender_id 			= $get_contact_row->sender;
+		$sender_data 		= get_userdata( $sender_id );
+		$author_name 		= $sender_data->data->user_login;
 		if ( 'bcm_user_notifications_action' === $action ) {
-			$notification_string = sprintf( __( ' %1$s wants to contact you.', 'bp-contact-me' ), $user_id );
+			$notification_string = sprintf( __( ' %1$s wants to contact you.', 'bp-contact-me' ), $author_name );
 			if ( 'string' === $format ) {
 				$return = "<a href='#'>". $notification_string . "</a>";
 			} else {
