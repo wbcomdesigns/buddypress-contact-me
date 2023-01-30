@@ -239,17 +239,19 @@ class Buddypress_Contact_Me_Public
     public function bp_contact_me_notification_format( $action, $item_id, $secondary_item_id, $total_items, $format = 'string' )
     {
         global $wpdb;
-        $get_contact_row     = $wpdb->get_row($wpdb->prepare("SELECT * FROM `{$wpdb->prefix}contact_me` WHERE id = $item_id"));    
-        $sender_id           = isset($get_contact_row->sender) ? $get_contact_row->sender : '';
-        $sender_data         = get_userdata($sender_id);
-        $author_name         = isset($sender_data->data->user_login) ? $sender_data->data->user_login : '';
-        $loggedin_user_id    = get_current_user_id();
-        $username            = bp_core_get_username($loggedin_user_id);
-        $user_link           = get_site_url() . '/members/' . $username . '/contact/';
+        $bp_contact_me_table_name   = $wpdb->prefix . 'contact_me';
+        $get_contact_q_noti         = "SELECT * FROM $bp_contact_me_table_name  WHERE `id` = $item_id";
+        $get_contact_r_noti         = $wpdb->get_row($get_contact_q_noti, ARRAY_A);
+        $sender_id                  = isset($get_contact_r_noti['sender']) ? $get_contact_r_noti['sender'] : '' ;
+        $sender_data                = get_userdata($sender_id);
+        $author_name                = isset($sender_data->data->user_login) ? $sender_data->data->user_login : '' ;
+        $loggedin_user_id           = get_current_user_id();
+        $username                   = bp_core_get_username($loggedin_user_id);
+        $user_link                  = get_site_url() . '/members/' . $username . '/contact/';
         if ('bcm_user_notifications_action' === $action ) {
-            $notification_string = sprintf(__(' %1$s wants to contact you.', 'bp-contact-me'), $author_name);
+            $notification_string = sprintf(__(' %1$s wants to contact you.', 'bp-contact-me'), $author_name) ;
             if ('string' === $format ) {
-                $return = "<a href='". esc_url($user_link) ."'>". $notification_string . "</a>";
+                $return = "<a href='". esc_url($user_link) ."'>". $notification_string . "</a>" ;
             } else {
                 $return = array(
                 'text' => $notification_string,
