@@ -28,7 +28,7 @@
 	 * Although scripts in the WordPress core, Plugins and Themes may be
 	 * practising this, we should strive to set a better example in our own work.
 	 */
-	 $(function () {
+	$(document).ready(function () {
 	 	const submitButton = document.querySelector('[type="submit"]');
 	 	$('.bp-contact-me-form').find('[type=submit]').attr('disabled','disabled');
 		const captchaInput = document.querySelector(".captcha-control");
