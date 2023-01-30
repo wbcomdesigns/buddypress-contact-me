@@ -48,25 +48,12 @@ if(isset($_POST['bp_contact_me_form_save']) ) {
 <div class="bp-content-me-container">
     <h3><?php esc_html_e("Contact Me Form", 'bp-contact-me'); ?></h3>
     <div class="bp-member-blog-post-form">
-        <?php
-        global $wpdb;
-        $loggedin_user_id   = get_current_user_id();
-        $displayed_id       = bp_displayed_user_id();
-        $get_contact_row    = $wpdb->get_results($wpdb->prepare("SELECT * FROM `{$wpdb->prefix}contact_me` WHERE sender = $loggedin_user_id"));
-        foreach( $get_contact_row as $get_contact_row_val  ){
-            if($displayed_id == $get_contact_row_val->reciever ) {
-                $contact_sub = $get_contact_row_val->subject;
-                $contact_msg = $get_contact_row_val->message;
-            }
-        }
-        
-        ?>
         <form id="bp-member-post" class="bp-contact-me-form" method="post" action="" enctype="multipart/form-data" >
             <label for="bp_contact_me_subject"><?php esc_html_e('Subject:', 'bp-contact-me'); ?>
-                <input type="text" name="bp_contact_me_subject" value="<?php echo esc_attr(isset($contact_sub) ) ? $contact_sub : ''; ?>" required/>
+                <input type="text" name="bp_contact_me_subject" required/>
             </label>
             <label for="bp_contact_me_message"><?php esc_html_e('Message:', 'bp-contact-me'); ?>
-                <textarea name="bp_contact_me_msg" rows="10" cols="100" required><?php echo isset($contact_msg) ? $contact_msg : ''; ?></textarea>
+                <textarea name="bp_contact_me_msg" rows="10" cols="100" required></textarea>
             </label>
             <label for="captchasum" class="captchasum">
                 <?php echo $num1 . '+' . $num2; ?>?
