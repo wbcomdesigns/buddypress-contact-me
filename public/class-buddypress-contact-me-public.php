@@ -245,7 +245,7 @@ class Buddypress_Contact_Me_Public
         $author_name         = isset($sender_data->data->user_login) ? $sender_data->data->user_login : '';
         $loggedin_user_id    = get_current_user_id();
         $username            = bp_core_get_username($loggedin_user_id);
-        $user_link           = get_site_url() . '/members/' . $username . '/notifications/';
+        $user_link           = get_site_url() . '/members/' . $username . '/contact/';
         if ('bcm_user_notifications_action' === $action ) {
             $notification_string = sprintf(__(' %1$s wants to contact you.', 'bp-contact-me'), $author_name);
             if ('string' === $format ) {
