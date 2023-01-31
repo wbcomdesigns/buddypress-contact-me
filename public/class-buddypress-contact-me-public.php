@@ -307,14 +307,21 @@ class Buddypress_Contact_Me_Public
      */
     public function bp_contact_me_email( $get_contact_id,  $bp_display_user_id )
     {
-        $current_user_id     = get_current_user_id();
-        $author_name        = get_the_author_meta('display_name', $current_user_id);
-        $to                 = get_the_author_meta('user_email', $bp_display_user_id);
-        $reply_to            = get_the_author_meta('user_email', $current_user_id);
-        $subject             = __('Contact', 'buddypress-member-blog-pro');
-        $content             = sprintf(__('%1$s wants to contact you.', 'bp-contact-me'), $author_name);
-        $headers             = 'Reply-To: ' . $reply_to . "\r\n" . 'X-Mailer: ';
-        wp_mail($to, $subject, $content, $headers);
+        $current_user_id        = get_current_user_id();
+        $username               = bp_core_get_username($current_user_id);
+        $login_contact_tab      = bp_core_get_username($bp_display_user_id);
+        $user_contact_link      = get_site_url(). '/members/' . $login_contact_tab . '/contact/';
+        $user_contact_me_link   = get_site_url(). '/members/' . $username . '/contact-me/';
+        $author_name            = get_the_author_meta('display_name', $current_user_id);
+        $bcm_contact_link       = '<a href="' . esc_url( $user_contact_link ) . '">' . esc_html('here') . '</a>';
+        $bcm_contact_me_link    = '<a href="' . esc_url( $user_contact_me_link ) . '">' . esc_html('contact form') . '</a>';
+        $to                     = get_the_author_meta('user_email', $bp_display_user_id);
+        $replyto_mail_id        = get_the_author_meta('user_email', $current_user_id);
+        $subject                = __('Contact', 'buddypress-member-blog-pro');
+        $content                = sprintf( __( '%1$s wants to contact you. Check the all messages %2$s. Go to the %3$s .', 'bp-contact-me' ), $author_name, $bcm_contact_link, $bcm_contact_me_link );
+        $headers                = array( 'Content-Type: text/html; charset=UTF-8' );
+        $reply_to               = 'Reply-To: ' . $replyto_mail_id . "\r\n" . 'X-Mailer: ';
+        wp_mail($to, $subject, $content, $headers, $reply_to);
     }
 
 }
