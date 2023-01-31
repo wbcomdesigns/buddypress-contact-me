@@ -17,6 +17,7 @@ $get_contact_row = "SELECT * FROM $bp_contact_me_table_name  WHERE `reciever` = 
 $get_contact_allrow = $wpdb->get_results($get_contact_row, ARRAY_A);
 ?>
 <label><h1><?php echo esc_html('Contact Message');?></h1></label>
+<?php if( $get_contact_allrow ) {?>
 <table class="bp_contact-me-messages">
         <thead>
             <tr>
@@ -49,7 +50,7 @@ $get_contact_allrow = $wpdb->get_results($get_contact_row, ARRAY_A);
                     );
                     if (bp_has_members($members_args) ) :
                         ?>
-                    <ul id="members-list" class="item-list members-list" aria-live="polite" aria-relevant="all" aria-atomic="true">
+                    <ul id="members-list" class="item-list members-list bp-contact-me-list" aria-live="polite" aria-relevant="all" aria-atomic="true">
                         <?php
                         while ( bp_members() ) :
                               bp_the_member();
@@ -58,7 +59,7 @@ $get_contact_allrow = $wpdb->get_results($get_contact_row, ARRAY_A);
                                 <div class="list-wrap">
                                     <div class="item">
                                         <div class="item-meta">
-                                            <ul>
+                                            <ul class="bp-contact-me-ul">
                                                 <li>
                                                     <?php
                                                         echo wp_kses_post( bp_get_add_friend_button( bp_get_member_user_id() ) ) ;
@@ -86,3 +87,12 @@ $get_contact_allrow = $wpdb->get_results($get_contact_row, ARRAY_A);
             <?php } ?>
         </tbody>
 </table>
+<?php } else { ?>
+    <div class="bp-member-blog-container bpmb-blog-posts">
+	<div id="message" class="info bp-feedback bp-messages bp-template-notice">
+        <span class="bp-icon" aria-hidden="true"></span>
+        <p><?php echo esc_html('No any contact message found.');?></p>
+    </div>
+	</div>
+<?php
+}

@@ -10,3 +10,6 @@
 .bp-content-me-container input[type="submit"] {
     margin: 14px 0;
 }
+.bp-contact-me-list,.bp-contact-me-ul{
+    list-style-type: none;
+}

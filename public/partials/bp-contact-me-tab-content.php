@@ -41,6 +41,12 @@ if(isset($_POST['bp_contact_me_form_save']) ) {
     if(isset($insert_data_contact_me) && '' !== $insert_data_contact_me ) {
         $get_contact_id = $wpdb->insert_id;
         do_action('bp_contact_me_form_save', $get_contact_id,  $bp_display_user_id);
+        ?>
+        <aside id="contact-success" class="bp-feedback saved-successfully bp-messages bp-template-notice success">
+            <span id="contact-icon" class="bp-icon" aria-hidden="true"></span>
+            <p id="contact-msg"><?php echo esc_html('Form Successfully Submitted.');?></p>
+        </aside>
+        <?php
     }
     
 }
