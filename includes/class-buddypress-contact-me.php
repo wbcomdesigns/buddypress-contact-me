@@ -186,6 +186,7 @@ class Buddypress_Contact_Me
         $this->loader->add_action('bp_contact_me_form_save', $plugin_public, 'bp_contact_me_notification', 10, 2);
         $this->loader->add_action('bp_contact_me_form_save', $plugin_public, 'bp_contact_me_email', 10, 2);
         $this->loader->add_action('bp_setup_nav', $plugin_public, 'bp_contact_me_show_data');
+        $this->loader->add_action( 'bp_setup_admin_bar', $plugin_public, 'bp_contact_me_setup_admin_bar', 10 );
     }
 
     /**

@@ -170,6 +170,28 @@ class Buddypress_Contact_Me_Public
             );
         }
     }
+
+    /**
+     * Adds the user's navigation in WP Admin Bar
+     *
+     * @since 1.0.0
+     */
+    public function bp_contact_me_setup_admin_bar( $wp_admin_nav = array() )
+    {
+        global $wp_admin_bar, $current_user;
+        $contact_tab_slug = bp_loggedin_user_domain() . 'contact';
+        // Menus for logged in user.
+        if (is_user_logged_in() ) {
+            $wp_admin_bar->add_menu(
+                array(
+                'parent' => 'my-account-buddypress',
+                'id'     => 'my-account-contact',
+                'title'  => esc_html__('Contact', 'bp-contact-me'),
+                'href'   => trailingslashit($contact_tab_slug),
+                )
+            );
+        }
+    }
     
     /**
      * Add function for show contact data.
@@ -249,7 +271,7 @@ class Buddypress_Contact_Me_Public
         $username                   = bp_core_get_username($loggedin_user_id);
         $user_link                  = get_site_url() . '/members/' . $username . '/contact/';
         if ('bcm_user_notifications_action' === $action ) {
-            $notification_string = sprintf(__(' %1$s wants to contact you.', 'bp-contact-me'), $author_name) ;
+            $notification_string = sprintf(__(' %1$s wants to contact you.', 'bp-contact-me'), $author_name);
             if ('string' === $format ) {
                 $return = "<a href='". esc_url($user_link) ."'>". $notification_string . "</a>" ;
             } else {
