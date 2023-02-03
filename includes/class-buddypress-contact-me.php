@@ -125,6 +125,9 @@ class Buddypress_Contact_Me
          */
         include_once plugin_dir_path(dirname(__FILE__)) . 'public/class-buddypress-contact-me-public.php';
 
+        /* Enqueue wbcom plugin folder file. */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/wbcom/wbcom-admin-settings.php';
+
         $this->loader = new Buddypress_Contact_Me_Loader();
 
     }
@@ -161,6 +164,7 @@ class Buddypress_Contact_Me
 
         $this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_styles');
         $this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts');
+        $this->loader->add_action( 'admin_menu', $plugin_admin, 'bp_contact_me_add_admin_menu' );
 
     }
 

@@ -100,4 +100,65 @@ class Buddypress_Contact_Me_Admin {
 
 	}
 
+	/**
+	 * Bp_contact_me_add_admin_menu
+	 *
+	 * @since    1.0.0
+	 */
+	public function bp_contact_me_add_admin_menu() {
+		if ( empty( $GLOBALS['admin_page_hooks']['wbcomplugins'] ) ) {
+			add_menu_page( esc_html__( 'WB Plugins', 'buddypress-contact-me' ), esc_html__( 'WB Plugins', 'buddypress-contact-me' ), 'manage_options', 'wbcomplugins', array( $this, 'bcm_settings_page' ), 'dashicons-lightbulb', 59 );
+			add_submenu_page( 'wbcomplugins', esc_html__( 'General', 'buddypress-contact-me' ), esc_html__( 'General', 'buddypress-contact-me' ), 'manage_options', 'wbcomplugins' );
+		}
+		add_submenu_page( 'wbcomplugins', esc_html__( 'BuddyPress Contact Me', 'buddypress-contact-me' ), esc_html__( 'Support', 'buddypress-contact-me' ), 'manage_options', 'buddypress-contact-me', array( $this, 'bcm_settings_page' ) );
+	}
+
+	/**
+	 * Bpsp_settings_page
+	 *
+	 * @since    1.0.0
+	 */
+	public function bcm_settings_page() {
+		$current = isset( $_GET['tab'] ) ? sanitize_text_field( wp_unslash( $_GET['tab'] ) ) : 'welcome';
+		?>
+
+		<div class="wrap">
+			<div class="wbcom-bb-plugins-offer-wrapper">
+				<div id="wb_admin_logo">
+					<a href="https://wbcomdesigns.com/downloads/buddypress-community-bundle/" target="_blank">
+						<img src="<?php echo esc_url( BUDDYPRESS_CONTACT_ME_PLUGIN_URL ) . 'admin/wbcom/assets/imgs/wbcom-offer-notice.png'; ?>">
+					</a>
+				</div>
+			</div>
+			<div class="wbcom-wrap wbcom-plugin-wrapper">
+				<div class="bupr-header">
+					<div class="wbcom_admin_header-wrapper">
+						<div id="wb_admin_plugin_name">
+							<?php esc_html_e( 'BuddyPress Contact Me Settings', 'buddypress-contact-me' ); ?>
+							<span><?php printf( __( 'Version %s', 'buddypress-contact-me' ), BUDDYPRESS_CONTACT_ME_VERSION ); ?></span>
+						</div>
+						<?php echo do_shortcode( '[wbcom_admin_setting_header]' ); ?>
+					</div>
+				</div>
+				<div class="wbcom-admin-settings-page">
+				<?php
+				$blpro_tabs = array(
+					'welcome' => esc_html__( 'Welcome', 'buddypress-contact-me' ),
+					'support' => esc_html__( 'Support', 'buddypress-contact-me' ),
+				);
+
+				$tab_html = '<div class="wbcom-tabs-section"><div class="nav-tab-wrapper"><div class="wb-responsive-menu"><span>' . esc_html( 'Menu' ) . '</span><input class="wb-toggle-btn" type="checkbox" id="wb-toggle-btn"><label class="wb-toggle-icon" for="wb-toggle-btn"><span class="wb-icon-bars"></span></label></div><ul>';
+				foreach ( $blpro_tabs as $blpro_tab => $blpro_name ) {
+					$class     = ( $blpro_tab == $current ) ? 'nav-tab-active' : '';
+					$tab_html .= '<li class="' . $blpro_name . '"><a class="nav-tab ' . $class . '" href="admin.php?page=buddypress-contact-me&tab=' . $blpro_tab . '">' . $blpro_name . '</a></li>';
+				}
+				$tab_html .= '</div></ul></div>';
+				echo wp_kses_post( $tab_html );
+				include 'inc/buddypress-contact-me-tabs-options.php';
+				echo '</div>';
+				echo '</div>';
+				echo '</div>';
+				// echo '</div>';
+	}
+
 }

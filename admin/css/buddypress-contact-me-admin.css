@@ -2,3 +2,7 @@
  * All of the CSS for your admin-specific functionality should be
  * included in this file.
  */
+
+.nav-tab-wrapper ul li.Support a.nav-tab:before {
+    content: "\f111";
+}

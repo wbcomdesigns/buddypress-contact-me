@@ -186,7 +186,7 @@ class Buddypress_Contact_Me_Public
                 array(
                 'parent' => 'my-account-buddypress',
                 'id'     => 'my-account-contact',
-                'title'  => esc_html__('Contact', 'bp-contact-me'),
+                'title'  => esc_html__('Contact', 'buddypress-contact-me'),
                 'href'   => trailingslashit($contact_tab_slug),
                 )
             );

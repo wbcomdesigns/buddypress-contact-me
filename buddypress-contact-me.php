@@ -36,7 +36,8 @@ if (! defined('WPINC') ) {
  * Rename this for your plugin and update it as you release new versions.
  */
 define('BUDDYPRESS_CONTACT_ME_VERSION', '1.0.0');
-
+define( 'BUDDYPRESS_CONTACT_ME_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
+define( 'BUDDYPRESS_CONTACT_ME_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 /**
  * The code that runs during plugin activation.
  * This action is documented in includes/class-buddypress-contact-me-activator.php
@@ -65,6 +66,53 @@ register_deactivation_hook(__FILE__, 'deactivate_buddypress_contact_me');
  * admin-specific hooks, and public-facing site hooks.
  */
 require plugin_dir_path(__FILE__) . 'includes/class-buddypress-contact-me.php';
+
+/**
+ *  Check if buddypress activate.
+ */
+function bp_contact_me_requires_buddypress() {
+	if ( ! class_exists( 'Buddypress' ) ) {
+		deactivate_plugins( plugin_basename( __FILE__ ) );
+		add_action( 'admin_notices', 'bp_contact_me_required_plugin_admin_notice' );
+		unset( $_GET['activate'] );
+	}
+}
+add_action( 'admin_init', 'bp_contact_me_requires_buddypress' );
+
+/**
+ * Throw an Alert to tell the Admin why it didn't activate.
+ *
+ * @author wbcomdesigns
+ * @since  1.2.0
+ */
+function bp_contact_me_required_plugin_admin_notice(){
+    $bpcontact_plugin = esc_html__( 'BuddyPress Contact Me', 'buddypress-contact-me' );
+	$bp_plugin       = esc_html__( 'BuddyPress', 'buddypress-contact-me' );
+	echo '<div class="error"><p>';
+	echo sprintf( esc_html__( '%1$s is ineffective now as it requires %2$s to be installed and active.', 'buddypress-contact-me' ), '<strong>' . esc_html( $bpcontact_plugin ) . '</strong>', '<strong>' . esc_html( $bp_plugin ) . '</strong>' );
+	echo '</p></div>';
+	if ( isset( $_GET['activate'] ) ) {
+		unset( $_GET['activate'] );
+	}
+
+}
+
+add_action( 'activated_plugin', 'bp_contact_me_activation_redirect_settings' );
+
+/**
+ * Redirect to plugin settings page after activated
+ *
+ * @param plugin $plugin plugin.
+ */
+function bp_contact_me_activation_redirect_settings( $plugin ) {
+	if ( ! isset( $_GET['plugin'] ) ) {
+		return;
+	}
+	if ( plugin_basename( __FILE__ ) === $plugin  && class_exists( 'Buddypress' ) ) {
+		wp_redirect( admin_url( 'admin.php?page=buddypress-contact-me' ) );
+		exit;
+	}
+}
 
 /**
  * Begins execution of the plugin.
