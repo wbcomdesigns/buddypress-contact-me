@@ -222,12 +222,13 @@ class Buddypress_Contact_Me_Public
     public function bp_contact_me_button()
     {
         $contact_me_button = get_user_meta(bp_displayed_user_id(), 'contact_me_button');
-        $contact_me_button_option = isset($contact_me_button[0]) ? $contact_me_button[0] : '';    
+        $contact_me_button_option = isset($contact_me_button[0]) ? $contact_me_button[0] : '';
+        if (is_user_logged_in() && bp_displayed_user_id() === bp_loggedin_user_id()) {     
         ?>
         <label><?php esc_html_e('Enable/Disable Contact me tab', 'bp-contact-me');?></label>
         <input type="checkbox" name="general[contact_me_button]" <?php echo ( 'on' === $contact_me_button_option ) ? 'checked' : 'unchecked'; ?>/>
         <?php
-
+        }
     }
     /**
      * Bp_contact_me_btn save option value
