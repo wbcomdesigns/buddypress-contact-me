@@ -31,6 +31,9 @@ function bpsp_include_setting_tabs( $blpro_tab ) {
 		case 'welcome':
 			include 'buddypress-contact-me-welcome-page.php';
 			break;
+		case 'general':
+			include 'buddypress-contact-me-general-page.php';
+			break;
 		case 'support':
 			include 'buddypress-contact-me-support-tab.php';
 			break;

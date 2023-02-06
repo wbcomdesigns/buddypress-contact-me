@@ -3,6 +3,10 @@
  * included in this file.
  */
 
+.nav-tab-wrapper ul .General a:before {
+    content: "\f111" !important;
+}
+
 .nav-tab-wrapper ul li.Support a.nav-tab:before {
-    content: "\f111";
+    content: "\f125";
 }

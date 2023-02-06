@@ -44,14 +44,15 @@ class Buddypress_Contact_Me_Admin {
 	 * Initialize the class and set its properties.
 	 *
 	 * @since    1.0.0
-	 * @param      string    $plugin_name       The name of this plugin.
-	 * @param      string    $version    The version of this plugin.
+	 * @param      string $plugin_name       The name of this plugin.
+	 * @param      string $version    The version of this plugin.
 	 */
 	public function __construct( $plugin_name, $version ) {
 
 		$this->plugin_name = $plugin_name;
-		$this->version = $version;
-
+		$this->version     = $version;
+		$this->init_hooks();
+		
 	}
 
 	/**
@@ -101,6 +102,15 @@ class Buddypress_Contact_Me_Admin {
 	}
 
 	/**
+	 * Hook into actions and filters.
+	 *
+	 * @since  1.0.0
+	 */
+	public function init_hooks() {
+		add_action( 'admin_init', array( $this, 'bcm_add_plugin_settings' ) );
+	}
+
+	/**
 	 * Bp_contact_me_add_admin_menu
 	 *
 	 * @since    1.0.0
@@ -110,7 +120,7 @@ class Buddypress_Contact_Me_Admin {
 			add_menu_page( esc_html__( 'WB Plugins', 'buddypress-contact-me' ), esc_html__( 'WB Plugins', 'buddypress-contact-me' ), 'manage_options', 'wbcomplugins', array( $this, 'bcm_settings_page' ), 'dashicons-lightbulb', 59 );
 			add_submenu_page( 'wbcomplugins', esc_html__( 'General', 'buddypress-contact-me' ), esc_html__( 'General', 'buddypress-contact-me' ), 'manage_options', 'wbcomplugins' );
 		}
-		add_submenu_page( 'wbcomplugins', esc_html__( 'BuddyPress Contact Me', 'buddypress-contact-me' ), esc_html__( 'Support', 'buddypress-contact-me' ), 'manage_options', 'buddypress-contact-me', array( $this, 'bcm_settings_page' ) );
+		add_submenu_page( 'wbcomplugins', esc_html__( 'BuddyPress Contact Me', 'buddypress-contact-me' ), esc_html__( 'Contact Me', 'buddypress-contact-me' ), 'manage_options', 'buddypress-contact-me', array( $this, 'bcm_settings_page' ) );
 	}
 
 	/**
@@ -144,6 +154,7 @@ class Buddypress_Contact_Me_Admin {
 				<?php
 				$blpro_tabs = array(
 					'welcome' => esc_html__( 'Welcome', 'buddypress-contact-me' ),
+					'general' => esc_html__( 'General', 'buddypress-contact-me' ),
 					'support' => esc_html__( 'Support', 'buddypress-contact-me' ),
 				);
 
@@ -161,4 +172,12 @@ class Buddypress_Contact_Me_Admin {
 				// echo '</div>';
 	}
 
+	/**
+	 * Plugin register settings.
+	 *
+	 * @since 1.0.0
+	 */
+	public function bcm_add_plugin_settings() {
+		register_setting( 'bcm_admin_general_email_notification_setting', 'bcm_admin_general_setting' );
+	}
 }
