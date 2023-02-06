@@ -6,7 +6,7 @@ if ( ! defined( 'EDD_BP_CONTACT_ME_STORE_URL' ) ) {
 
 // the name of your product. This should match the download name in EDD exactly
 if ( ! defined( 'EDD_BP_CONTACT_ME_ITEM_NAME' ) ) {
-	define( 'EDD_BP_CONTACT_ME_ITEM_NAME', 'BuddyPress Contact Me Plugin' ); // you should use your own CONSTANT name, and be sure to replace it throughout this file
+	define( 'EDD_BP_CONTACT_ME_ITEM_NAME', 'BuddyPress Contact Me' ); // you should use your own CONSTANT name, and be sure to replace it throughout this file
 }
 
 // the name of the settings page for the license input to be displayed
@@ -93,7 +93,6 @@ function edd_wbcom_bcm_activate_license() {
 				'body'      => $api_params,
 			)
 		);
-
 		// make sure the response came back okay
 		if ( is_wp_error( $response ) || 200 !== wp_remote_retrieve_response_code( $response ) ) {
 			if ( is_wp_error( $response ) ) {
