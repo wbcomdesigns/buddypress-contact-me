@@ -114,6 +114,8 @@ class Buddypress_Contact_Me
          */
         include_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-buddypress-contact-me-i18n.php';
 
+        include_once plugin_dir_path(dirname(__FILE__)) . 'admin/wbcom/wbcom-paid-plugin-settings.php';
+
         /**
          * The class responsible for defining all actions that occur in the admin area.
          */
@@ -127,6 +129,9 @@ class Buddypress_Contact_Me
 
         /* Enqueue wbcom plugin folder file. */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/wbcom/wbcom-admin-settings.php';
+
+        include_once plugin_dir_path(dirname( __FILE__ ) ) . 'edd-license/edd-plugin-license.php';
+
 
         $this->loader = new Buddypress_Contact_Me_Loader();
 
