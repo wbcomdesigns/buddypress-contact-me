@@ -8,6 +8,7 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
+$bcm_admin_general_setting = get_option( 'bcm_admin_general_setting' );
 ?>
 <div class="wbcom-tab-content">
 	<div class="wbcom-admin-title-section">
@@ -22,7 +23,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<div class="form-table">
 			<div class="wbcom-settings-section-wrap">
 				<div class="wbcom-settings-section-options-heading">
-					<label for="bcm_aloow_notification"><?php esc_html_e( 'BuddyPress Notifications', 'buddypress-contact-me' ); ?></label>
+					<label for="bcm_allow_notification"><?php esc_html_e( 'BuddyPress Notifications', 'buddypress-contact-me' ); ?></label>
 					<p class="description">
 						<?php esc_html_e( 'Enable this option, if you want the member to receive a BuddyPress Notification when someone contact you.', 'buddypress-contact-me' ); ?>
 					</p>
@@ -43,7 +44,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 				</div>
 				<div class="wbcom-settings-section-options">
 					<label class="bcm-switch">
-						<input type="checkbox" id="bcm_allow_email" name="bcm_admin_general_setting[bcm_email]" value="yes"<?php ( isset( $bcm_admin_general_setting['bcm_email'] ) ) ? checked( $bcm_admin_general_setting['bcm_email'], 'yes' ) : ''; ?>>
+						<input type="checkbox" id="bcm_allow_email" name="bcm_admin_general_setting[bcm_allow_email]" value="yes"<?php ( isset( $bcm_admin_general_setting['bcm_allow_email'] ) ) ? checked( $bcm_admin_general_setting['bcm_allow_email'], 'yes' ) : ''; ?>>
 						<div class="bcm-slider bcm-round"></div>
 					</label>
 				</div>
@@ -56,7 +57,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 					<p class="description"><?php esc_html_e( 'Enter the subject line for email notification subject.', 'buddypress-contact-me' ); ?></p>
 				</div>
 				<div class="wbcom-settings-section-options">
-					<input id="bcm_email_subject" class="bcm_email_subject" name="bcm_admin_general_setting[bcm_email_subject]" value="<?php isset( $bcm_admin_general_setting['bcm_email_subject'] ) ? $bcm_admin_general_setting['bcm_email_subject'] : '' ;?>">
+					<input id="bcm_email_subject" class="bcm_email_subject" name="bcm_admin_general_setting[bcm_email_subject]" value="<?php echo isset( $bcm_admin_general_setting['bcm_email_subject'] ) ? $bcm_admin_general_setting['bcm_email_subject'] : '';?>">
 				</div>
 			</div>
 			<div class="wbcom-settings-section-wrap">
@@ -69,11 +70,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 				<div class="wbcom-settings-section-options">
 					<?php
 						$settings = array(
-							'media_buttons' => false,
+							'media_buttons' => true,
 							'editor_height' => 200,
-							'quicktags'     => false,
+							'textarea_name' => 'bcm_admin_general_setting[bcm_email_content]',
 						);
-						wp_editor( '', 'bcm-email-content', $settings );
+						wp_editor( $bcm_admin_general_setting['bcm_email_content'], 'bcm-email-content', $settings );
 						?>
 				</div>
 			</div>

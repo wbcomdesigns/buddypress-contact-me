@@ -272,7 +272,7 @@ class Buddypress_Contact_Me_Public {
 	 * Function will trigger notifications to member users
 	 */
 	public function bp_contact_me_notification( $get_contact_id, $bp_display_user_id ) {
-		$args = array(
+		$args                = array(
 			'user_id'           => $bp_display_user_id,
 			'item_id'           => $get_contact_id,
 			'secondary_item_id' => $bp_display_user_id,
@@ -282,13 +282,17 @@ class Buddypress_Contact_Me_Public {
 			'is_new'            => 1,
 			'allow_duplicate'   => true,
 		);
-		bp_notifications_add_notification( $args );
+		$bcm_general_setting = get_option( 'bcm_admin_general_setting' );
+		if ( isset( $bcm_general_setting['bcm_allow_notification'] ) && 'yes' === $bcm_general_setting['bcm_allow_notification'] ) {
+			bp_notifications_add_notification( $args );
+		}
 	}
 
 	/**
 	 * Function will trigger to send email notifiction
 	 */
 	public function bp_contact_me_email( $get_contact_id, $bp_display_user_id ) {
+		$bcm_general_setting  = get_option( 'bcm_admin_general_setting' );
 		$current_user_id      = get_current_user_id();
 		$username             = bp_core_get_username( $current_user_id );
 		$login_contact_tab    = bp_core_get_username( $bp_display_user_id );
@@ -299,11 +303,16 @@ class Buddypress_Contact_Me_Public {
 		$bcm_contact_me_link  = '<a href="' . esc_url( $user_contact_me_link ) . '">' . esc_html( 'contact form' ) . '</a>';
 		$to                   = get_the_author_meta( 'user_email', $bp_display_user_id );
 		$replyto_mail_id      = get_the_author_meta( 'user_email', $current_user_id );
-		$subject              = __( 'Contact', 'buddypress-member-blog-pro' );
-		$content              = sprintf( __( '%1$s wants to contact you. Check the all messages %2$s. Go to the %3$s .', 'bp-contact-me' ), $author_name, $bcm_contact_link, $bcm_contact_me_link );
+		$subject              = isset( $bcm_general_setting['bcm_email_subject'] ) && '' != $bcm_general_setting['bcm_email_subject'] ? $bcm_general_setting['bcm_email_subject'] : 'Contact';
+		$user_content         = isset( $bcm_general_setting['bcm_email_content'] ) && '' != $bcm_general_setting['bcm_email_content'] ? $bcm_general_setting['bcm_email_content'] : '';
+		$content              = sprintf( __( '%1$s wants to contact you. Check the all messages %2$s. Go to the %3$s.', 'bp-contact-me' ), $author_name, $bcm_contact_link, $bcm_contact_me_link );
+		$content 			.= $user_content;
 		$headers              = array( 'Content-Type: text/html; charset=UTF-8' );
 		$reply_to             = 'Reply-To: ' . $replyto_mail_id . "\r\n" . 'X-Mailer: ';
-		wp_mail( $to, $subject, $content, $headers, $reply_to );
+		$bcm_general_setting  = get_option( 'bcm_admin_general_setting' );
+		if ( isset( $bcm_general_setting['bcm_allow_email'] ) && 'yes' === $bcm_general_setting['bcm_allow_email'] ) {
+			wp_mail( $to, $subject, $content, $headers, $reply_to );
+		}
 	}
 
 }
