@@ -58,6 +58,8 @@ class Buddypress_Contact_Me_Activator {
 			$bp_contact_me_admin_settings = array(
 				'bcm_allow_notification' => 'yes',
 				'bcm_allow_email' => 'yes',
+				'bcm_email_subject' => 'Contact',
+				'bcm_email_content' => 'Email body content',
 			);
 			update_option( 'bcm_admin_general_setting', $bp_contact_me_admin_settings );
 		}
