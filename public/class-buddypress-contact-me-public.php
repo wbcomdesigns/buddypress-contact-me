@@ -245,6 +245,7 @@ class Buddypress_Contact_Me_Public {
 	 */
 	public function bp_contact_me_notification_format( $action, $item_id, $secondary_item_id, $total_items, $format = 'string' ) {
 		global $wpdb;
+		$return                   = '';
 		$bp_contact_me_table_name = $wpdb->prefix . 'contact_me';
 		$get_contact_q_noti       = "SELECT * FROM $bp_contact_me_table_name  WHERE `id` = $item_id";
 		$get_contact_r_noti       = $wpdb->get_row( $get_contact_q_noti, ARRAY_A );
@@ -306,12 +307,73 @@ class Buddypress_Contact_Me_Public {
 		$subject              = isset( $bcm_general_setting['bcm_email_subject'] ) && '' != $bcm_general_setting['bcm_email_subject'] ? $bcm_general_setting['bcm_email_subject'] : 'Contact';
 		$user_content         = isset( $bcm_general_setting['bcm_email_content'] ) && '' != $bcm_general_setting['bcm_email_content'] ? $bcm_general_setting['bcm_email_content'] : '';
 		$content              = sprintf( __( '%1$s wants to contact you. Check the all messages %2$s. Go to the %3$s.', 'bp-contact-me' ), $author_name, $bcm_contact_link, $bcm_contact_me_link );
-		$content 			.= $user_content;
+		$content             .= $user_content;
 		$headers              = array( 'Content-Type: text/html; charset=UTF-8' );
 		$reply_to             = 'Reply-To: ' . $replyto_mail_id . "\r\n" . 'X-Mailer: ';
 		$bcm_general_setting  = get_option( 'bcm_admin_general_setting' );
 		if ( isset( $bcm_general_setting['bcm_allow_email'] ) && 'yes' === $bcm_general_setting['bcm_allow_email'] ) {
 			wp_mail( $to, $subject, $content, $headers, $reply_to );
+		}
+	}
+
+	/**
+	 * Call BuddyPress Contact Me shortcode
+	 *
+	 * @since    1.0.0
+	 */
+	public function bp_contact_me_form( $atts ) {
+			$recieve_user_id = $atts['id'];
+			ob_start();
+			$output_string = include BUDDYPRESS_CONTACT_ME_PLUGIN_PATH . 'public/partials/bp-contact-me-tab-content.php';
+			$output_string = ob_get_contents();
+			ob_end_clean();
+			return $output_string;
+	}
+
+	/**
+	 * Call BuddyPress Contact Me Form submission
+	 *
+	 * @since    1.0.0
+	 */
+	public function bp_contact_me_form_submitted() {
+		if ( isset( $_POST['bp_contact_me_form_save'] ) ) {
+			global $wpdb;
+			$bp_sender_user_id      = get_current_user_id();
+			if( '' !=  $_POST['bcm_shortcode_user_id'] ){
+				$bp_display_user_id     = isset( $_POST['bcm_shortcode_user_id'] ) ? $_POST['bcm_shortcode_user_id'] : '';
+			}else{
+				$bp_display_user_id     = bp_displayed_user_id();
+			}
+			$bp_contact_me_subject  = isset( $_POST['bp_contact_me_subject'] ) ? $_POST['bp_contact_me_subject'] : '';
+			$bp_contact_me_msg      = isset( $_POST['bp_contact_me_msg'] ) ? $_POST['bp_contact_me_msg'] : '';
+			$bp_contact_me_email    = isset( $_POST['bp_contact_me_email'] ) ? $_POST['bp_contact_me_email'] : '';
+			$bp_contact_me_table    = $wpdb->prefix . 'contact_me';
+			$insert_data_contact_me = $wpdb->insert(
+				$bp_contact_me_table,
+				array(
+					'sender'   => $bp_sender_user_id,
+					'reciever' => $bp_display_user_id,
+					'subject'  => $bp_contact_me_subject,
+					'message'  => $bp_contact_me_msg,
+					'email'    => $bp_contact_me_email,
+				),
+				array( '%d', '%d', '%s', '%s', '%s', '%s' )
+			);
+			if ( isset( $insert_data_contact_me ) && '' !== $insert_data_contact_me ) {
+				bp_core_add_message( __( 'Form submitted successfully.', 'buddypress-contact-me' ) );
+				$get_contact_id = $wpdb->insert_id;
+				do_action( 'bp_contact_me_form_save', $get_contact_id, $bp_display_user_id );
+				$disp_user_url = bp_core_get_user_domain( $bp_display_user_id );
+				if( '' !=  $_POST['bcm_shortcode_user_id'] ){
+					global $wp;
+					$contact_me_url =  home_url( $wp->request );
+				}else{
+					$contact_me_url = $disp_user_url . '/contact-me/';
+				}
+				$contact_me_url_qp = add_query_arg( 'output', 'success', $contact_me_url );
+				wp_redirect( $contact_me_url_qp );
+				die();
+			}
 		}
 	}
 

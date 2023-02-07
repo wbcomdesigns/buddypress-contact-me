@@ -48,8 +48,8 @@ $bcm_admin_general_setting = get_option( 'bcm_admin_general_setting' );
 						<div class="bcm-slider bcm-round"></div>
 					</label>
 				</div>
-			</div>
-			<div class="wbcom-settings-section-wrap">
+			</div>					
+			<div class="wbcom-settings-section-wrap">				
 				<div class="wbcom-settings-section-options-heading">
 					<label for="bcm_email_subject">
 						<?php esc_html_e( 'Email Subject', 'buddypress-contact-me' ); ?>
@@ -57,8 +57,8 @@ $bcm_admin_general_setting = get_option( 'bcm_admin_general_setting' );
 					<p class="description"><?php esc_html_e( 'Enter the subject line for email notification subject.', 'buddypress-contact-me' ); ?></p>
 				</div>
 				<div class="wbcom-settings-section-options">
-					<input id="bcm_email_subject" class="bcm_email_subject" name="bcm_admin_general_setting[bcm_email_subject]" value="<?php echo isset( $bcm_admin_general_setting['bcm_email_subject'] ) ? $bcm_admin_general_setting['bcm_email_subject'] : '';?>">
-				</div>
+					<input id="bcm_email_subject" class="bcm_email_subject" name="bcm_admin_general_setting[bcm_email_subject]" value="<?php echo isset( $bcm_admin_general_setting['bcm_email_subject'] ) ? $bcm_admin_general_setting['bcm_email_subject'] : ''; ?>">
+				</div>				
 			</div>
 			<div class="wbcom-settings-section-wrap">
 				<div class="wbcom-settings-section-options-heading">
@@ -77,7 +77,7 @@ $bcm_admin_general_setting = get_option( 'bcm_admin_general_setting' );
 						wp_editor( isset( $bcm_admin_general_setting['bcm_email_content'] ) ? $bcm_admin_general_setting['bcm_email_content'] : '', 'bcm-email-content', $settings );
 						?>
 				</div>
-			</div>
+			</div>			
 		</div>
 		<?php submit_button(); ?>
 	</form>
