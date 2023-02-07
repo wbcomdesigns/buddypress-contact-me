@@ -3,13 +3,89 @@
  * included in this file.
  */
 
- .bp-content-me-container input[type="text"] {
-    display: block;
-    width: 100%;
-}
-.bp-content-me-container input[type="submit"] {
-    margin: 14px 0;
-}
-.bp-contact-me-list,.bp-contact-me-ul{
+
+/*Contact Form*/
+
+.bp-contact-me-list,
+.bp-contact-me-ul{
     list-style-type: none;
+}
+.bp-content-me-container h3 {
+    margin-bottom: 15px;
+    line-height: 1;
+}
+.bp-content-me-container form.bp-contact-me-form .bp-content-me-fieldset {
+    margin-bottom:15px;
+}
+.bp-content-me-fieldset input[type=email],
+.bp-content-me-fieldset input[type=text],
+.bp-content-me-fieldset textarea {
+    font-size: 15px;
+    padding: 5px 15px;
+    height: 42px;
+    border-radius: 8px;
+    width: 100%;
+    display: block;
+}
+.bp-content-me-fieldset textarea {
+    font-size: 15px;
+    height:120px;
+}
+form.bp-contact-me-form .bp-content-me-fieldset label,
+form.bp-contact-me-form .bp-content-me-fieldset .captchasum {
+    margin-bottom: 5px;
+    display: block;
+    font-size: 17px;
+}
+div#fieldset-captchasum .captchasum {
+    display: inline-block;
+    background: #eee;
+    padding: 6px 10px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    border-radius: 5px;
+}
+form.bp-contact-me-form .bp-contact-me-btn[type="submit"] {
+    margin: 5px 0 0 !important;
+    font-size: 18px !important;
+    border-radius: 8px !important;
+}
+
+
+/*Contact Message*/
+.bp_contact-me-messages th,
+.bp_contact-me-messages td {
+    border: 1px solid #e3e3e3;
+    padding: 10px !important;
+    font-size: 15px;
+}
+.bp_contact-me-messages th.contact-me-sender-id {
+    width: 13%;
+}
+.bp_contact-me-messages th.contact-me-subject {
+    width: 20%;
+}
+.bp_contact-me-messages th.contact-me-message {
+    width: 37%;
+}
+.bp_contact-me-messages th.contact-me-btn {
+    width: 15% !important;
+}
+.bp-user #buddypress .bp_contact-me-messages .add_friend_button a {
+    color: #fff !important;
+}
+.bp_contact-me-messages tr:nth-child(2n+2),
+.bp_contact-me-messages thead {
+    background: #f8f8f8;
+}
+
+
+
+
+/*Reign Theme Icon*/
+.reign-nav-iconic .rg-nouveau-sidebar-menu a#user-contact:before {
+    content: "\f658";
+}
+.reign-nav-iconic .rg-nouveau-sidebar-menu a#user-contact-me:before {
+    content: "\f1d8";
 }

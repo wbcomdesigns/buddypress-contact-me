@@ -16,16 +16,17 @@ $bp_contact_me_table_name = $wpdb->prefix . 'contact_me';
 $get_contact_row          = "SELECT * FROM $bp_contact_me_table_name  WHERE `reciever` = $loggedin_user_id";
 $get_contact_allrow       = $wpdb->get_results( $get_contact_row, ARRAY_A );
 ?>
-<label><h1><?php echo esc_html( 'Contact Message' ); ?></h1></label>
+<div class="bp-contact-me-detials">
+<h2 class="bp-screen-title"><?php echo esc_html( 'Contact Message' ); ?></h2>
 <?php if ( $get_contact_allrow ) { ?>
 <table class="bp_contact-me-messages">
 		<thead>
 			<tr>
-				<th><?php esc_html_e( 'Sender ID', 'bp-contact-me' ); ?></th>                
-				<th><?php esc_html_e( 'Subject', 'bp-contact-me' ); ?></th>
-				<th><?php esc_html_e( 'Message', 'bp-contact-me' ); ?></th>
-				<th><?php esc_html_e( 'Friend Request', 'bp-contact-me' ); ?></th>            
-				<th><?php esc_html_e( 'Private Message', 'bp-contact-me' ); ?></th>            
+				<th class="contact-me-sender-id"><?php esc_html_e( 'Sender ID', 'bp-contact-me' ); ?></th>                
+				<th class="contact-me-subject"><?php esc_html_e( 'Subject', 'bp-contact-me' ); ?></th>
+				<th class="contact-me-message"><?php esc_html_e( 'Message', 'bp-contact-me' ); ?></th>
+				<th class="contact-me-btn"><?php esc_html_e( 'Friend Request', 'bp-contact-me' ); ?></th>            
+				<th class="contact-me-btn"><?php esc_html_e( 'Private Message', 'bp-contact-me' ); ?></th>            
 			</tr>
 		</thead>
 		<tbody>
@@ -49,31 +50,19 @@ $get_contact_allrow       = $wpdb->get_results( $get_contact_row, ARRAY_A );
 						'search_terms'    => false,
 					);
 					if ( bp_has_members( $members_args ) && isset( $sender_id ) ) {
-						?>
-					<ul id="members-list" class="item-list members-list bp-contact-me-list" aria-live="polite" aria-relevant="all" aria-atomic="true">
+						?>					
 						<?php
 						while ( bp_members() ) :
 							bp_the_member();
 							?>
-							<li <?php bp_member_class( array( 'item-entry' ) ); ?> data-bp-item-id="<?php bp_member_user_id(); ?>" data-bp-item-component="members">
-								<div class="list-wrap">
-									<div class="item">
-										<div class="item-meta">
-											<ul class="bp-contact-me-ul">
-												<li>
-													<?php
-														echo wp_kses_post( bp_get_add_friend_button( bp_get_member_user_id() ) );
-													?>
-												</li>
-											</ul>
-										</div>
-									</div>
-								</div>
+							<div class="add_friend_button" <?php bp_member_class( array( 'item-entry' ) ); ?> data-bp-item-id="<?php bp_member_user_id(); ?>" data-bp-item-component="members">
+							<?php
+								echo wp_kses_post( bp_get_add_friend_button( bp_get_member_user_id() ) );
+							?>
 							</li>
 							<?php
 						endwhile;
 						?>
-					</ul>
 						<?php
 					} else {
 						?>
@@ -95,8 +84,9 @@ $get_contact_allrow       = $wpdb->get_results( $get_contact_row, ARRAY_A );
 			<?php } ?>
 		</tbody>
 </table>
+</div>
 <?php } else { ?>
-	<div class="bp-member-blog-container bpmb-blog-posts">
+	<div class="bp-contact-me-container contact-me-not-found">
 	<div id="message" class="info bp-feedback bp-messages bp-template-notice">
 		<span class="bp-icon" aria-hidden="true"></span>
 		<p><?php echo esc_html( 'No any contact message found.' ); ?></p>
