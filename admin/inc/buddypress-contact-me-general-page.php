@@ -74,7 +74,7 @@ $bcm_admin_general_setting = get_option( 'bcm_admin_general_setting' );
 							'editor_height' => 200,
 							'textarea_name' => 'bcm_admin_general_setting[bcm_email_content]',
 						);
-						wp_editor( $bcm_admin_general_setting['bcm_email_content'], 'bcm-email-content', $settings );
+						wp_editor( isset( $bcm_admin_general_setting['bcm_email_content'] ) ? $bcm_admin_general_setting['bcm_email_content'] : '', 'bcm-email-content', $settings );
 						?>
 				</div>
 			</div>

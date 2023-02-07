@@ -53,6 +53,14 @@ class Buddypress_Contact_Me_Activator {
 				update_user_meta( $all_users_id, 'contact_me_button', 'on' );
 			}
 		}
+		$bp_contact_me_admin_settings = get_option( 'bcm_admin_general_setting' );
+		if ( false === $bp_contact_me_admin_settings ) {
+			$bp_contact_me_admin_settings = array(
+				'bcm_allow_notification' => 'yes',
+				'bcm_allow_email' => 'yes',
+			);
+			update_option( 'bcm_admin_general_setting', $bp_contact_me_admin_settings );
+		}
 	}
 
 }
