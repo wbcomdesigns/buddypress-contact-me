@@ -89,3 +89,47 @@ form.bp-contact-me-form .bp-contact-me-btn[type="submit"] {
 .reign-nav-iconic .rg-nouveau-sidebar-menu a#user-contact-me:before {
     content: "\f1d8";
 }
+
+
+
+/*Contact Message Table Mobile*/
+
+@media only screen and (max-width: 689px) {
+
+    .bp-contact-me-detials table.bp_contact-me-messages thead, 
+    .bp-contact-me-detials table.bp_contact-me-messages tbody, 
+    .bp-contact-me-detials table.bp_contact-me-messages th, 
+    .bp-contact-me-detials table.bp_contact-me-messages td, 
+    .bp-contact-me-detials table.bp_contact-me-messages tr { 
+        display: block; 
+    }    
+    .bp-contact-me-detials table.bp_contact-me-messages thead tr { 
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+    }    
+    .bp-contact-me-detials table.bp_contact-me-messages tr { border: 1px solid #ddd; }    
+    .bp-contact-me-detials table.bp_contact-me-messages td {
+        border: none;
+        border-bottom: 1px solid #ddd;
+        position: relative;
+        padding-left: 40% !important;
+    }   
+    .bp-contact-me-detials table.bp_contact-me-messages td:before { 
+        position: absolute;
+        top: 10px;
+        left: 12px;
+        width: 40%; 
+        padding-right: 10px; 
+        white-space: nowrap;
+    }
+    .bp-contact-me-detials table.bp_contact-me-messages td:nth-child(2n+2) {
+        background: #f8f8f8;
+    }
+    .bp-contact-me-detials table.bp_contact-me-messages td:nth-of-type(1):before { content: "User"; }
+    .bp-contact-me-detials table.bp_contact-me-messages td:nth-of-type(2):before { content: "Subject"; }
+    .bp-contact-me-detials table.bp_contact-me-messages td:nth-of-type(3):before { content: "Message"; }
+    .bp-contact-me-detials table.bp_contact-me-messages td:nth-of-type(4):before { content: "Friend Request"; }
+    .bp-contact-me-detials table.bp_contact-me-messages td:nth-of-type(5):before { content: "Private Message"; }
+
+}
