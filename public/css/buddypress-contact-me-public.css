@@ -80,6 +80,65 @@ form.bp-contact-me-form .bp-contact-me-btn[type="submit"] {
 }
 
 
+/*Profile Setting Tab*/
+.enable-bp-contact-tab {
+    display: flex;
+    align-items: center;
+    margin:20px 0;
+    gap: 5px;
+}
+.enable-bp-contact-tab label {
+    font-size: 18px;
+    margin:0 !important;
+    font-weight: normal !important;
+}
+.enable-bp-contact-tab input[type="checkbox"] {
+    width: 25px !important;
+    height: 25px !important;
+    border: 1px solid #a0a0a0;
+    border-radius: 6px;
+    background: #fff;
+    clear: none;
+    cursor: pointer;
+    display: inline-block;
+    line-height: 0;
+    margin: 0;
+    outline: 0;
+    padding: 0!important;
+    text-align: center;
+    vertical-align: middle;
+    position: relative;
+    -webkit-appearance: none;
+    box-shadow: none;
+}
+.enable-bp-contact-tab input[type=checkbox]:checked{
+    background-color: #3583f4;
+    border-color: #3583f4;
+}
+.enable-bp-contact-tab input[type=checkbox]:checked::before {
+    left: 8px;
+    top: 4px;
+    width: 8px;
+    height: 13px;
+    border: solid white;
+    border-width: 0 3px 3px 0;
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+    content: "";
+    position: absolute;
+}
+
+
+
+
+
+
+
+
+
+
+
 
 
 /*Reign Theme Icon*/
