@@ -9,6 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 $bcm_admin_general_setting = get_option( 'bcm_admin_general_setting' );
+$bcm_admin_email = get_option('admin_email');
 ?>
 <div class="wbcom-tab-content">
 	<div class="wbcom-admin-title-section">
@@ -48,6 +49,20 @@ $bcm_admin_general_setting = get_option( 'bcm_admin_general_setting' );
 						<div class="bcm-slider bcm-round"></div>
 					</label>
 				</div>
+			</div>
+			<div class="wbcom-settings-section-wrap">
+				<div class="wbcom-settings-section-options-heading">
+					<label for="bcm_user_email">
+						<?php esc_html_e( 'User Email', 'buddypress-contact-me' ); ?>
+					</label>
+					<p class="description"><?php esc_html_e( 'User change the sender mail id.', 'buddypress-contact-me' ); ?></p>
+				</div>
+				<div class="wbcom-settings-section-options">
+					<label class="bcm-switch">
+						<input type="text" id="bcm_user_email" name="bcm_admin_general_setting[bcm_user_email]" value="<?php echo isset( $bcm_admin_general_setting['bcm_user_email'] ) && !empty($bcm_admin_general_setting['bcm_user_email']) ? $bcm_admin_general_setting['bcm_user_email'] : $bcm_admin_email; ?>">
+						<div class="bcm-slider bcm-round"></div>
+					</label>
+				</div>
 			</div>					
 			<div class="wbcom-settings-section-wrap">				
 				<div class="wbcom-settings-section-options-heading">
@@ -65,7 +80,7 @@ $bcm_admin_general_setting = get_option( 'bcm_admin_general_setting' );
 					<label for="bcm_email_content">
 						<?php esc_html_e( 'Email Body Content', 'buddypress-contact-me' ); ?>
 					</label>
-					<p class="description"><?php esc_html_e( 'This option is for email body content.', 'buddypress-contact-me' ); ?></p>
+					<p class="description"><?php esc_html_e( 'Enter text to send email to the user', 'buddypress-contact-me' ); ?></p>
 				</div>
 				<div class="wbcom-settings-section-options">
 					<?php
@@ -77,6 +92,10 @@ $bcm_admin_general_setting = get_option( 'bcm_admin_general_setting' );
 						wp_editor( isset( $bcm_admin_general_setting['bcm_email_content'] ) ? $bcm_admin_general_setting['bcm_email_content'] : '', 'bcm-email-content', $settings );
 						?>
 				</div>
+								<code>
+									{user_name} - <?php esc_html_e( 'User Name', 'buddypress-contact-me' ); ?> </br>
+									{sender_user_name} - <?php esc_html_e( 'Sender User Name', 'buddypress-contact-me' ); ?> </br>
+								</code>
 			</div>			
 		</div>
 		<?php submit_button(); ?>

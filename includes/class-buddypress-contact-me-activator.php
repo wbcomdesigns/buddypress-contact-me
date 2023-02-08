@@ -58,8 +58,16 @@ class Buddypress_Contact_Me_Activator {
 			$bp_contact_me_admin_settings = array(
 				'bcm_allow_notification' => 'yes',
 				'bcm_allow_email' => 'yes',
-				'bcm_email_subject' => 'Contact',
-				'bcm_email_content' => 'Email body content',
+				'bcm_email_subject' => '{user_name} wants to contact you.',
+				'bcm_email_content' => 'Hi {user_name},
+
+										{sender_user_name} wants to contact you.
+
+										Click Here to check the message.
+
+										You can also go to the contact form
+
+										Thanks.',
 			);
 			update_option( 'bcm_admin_general_setting', $bp_contact_me_admin_settings );
 		}
