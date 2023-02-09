@@ -94,7 +94,7 @@ $bcm_admin_email = get_option('admin_email');
 				</div>
 								<code>
 									{user_name} - <?php esc_html_e( 'User Name', 'buddypress-contact-me' ); ?> </br>
-									{sender_user_name} - <?php esc_html_e( 'Sender User Name', 'buddypress-contact-me' ); ?> </br>
+									{sender_user_name} - <?php esc_html_e( 'Sender User Name', 'buddypress-contact-me' ); ?>
 								</code>
 			</div>			
 		</div>
