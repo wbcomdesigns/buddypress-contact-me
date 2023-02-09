@@ -39,6 +39,7 @@ $sum   = $num1 + $num2;
 					<?php echo $num1 . '+' . $num2; ?>?
 				</div>
 				<input type="hidden" name="bcm_shortcode_user_id" value="<?php echo isset( $atts['id'] ) ? $atts['id'] : '';?>"/>			
+				<input type="hidden" name="bcm_shortcode_username" value="<?php echo isset( $atts['user'] ) ? $atts['user'] : '';?>"/>			
 				<input type="hidden" id="_wpnonce" name="_wpnonce" value="37b392c8a0" />
 				<div class="bp_contact_me_captcha_text">
 					<input type="text" class="form-control captcha-control" id="captcha-val">
