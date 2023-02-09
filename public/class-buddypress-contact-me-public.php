@@ -320,7 +320,7 @@ class Buddypress_Contact_Me_Public {
 	 */
 	public function bp_contact_me_email( $get_contact_id, $bp_display_user_id ) {
 		$bcm_general_setting  = get_option( 'bcm_admin_general_setting' );
-		$bcm_admin_email      = isset( $bcm_general_setting['bcm_user_email'] ) && '' != $bcm_general_setting['bcm_user_email'] ? $bcm_general_setting['bcm_user_email'] : get_option( 'admin_email' );
+		$bcm_sender_email_id  = isset( $bcm_general_setting['bcm_user_email'] ) && '' != $bcm_general_setting['bcm_user_email'] ? $bcm_general_setting['bcm_user_email'] : get_option( 'admin_email' );
 		$current_user_id      = get_current_user_id();
 		$username             = bp_core_get_username( $current_user_id );
 		$login_username       = bp_core_get_username( $bp_display_user_id );
@@ -334,11 +334,11 @@ class Buddypress_Contact_Me_Public {
 		$subject              = $this->bcm_get_email_subject( $bcm_general_setting );
 		$user_content         = isset( $bcm_general_setting['bcm_email_content'] ) && '' != $bcm_general_setting['bcm_email_content'] ? $bcm_general_setting['bcm_email_content'] : '';
 		$content              = sprintf( __( 'Hi %1$s, %2$s wants to contact you. Click here to check the %3$s. You can also go to the %4$s. Thanks', 'bp-contact-me' ), $login_username, $author_name, $bcm_contact_link, $bcm_contact_me_link );
-		$headers              = array( 'Content-Type: text/html; charset=UTF-8' );
-		$reply_to             = 'Reply-To: ' . $replyto_mail_id . "\r\n" . 'X-Mailer: ';
+		$headers              = 'From: ' . $bcm_sender_email_id . "\r\n";
+		$headers             .= "Content-Type: text/html; charset=UTF-8\r\n";
 		$bcm_general_setting  = get_option( 'bcm_admin_general_setting' );
 		if ( isset( $bcm_general_setting['bcm_allow_email'] ) && 'yes' === $bcm_general_setting['bcm_allow_email'] ) {
-			wp_mail( $to, $subject, $content, $headers, $reply_to );
+			mail( $to, $subject, $content, $headers );
 		}
 	}
 
@@ -366,10 +366,10 @@ class Buddypress_Contact_Me_Public {
 			$bp_sender_user_id = get_current_user_id();
 			if ( '' != $_POST['bcm_shortcode_user_id'] ) {
 				$bp_display_user_id = isset( $_POST['bcm_shortcode_user_id'] ) ? $_POST['bcm_shortcode_user_id'] : '';
-			} elseif( '' != $_POST['bcm_shortcode_username'] ){
-				$bcm_get_user_data = get_user_by( 'login', $_POST['bcm_shortcode_username'] );
-				$bp_display_user_id   = $bcm_get_user_data->data->ID;
-			}else {
+			} elseif ( '' != $_POST['bcm_shortcode_username'] ) {
+				$bcm_get_user_data  = get_user_by( 'login', $_POST['bcm_shortcode_username'] );
+				$bp_display_user_id = $bcm_get_user_data->data->ID;
+			} else {
 				$bp_display_user_id = bp_displayed_user_id();
 			}
 			$bp_contact_me_subject  = isset( $_POST['bp_contact_me_subject'] ) ? $_POST['bp_contact_me_subject'] : '';
