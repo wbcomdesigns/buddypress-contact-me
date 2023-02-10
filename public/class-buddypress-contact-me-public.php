@@ -246,7 +246,7 @@ class Buddypress_Contact_Me_Public {
 	/**
 	 * Function will trigger format notifications
 	 */
-	public function bp_contact_me_notification_format( $action, $item_id, $secondary_item_id, $total_items, $format = 'string' ) {
+	public function bp_contact_me_notification_format( $action, $item_id, $secondary_item_id, $action_item_count, $format = 'string', $component_action_name, $component_name, $id ) {
 		global $wpdb;
 		$return                   = '';
 		$bp_contact_me_table_name = $wpdb->prefix . 'contact_me';
@@ -258,7 +258,7 @@ class Buddypress_Contact_Me_Public {
 		$loggedin_user_id         = get_current_user_id();
 		$username                 = bp_core_get_username( $loggedin_user_id );
 		$user_link                = get_site_url() . '/members/' . $username . '/contact/';
-		if ( 'bcm_user_notifications_action' === $action ) {
+		if ( 'bcm_user_notifications_action' === $component_action_name ) {
 			$notification_string = sprintf( __( ' %1$s wants to contact you.', 'bp-contact-me' ), $author_name );
 			if ( 'string' === $format ) {
 				$return = "<a href='" . esc_url( $user_link ) . "'>" . $notification_string . '</a>';
@@ -326,17 +326,22 @@ class Buddypress_Contact_Me_Public {
 		$login_username       = bp_core_get_username( $bp_display_user_id );
 		$user_contact_link    = get_site_url() . '/members/' . $login_username . '/contact/';
 		$user_contact_me_link = get_site_url() . '/members/' . $username . '/contact-me/';
-		$author_name          = get_the_author_meta( 'display_name', $current_user_id );
 		$bcm_contact_link     = '<a href="' . esc_url( $user_contact_link ) . '">' . esc_html( 'messages' ) . '</a>';
 		$bcm_contact_me_link  = '<a href="' . esc_url( $user_contact_me_link ) . '">' . esc_html( 'contact form' ) . '</a>';
 		$to                   = get_the_author_meta( 'user_email', $bp_display_user_id );
 		$replyto_mail_id      = get_the_author_meta( 'user_email', $current_user_id );
-		$subject              = $this->bcm_get_email_subject( $bcm_general_setting );
-		$user_content         = isset( $bcm_general_setting['bcm_email_content'] ) && '' != $bcm_general_setting['bcm_email_content'] ? $bcm_general_setting['bcm_email_content'] : '';
-		$content              = sprintf( __( 'Hi %1$s, %2$s wants to contact you. Click here to check the %3$s. You can also go to the %4$s. Thanks', 'bp-contact-me' ), $login_username, $author_name, $bcm_contact_link, $bcm_contact_me_link );
-		$headers              = 'From: ' . $bcm_sender_email_id . "\r\n";
-		$headers             .= "Content-Type: text/html; charset=UTF-8\r\n";
-		$bcm_general_setting  = get_option( 'bcm_admin_general_setting' );
+		if ( is_user_logged_in() ) {
+			$subject     = $this->bcm_get_email_subject( $bcm_general_setting );
+			$author_name = get_the_author_meta( 'display_name', $current_user_id );
+		} else {
+			$subject     = esc_html( 'Someone wants to contact you' );
+			$author_name = esc_html( 'Someone' );
+		}
+		$user_content        = isset( $bcm_general_setting['bcm_email_content'] ) && '' != $bcm_general_setting['bcm_email_content'] ? $bcm_general_setting['bcm_email_content'] : '';
+		$content             = sprintf( __( 'Hi %1$s,<br>%2$s wants to contact you.<br>Click here to check the %3$s.<br>You can also go to the %4$s.<br>Thanks', 'bp-contact-me' ), $login_username, $author_name, $bcm_contact_link, $bcm_contact_me_link );
+		$headers             = 'From: ' . $bcm_sender_email_id . "\r\n";
+		$headers            .= "Content-Type: text/html; charset=UTF-8\r\n";
+		$bcm_general_setting = get_option( 'bcm_admin_general_setting' );
 		if ( isset( $bcm_general_setting['bcm_allow_email'] ) && 'yes' === $bcm_general_setting['bcm_allow_email'] ) {
 			mail( $to, $subject, $content, $headers );
 		}
