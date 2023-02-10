@@ -22,25 +22,32 @@ $get_contact_allrow       = $wpdb->get_results( $get_contact_row, ARRAY_A );
 <table class="bp_contact-me-messages">
 		<thead>
 			<tr>
-				<th class="contact-me-sender-id"><?php esc_html_e( 'Sender ID', 'bp-contact-me' ); ?></th>                
-				<th class="contact-me-subject"><?php esc_html_e( 'Subject', 'bp-contact-me' ); ?></th>
-				<th class="contact-me-message"><?php esc_html_e( 'Message', 'bp-contact-me' ); ?></th>
+				<th class="contact-me-sender-id"><?php esc_html_e( 'Id', 'bp-contact-me' ); ?></th>                
+				<th class="contact-me-subject"><?php esc_html_e( 'First Name', 'bp-contact-me' ); ?></th>
+				<th class="contact-me-message"><?php esc_html_e( 'Last Name', 'bp-contact-me' ); ?></th>
 				<th class="contact-me-btn"><?php esc_html_e( 'Friend Request', 'bp-contact-me' ); ?></th>            
 				<th class="contact-me-btn"><?php esc_html_e( 'Private Message', 'bp-contact-me' ); ?></th>            
 			</tr>
 		</thead>
 		<tbody>
-			
 			<?php
+			$id = 1;
 			foreach ( $get_contact_allrow as $get_contact_allrow_val ) {
 				$sender_id = $get_contact_allrow_val['sender'];
 				$subject   = $get_contact_allrow_val['subject'];
 				$message   = $get_contact_allrow_val['message'];
+				if ( 0 != $sender_id ) {
+					$bcm_first_name = get_user_meta( $sender_id, 'first_name', true );
+					$bcm_last_name  = get_user_meta( $sender_id, 'last_name', true );
+				}else{
+					$bcm_first_name = $get_contact_allrow_val['first_name'];
+					$bcm_last_name  = $get_contact_allrow_val['last_name'];
+				}
 				?>
 			<tr>
-				<td><?php echo $sender_id; ?></td>
-				<td><?php echo $subject; ?></td>
-				<td><?php echo $message; ?></td>
+				<td><?php echo esc_html( $id++ ); ?></td>
+				<td><?php echo esc_html( $bcm_first_name ); ?></td>
+				<td><?php echo esc_html( $bcm_last_name ); ?></td>
 				<td>
 					<?php
 					$members_args = array(
@@ -50,7 +57,7 @@ $get_contact_allrow       = $wpdb->get_results( $get_contact_row, ARRAY_A );
 						'search_terms'    => false,
 					);
 					if ( bp_has_members( $members_args ) && isset( $sender_id ) ) {
-						?>					
+						?>
 						<?php
 						while ( bp_members() ) :
 							bp_the_member();
@@ -81,7 +88,9 @@ $get_contact_allrow       = $wpdb->get_results( $get_contact_row, ARRAY_A );
 						<?php } ?>
 				</td>
 			</tr>
-			<?php } ?>
+				<?php
+			}
+			?>
 		</tbody>
 </table>
 </div>

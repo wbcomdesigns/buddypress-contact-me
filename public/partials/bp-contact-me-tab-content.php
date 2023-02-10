@@ -25,6 +25,14 @@ $sum   = $num1 + $num2;
 					<label><?php esc_html_e( 'Email', 'bp-contact-me' ); ?></label>
 					<input type="email" name="bp_contact_me_email"/>
 				</div>
+				<div class="bp-content-me-fieldset" for="bp_contact_me_first_name">
+					<label><?php esc_html_e( 'First Name', 'bp-contact-me' ); ?></label>
+					<input type="text" name="bp_contact_me_first_name"/>
+				</div>
+				<div class="bp-content-me-fieldset" for="bp_contact_me_last_name">
+					<label><?php esc_html_e( 'Last Name', 'bp-contact-me' ); ?></label>
+					<input type="text" name="bp_contact_me_last_name"/>
+				</div>
 			<?php } ?>
 			<div class="bp-content-me-fieldset" for="bp_contact_me_subject">
 				<label><?php esc_html_e( 'Subject', 'bp-contact-me' ); ?></label>

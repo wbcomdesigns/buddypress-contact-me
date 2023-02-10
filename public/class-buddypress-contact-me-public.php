@@ -379,16 +379,20 @@ class Buddypress_Contact_Me_Public {
 			}
 			$bp_contact_me_subject  = isset( $_POST['bp_contact_me_subject'] ) ? $_POST['bp_contact_me_subject'] : '';
 			$bp_contact_me_msg      = isset( $_POST['bp_contact_me_msg'] ) ? $_POST['bp_contact_me_msg'] : '';
+			$bp_contact_me_fname    = isset( $_POST['bp_contact_me_first_name'] ) ? $_POST['bp_contact_me_first_name'] : '';
+			$bp_contact_me_lname    = isset( $_POST['bp_contact_me_last_name'] ) ? $_POST['bp_contact_me_last_name'] : '';
 			$bp_contact_me_email    = isset( $_POST['bp_contact_me_email'] ) ? $_POST['bp_contact_me_email'] : '';
 			$bp_contact_me_table    = $wpdb->prefix . 'contact_me';
 			$insert_data_contact_me = $wpdb->insert(
 				$bp_contact_me_table,
 				array(
-					'sender'   => $bp_sender_user_id,
-					'reciever' => $bp_display_user_id,
-					'subject'  => $bp_contact_me_subject,
-					'message'  => $bp_contact_me_msg,
-					'email'    => $bp_contact_me_email,
+					'sender'     => $bp_sender_user_id,
+					'reciever'   => $bp_display_user_id,
+					'subject'    => $bp_contact_me_subject,
+					'message'    => $bp_contact_me_msg,
+					'first_name' => $bp_contact_me_fname,
+					'last_name'  => $bp_contact_me_lname,
+					'email'      => $bp_contact_me_email,
 				),
 				array( '%d', '%d', '%s', '%s', '%s', '%s' )
 			);
