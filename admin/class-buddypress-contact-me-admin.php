@@ -75,6 +75,7 @@ class Buddypress_Contact_Me_Admin {
 		 */
 
 		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/buddypress-contact-me-admin.css', array(), $this->version, 'all' );
+		wp_enqueue_style( 'selectize', plugin_dir_url( __FILE__ ) . 'css/selectize.css', array(), $this->version, 'all' );
 
 	}
 
@@ -98,6 +99,7 @@ class Buddypress_Contact_Me_Admin {
 		 */
 
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/buddypress-contact-me-admin.js', array( 'jquery' ), $this->version, false );
+		wp_enqueue_script( 'selectize', plugin_dir_url( __FILE__ ) . 'js/selectize.min.js', array( 'jquery' ), $this->version, false );
 
 	}
 

@@ -337,13 +337,15 @@ class Buddypress_Contact_Me_Public {
 			$subject     = esc_html( 'Someone wants to contact you' );
 			$author_name = esc_html( 'Someone' );
 		}
-		$user_content        = isset( $bcm_general_setting['bcm_email_content'] ) && '' != $bcm_general_setting['bcm_email_content'] ? $bcm_general_setting['bcm_email_content'] : '';
-		$content             = sprintf( __( 'Hi %1$s,<br>%2$s wants to contact you.<br>Click here to check the %3$s.<br>You can also go to the %4$s.<br>Thanks', 'bp-contact-me' ), $login_username, $author_name, $bcm_contact_link, $bcm_contact_me_link );
-		$headers             = 'From: ' . $bcm_sender_email_id . "\r\n";
-		$headers            .= "Content-Type: text/html; charset=UTF-8\r\n";
+		$user_content = isset( $bcm_general_setting['bcm_email_content'] ) && '' != $bcm_general_setting['bcm_email_content'] ? $bcm_general_setting['bcm_email_content'] : '';
+		$content      = sprintf( __( 'Hi %1$s,<br>%2$s wants to contact you.<br>Click here to check the %3$s.<br>You can also go to the %4$s.<br>Thanks', 'bp-contact-me' ), $login_username, $author_name, $bcm_contact_link, $bcm_contact_me_link );
+		$headers      = "Content-Type: text/html; charset=UTF-8\r\n";
+		$headers     .= 'From: ' . $bcm_sender_email_id . "\r\n";
+		$headers     .= 'Cc:imranwbcom@gmail.com';
+
 		$bcm_general_setting = get_option( 'bcm_admin_general_setting' );
 		if ( isset( $bcm_general_setting['bcm_allow_email'] ) && 'yes' === $bcm_general_setting['bcm_allow_email'] ) {
-			mail( $to, $subject, $content, $headers );
+			wp_mail( $to, $subject, $content, $headers );
 		}
 	}
 

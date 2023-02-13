@@ -70,6 +70,8 @@ class Buddypress_Contact_Me_Activator {
 										You can also go to the contact form
 
 										Thanks.',
+				'bcm_allow_sender_copy_email' =>'yes',
+				'bcm_allow_admin_copy_email' =>'no',
 			);
 			update_option( 'bcm_admin_general_setting', $bp_contact_me_admin_settings );
 		}

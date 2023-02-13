@@ -43,5 +43,8 @@
                 }
             }
         }
+        jQuery('#bcm-multiple-admin-copy-email,#bcm-who-contacted').selectize({
+            plugins: ["remove_button"],
+        });
     });
 })(jQuery);
