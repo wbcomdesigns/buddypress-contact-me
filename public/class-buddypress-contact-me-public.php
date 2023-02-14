@@ -106,18 +106,27 @@ class Buddypress_Contact_Me_Public {
 		$bp_display_user_id          = bp_displayed_user_id();
 		$contact_me_btn_value        = get_user_meta( $bp_display_user_id, 'contact_me_button' );
 		$contact_me_btn_value_option = isset( $contact_me_btn_value[0] ) ? $contact_me_btn_value[0] : '';
+		$bcm_admin_general_setting = get_option( 'bcm_admin_general_setting' );
+		$bcm_who_contacted = $bcm_admin_general_setting['bcm_who_contacted'];
+		$bcm_current_user = wp_get_current_user();
+        $bcm_user_roles = ( array ) $bcm_current_user->roles;
+        $bcm_user_role = $bcm_user_roles[0];
 		if ( bp_displayed_user_id() != bp_loggedin_user_id() ) {
-			if ( 'on' === $contact_me_btn_value_option ) {
-				bp_core_new_nav_item(
-					array(
-						'name'                    => esc_html__( 'Contact Me', 'buddypress-contact-me' ),
-						'slug'                    => 'contact-me',
-						'screen_function'         => array( $this, 'bp_contact_me_show_screen' ),
-						'position'                => 80,
-						'default_subnav_slug'     => 'contact-me',
-						'show_for_displayed_user' => true,
-					)
-				);
+			foreach( $bcm_who_contacted as $bcm_who_contacted_key => $bcm_who_contacted_val ){
+				if( $bcm_user_role === $bcm_who_contacted_val ){
+					if ( 'on' === $contact_me_btn_value_option ) {
+						bp_core_new_nav_item(
+							array(
+								'name'                    => esc_html__( 'Contact Me', 'buddypress-contact-me' ),
+								'slug'                    => 'contact-me',
+								'screen_function'         => array( $this, 'bp_contact_me_show_screen' ),
+								'position'                => 80,
+								'default_subnav_slug'     => 'contact-me',
+								'show_for_displayed_user' => true,
+							)
+						);
+					}
+				}
 			}
 		}
 	}
