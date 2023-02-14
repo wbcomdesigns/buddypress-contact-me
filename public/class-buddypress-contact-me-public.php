@@ -328,13 +328,17 @@ class Buddypress_Contact_Me_Public {
 		$user_contact_me_link = get_site_url() . '/members/' . $username . '/contact-me/';
 		$bcm_contact_link     = '<a href="' . esc_url( $user_contact_link ) . '">' . esc_html( 'messages' ) . '</a>';
 		$bcm_contact_me_link  = '<a href="' . esc_url( $user_contact_me_link ) . '">' . esc_html( 'contact form' ) . '</a>';
-		$to                   = get_the_author_meta( 'user_email', $bp_display_user_id );
-		// sender mail.
-		$sender_mail_id = '';
-		if ( array_key_exists( 'bcm_allow_sender_copy_email', $bcm_general_setting ) ) {
-			$sender_mail_id = get_the_author_meta( 'user_email', $current_user_id );
-		}
 		$bcm_admin_multiuser_mail = array();
+		$to                   = get_the_author_meta( 'user_email', $bp_display_user_id );
+		$bcm_admin_multiuser_mail[] = $to;
+		// sender mail.
+		
+		if ( array_key_exists( 'bcm_allow_sender_copy_email', $bcm_general_setting ) ) {
+			$sender_mail_id = '';
+			$sender_mail_id = get_the_author_meta( 'user_email', $current_user_id );
+			$bcm_admin_multiuser_mail[] = $sender_mail_id;
+		}
+		
 		// admin mail.
 		if ( ! empty( $bcm_general_setting['bcm_allow_admin_copy_email'] ) && 'yes' === $bcm_general_setting['bcm_allow_admin_copy_email'] ) {
 			$admin_users    = get_users(
@@ -367,12 +371,14 @@ class Buddypress_Contact_Me_Public {
 		$content       = sprintf( __( 'Hi %1$s,<br>%2$s wants to contact you.<br>Click here to check the %3$s.<br>You can also go to the %4$s.<br>Thanks', 'bp-contact-me' ), $login_username, $author_name, $bcm_contact_link, $bcm_contact_me_link );
 		$headers       = "Content-Type: text/html; charset=UTF-8\r\n";
 		$headers      .= 'From: ' . $bcm_sender_email_id . "\r\n";
-		$headers      .= 'Cc:' . $sender_mail_id;
-		$bcm_to_sender = array( $to, $sender_mail_id );
+		// add all mails in cc.
+		$bcm_cc_mails = '';
+		foreach( $bcm_admin_multiuser_mail as $bcm_admin_multiuser_mail_key => $bcm_admin_multiuser_mail_val){			
+			$bcm_cc_mails .= $bcm_admin_multiuser_mail_val . ',';
+		}
+		$headers      .= 'Cc:' . $bcm_cc_mails;
 		if ( ! empty( $bcm_admin_multiuser_mail ) ) {
-			$bcm_emails = array_unique( array_merge( $bcm_to_sender, $bcm_admin_multiuser_mail) );
-		} else {
-			$bcm_emails = array( $to, $sender_mail_id );
+			$bcm_emails = array_unique($bcm_admin_multiuser_mail);
 		}
 		$bcm_general_setting = get_option( 'bcm_admin_general_setting' );
 		if ( isset( $bcm_general_setting['bcm_allow_email'] ) && 'yes' === $bcm_general_setting['bcm_allow_email'] ) {
