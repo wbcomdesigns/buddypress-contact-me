@@ -43,7 +43,7 @@
                 }
             }
         }
-        jQuery('#bcm-multiple-admin-copy-email,#bcm-who-contacted').selectize({
+        jQuery('#bcm-multiple-user-copy-email,#bcm-who-contacted').selectize({
             plugins: ["remove_button"],
         });
     });

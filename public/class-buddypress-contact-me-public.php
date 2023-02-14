@@ -246,7 +246,7 @@ class Buddypress_Contact_Me_Public {
 	/**
 	 * Function will trigger format notifications
 	 */
-	public function bp_contact_me_notification_format( $action, $item_id, $secondary_item_id, $action_item_count, $format = 'string', $component_action_name, $component_name, $id ) {
+	public function bp_contact_me_notification_format( $action, $item_id, $secondary_item_id, $total_items, $format = 'string' ) {
 		global $wpdb;
 		$return                   = '';
 		$bp_contact_me_table_name = $wpdb->prefix . 'contact_me';
@@ -258,7 +258,7 @@ class Buddypress_Contact_Me_Public {
 		$loggedin_user_id         = get_current_user_id();
 		$username                 = bp_core_get_username( $loggedin_user_id );
 		$user_link                = get_site_url() . '/members/' . $username . '/contact/';
-		if ( 'bcm_user_notifications_action' === $component_action_name ) {
+		if ( 'bcm_user_notifications_action' === $action ) {
 			$notification_string = sprintf( __( ' %1$s wants to contact you.', 'bp-contact-me' ), $author_name );
 			if ( 'string' === $format ) {
 				$return = "<a href='" . esc_url( $user_link ) . "'>" . $notification_string . '</a>';
@@ -329,7 +329,33 @@ class Buddypress_Contact_Me_Public {
 		$bcm_contact_link     = '<a href="' . esc_url( $user_contact_link ) . '">' . esc_html( 'messages' ) . '</a>';
 		$bcm_contact_me_link  = '<a href="' . esc_url( $user_contact_me_link ) . '">' . esc_html( 'contact form' ) . '</a>';
 		$to                   = get_the_author_meta( 'user_email', $bp_display_user_id );
-		$replyto_mail_id      = get_the_author_meta( 'user_email', $current_user_id );
+		// sender mail.
+		$sender_mail_id = '';
+		if ( array_key_exists( 'bcm_allow_sender_copy_email', $bcm_general_setting ) ) {
+			$sender_mail_id = get_the_author_meta( 'user_email', $current_user_id );
+		}
+		$bcm_admin_multiuser_mail = array();
+		// admin mail.
+		if ( ! empty( $bcm_general_setting['bcm_allow_admin_copy_email'] ) && 'yes' === $bcm_general_setting['bcm_allow_admin_copy_email'] ) {
+			$admin_users    = get_users(
+				array(
+					'role'   => 'administrator',
+					'fields' => array( 'ID', 'display_name' ),
+				)
+			);
+			foreach ( $admin_users as $admin_user ) {
+				$bcm_admin_mail_id = get_the_author_meta( 'user_email', $admin_user->ID );
+				$bcm_admin_multiuser_mail[]  = $bcm_admin_mail_id;
+			}
+		}
+		// multiple users.
+		if ( array_key_exists( 'bcm_multiple_user_copy_email', $bcm_general_setting ) ) {
+			$bcm_multi_data_users = $bcm_general_setting['bcm_multiple_user_copy_email'];
+			foreach ( $bcm_multi_data_users as $bcm_multi_data_key => $bcm_multi_data_val  ) {
+				$bcm_multi_users_mail_id = get_the_author_meta( 'user_email', $bcm_multi_data_val );
+				$bcm_admin_multiuser_mail[] = $bcm_multi_users_mail_id;				
+			}
+		}
 		if ( is_user_logged_in() ) {
 			$subject     = $this->bcm_get_email_subject( $bcm_general_setting );
 			$author_name = get_the_author_meta( 'display_name', $current_user_id );
@@ -337,15 +363,22 @@ class Buddypress_Contact_Me_Public {
 			$subject     = esc_html( 'Someone wants to contact you' );
 			$author_name = esc_html( 'Someone' );
 		}
-		$user_content = isset( $bcm_general_setting['bcm_email_content'] ) && '' != $bcm_general_setting['bcm_email_content'] ? $bcm_general_setting['bcm_email_content'] : '';
-		$content      = sprintf( __( 'Hi %1$s,<br>%2$s wants to contact you.<br>Click here to check the %3$s.<br>You can also go to the %4$s.<br>Thanks', 'bp-contact-me' ), $login_username, $author_name, $bcm_contact_link, $bcm_contact_me_link );
-		$headers      = "Content-Type: text/html; charset=UTF-8\r\n";
-		$headers     .= 'From: ' . $bcm_sender_email_id . "\r\n";
-		$headers     .= 'Cc:imranwbcom@gmail.com';
-
+		$user_content  = isset( $bcm_general_setting['bcm_email_content'] ) && '' != $bcm_general_setting['bcm_email_content'] ? $bcm_general_setting['bcm_email_content'] : '';
+		$content       = sprintf( __( 'Hi %1$s,<br>%2$s wants to contact you.<br>Click here to check the %3$s.<br>You can also go to the %4$s.<br>Thanks', 'bp-contact-me' ), $login_username, $author_name, $bcm_contact_link, $bcm_contact_me_link );
+		$headers       = "Content-Type: text/html; charset=UTF-8\r\n";
+		$headers      .= 'From: ' . $bcm_sender_email_id . "\r\n";
+		$headers      .= 'Cc:' . $sender_mail_id;
+		$bcm_to_sender = array( $to, $sender_mail_id );
+		if ( ! empty( $bcm_admin_multiuser_mail ) ) {
+			$bcm_emails = array_unique( array_merge( $bcm_to_sender, $bcm_admin_multiuser_mail) );
+		} else {
+			$bcm_emails = array( $to, $sender_mail_id );
+		}
 		$bcm_general_setting = get_option( 'bcm_admin_general_setting' );
 		if ( isset( $bcm_general_setting['bcm_allow_email'] ) && 'yes' === $bcm_general_setting['bcm_allow_email'] ) {
-			wp_mail( $to, $subject, $content, $headers );
+			foreach ( $bcm_emails as $bcm_email ) {
+				wp_mail( $bcm_email, $subject, $content, $headers );
+			}
 		}
 	}
 
@@ -368,22 +401,25 @@ class Buddypress_Contact_Me_Public {
 	 * @since    1.0.0
 	 */
 	public function bp_contact_me_form_submitted() {
+		if ( ! isset( $_POST['bcm_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['bcm_nonce'] ) ), 'bcm_form_nonce' ) ) {
+				return false;
+		}
 		if ( isset( $_POST['bp_contact_me_form_save'] ) ) {
 			global $wpdb;
 			$bp_sender_user_id = get_current_user_id();
-			if ( '' != $_POST['bcm_shortcode_user_id'] ) {
-				$bp_display_user_id = isset( $_POST['bcm_shortcode_user_id'] ) ? $_POST['bcm_shortcode_user_id'] : '';
-			} elseif ( '' != $_POST['bcm_shortcode_username'] ) {
-				$bcm_get_user_data  = get_user_by( 'login', $_POST['bcm_shortcode_username'] );
+			if ( isset( $_POST['bcm_shortcode_user_id'] ) && '' !== $_POST['bcm_shortcode_user_id'] ) {
+				$bp_display_user_id = isset( $_POST['bcm_shortcode_user_id'] ) ? sanitize_text_field( wp_unslash( $_POST['bcm_shortcode_user_id'] ) ) : '';
+			} elseif ( isset( $_POST['bcm_shortcode_username'] ) && '' !== sanitize_text_field( wp_unslash( $_POST['bcm_shortcode_username'] ) ) ) {
+				$bcm_get_user_data  = get_user_by( 'login', sanitize_text_field( wp_unslash( $_POST['bcm_shortcode_username'] ) ) );
 				$bp_display_user_id = $bcm_get_user_data->data->ID;
 			} else {
 				$bp_display_user_id = bp_displayed_user_id();
 			}
-			$bp_contact_me_subject  = isset( $_POST['bp_contact_me_subject'] ) ? $_POST['bp_contact_me_subject'] : '';
-			$bp_contact_me_msg      = isset( $_POST['bp_contact_me_msg'] ) ? $_POST['bp_contact_me_msg'] : '';
-			$bp_contact_me_fname    = isset( $_POST['bp_contact_me_first_name'] ) ? $_POST['bp_contact_me_first_name'] : '';
-			$bp_contact_me_lname    = isset( $_POST['bp_contact_me_last_name'] ) ? $_POST['bp_contact_me_last_name'] : '';
-			$bp_contact_me_email    = isset( $_POST['bp_contact_me_email'] ) ? $_POST['bp_contact_me_email'] : '';
+			$bp_contact_me_subject  = isset( $_POST['bp_contact_me_subject'] ) ? sanitize_text_field( wp_unslash( $_POST['bp_contact_me_subject'] ) ) : '';
+			$bp_contact_me_msg      = isset( $_POST['bp_contact_me_msg'] ) ? sanitize_text_field( wp_unslash( $_POST['bp_contact_me_msg'] ) ) : '';
+			$bp_contact_me_fname    = isset( $_POST['bp_contact_me_first_name'] ) ? sanitize_text_field( wp_unslash( $_POST['bp_contact_me_first_name'] ) ) : '';
+			$bp_contact_me_lname    = isset( $_POST['bp_contact_me_last_name'] ) ? sanitize_text_field( wp_unslash( $_POST['bp_contact_me_last_name'] ) ) : '';
+			$bp_contact_me_email    = isset( $_POST['bp_contact_me_email'] ) ? sanitize_text_field( wp_unslash( $_POST['bp_contact_me_email'] ) ) : '';
 			$bp_contact_me_table    = $wpdb->prefix . 'contact_me';
 			$insert_data_contact_me = $wpdb->insert(
 				$bp_contact_me_table,
@@ -403,7 +439,7 @@ class Buddypress_Contact_Me_Public {
 				$get_contact_id = $wpdb->insert_id;
 				do_action( 'bp_contact_me_form_save', $get_contact_id, $bp_display_user_id );
 				$disp_user_url = bp_core_get_user_domain( $bp_display_user_id );
-				if ( '' != $_POST['bcm_shortcode_user_id'] || '' != $_POST['bcm_shortcode_username'] ) {
+				if ( '' !== $_POST['bcm_shortcode_user_id'] || '' !== $_POST['bcm_shortcode_username'] ) {
 					global $wp;
 					$contact_me_url = home_url( $wp->request );
 				} else {

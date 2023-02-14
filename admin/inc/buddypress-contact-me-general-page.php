@@ -10,9 +10,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 $bcm_admin_general_setting = get_option( 'bcm_admin_general_setting' );
 $bcm_admin_email           = get_option( 'admin_email' );
-$admin_users               = get_users(
+$bcm_users_except_admin               = get_users(
 	array(
-		'role'   => 'administrator',
+		'role__not_in'   => 'administrator',
 		'fields' => array( 'ID', 'display_name' ),
 	)
 );
@@ -107,9 +107,9 @@ $user_roles                = array_reverse( get_editable_roles() );
 					<p class="description"><?php esc_html_e( 'Enable this option, copy of mail also send to the more people.', 'buddypress-contact-me' ); ?></p>
 				</div>
 				<div class="wbcom-settings-section-options">
-					<select name="bcm_admin_general_setting[bcm_multiple_admin_copy_email][]" id="bcm-multiple-admin-copy-email" multiple>
-						<?php foreach ( $admin_users as $admin_user ) : ?>
-							<option value="<?php echo esc_attr( $admin_user->id ); ?>" <?php echo isset( $bcm_admin_general_setting['bcm_multiple_admin_copy_email'] ) && in_array( $admin_user->id, $bcm_admin_general_setting['bcm_multiple_admin_copy_email'] ) ? 'selected' : ''; ?>><?php echo esc_html( $admin_user->display_name ); ?></option>
+					<select name="bcm_admin_general_setting[bcm_multiple_user_copy_email][]" id="bcm-multiple-user-copy-email" multiple>
+						<?php foreach ( $bcm_users_except_admin as $bcm_user_except_admin ) : ?>
+							<option value="<?php echo esc_attr( $bcm_user_except_admin->id ); ?>" <?php echo isset( $bcm_admin_general_setting['bcm_multiple_user_copy_email'] ) && in_array( $bcm_user_except_admin->id, $bcm_admin_general_setting['bcm_multiple_user_copy_email'] ) ? 'selected' : ''; ?>><?php echo esc_html( $bcm_user_except_admin->display_name ); ?></option>
 						<?php endforeach; ?>
 					</select>
 				</div>
