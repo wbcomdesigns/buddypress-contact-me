@@ -146,7 +146,7 @@ class Buddypress_Contact_Me_Admin {
 				<div class="bupr-header">
 					<div class="wbcom_admin_header-wrapper">
 						<div id="wb_admin_plugin_name">
-							<?php esc_html_e( 'BuddyPress Contact Me Settings', 'buddypress-contact-me' ); ?>
+							<?php esc_html_e( 'BuddyPress Contact Me', 'buddypress-contact-me' ); ?>
 							<span><?php printf( __( 'Version %s', 'buddypress-contact-me' ), BUDDYPRESS_CONTACT_ME_VERSION ); ?></span>
 						</div>
 						<?php echo do_shortcode( '[wbcom_admin_setting_header]' ); ?>

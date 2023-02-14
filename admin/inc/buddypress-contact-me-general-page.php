@@ -28,7 +28,7 @@ $user_roles                = array_reverse( get_editable_roles() );
 		settings_fields( 'bcm_admin_general_email_notification_setting' );
 		do_settings_sections( 'bcm_admin_general_setting' );
 		?>
-		<div class="form-table">
+		<div class="form-table contact-me-general">
 			<div class="wbcom-settings-section-wrap">
 				<div class="wbcom-settings-section-options-heading">
 					<label for="bcm_allow_notification"><?php esc_html_e( 'BuddyPress Notifications', 'buddypress-contact-me' ); ?></label>
