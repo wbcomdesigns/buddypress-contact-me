@@ -150,9 +150,8 @@ class Buddypress_Contact_Me_Public {
 				}
 			}
 		} else {
-			$bcm_current_user = wp_get_current_user();
-			$user_role        = (array) $bcm_current_user->roles;
-			if ( ! empty( $user_role ) && ! in_array( $user_role[0], $bcm_who_contact, true ) ) {
+			$user_role = $this->bcm_get_current_user_roles( bp_loggedin_user_id() );
+			if ( ! empty( $user_role ) && ! empty( $bcm_who_contact ) && ! in_array( $user_role[0], $bcm_who_contact, true ) ) {
 				return;
 			}
 
