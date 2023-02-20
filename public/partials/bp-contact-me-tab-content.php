@@ -14,7 +14,7 @@ $min  = 1;
 $max  = 20;
 $num1 = rand( $min, $max );
 $num2 = rand( $min, $max );
-$sum  = $num1 + $num2;
+$sum  = $num1 + $num2;			
 ?>
 <div class="bp-content-me-container">
 	<div class="bp-member-blog-post-form">
@@ -34,7 +34,7 @@ $sum  = $num1 + $num2;
 					</label>
 					<input type="email" name="bp_contact_me_email" required/>
 				</div>
-			<?php } ?>
+			<?php } ?>	
 			<div class="bp-content-me-fieldset" for="bp_contact_me_subject">
 				<label>
 					<?php esc_html_e( 'Subject', 'bp-contact-me' ); ?>

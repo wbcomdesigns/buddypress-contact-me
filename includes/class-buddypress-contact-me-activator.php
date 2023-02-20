@@ -49,7 +49,7 @@ class Buddypress_Contact_Me_Activator {
 		$contact_me_option_setting = get_user_meta( get_current_user_id(), 'contact_me_button' );
 		if ( false == $contact_me_option_setting || '' == $contact_me_option_setting ) {
 			$all_users = get_users();
-			foreach( $all_users as $all_userdata ){
+			foreach ( $all_users as $all_userdata ) {
 				$all_users_id = $all_userdata->ID;
 				update_user_meta( $all_users_id, 'contact_me_button', 'on' );
 			}
@@ -57,10 +57,10 @@ class Buddypress_Contact_Me_Activator {
 		$bp_contact_me_admin_settings = get_option( 'bcm_admin_general_setting' );
 		if ( false === $bp_contact_me_admin_settings ) {
 			$bp_contact_me_admin_settings = array(
-				'bcm_allow_notification' => 'yes',
-				'bcm_allow_email' => 'yes',
-				'bcm_email_subject' => '{user_name} wants to contact you.',
-				'bcm_email_content' => 'Hi {user_name},
+				'bcm_allow_notification'      => 'yes',
+				'bcm_allow_email'             => 'yes',
+				'bcm_email_subject'           => '{user_name} wants to contact you.',
+				'bcm_email_content'           => 'Hi {user_name},
 
 										{sender_user_name} wants to contact you.
 
@@ -69,8 +69,10 @@ class Buddypress_Contact_Me_Activator {
 										You can also go to the contact form
 
 										Thanks.',
-				'bcm_allow_sender_copy_email' =>'yes',
-				'bcm_allow_admin_copy_email' =>'no',
+				'bcm_allow_sender_copy_email' => 'yes',
+				'bcm_allow_admin_copy_email'  => 'no',
+				'bcm_who_contact'             => array( 'administrator', 'subscriber', 'editor', 'author', 'contributor', 'customer' ),
+				'bcm_who_contacted'           => array( 'administrator', 'subscriber', 'editor', 'author', 'contributor', 'customer' ),
 			);
 			update_option( 'bcm_admin_general_setting', $bp_contact_me_admin_settings );
 		}

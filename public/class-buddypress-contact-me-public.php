@@ -98,23 +98,45 @@ class Buddypress_Contact_Me_Public {
 	}
 
 	/**
+	 * Get displayed user role.
+	 *
+	 * @since    2.3.0
+	 * @access   public
+	 * @author   Wbcom Designs
+	 */
+	public function bcm_get_current_user_roles( $user_id ) {
+		if ( is_user_logged_in() ) {
+			$user  = get_userdata( $user_id );
+			$roles = array();
+			if ( is_object( $user ) ) {
+				$roles = $user->roles;
+			}
+			return $roles; // This returns an array.
+		}
+	}
+
+	/**
 	 * Register a new tab in member's profile - Contact Me
 	 *
 	 * @since 1.0.1
 	 */
 	public function bp_contact_me_tab() {
+
 		$bp_display_user_id          = bp_displayed_user_id();
 		$contact_me_btn_value        = get_user_meta( $bp_display_user_id, 'contact_me_button' );
 		$contact_me_btn_value_option = isset( $contact_me_btn_value[0] ) ? $contact_me_btn_value[0] : '';
 		$bcm_admin_general_setting   = get_option( 'bcm_admin_general_setting' );
-		$bcm_who_contacted           = $bcm_admin_general_setting['bcm_who_contacted'];
-		if ( bp_displayed_user_id() != bp_loggedin_user_id() && is_user_logged_in() ) {
-			$bcm_current_user = wp_get_current_user();
-			$bcm_user_roles   = (array) $bcm_current_user->roles;
-			$bcm_user_role    = $bcm_user_roles[0];
-			foreach ( $bcm_who_contacted as $bcm_who_contacted_key => $bcm_who_contacted_val ) {
-				if ( $bcm_user_role === $bcm_who_contacted_val ) {
-					if ( 'on' === $contact_me_btn_value_option ) {
+		if ( '' != $bcm_admin_general_setting && array_key_exists( 'bcm_who_contact', $bcm_admin_general_setting ) ) {
+			$bcm_who_contact = $bcm_admin_general_setting['bcm_who_contact'];
+		}
+		if ( '' != $bcm_admin_general_setting && array_key_exists( 'bcm_who_contacted', $bcm_admin_general_setting ) ) {
+			$bcm_who_contacted = $bcm_admin_general_setting['bcm_who_contacted'];
+		}
+
+		if ( bp_displayed_user_id() === bp_loggedin_user_id() ) {
+			if ( ! empty( $bcm_who_contact ) ) {
+				$user_role = $this->bcm_get_current_user_roles( bp_loggedin_user_id() );
+				if ( ! empty( $user_role ) && in_array( $user_role[0], $bcm_who_contact, true ) && ! bp_loggedin_user_id() ) {
 						bp_core_new_nav_item(
 							array(
 								'name'                    => esc_html__( 'Contact Me', 'buddypress-contact-me' ),
@@ -125,10 +147,34 @@ class Buddypress_Contact_Me_Public {
 								'show_for_displayed_user' => true,
 							)
 						);
-					}
 				}
 			}
 		} else {
+			$bcm_current_user = wp_get_current_user();
+			$user_role        = (array) $bcm_current_user->roles;
+			if ( ! empty( $user_role ) && ! in_array( $user_role[0], $bcm_who_contact, true ) ) {
+				return;
+			}
+
+			if ( ! empty( $bcm_who_contacted ) && ! empty( $user_role ) ) {
+				$user_role = $this->bcm_get_current_user_roles( bp_displayed_user_id() );
+
+					$user_role = ! empty( $user_role[0] ) ? $user_role[0] : array();
+
+				if ( in_array( $user_role, $bcm_who_contacted, true ) ) {
+					bp_core_new_nav_item(
+						array(
+							'name'                    => esc_html__( 'Contact Me', 'buddypress-contact-me' ),
+							'slug'                    => 'contact-me',
+							'screen_function'         => array( $this, 'bp_contact_me_show_screen' ),
+							'position'                => 80,
+							'default_subnav_slug'     => 'contact-me',
+							'show_for_displayed_user' => true,
+						)
+					);
+				}
+			} else {
+
 				bp_core_new_nav_item(
 					array(
 						'name'                    => esc_html__( 'Contact Me', 'buddypress-contact-me' ),
@@ -139,8 +185,11 @@ class Buddypress_Contact_Me_Public {
 						'show_for_displayed_user' => true,
 					)
 				);
+
+			}
 		}
 	}
+
 
 	/**
 	 * Bp_contact_me_show_screen
@@ -247,7 +296,6 @@ class Buddypress_Contact_Me_Public {
 		$contact_me_data = isset( $_POST['general']['contact_me_button'] ) ? sanitize_text_field( wp_unslash( $_POST['general']['contact_me_button'] ) ) : '';
 		update_user_meta( bp_loggedin_user_id(), 'contact_me_button', $contact_me_data );
 	}
-
 
 	/**
 	 * Function will trigger to register notification component
@@ -414,11 +462,11 @@ class Buddypress_Contact_Me_Public {
 	 * @since    1.0.0
 	 */
 	public function bp_contact_me_form( $atts ) {
-			ob_start();
-			$output_string = include BUDDYPRESS_CONTACT_ME_PLUGIN_PATH . 'public/partials/bp-contact-me-tab-content.php';
-			$output_string = ob_get_contents();
-			ob_end_clean();
-			return $output_string;
+		ob_start();
+		$output_string = include BUDDYPRESS_CONTACT_ME_PLUGIN_PATH . 'public/partials/bp-contact-me-tab-content.php';
+		$output_string = ob_get_contents();
+		ob_end_clean();
+		return $output_string;
 	}
 
 	/**
@@ -428,7 +476,7 @@ class Buddypress_Contact_Me_Public {
 	 */
 	public function bp_contact_me_form_submitted() {
 		if ( ! isset( $_POST['bcm_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['bcm_nonce'] ) ), 'bcm_form_nonce' ) ) {
-				return false;
+			return false;
 		}
 		if ( isset( $_POST['bp_contact_me_form_save'] ) ) {
 			global $wpdb;
@@ -449,12 +497,12 @@ class Buddypress_Contact_Me_Public {
 			$insert_data_contact_me = $wpdb->insert(
 				$bp_contact_me_table,
 				array(
-					'sender'     => $bp_sender_user_id,
-					'reciever'   => $bp_display_user_id,
-					'subject'    => $bp_contact_me_subject,
-					'message'    => $bp_contact_me_msg,
-					'name' => $bp_contact_me_fname,
-					'email'      => $bp_contact_me_email,
+					'sender'   => $bp_sender_user_id,
+					'reciever' => $bp_display_user_id,
+					'subject'  => $bp_contact_me_subject,
+					'message'  => $bp_contact_me_msg,
+					'name'     => $bp_contact_me_fname,
+					'email'    => $bp_contact_me_email,
 				),
 				array( '%d', '%d', '%s', '%s', '%s', '%s' )
 			);
