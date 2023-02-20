@@ -216,16 +216,19 @@ class Buddypress_Contact_Me_Public {
 	 */
 	public function bp_contact_me_show_data() {
 		if ( is_user_logged_in() && bp_displayed_user_id() === bp_loggedin_user_id() ) {
-			bp_core_new_nav_item(
-				array(
-					'name'                    => esc_html__( 'Contact', 'buddypress-contact-me' ),
-					'slug'                    => 'contact',
-					'screen_function'         => array( $this, 'bp_contact_me_show_data_screen' ),
-					'position'                => 75,
-					'default_subnav_slug'     => 'contact',
-					'show_for_displayed_user' => true,
-				)
-			);
+			$bcm_get_contact = get_option('bcm_admin_general_setting');
+			if( array_key_exists( 'bcm_allow_contact_tab', $bcm_get_contact) ){
+				bp_core_new_nav_item(
+					array(
+						'name'                    => esc_html__( 'Contact', 'buddypress-contact-me' ),
+						'slug'                    => 'contact',
+						'screen_function'         => array( $this, 'bp_contact_me_show_data_screen' ),
+						'position'                => 75,
+						'default_subnav_slug'     => 'contact',
+						'show_for_displayed_user' => true,
+					)
+				);
+			}
 		}
 	}
 

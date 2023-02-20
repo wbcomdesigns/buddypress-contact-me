@@ -59,6 +59,20 @@ $user_roles                = array_reverse( get_editable_roles() );
 			</div>
 			<div class="wbcom-settings-section-wrap">
 				<div class="wbcom-settings-section-options-heading">
+					<label for="bcm_allow_email">
+						<?php esc_html_e( 'Enable/Disable Contact Tab', 'buddypress-contact-me' ); ?>
+					</label>
+					<p class="description"><?php esc_html_e( 'Enable this option, if you want the member to receive an email when someone contact you', 'buddypress-contact-me' ); ?></p>
+				</div>
+				<div class="wbcom-settings-section-options">
+					<label class="bcm-switch">
+						<input type="checkbox" id="bcm_allow_contact_tab" name="bcm_admin_general_setting[bcm_allow_contact_tab]" value="yes"<?php ( isset( $bcm_admin_general_setting['bcm_allow_contact_tab'] ) ) ? checked( $bcm_admin_general_setting['bcm_allow_contact_tab'], 'yes' ) : ''; ?>>
+						<div class="bcm-slider bcm-round"></div>
+					</label>
+				</div>
+			</div>
+			<div class="wbcom-settings-section-wrap">
+				<div class="wbcom-settings-section-options-heading">
 					<label for="bcm_user_email">
 						<?php esc_html_e( 'User Email', 'buddypress-contact-me' ); ?>
 					</label>
