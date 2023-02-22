@@ -167,6 +167,11 @@ form.bp-contact-me-form .bp-contact-me-btn[type="submit"] {
     cursor: not-allowed!important;
 }
 
+.buddypress-wrap #bcm-bulk-manage[disabled],
+.buddypress-wrap #bcm-bulk-manage[disabled] {
+    display: none;
+}
+
 
 /*Contact Message Table Mobile*/
 

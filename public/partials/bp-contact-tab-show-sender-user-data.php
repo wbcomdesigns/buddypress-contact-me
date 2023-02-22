@@ -19,10 +19,11 @@ $get_contact_allrow       = $wpdb->get_results( $get_contact_row, ARRAY_A );
 ?>
 <div class="bp-contact-me-detials">
 <?php if ( $get_contact_allrow ) { ?>
+	<form method="post">
 	<table class="bp_contact-me-messages">
 			<thead>
 				<tr>
-					<th class="contact-me-sender-id"><input type="checkbox"/></th>                
+					<th class="contact-me-sender-id"><input type="checkbox" id="bcm-select-all-contact"/></th>                
 					<th class="contact-me-subject"><?php esc_html_e( 'Name', 'bp-contact-me' ); ?></th>
 					<th class="contact-me-message"><?php esc_html_e( 'Data Received', 'bp-contact-me' ); ?></th>
 					<th class="contact-me-btn"><?php esc_html_e( 'Action', 'bp-contact-me' ); ?></th>            
@@ -43,7 +44,7 @@ $get_contact_allrow       = $wpdb->get_results( $get_contact_row, ARRAY_A );
 					}
 					?>
 				<tr>
-					<td><input type="checkbox" name="bcm_messages[]" value="<?php echo esc_attr( $get_contact_allrow_val['id'] ); ?>"/></td>
+					<td><input type="checkbox" name="bcm_messages[]" class="bcm-all-check" value="<?php echo esc_attr( $get_contact_allrow_val['id'] ); ?>"/></td>
 					<td>
 						<a href="<?php echo esc_attr( bp_core_get_user_domain( $sender_id ) ); ?>" title="<?php echo esc_attr( bp_core_get_user_displayname( $sender_id ) ); ?>">
 					<?php
@@ -80,6 +81,22 @@ $get_contact_allrow       = $wpdb->get_results( $get_contact_row, ARRAY_A );
 				?>
 			</tbody>
 	</table>
+	<div class="bcm-contact-options-nav">
+		<div class="select-wrap">
+			<label class="bp-screen-reader-text" for="bcm-select">
+				<?php esc_html_e( 'Select Bulk Action', 'buddypress' );?>
+			</label>
+			<select name="bcm_contact_bulk_action" id="bcm-select">
+				<option value="" selected="selected"><?php esc_html_e( 'Bulk Actions', 'buddypress' ); ?></option>
+				<option value="delete"><?php esc_html_e( 'Delete', 'buddypress' ); ?></option>
+			</select>
+		</div>
+		<input type="submit" id="bcm-bulk-manage" class="button action" value="<?php esc_attr_e( 'Apply', 'buddypress' ); ?>">
+	</div><!-- .notifications-options-nav -->
+	<!-- <input type="hidden" id="bcm_contact_bulk_nonce" name="bcm_contact_bulk_nonce" value="4599113fc3"> -->
+	
+	<?php wp_nonce_field( 'bcm_contact_bulk_nonce', 'bcm_contact_bulk_nonce' ); ?>
+	</form>
 </div>
 <?php
 } else { ?>

@@ -99,8 +99,8 @@ class Buddypress_Contact_Me_Public {
 			$this->plugin_name,
 			'bcm_ajax_object',
 			array(
-				'ajax_url'          => admin_url( 'admin-ajax.php' ),
-				'ajax_nonce'        => wp_create_nonce( 'bcm-contact-nonce' ),
+				'ajax_url'   => admin_url( 'admin-ajax.php' ),
+				'ajax_nonce' => wp_create_nonce( 'bcm-contact-nonce' ),
 			)
 		);
 	}
@@ -224,8 +224,8 @@ class Buddypress_Contact_Me_Public {
 	 */
 	public function bp_contact_me_show_data() {
 		if ( is_user_logged_in() && bp_displayed_user_id() === bp_loggedin_user_id() ) {
-			$bcm_get_contact = get_option('bcm_admin_general_setting');
-			if( array_key_exists( 'bcm_allow_contact_tab', $bcm_get_contact) ){
+			$bcm_get_contact = get_option( 'bcm_admin_general_setting' );
+			if ( array_key_exists( 'bcm_allow_contact_tab', $bcm_get_contact ) ) {
 				bp_core_new_nav_item(
 					array(
 						'name'                    => esc_html__( 'Contact', 'buddypress-contact-me' ),
@@ -539,19 +539,48 @@ class Buddypress_Contact_Me_Public {
 	 *
 	 * @since    1.0.0
 	 */
-	public function bcm_message_delete(){
+	public function bcm_message_delete() {
 		if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'bcm-contact-nonce' ) ) {
 			return false;
 		}
 		global $wpdb;
 		$table_name = $wpdb->prefix . 'contact_me';
-		$rowid =  $_POST['rowid'];
-		$query = $wpdb->query( "DELETE FROM $table_name WHERE id =" . $rowid );
-		if ( 1 == $query ){
+		$rowid      = $_POST['rowid'];
+		$query      = $wpdb->query( "DELETE FROM $table_name WHERE id =" . $rowid );
+		if ( 1 == $query ) {
 			wp_send_json_success();
-		}else{
+		} else {
 			wp_send_json_error();
 		}
+	}
+
+	/**
+	 * Call for bulk deleted contact messages
+	 *
+	 * @since    1.0.0
+	 */
+	public function bcm_contact_action_bulk_manage() {
+		if ( 'contact' != bp_current_action() ) {
+			return false;
+		}
+		$nonce    = ! empty( $_POST['bcm_contact_bulk_nonce'] ) ? sanitize_text_field( wp_unslash( $_POST['bcm_contact_bulk_nonce'] ) ) : '';
+		if ( ! wp_verify_nonce( $nonce, 'bcm_contact_bulk_nonce' ) ) {
+			return false;
+		}
+		$action   = ! empty( $_POST['bcm_contact_bulk_action'] ) ? sanitize_text_field( wp_unslash( $_POST['bcm_contact_bulk_action'] ) ) : '';
+		$items    = ! empty( $_POST['bcm_messages'] ) ? $_POST['bcm_messages'] : '';
+		$redirect = ! empty( $_POST['_wp_http_referer'] ) ? sanitize_text_field( wp_unslash( $_POST['_wp_http_referer'] ) ) : '';
+		$_items   = implode( ',', wp_parse_id_list( $items ) );
+		if ( ! is_array( $items ) ) {
+			return false;
+		}
+		if ( 'delete' == $action ) {
+			global $wpdb;
+			$table_name = $wpdb->prefix . 'contact_me';
+			$wpdb->query( $wpdb->prepare( "DELETE FROM $table_name WHERE id IN " . '(' . $_items . ')' ) );
+		}
+		bp_core_add_message( __( 'Delete successfully.', 'buddypress' ) );
+		bp_core_redirect( $redirect );
 	}
 
 }

@@ -199,6 +199,7 @@ class Buddypress_Contact_Me
         $this->loader->add_shortcode( 'bp-contact-me', $plugin_public, 'bp_contact_me_form' );
         $this->loader->add_action( 'wp_loaded', $plugin_public, 'bp_contact_me_form_submitted' );        
         $this->loader->add_action( 'wp_ajax_bcm_message_del', $plugin_public, 'bcm_message_delete' );        
+        $this->loader->add_action( 'bp_actions', $plugin_public, 'bcm_contact_action_bulk_manage',10, 3 );        
     }
 
     /**

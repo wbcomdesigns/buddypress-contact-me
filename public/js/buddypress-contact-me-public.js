@@ -29,6 +29,7 @@
      * practising this, we should strive to set a better example in our own work.
      */
     $(document).ready(function() {
+        // capthca validation
         if ($('.bp-contact-me-form').length) {
             const submitButton = document.querySelector('[type="submit"]');
             $('.bp-contact-me-form').find('[type=submit]').attr('disabled', 'disabled');
@@ -44,6 +45,7 @@
                 }
             });
         }
+        /* Contact tab daat deleted */
         $('#bcm_message_delete span').on('click', function(e) {
             var rowid = $(this).data('id');
             $.ajax({
@@ -58,6 +60,24 @@
                     location.reload();
                 }
             });
+        });
+        /* Make sure a 'Bulk Action' is selected before submitting the form */
+        $('#bcm-bulk-manage').attr('disabled', 'disabled');
+        /* Remove the disabled attribute from the form submit button when bulk action has a value */
+        $('#bcm-select').on('change', function() {
+            $('#bcm-bulk-manage').attr('disabled', $(this).val().length <= 0);
+        });
+        /* Selecting/Deselecting all notifications */
+        $('#bcm-select-all-contact').on('click', function() {
+            if (this.checked) {
+                $('.bcm-all-check').each(function() {
+                    this.checked = true;
+                });
+            } else {
+                $('.bcm-all-check').each(function() {
+                    this.checked = false;
+                });
+            }
         });
     });
 
