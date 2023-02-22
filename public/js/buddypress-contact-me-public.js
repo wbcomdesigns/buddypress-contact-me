@@ -29,19 +29,37 @@
      * practising this, we should strive to set a better example in our own work.
      */
     $(document).ready(function() {
-        const submitButton = document.querySelector('[type="submit"]');
-        $('.bp-contact-me-form').find('[type=submit]').attr('disabled', 'disabled');
-        const captchaInput = document.querySelector(".captcha-control");
-        captchaInput.addEventListener("input", function(e) {
-            const captcha = $('.bp-contact-me-form').find('[type=submit]').data('captcha');
-            if (this.value == captcha) {
-                $('.bp-contact-me-form').find('[type=submit]').removeAttr("disabled");
-                $('.bp-contact-me-form').find('[type=submit]').removeClass('not-allowed');
-            } else {
-                $('.bp-contact-me-form').find('[type=submit]').attr('disabled', 'disabled');
-                $('.bp-contact-me-form').find('[type=submit]').addClass('not-allowed');
-            }
+        if ($('.bp-contact-me-form').length) {
+            const submitButton = document.querySelector('[type="submit"]');
+            $('.bp-contact-me-form').find('[type=submit]').attr('disabled', 'disabled');
+            const captchaInput = document.querySelector(".captcha-control");
+            captchaInput.addEventListener("input", function(e) {
+                const captcha = $('.bp-contact-me-form').find('[type=submit]').data('captcha');
+                if (this.value == captcha) {
+                    $('.bp-contact-me-form').find('[type=submit]').removeAttr("disabled");
+                    $('.bp-contact-me-form').find('[type=submit]').removeClass('not-allowed');
+                } else {
+                    $('.bp-contact-me-form').find('[type=submit]').attr('disabled', 'disabled');
+                    $('.bp-contact-me-form').find('[type=submit]').addClass('not-allowed');
+                }
+            });
+        }
+        $('#bcm_message_delete span').on('click', function(e) {
+            var rowid = $(this).data('id');
+            $.ajax({
+                url: bcm_ajax_object.ajax_url,
+                type: "post",
+                data: {
+                    'action': 'bcm_message_del',
+                    'rowid': rowid,
+                    'nonce': bcm_ajax_object.ajax_nonce,
+                },
+                success: function(data) {
+                    location.reload();
+                }
+            });
         });
     });
+
 
 })(jQuery);

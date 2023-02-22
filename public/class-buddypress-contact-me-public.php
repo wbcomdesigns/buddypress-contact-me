@@ -95,6 +95,14 @@ class Buddypress_Contact_Me_Public {
 		 */
 
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/buddypress-contact-me-public.js', array( 'jquery' ), $this->version, false );
+		wp_localize_script(
+			$this->plugin_name,
+			'bcm_ajax_object',
+			array(
+				'ajax_url'          => admin_url( 'admin-ajax.php' ),
+				'ajax_nonce'        => wp_create_nonce( 'bcm-contact-nonce' ),
+			)
+		);
 	}
 
 	/**
@@ -523,6 +531,26 @@ class Buddypress_Contact_Me_Public {
 				wp_redirect( $contact_me_url_qp );
 				die();
 			}
+		}
+	}
+
+	/**
+	 * Call for deleted contact messages
+	 *
+	 * @since    1.0.0
+	 */
+	public function bcm_message_delete(){
+		if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'bcm-contact-nonce' ) ) {
+			return false;
+		}
+		global $wpdb;
+		$table_name = $wpdb->prefix . 'contact_me';
+		$rowid =  $_POST['rowid'];
+		$query = $wpdb->query( "DELETE FROM $table_name WHERE id =" . $rowid );
+		if ( 1 == $query ){
+			wp_send_json_success();
+		}else{
+			wp_send_json_error();
 		}
 	}
 
