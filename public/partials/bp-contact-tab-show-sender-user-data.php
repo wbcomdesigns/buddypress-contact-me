@@ -25,7 +25,7 @@ $get_contact_allrow       = $wpdb->get_results( $get_contact_row, ARRAY_A );
 				<tr>
 					<th class="contact-me-sender-id"><input type="checkbox" id="bcm-select-all-contact"/></th>                
 					<th class="contact-me-subject"><?php esc_html_e( 'Name', 'bp-contact-me' ); ?></th>
-					<th class="contact-me-message"><?php esc_html_e( 'Data Received', 'bp-contact-me' ); ?></th>
+					<th class="contact-me-message"><?php esc_html_e( 'Message', 'bp-contact-me' ); ?></th>
 					<th class="contact-me-btn"><?php esc_html_e( 'Action', 'bp-contact-me' ); ?></th>            
 				</tr>
 			</thead>
@@ -44,8 +44,8 @@ $get_contact_allrow       = $wpdb->get_results( $get_contact_row, ARRAY_A );
 					}
 					?>
 				<tr>
-					<td><input type="checkbox" name="bcm_messages[]" class="bcm-all-check" value="<?php echo esc_attr( $get_contact_allrow_val['id'] ); ?>"/></td>
-					<td>
+					<td class="contact-me-sender-id"><input type="checkbox" name="bcm_messages[]" class="bcm-all-check" value="<?php echo esc_attr( $get_contact_allrow_val['id'] ); ?>"/></td>
+					<td class="user_displayname">
 						<a href="<?php echo esc_attr( bp_core_get_user_domain( $sender_id ) ); ?>" title="<?php echo esc_attr( bp_core_get_user_displayname( $sender_id ) ); ?>">
 					<?php
 						echo bp_core_fetch_avatar(
@@ -69,7 +69,6 @@ $get_contact_allrow       = $wpdb->get_results( $get_contact_row, ARRAY_A );
 					<td>		
 						<div class="bcm_action">
 							<span class="dashicons dashicons-visibility bcm_message_seen" data-id="<?php echo esc_attr( $get_contact_allrow_val['id'] ); ?>" aria-hidden="true"></span>
-							<span><?php echo esc_html( ' | ' ); ?></span>
 							<button id="bcm_message_delete">
 								<span class="dashicons dashicons-dismiss bcm_message_delete" data-id="<?php echo esc_attr( $get_contact_allrow_val['id'] ); ?>" aria-hidden="true"></span>
 							</button>
