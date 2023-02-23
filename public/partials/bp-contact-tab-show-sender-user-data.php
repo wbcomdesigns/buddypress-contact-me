@@ -18,10 +18,12 @@ $get_contact_allrow       = $wpdb->get_results( $get_contact_row, ARRAY_A );
 ?>
 <div class="bp-contact-me-detials">
 <?php if ( $get_contact_allrow ) { ?>
-	<form method="post">
-		<div class="bp-contact-me-loader" style="display:none;">
-			<img src="<?php echo esc_url( BUDDYPRESS_CONTACT_ME_PLUGIN_URL . '/public/images/loader.svg' ) ;  ?>"/>
+	<div class="bp-contact-me-loader" style="display:none;">
+		<div class="bp-contact-me-loader-img">
+			<img src="<?php echo esc_url( BUDDYPRESS_CONTACT_ME_PLUGIN_URL . '/public/images/loader.gif' ) ;  ?>"/>
 		</div>
+	</div>
+	<form method="post">		
 	<table class="bp_contact-me-messages">
 			<thead>
 				<tr>
@@ -68,9 +70,13 @@ $get_contact_allrow       = $wpdb->get_results( $get_contact_row, ARRAY_A );
 					</td>
 					<td>		
 						<div class="bcm_action">
-							<span class="dashicons dashicons-visibility bcm_message_seen" data-id="<?php echo esc_attr( $get_contact_allrow_val['id'] ); ?>" aria-hidden="true"></span>
-							<button id="bcm_message_delete">
+							<div class="bcm_action_btn">
+								<span class="dashicons dashicons-visibility bcm_message_seen" data-id="<?php echo esc_attr( $get_contact_allrow_val['id'] ); ?>" aria-hidden="true"></span>
+								<small class="bcm-tooltip-text"><?php esc_html_e( 'View Message') ;?></small>
+							</div>
+							<button class="bcm_action_btn" id="bcm_message_delete">
 								<span class="dashicons dashicons-dismiss bcm_message_delete" data-id="<?php echo esc_attr( $get_contact_allrow_val['id'] ); ?>" aria-hidden="true"></span>
+								<small class="bcm-tooltip-text"><?php esc_html_e( 'Delete Message') ;?></small>
 							</button>
 						</div>
 					</td>
