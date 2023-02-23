@@ -39,10 +39,8 @@ $get_contact_allrow       = $wpdb->get_results( $get_contact_row, ARRAY_A );
 					$message   = $get_contact_allrow_val['message'];
 					if ( 0 != $sender_id ) {
 						$bcm_first_name = get_user_meta( $sender_id, 'first_name', true );
-						$bcm_last_name  = get_user_meta( $sender_id, 'last_name', true );
 					} else {
-						$bcm_first_name = $get_contact_allrow_val['first_name'];
-						$bcm_last_name  = $get_contact_allrow_val['last_name'];
+						$bcm_first_name = $get_contact_allrow_val['name'];
 					}
 					?>
 				<tr>
@@ -85,17 +83,15 @@ $get_contact_allrow       = $wpdb->get_results( $get_contact_row, ARRAY_A );
 	<div class="bcm-contact-options-nav">
 		<div class="select-wrap">
 			<label class="bp-screen-reader-text" for="bcm-select">
-				<?php esc_html_e( 'Select Bulk Action', 'buddypress' );?>
+				<?php esc_html_e( 'Select Bulk Action', 'bp-contact-me' );?>
 			</label>
 			<select name="bcm_contact_bulk_action" id="bcm-select">
-				<option value="" selected="selected"><?php esc_html_e( 'Bulk Actions', 'buddypress' ); ?></option>
-				<option value="delete"><?php esc_html_e( 'Delete', 'buddypress' ); ?></option>
+				<option value="" selected="selected"><?php esc_html_e( 'Bulk Actions', 'bp-contact-me' ); ?></option>
+				<option value="delete"><?php esc_html_e( 'Delete', 'bp-contact-me' ); ?></option>
 			</select>
 		</div>
-		<input type="submit" id="bcm-bulk-manage" class="button action" value="<?php esc_attr_e( 'Apply', 'buddypress' ); ?>">
-	</div><!-- .notifications-options-nav -->
-	<!-- <input type="hidden" id="bcm_contact_bulk_nonce" name="bcm_contact_bulk_nonce" value="4599113fc3"> -->
-	
+		<input type="submit" id="bcm-bulk-manage" class="button action" value="<?php esc_attr_e( 'Apply', 'bp-contact-me' ); ?>">
+	</div>	
 	<?php wp_nonce_field( 'bcm_contact_bulk_nonce', 'bcm_contact_bulk_nonce' ); ?>
 	</form>
 </div>

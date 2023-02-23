@@ -14,7 +14,7 @@ $min  = 1;
 $max  = 20;
 $num1 = rand( $min, $max );
 $num2 = rand( $min, $max );
-$sum  = $num1 + $num2;			
+$sum  = $num1 + $num2;
 ?>
 <div class="bp-content-me-container">
 	<div class="bp-member-blog-post-form">
@@ -34,6 +34,17 @@ $sum  = $num1 + $num2;
 					</label>
 					<input type="email" name="bp_contact_me_email" required/>
 				</div>
+			<?php }
+			if ( is_user_logged_in() ) { 
+			$name = bp_core_get_user_displayname( bp_displayed_user_id() );	
+			?>
+			<div class="bp-content-me-fieldset" for="bp_contact_me_login_name">
+				<label>
+					<?php esc_html_e( 'Name', 'bp-contact-me' ); ?>
+					<span><?php esc_html_e( '*', 'bp-contact-me' ); ?></span>
+			</label>
+				<input type="text" name="bp_contact_me_login_name" value="<?php echo esc_attr( $name ); ?>" required/>
+			</div>
 			<?php } ?>	
 			<div class="bp-content-me-fieldset" for="bp_contact_me_subject">
 				<label>

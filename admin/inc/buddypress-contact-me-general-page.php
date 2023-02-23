@@ -176,7 +176,7 @@ $user_roles                = array_reverse( get_editable_roles() );
 					<p class="description"><?php esc_html_e( 'Enter the subject line for email notification subject.', 'buddypress-contact-me' ); ?></p>
 				</div>
 				<div class="wbcom-settings-section-options">
-					<input id="bcm_email_subject" class="bcm_email_subject" name="bcm_admin_general_setting[bcm_email_subject]" value="<?php echo isset( $bcm_admin_general_setting['bcm_email_subject'] ) ? esc_html( $bcm_admin_general_setting['bcm_email_subject'] ) : ''; ?>">
+					<input id="bcm_email_subject" class="bcm_email_subject" name="bcm_admin_general_setting[bcm_email_subject]" value="<?php echo isset( $bcm_admin_general_setting['bcm_email_subject'] ) ? esc_html( $bcm_admin_general_setting['bcm_email_subject'] ) : ''; ?>" placeholder="{user_name} has contacted you.">
 				</div>				
 			</div>
 			<div class="wbcom-settings-section-wrap">
@@ -188,12 +188,21 @@ $user_roles                = array_reverse( get_editable_roles() );
 				</div>
 				<div class="wbcom-settings-section-options">
 					<?php
+					$bcm_default_content = "Hi {user_name},
+
+										{sender_user_name} has contacted you.
+
+										Click Here to check the message.
+
+										You can also go to the contact form
+
+										Thanks.";
 						$settings = array(
 							'media_buttons' => true,
 							'editor_height' => 200,
 							'textarea_name' => 'bcm_admin_general_setting[bcm_email_content]',
 						);
-						wp_editor( isset( $bcm_admin_general_setting['bcm_email_content'] ) ? $bcm_admin_general_setting['bcm_email_content'] : '', 'bcm-email-content', $settings );
+						wp_editor( isset( $bcm_admin_general_setting['bcm_email_content'] ) && '' != $bcm_admin_general_setting['bcm_email_content'] ? $bcm_admin_general_setting['bcm_email_content'] : $bcm_default_content, 'bcm-email-content', $settings );
 						?>
 				</div>
 								<code>

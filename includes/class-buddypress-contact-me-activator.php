@@ -61,10 +61,10 @@ class Buddypress_Contact_Me_Activator {
 				'bcm_allow_notification'      => 'yes',
 				'bcm_allow_email'             => 'yes',
 				'bcm_allow_contact_tab'       => 'yes',
-				'bcm_email_subject'           => '{user_name} wants to contact you.',
+				'bcm_email_subject'           => '{user_name} has contacted you.',
 				'bcm_email_content'           => 'Hi {user_name},
 
-										{sender_user_name} wants to contact you.
+										{sender_user_name} has contacted you.
 
 										Click Here to check the message.
 

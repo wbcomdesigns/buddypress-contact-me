@@ -304,7 +304,7 @@ class Buddypress_Contact_Me_Public {
 	 */
 	public function bp_contact_enbale_disable_option_save() {
 		$contact_me_data = isset( $_POST['general']['contact_me_button'] ) ? sanitize_text_field( wp_unslash( $_POST['general']['contact_me_button'] ) ) : '';
-		update_user_meta( bp_loggedin_user_id(), 'contact_me_button', $contact_me_data );
+		$update_meta = update_user_meta( bp_loggedin_user_id(), 'contact_me_button', $contact_me_data );
 	}
 
 	/**
@@ -442,11 +442,11 @@ class Buddypress_Contact_Me_Public {
 			$subject     = $this->bcm_get_email_subject( $bcm_general_setting );
 			$author_name = get_the_author_meta( 'display_name', $current_user_id );
 		} else {
-			$subject     = esc_html( 'Someone wants to contact you' );
+			$subject     = esc_html( 'Someone has contacted you' );
 			$author_name = esc_html( 'Someone' );
 		}
 		$user_content = isset( $bcm_general_setting['bcm_email_content'] ) && '' != $bcm_general_setting['bcm_email_content'] ? $bcm_general_setting['bcm_email_content'] : '';
-		$content      = sprintf( __( 'Hi %1$s,<br>%2$s wants to contact you.<br>Click here to check the %3$s.<br>You can also go to the %4$s.<br>Thanks', 'bp-contact-me' ), $login_username, $author_name, $bcm_contact_link, $bcm_contact_me_link );
+		$content      = sprintf( __( 'Hi %1$s,<br>%2$s has contacted you.<br>Click here to check the %3$s.<br>You can also go to the %4$s.<br>Thanks', 'bp-contact-me' ), $login_username, $author_name, $bcm_contact_link, $bcm_contact_me_link );
 		$headers      = "Content-Type: text/html; charset=UTF-8\r\n";
 		$headers     .= 'From: ' . $bcm_sender_email_id . "\r\n";
 		// add all mails in cc.
@@ -499,9 +499,13 @@ class Buddypress_Contact_Me_Public {
 			} else {
 				$bp_display_user_id = bp_displayed_user_id();
 			}
-			$bp_contact_me_subject  = isset( $_POST['bp_contact_me_subject'] ) ? sanitize_text_field( wp_unslash( $_POST['bp_contact_me_subject'] ) ) : '';
-			$bp_contact_me_msg      = isset( $_POST['bp_contact_me_msg'] ) ? sanitize_text_field( wp_unslash( $_POST['bp_contact_me_msg'] ) ) : '';
-			$bp_contact_me_fname    = isset( $_POST['bp_contact_me_first_name'] ) ? sanitize_text_field( wp_unslash( $_POST['bp_contact_me_first_name'] ) ) : '';
+			$bp_contact_me_subject = isset( $_POST['bp_contact_me_subject'] ) ? sanitize_text_field( wp_unslash( $_POST['bp_contact_me_subject'] ) ) : '';
+			$bp_contact_me_msg     = isset( $_POST['bp_contact_me_msg'] ) ? sanitize_text_field( wp_unslash( $_POST['bp_contact_me_msg'] ) ) : '';
+			if ( is_user_logged_in() ) {
+				$bp_contact_me_fname = isset( $_POST['bp_contact_me_login_name'] ) ? sanitize_text_field( wp_unslash( $_POST['bp_contact_me_login_name'] ) ) : '';
+			} else {
+				$bp_contact_me_fname = isset( $_POST['bp_contact_me_first_name'] ) ? sanitize_text_field( wp_unslash( $_POST['bp_contact_me_first_name'] ) ) : '';
+			}
 			$bp_contact_me_email    = isset( $_POST['bp_contact_me_email'] ) ? sanitize_text_field( wp_unslash( $_POST['bp_contact_me_email'] ) ) : '';
 			$bp_contact_me_datetime = current_datetime()->format( 'Y-m-d H:i:s' );
 			$bp_contact_me_table    = $wpdb->prefix . 'contact_me';
@@ -585,18 +589,34 @@ class Buddypress_Contact_Me_Public {
 		bp_core_redirect( $redirect );
 	}
 
+	/**
+	 * Call for contact messages popup
+	 *
+	 * @since    1.0.0
+	 */
 	public function bcm_contact_message_popup() {
+		if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'bcm-contact-nonce' ) ) {
+			return false;
+		}
 		global $wpdb;
 		$table_name = $wpdb->prefix . 'contact_me';
-		$rowid      = $_POST['rowid'];
+		$rowid      = isset( $_POST['rowid'] ) ? sanitize_text_field( wp_unslash( $_POST['rowid'] ) ) : '';
 		$query      = $wpdb->get_row( "SELECT * FROM $table_name WHERE id =" . $rowid );
-		$name       = get_user_meta( $query->sender, 'first_name', true );
-		$mail       = get_the_author_meta( 'user_email', $query->sender );
-		$subject    = $query->subject;
-		$message    = $query->message;
-		$date_time = explode(" ", $query->datetime);
-		$bcm_date = $date_time[0];
-		$bcm_time = $date_time[1];
+		if ( 0 != $query->sender ) {
+			$name = get_user_meta( $query->sender, 'first_name', true );
+		} else {
+			$name = $query->name;
+		}
+		if ( 0 != $query->sender ) {
+			$mail = get_the_author_meta( 'user_email', $query->sender );
+		} else {
+			$mail = $query->email;
+		}
+		$subject   = $query->subject;
+		$message   = $query->message;
+		$date_time = explode( ' ', $query->datetime );
+		$bcm_date  = $date_time[0];
+		$bcm_time  = $date_time[1];
 		if ( $query ) {
 			$bcm_html  = '<ul>';
 			$bcm_html .= '<li><strong>Name : <strong>' . $name . '</li>';
