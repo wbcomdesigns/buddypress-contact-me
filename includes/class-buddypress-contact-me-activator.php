@@ -41,6 +41,7 @@ class Buddypress_Contact_Me_Activator {
 						message varchar(255)   NOT NULL,
 						name varchar(255)   NOT NULL,
 						email varchar(255) NULL,
+						datetime varchar(255) NULL,
 						UNIQUE KEY id (id)
 			) $charset_collate;";
 			require_once ABSPATH . 'wp-admin/includes/upgrade.php';

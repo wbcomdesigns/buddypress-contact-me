@@ -15,11 +15,13 @@ $loggedin_user_id         = get_current_user_id();
 $bp_contact_me_table_name = $wpdb->prefix . 'contact_me';
 $get_contact_row          = "SELECT * FROM $bp_contact_me_table_name  WHERE `reciever` = $loggedin_user_id";
 $get_contact_allrow       = $wpdb->get_results( $get_contact_row, ARRAY_A );
-
 ?>
 <div class="bp-contact-me-detials">
 <?php if ( $get_contact_allrow ) { ?>
 	<form method="post">
+		<div class="bp-contact-me-loader" style="display:none;">
+			<img src="<?php echo esc_url( BUDDYPRESS_CONTACT_ME_PLUGIN_URL . '/public/images/loader.svg' ) ;  ?>"/>
+		</div>
 	<table class="bp_contact-me-messages">
 			<thead>
 				<tr>

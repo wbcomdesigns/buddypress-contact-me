@@ -93,8 +93,8 @@ class Buddypress_Contact_Me_Public {
 		 * between the defined hooks and the functions defined in this
 		 * class.
 		 */
-
-		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/buddypress-contact-me-public.js', array( 'jquery' ), $this->version, false );
+		wp_enqueue_script( $this->plugin_name . '-sweetalert', plugin_dir_url( __FILE__ ) . 'js/sweetalert.min.js', array( 'jquery' ), $this->version, false );
+		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/buddypress-contact-me-public.js', array( 'jquery', $this->plugin_name . '-sweetalert' ), $this->version, false );
 		wp_localize_script(
 			$this->plugin_name,
 			'bcm_ajax_object',
@@ -503,6 +503,7 @@ class Buddypress_Contact_Me_Public {
 			$bp_contact_me_msg      = isset( $_POST['bp_contact_me_msg'] ) ? sanitize_text_field( wp_unslash( $_POST['bp_contact_me_msg'] ) ) : '';
 			$bp_contact_me_fname    = isset( $_POST['bp_contact_me_first_name'] ) ? sanitize_text_field( wp_unslash( $_POST['bp_contact_me_first_name'] ) ) : '';
 			$bp_contact_me_email    = isset( $_POST['bp_contact_me_email'] ) ? sanitize_text_field( wp_unslash( $_POST['bp_contact_me_email'] ) ) : '';
+			$bp_contact_me_datetime = current_datetime()->format( 'Y-m-d H:i:s' );
 			$bp_contact_me_table    = $wpdb->prefix . 'contact_me';
 			$insert_data_contact_me = $wpdb->insert(
 				$bp_contact_me_table,
@@ -513,8 +514,9 @@ class Buddypress_Contact_Me_Public {
 					'message'  => $bp_contact_me_msg,
 					'name'     => $bp_contact_me_fname,
 					'email'    => $bp_contact_me_email,
+					'datetime' => $bp_contact_me_datetime,
 				),
-				array( '%d', '%d', '%s', '%s', '%s', '%s' )
+				array( '%d', '%d', '%s', '%s', '%s', '%s', '%s' )
 			);
 			if ( isset( $insert_data_contact_me ) && '' !== $insert_data_contact_me ) {
 				bp_core_add_message( __( 'Form submitted successfully.', 'buddypress-contact-me' ) );
@@ -563,7 +565,7 @@ class Buddypress_Contact_Me_Public {
 		if ( 'contact' != bp_current_action() ) {
 			return false;
 		}
-		$nonce    = ! empty( $_POST['bcm_contact_bulk_nonce'] ) ? sanitize_text_field( wp_unslash( $_POST['bcm_contact_bulk_nonce'] ) ) : '';
+		$nonce = ! empty( $_POST['bcm_contact_bulk_nonce'] ) ? sanitize_text_field( wp_unslash( $_POST['bcm_contact_bulk_nonce'] ) ) : '';
 		if ( ! wp_verify_nonce( $nonce, 'bcm_contact_bulk_nonce' ) ) {
 			return false;
 		}
@@ -581,6 +583,34 @@ class Buddypress_Contact_Me_Public {
 		}
 		bp_core_add_message( __( 'Delete successfully.', 'buddypress' ) );
 		bp_core_redirect( $redirect );
+	}
+
+	public function bcm_contact_message_popup() {
+		global $wpdb;
+		$table_name = $wpdb->prefix . 'contact_me';
+		$rowid      = $_POST['rowid'];
+		$query      = $wpdb->get_row( "SELECT * FROM $table_name WHERE id =" . $rowid );
+		$name       = get_user_meta( $query->sender, 'first_name', true );
+		$mail       = get_the_author_meta( 'user_email', $query->sender );
+		$subject    = $query->subject;
+		$message    = $query->message;
+		$date_time = explode(" ", $query->datetime);
+		$bcm_date = $date_time[0];
+		$bcm_time = $date_time[1];
+		if ( $query ) {
+			$bcm_html  = '<ul>';
+			$bcm_html .= '<li><strong>Name : <strong>' . $name . '</li>';
+			$bcm_html .= '<li><strong>Email : <strong>' . $mail . '</li>';
+			$bcm_html .= '<li><strong>Subject : <strong>' . $subject . '</li>';
+			$bcm_html .= '<li><strong>Message : <strong>' . $message . '</li>';
+			$bcm_html .= '<li><strong>Submitted on : <strong>' . $bcm_date . ' at ' . $bcm_time . '</li>';
+			$bcm_html .= '<ul>';
+		}
+		wp_send_json_success(
+			array(
+				'html' => $bcm_html,
+			)
+		);
 	}
 
 }

@@ -79,6 +79,29 @@
                 });
             }
         });
+        // contact message popup
+        $('.bcm_message_seen').on('click', function(e) {
+            e.preventDefault;
+            $('.bp-contact-me-loader').css('display', 'block');
+            var rowid = $(this).data('id');
+            $.ajax({
+                url: bcm_ajax_object.ajax_url,
+                type: "post",
+                data: {
+                    'action': 'bcm_message_popup',
+                    'rowid': rowid,
+                    'nonce': bcm_ajax_object.ajax_nonce,
+                },
+                beforeSend: function() {
+                    jQuery('#loader').show();
+                },
+                success: function(response) {
+                    $('.bp-contact-me-loader').css('display', 'none');
+                    var rowData = response.data.html;
+                    Swal.fire(rowData);
+                }
+            });
+        });
     });
 
 

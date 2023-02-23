@@ -60,39 +60,49 @@ form.bp-contact-me-form .bp-contact-me-btn[type="submit"] {
 
 
 /*Contact Message*/
+
 .bp_contact-me-messages th,
 .bp_contact-me-messages td {
     border: 1px solid #e3e3e3;
     padding: 10px !important;
     text-align: left;
 }
+
 .bp_contact-me-messages thead {
     background: #f8f8f8;
 }
+
 .bp_contact-me-messages th.contact-me-sender-id {
     width: 5%;
 }
+
 .bp_contact-me-messages th.contact-me-subject {
     width: 25%;
 }
+
 .bp_contact-me-messages th.contact-me-message {
     width: 55%;
 }
+
 .bp_contact-me-messages th.contact-me-btn {
     width: 15% !important;
 }
+
 .bp_contact-me-messages .user_displayname a {
     display: flex;
     align-items: center;
 }
-.buddypress .bp_contact-me-messages .avatar{
+
+.buddypress .bp_contact-me-messages .avatar {
     width: 40px;
     border-radius: 100%;
     margin-right: 10px;
 }
+
 .bp_contact-me-messages .bcm-user-subject {
     font-weight: bold;
 }
+
 .bp_contact-me-messages .bcm-user-message {
     font-size: 14px;
     overflow: hidden;
@@ -177,9 +187,22 @@ form.bp-contact-me-form .bp-contact-me-btn[type="submit"] {
     cursor: not-allowed!important;
 }
 
+
+/* apply button */
+
 .buddypress-wrap #bcm-bulk-manage[disabled],
 .buddypress-wrap #bcm-bulk-manage[disabled] {
     display: none;
+}
+
+
+/* svg */
+
+.bp-contact-me-loader {
+    width: 100px;
+    height: 100px;
+    margin: 20px;
+    display: inline-block;
 }
 
 
