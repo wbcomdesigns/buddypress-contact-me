@@ -304,7 +304,7 @@ class Buddypress_Contact_Me_Public {
 	 */
 	public function bp_contact_enbale_disable_option_save() {
 		$contact_me_data = isset( $_POST['general']['contact_me_button'] ) ? sanitize_text_field( wp_unslash( $_POST['general']['contact_me_button'] ) ) : '';
-		$update_meta = update_user_meta( bp_loggedin_user_id(), 'contact_me_button', $contact_me_data );
+		$update_meta     = update_user_meta( bp_loggedin_user_id(), 'contact_me_button', $contact_me_data );
 	}
 
 	/**
@@ -631,6 +631,18 @@ class Buddypress_Contact_Me_Public {
 				'html' => $bcm_html,
 			)
 		);
+	}
+
+	/**
+	 * Call for add class in body
+	 *
+	 * @since    1.0.0
+	 */
+	public function bcm_body_class( $classes ) {
+		if ( bp_is_user() && 'contact' == bp_current_action() ) {
+			$classes[] = 'wbcom-bp-contact'; 
+		}
+		return $classes;
 	}
 
 }

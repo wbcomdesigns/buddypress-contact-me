@@ -201,6 +201,7 @@ class Buddypress_Contact_Me
         $this->loader->add_action( 'wp_ajax_bcm_message_del', $plugin_public, 'bcm_message_delete' );        
         $this->loader->add_action( 'bp_actions', $plugin_public, 'bcm_contact_action_bulk_manage',10, 3 );
         $this->loader->add_action( 'wp_ajax_bcm_message_popup', $plugin_public, 'bcm_contact_message_popup' );        
+        $this->loader->add_filter( 'body_class', $plugin_public, 'bcm_body_class',10, 1 );        
                 
     }
 
