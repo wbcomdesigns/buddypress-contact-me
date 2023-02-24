@@ -98,7 +98,7 @@
                 success: function(response) {
                     $('.bp-contact-me-loader').css('display', 'none');
                     var rowData = response.data.html;
-                    Swal.fire(rowData);
+                    Swal.fire({ 'html': rowData });
                 }
             });
         });
