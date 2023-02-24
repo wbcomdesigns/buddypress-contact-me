@@ -291,7 +291,7 @@ class Buddypress_Contact_Me_Public {
 		if ( is_user_logged_in() && bp_displayed_user_id() === bp_loggedin_user_id() ) {
 			?>
 		<div class="enable-bp-contact-tab">			
-			<input type="checkbox" name="general[contact_me_button]" <?php echo ( 'on' === $contact_me_button_option ) ? 'checked' : 'unchecked'; ?>/>
+			<input type="checkbox" name="contact_me_button" <?php echo ( 'on' === $contact_me_button_option ) ? 'checked' : 'unchecked'; ?>/>
 			<label><?php esc_html_e( 'Enable/Disable Contact me tab', 'bp-contact-me' ); ?></label>
 		</div>
 			<?php
@@ -303,8 +303,33 @@ class Buddypress_Contact_Me_Public {
 	 * @return void
 	 */
 	public function bp_contact_enbale_disable_option_save() {
-		$contact_me_data = isset( $_POST['general']['contact_me_button'] ) ? sanitize_text_field( wp_unslash( $_POST['general']['contact_me_button'] ) ) : '';
-		$update_meta     = update_user_meta( bp_loggedin_user_id(), 'contact_me_button', $contact_me_data );
+		if ( ! bp_is_post_request() ) {
+			return;
+		}
+
+		// Bail if no submit action.
+		if ( ! isset( $_POST['submit'] ) ) {
+			return;
+		}
+
+		// Bail if not in settings.
+		if ( ! bp_is_settings_component() || ! bp_is_current_action( 'general' ) ) {
+			return;
+		}
+
+		// 404 if there are any additional action variables attached
+		if ( bp_action_variables() ) {
+			bp_do_404();
+			return;
+		}
+		check_admin_referer( 'bp_settings_general' );
+		if ( isset( $_POST['contact_me_button'] ) && ! empty( $_POST['contact_me_button'] ) ) {
+			update_user_meta( bp_loggedin_user_id(), 'contact_me_button', $_POST['contact_me_button'] );
+		}else{
+			update_user_meta( bp_loggedin_user_id(), 'contact_me_button', '' );
+		}
+		$redirect_to = trailingslashit( bp_displayed_user_domain() . bp_get_settings_slug() . '/general' );
+		bp_core_redirect( $redirect_to );
 	}
 
 	/**
@@ -640,7 +665,7 @@ class Buddypress_Contact_Me_Public {
 	 */
 	public function bcm_body_class( $classes ) {
 		if ( bp_is_user() && 'contact' == bp_current_action() ) {
-			$classes[] = 'wbcom-bp-contact'; 
+			$classes[] = 'wbcom-bp-contact';
 		}
 		return $classes;
 	}

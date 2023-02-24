@@ -131,9 +131,9 @@ $user_roles                = array_reverse( get_editable_roles() );
 			<div class="wbcom-settings-section-wrap">
 				<div class="wbcom-settings-section-options-heading">
 					<label for="bcm_user_email">
-						<?php esc_html_e( 'Who can be contact? ', 'buddypress-contact-me' ); ?>
+						<?php esc_html_e( 'Who can Contact?', 'buddypress-contact-me' ); ?>
 					</label>
-					<p class="description"><?php esc_html_e( 'Enable this option, manage the contact with user roles.', 'buddypress-contact-me' ); ?></p>
+					<p class="description"><?php esc_html_e( 'Select the user roles who can contact other users', 'buddypress-contact-me' ); ?></p>
 				</div>
 				<div class="wbcom-settings-section-options">
 					<select name="bcm_admin_general_setting[bcm_who_contact][]" id="bcm-who-contacted" class="bcm_who_contact" multiple>
@@ -151,9 +151,9 @@ $user_roles                = array_reverse( get_editable_roles() );
 				<div class="wbcom-settings-section-wrap">
 				<div class="wbcom-settings-section-options-heading">
 					<label for="bcm_user_email">
-						<?php esc_html_e( 'Who can be contacted? ', 'buddypress-contact-me' ); ?>
+						<?php esc_html_e( 'Who can be contacted?', 'buddypress-contact-me' ); ?>
 					</label>
-					<p class="description"><?php esc_html_e( 'Enable this option, manage the contact with user roles.', 'buddypress-contact-me' ); ?></p>
+					<p class="description"><?php esc_html_e( 'Select the user roles who can be contacted', 'buddypress-contact-me' ); ?></p>
 				</div>
 				<div class="wbcom-settings-section-options">
 					<select name="bcm_admin_general_setting[bcm_who_contacted][]" id="bcm-who-contacted" class="bcm_who_contacted" multiple>
