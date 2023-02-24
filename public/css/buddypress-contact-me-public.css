@@ -3,7 +3,6 @@
  * included in this file.
  */
 
-
 /*Contact Form*/
 .bp-contact-me-list,
 .bp-contact-me-ul {
@@ -206,8 +205,60 @@ form.bp-contact-me-form .bp-contact-me-btn[type="submit"] {
 
 
 /*Popup Message Details*/
-
-
+body.wbcom-bp-contact.swal2-shown.swal2-height-auto .swal2-container.swal2-center>.swal2-popup {
+    max-width: 700px;
+    width: 100%;
+    padding:0;
+    border-radius: 15px;
+}
+body.wbcom-bp-contact.swal2-shown.swal2-height-auto button.swal2-close {
+    display: block !important;
+    position: absolute;
+    background: red;
+    color: #fff;
+    border-radius:8px;
+    width: 40px;
+    top: -12px;
+    height: 40px;
+    line-height: 40px;
+    font-size: 28px;
+    right: -12px;
+    border:none;
+}
+body.wbcom-bp-contact.swal2-shown.swal2-height-auto button.swal2-close:focus{
+    box-shadow: none !important;
+}
+body.wbcom-bp-contact.swal2-shown.swal2-height-auto .swal2-actions{
+    display: none !important;
+}
+body.wbcom-bp-contact.swal2-shown.swal2-height-auto .bp-contact-me-popup-message {
+    padding: 0 !important;
+    margin: 0 !important;
+}
+body.wbcom-bp-contact .bp-contact-me-popup-message {
+    padding: 0;
+    margin: 0;
+    border: 1px solid #eee;
+    border-radius: 10px;
+}
+body.wbcom-bp-contact .bp-contact-me-popup-message li {
+    display: flex;
+    font-size: 16px;
+    padding: 15px;
+    align-items: center;
+    flex-wrap: wrap;    
+}
+body.wbcom-bp-contact .bp-contact-me-popup-message li:nth-child(2n+2){
+    background: #f4f4f4;
+}
+body.wbcom-bp-contact .bp-contact-me-popup-message li strong {
+    width: 20%;
+    text-align: left;
+}
+body.wbcom-bp-contact .bp-contact-me-popup-message li span{
+    width: 80%;
+    text-align: left;
+}
 
 
 /*Profile Setting Tab*/

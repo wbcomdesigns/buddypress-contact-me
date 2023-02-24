@@ -618,13 +618,13 @@ class Buddypress_Contact_Me_Public {
 		$bcm_date  = $date_time[0];
 		$bcm_time  = $date_time[1];
 		if ( $query ) {
-			$bcm_html  = '<ul>';
-			$bcm_html .= '<li><strong>Name : <strong>' . $name . '</li>';
-			$bcm_html .= '<li><strong>Email : <strong>' . $mail . '</li>';
-			$bcm_html .= '<li><strong>Subject : <strong>' . $subject . '</li>';
-			$bcm_html .= '<li><strong>Message : <strong>' . $message . '</li>';
-			$bcm_html .= '<li><strong>Submitted on : <strong>' . $bcm_date . ' at ' . $bcm_time . '</li>';
-			$bcm_html .= '<ul>';
+			$bcm_html  = '<ul class="bp-contact-me-popup-message">';
+			$bcm_html .= '<li><strong>Name : </strong><span>' . $name . '</span></li>';
+			$bcm_html .= '<li><strong>Email : </strong><span>' . $mail . '</span></li>';
+			$bcm_html .= '<li><strong>Subject : </strong><span>' . $subject . '</span></li>';
+			$bcm_html .= '<li><strong>Message : </strong><span>' . $message . '</span></li>';
+			$bcm_html .= '<li><strong>Submitted on : </strong><span>' . $bcm_date . ' at ' . $bcm_time . '</span></li>';
+			$bcm_html .= '</ul>';
 		}
 		wp_send_json_success(
 			array(
