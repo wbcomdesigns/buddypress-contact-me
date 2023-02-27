@@ -25,14 +25,14 @@ $sum  = $num1 + $num2;
 						<?php esc_html_e( 'Name', 'bp-contact-me' ); ?>
 						<span><?php esc_html_e( '*', 'bp-contact-me' ); ?></span>
 					</label>
-					<input type="text" name="bp_contact_me_first_name" required/>
+					<input type="text" class="bp_contact_me_first_name" name="bp_contact_me_first_name" required/>
 				</div>
 				<div class="bp-content-me-fieldset" for="bp_contact_me_email">
 					<label>
 						<?php esc_html_e( 'Email', 'bp-contact-me' ); ?>
 						<span><?php esc_html_e( '*', 'bp-contact-me' ); ?></span>
 					</label>
-					<input type="email" name="bp_contact_me_email" required/>
+					<input type="email" class="bp_contact_me_email" name="bp_contact_me_email" required/>
 				</div>
 			<?php }
 			if ( is_user_logged_in() ) { 
@@ -43,7 +43,7 @@ $sum  = $num1 + $num2;
 					<?php esc_html_e( 'Name', 'bp-contact-me' ); ?>
 					<span><?php esc_html_e( '*', 'bp-contact-me' ); ?></span>
 			</label>
-				<input type="text" name="bp_contact_me_login_name" value="<?php echo esc_attr( $name ); ?>" required/>
+				<input type="text" name="bp_contact_me_login_name" class="bp_contact_me_login_name" value="<?php echo esc_attr( $name ); ?>" required/>
 			</div>
 			<?php } ?>	
 			<div class="bp-content-me-fieldset" for="bp_contact_me_subject">
@@ -51,14 +51,14 @@ $sum  = $num1 + $num2;
 					<?php esc_html_e( 'Subject', 'bp-contact-me' ); ?>
 					<span><?php esc_html_e( '*', 'bp-contact-me' ); ?></span>
 			</label>
-				<input type="text" name="bp_contact_me_subject" required/>
+				<input type="text" class="bp_contact_me_subject" name="bp_contact_me_subject" required/>
 			</div>			
 			<div class="bp-content-me-fieldset" for="bp_contact_me_message">
 				<label>
 					<?php esc_html_e( 'Message', 'bp-contact-me' ); ?>
 					<span><?php esc_html_e( '*', 'bp-contact-me' ); ?></span>
 					</label>
-				<textarea name="bp_contact_me_msg" rows="10" cols="100" required></textarea>
+				<textarea name="bp_contact_me_msg" class="bp_contact_me_msg" rows="10" cols="100" required></textarea>
 			</div>
 			<div id="fieldset-captchasum" class="bp-content-me-fieldset">
 				<div for="captchasum" class="captchasum">
@@ -68,7 +68,7 @@ $sum  = $num1 + $num2;
 				<input type="hidden" name="bcm_shortcode_username" value="<?php echo isset( $atts['user'] ) ? esc_html( $atts['user'] ) : ''; ?>"/>			
 				<input type="hidden" name="bcm_nonce" value="<?php echo esc_attr( wp_create_nonce( 'bcm_form_nonce' ) ); ?>">
 				<div class="bp_contact_me_captcha_text">
-					<input type="text" class="form-control captcha-control" id="captcha-val">
+					<input type="text" class="form-control captcha-control" id="captcha-val" required>
 				</div>
 			</div>
 				<input data-captcha="<?php echo esc_attr( $sum ); ?>" name="bp_contact_me_form_save" class="bp-contact-me-btn" type="submit" value="<?php echo esc_attr__( 'Submit', 'bp-contact-me' ); ?>"/>

@@ -29,6 +29,25 @@
      * practising this, we should strive to set a better example in our own work.
      */
     $(document).ready(function() {
+        var userlog = bcm_ajax_object.user_log;       
+        if( userlog == 1 ){
+            var name    = $('.bp_contact_me_login_name').val();           
+            var subject = $('.bp_contact_me_subject').val();
+            var message = $('.bp_contact_me_msg').val();
+            if( name == '' || subject == '' && message == '' ){
+                $('.bp-contact-me-form .bp-contact-me-btn').addClass('not-allowed');
+            }
+        }
+        if( userlog == 0 ){
+            var name    = $('.bp_contact_me_first_name').val();
+            var email   = $('.bp_contact_me_email').val();
+            var subject = $('.bp_contact_me_subject').val();
+            var message = $('.bp_contact_me_msg').val();
+            if( name == '' && email == '' && subject == '' && message == '' ){
+                $('.bp-contact-me-form .bp-contact-me-btn').addClass('not-allowed');
+            }
+        }       
+
         // capthca validation
         if ($('.bp-contact-me-form').length) {
             const submitButton = document.querySelector('[type="submit"]');

@@ -95,12 +95,17 @@ class Buddypress_Contact_Me_Public {
 		 */
 		wp_enqueue_script( $this->plugin_name . '-sweetalert', plugin_dir_url( __FILE__ ) . 'js/sweetalert.min.js', array( 'jquery' ), $this->version, false );
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/buddypress-contact-me-public.js', array( 'jquery', $this->plugin_name . '-sweetalert' ), $this->version, false );
+		$user_logged = 0;
+		if( is_user_logged_in() ){
+			$user_logged = 1;
+		}
 		wp_localize_script(
 			$this->plugin_name,
 			'bcm_ajax_object',
 			array(
 				'ajax_url'   => admin_url( 'admin-ajax.php' ),
 				'ajax_nonce' => wp_create_nonce( 'bcm-contact-nonce' ),
+				'user_log' => $user_logged,
 			)
 		);
 	}
@@ -362,7 +367,7 @@ class Buddypress_Contact_Me_Public {
 		$username                 = bp_core_get_username( $loggedin_user_id );
 		$user_link                = get_site_url() . '/members/' . $username . '/contact/';
 		if ( 'bcm_user_notifications_action' === $action ) {
-			$notification_string = sprintf( __( ' %1$s wants to contact you.', 'bp-contact-me' ), $author_name );
+			$notification_string = sprintf( __( ' %1$s has contacted you.', 'bp-contact-me' ), $author_name );
 			if ( 'string' === $format ) {
 				$return = "<a href='" . esc_url( $user_link ) . "'>" . $notification_string . '</a>';
 			} else {
