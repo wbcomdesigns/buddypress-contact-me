@@ -324,6 +324,9 @@ body.wbcom-bp-contact .bp-contact-me-popup-message li span{
 
 
 /*Reign Theme Icon*/
+table.bp_contact-me-messages {
+    background: #fff;
+}
 .reign-nav-iconic .rg-nouveau-sidebar-menu a#user-contact:before {
     content: "\f658";
 }
@@ -377,9 +380,6 @@ body.wbcom-bp-contact .bp-contact-me-popup-message li span{
         top: -9999px;
         left: -9999px;
     }
-    .bp-contact-me-detials table.bp_contact-me-messages tr {
-        border: 1px solid #ddd;
-    }
     .bp-contact-me-detials table.bp_contact-me-messages td {
         border: none;
         border-bottom: 1px solid #ddd;
@@ -394,7 +394,7 @@ body.wbcom-bp-contact .bp-contact-me-popup-message li span{
         padding-right: 10px;
         white-space: nowrap;
     }
-    .bp-contact-me-detials table.bp_contact-me-messages td:nth-child(2n+2) {
+    .bp-contact-me-detials table.bp_contact-me-messages tr:nth-child(2n+2) {
         background: #f8f8f8;
     }
     .bp-contact-me-detials table.bp_contact-me-messages td:nth-of-type(1):before {
