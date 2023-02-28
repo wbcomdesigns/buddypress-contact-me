@@ -109,5 +109,5 @@ $get_contact_allrow       = $wpdb->get_results( $get_contact_row, ARRAY_A );
 		<p><?php echo esc_html( 'No any contact message found.' ); ?></p>
 	</div>
 	</div>
-	<?php
-}
+	<?php } ?>
+</div>
