@@ -360,9 +360,10 @@ class Buddypress_Contact_Me_Public {
 		$bp_contact_me_table_name = $wpdb->prefix . 'contact_me';
 		$get_contact_q_noti       = "SELECT * FROM $bp_contact_me_table_name  WHERE `id` = $item_id";
 		$get_contact_r_noti       = $wpdb->get_row( $get_contact_q_noti, ARRAY_A );
+		$get_contact_r_name 	  = isset( $get_contact_r_noti['name'] ) && !empty( $get_contact_r_noti['name'] ) ? $get_contact_r_noti['name'] : '';
 		$sender_id                = isset( $get_contact_r_noti['sender'] ) ? $get_contact_r_noti['sender'] : '';
 		$sender_data              = get_userdata( $sender_id );
-		$author_name              = isset( $sender_data->data->user_login ) && is_user_logged_in() ? $sender_data->data->user_login : $get_contact_r_noti['name'];
+		$author_name              = isset( $sender_data->data->user_login ) && is_user_logged_in() ? $sender_data->data->user_login : $get_contact_r_name;
 		$loggedin_user_id         = get_current_user_id();
 		$username                 = bp_core_get_username( $loggedin_user_id );
 		$user_link                = get_site_url() . '/members/' . $username . '/contact/';
@@ -433,9 +434,9 @@ class Buddypress_Contact_Me_Public {
 		$current_user_id            = get_current_user_id();
 		$username                   = bp_core_get_username( $current_user_id );
 		$login_username             = bp_core_get_username( $bp_display_user_id );
-		$user_contact_link          = get_site_url() . '/members/' . $login_username . '/contact/';
-		$user_contact_me_link       = get_site_url() . '/members/' . $username . '/contact-me/';
-		$bcm_contact_link           = '<a href="' . esc_url( $user_contact_link ) . '">' . esc_html( 'messages' ) . '</a>';
+		$user_contact_link          = bp_core_get_user_domain( $bp_display_user_id ) . 'contact';
+		$user_contact_me_link       =  bp_core_get_user_domain( $current_user_id ) . 'contact-me';
+		$bcm_contact_link           = '<a href="' . esc_url( $user_contact_link ) . '">' . esc_html( 'Click here' ) . '</a>';
 		$bcm_contact_me_link        = '<a href="' . esc_url( $user_contact_me_link ) . '">' . esc_html( 'contact form' ) . '</a>';
 		$bp_contact_me_table_name 	= $wpdb->prefix . 'contact_me';
 		$get_contact_q_noti       	= "SELECT * FROM $bp_contact_me_table_name  WHERE `id` = $get_contact_id";
@@ -480,7 +481,7 @@ class Buddypress_Contact_Me_Public {
 			$author_name = $get_contact_r_noti['name'];
 		}
 		$user_content = isset( $bcm_general_setting['bcm_email_content'] ) && '' != $bcm_general_setting['bcm_email_content'] ? $bcm_general_setting['bcm_email_content'] : '';
-		$content      = sprintf( __( 'Hi %1$s,<br>%2$s has contacted you.<br>Click here to check the %3$s.<br>You can also go to the %4$s.<br>Thanks', 'bp-contact-me' ), $login_username, $author_name, $bcm_contact_link, $bcm_contact_me_link );
+		$content      = sprintf( __( 'Hi %1$s,<br>%2$s has contacted you.<br>%3$s to check the messages.<br>You can also go to the %4$s.<br>Thanks', 'bp-contact-me' ), $login_username, $author_name, $bcm_contact_link, $bcm_contact_me_link );
 		$headers      = "Content-Type: text/html; charset=UTF-8\r\n";
 		$headers     .= 'From: ' . $bcm_sender_email_id . "\r\n";
 		// add all mails in cc.
