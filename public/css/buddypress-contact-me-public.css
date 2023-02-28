@@ -267,7 +267,9 @@ body.wbcom-bp-contact .bp-contact-me-popup-message li span{
     width: 78%;
     text-align: left;
 }
-
+.bp-contact-me-detials table.bp_contact-me-messages tr:nth-child(2n+2) {
+    background: #f8f8f8;
+}
 
 /*Profile Setting Tab*/
 .enable-bp-contact-tab {
@@ -324,6 +326,13 @@ body.wbcom-bp-contact .bp-contact-me-popup-message li span{
 
 
 /*Reign Theme Icon*/
+.theme-reign-theme .bp-member-blog-post-form {
+    padding: 20px;
+    border: 1px solid #eee;
+    border-radius: 10px !important;
+    background: #fff;
+    margin-top: 10px;
+}
 table.bp_contact-me-messages {
     background: #fff;
 }
