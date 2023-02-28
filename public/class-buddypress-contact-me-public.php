@@ -362,7 +362,7 @@ class Buddypress_Contact_Me_Public {
 		$get_contact_r_noti       = $wpdb->get_row( $get_contact_q_noti, ARRAY_A );
 		$sender_id                = isset( $get_contact_r_noti['sender'] ) ? $get_contact_r_noti['sender'] : '';
 		$sender_data              = get_userdata( $sender_id );
-		$author_name              = isset( $sender_data->data->user_login ) && is_user_logged_in() ? $sender_data->data->user_login : 'Someones';
+		$author_name              = isset( $sender_data->data->user_login ) && is_user_logged_in() ? $sender_data->data->user_login : $get_contact_r_noti['name'];
 		$loggedin_user_id         = get_current_user_id();
 		$username                 = bp_core_get_username( $loggedin_user_id );
 		$user_link                = get_site_url() . '/members/' . $username . '/contact/';
@@ -427,6 +427,7 @@ class Buddypress_Contact_Me_Public {
 	 * Function will trigger to send email notifiction
 	 */
 	public function bp_contact_me_email( $get_contact_id, $bp_display_user_id ) {
+		global $wpdb;
 		$bcm_general_setting        = get_option( 'bcm_admin_general_setting' );
 		$bcm_sender_email_id        = isset( $bcm_general_setting['bcm_user_email'] ) && '' != $bcm_general_setting['bcm_user_email'] ? $bcm_general_setting['bcm_user_email'] : get_option( 'admin_email' );
 		$current_user_id            = get_current_user_id();
@@ -436,9 +437,14 @@ class Buddypress_Contact_Me_Public {
 		$user_contact_me_link       = get_site_url() . '/members/' . $username . '/contact-me/';
 		$bcm_contact_link           = '<a href="' . esc_url( $user_contact_link ) . '">' . esc_html( 'messages' ) . '</a>';
 		$bcm_contact_me_link        = '<a href="' . esc_url( $user_contact_me_link ) . '">' . esc_html( 'contact form' ) . '</a>';
+		$bp_contact_me_table_name 	= $wpdb->prefix . 'contact_me';
+		$get_contact_q_noti       	= "SELECT * FROM $bp_contact_me_table_name  WHERE `id` = $get_contact_id";
+		$get_contact_r_noti       	= $wpdb->get_row( $get_contact_q_noti, ARRAY_A );
+		$subject     				= $this->bcm_get_email_subject( $bcm_general_setting );
 		$bcm_admin_multiuser_mail   = array();
 		$to                         = get_the_author_meta( 'user_email', $bp_display_user_id );
 		$bcm_admin_multiuser_mail[] = $to;
+		
 		// sender mail.
 
 		if ( array_key_exists( 'bcm_allow_sender_copy_email', $bcm_general_setting ) ) {
@@ -469,11 +475,9 @@ class Buddypress_Contact_Me_Public {
 			}
 		}
 		if ( is_user_logged_in() ) {
-			$subject     = $this->bcm_get_email_subject( $bcm_general_setting );
 			$author_name = get_the_author_meta( 'display_name', $current_user_id );
 		} else {
-			$subject     = esc_html( 'Someone has contacted you' );
-			$author_name = esc_html( 'Someone' );
+			$author_name = $get_contact_r_noti['name'];
 		}
 		$user_content = isset( $bcm_general_setting['bcm_email_content'] ) && '' != $bcm_general_setting['bcm_email_content'] ? $bcm_general_setting['bcm_email_content'] : '';
 		$content      = sprintf( __( 'Hi %1$s,<br>%2$s has contacted you.<br>Click here to check the %3$s.<br>You can also go to the %4$s.<br>Thanks', 'bp-contact-me' ), $login_username, $author_name, $bcm_contact_link, $bcm_contact_me_link );
@@ -553,7 +557,7 @@ class Buddypress_Contact_Me_Public {
 				array( '%d', '%d', '%s', '%s', '%s', '%s', '%s' )
 			);
 			if ( isset( $insert_data_contact_me ) && '' !== $insert_data_contact_me ) {
-				bp_core_add_message( __( 'Form submitted successfully.', 'buddypress-contact-me' ) );
+				bp_core_add_message( __( 'Message sent successfully.', 'buddypress-contact-me' ) );
 				$get_contact_id = $wpdb->insert_id;
 				do_action( 'bp_contact_me_form_save', $get_contact_id, $bp_display_user_id );
 				$disp_user_url = bp_core_get_user_domain( $bp_display_user_id );

@@ -40,7 +40,7 @@ $get_contact_allrow       = $wpdb->get_results( $get_contact_row, ARRAY_A );
 					$subject   = $get_contact_allrow_val['subject'];
 					$message   = $get_contact_allrow_val['message'];
 					if ( 0 != $sender_id ) {
-						$bcm_first_name = get_user_meta( $sender_id, 'first_name', true );
+						$bcm_first_name = bp_core_get_user_displayname( $sender_id ) ;
 					} else {
 						$bcm_first_name = $get_contact_allrow_val['name'];
 					}
