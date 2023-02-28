@@ -32,6 +32,7 @@
 .bp-content-me-fieldset textarea {
     font-size: 15px;
     height: 120px;
+    line-height: 1.6;
 }
 
 form.bp-contact-me-form .bp-content-me-fieldset label,
@@ -326,7 +327,7 @@ body.wbcom-bp-contact .bp-contact-me-popup-message li span{
 
 
 /*Reign Theme Icon*/
-.theme-reign-theme .bp-member-blog-post-form {
+.contact-me.buddypress .bp-member-blog-post-form {
     padding: 20px;
     border: 1px solid #eee;
     border-radius: 10px !important;
@@ -352,6 +353,16 @@ table.bp_contact-me-messages {
 .buddypress-wrap #bcm-bulk-manage[disabled] {
     display: none;
 }
+
+/*BuddyX Theme*/
+.theme-buddyx.contact-me.buddypress .bp-member-blog-post-form {
+    padding: 0;
+    border: none;
+    border-radius: 0 !important;
+    background: #fff;
+    margin-top: 0;
+}
+
 
 /*******************
     Youzify Plugin
