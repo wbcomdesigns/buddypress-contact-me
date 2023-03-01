@@ -10,10 +10,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 $bcm_admin_general_setting = get_option( 'bcm_admin_general_setting' );
 $bcm_admin_email           = get_option( 'admin_email' );
-$bcm_users_except_admin               = get_users(
+$bcm_users_except_admin    = get_users(
 	array(
-		'role__not_in'   => 'administrator',
-		'fields' => array( 'ID', 'display_name' ),
+		'role__not_in' => 'administrator',
+		'fields'       => array( 'ID', 'display_name' ),
 	)
 );
 $user_roles                = array_reverse( get_editable_roles() );
@@ -188,16 +188,19 @@ $user_roles                = array_reverse( get_editable_roles() );
 				</div>
 				<div class="wbcom-settings-section-options">
 					<?php
-					$bcm_default_content = "Hi {user_name},
-
-										{sender_user_name} has contacted you.
-
-										Click Here to check the message.
-
-										You can also go to the contact form
-
-										Thanks.";
-						$settings = array(
+					$bcm_contact_link    = bp_core_get_user_domain( bp_loggedin_user_id() ) . 'contact';
+					$bcm_click           = '<a href=" ' . $bcm_contact_link . '">Click here</a>';
+					$bcm_default_content = sprintf(
+						esc_html__(
+							'Hi {user_name},
+											{sender_user_name} has contacted you. 
+											%1$s to check the message. 
+											You can also go to the contact form. Thanks.',
+							'bp-contact-me'
+						),
+						$bcm_click
+					);
+						$settings        = array(
 							'media_buttons' => true,
 							'editor_height' => 200,
 							'textarea_name' => 'bcm_admin_general_setting[bcm_email_content]',

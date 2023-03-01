@@ -57,20 +57,13 @@ class Buddypress_Contact_Me_Activator {
 		}
 		$bp_contact_me_admin_settings = get_option( 'bcm_admin_general_setting' );
 		if ( false === $bp_contact_me_admin_settings ) {
+			$bcm_contact_link =  bp_core_get_user_domain( bp_loggedin_user_id() ) . 'contact' ;
+			$bcm_click = '<a href=" '. $bcm_contact_link .'">Click here</a>';
 			$bp_contact_me_admin_settings = array(
 				'bcm_allow_notification'      => 'yes',
 				'bcm_allow_email'             => 'yes',
 				'bcm_allow_contact_tab'       => 'yes',
 				'bcm_email_subject'           => '{user_name} has contacted you.',
-				'bcm_email_content'           => 'Hi {user_name},
-
-										{sender_user_name} has contacted you.
-
-										Click Here to check the message.
-
-										You can also go to the contact form
-
-										Thanks.',
 				'bcm_allow_sender_copy_email' => 'yes',
 				'bcm_allow_admin_copy_email'  => 'no',
 				'bcm_who_contact'             => array( 'administrator', 'subscriber', 'editor', 'author', 'contributor', 'customer' ),
