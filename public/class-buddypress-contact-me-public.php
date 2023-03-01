@@ -638,7 +638,7 @@ class Buddypress_Contact_Me_Public {
 		$rowid      = isset( $_POST['rowid'] ) ? sanitize_text_field( wp_unslash( $_POST['rowid'] ) ) : '';
 		$query      = $wpdb->get_row( "SELECT * FROM $table_name WHERE id =" . $rowid );
 		if ( 0 != $query->sender ) {
-			$name = get_user_meta( $query->sender, 'first_name', true );
+			$name =  bp_core_get_user_displayname( $query->sender );
 		} else {
 			$name = $query->name;
 		}
