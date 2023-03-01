@@ -354,6 +354,10 @@ table.bp_contact-me-messages {
     display: none;
 }
 
+.reign-theme .bp-contact-me-detials {
+    margin-top: 15px;
+}
+
 /*BuddyX Theme*/
 .theme-buddyx.contact-me.buddypress .bp-member-blog-post-form {
     padding: 0;
