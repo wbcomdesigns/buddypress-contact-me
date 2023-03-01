@@ -118,7 +118,7 @@ $user_roles                = array_reverse( get_editable_roles() );
 					<label for="bcm_user_email">
 						<?php esc_html_e( 'Send admin notification Emails to more people?', 'buddypress-contact-me' ); ?>
 					</label>
-					<p class="description"><?php esc_html_e( 'Enable this option, copy of mail also send to the more people.', 'buddypress-contact-me' ); ?></p>
+					<p class="description"><?php esc_html_e( 'Select the users to send a copy of the mail.', 'buddypress-contact-me' ); ?></p>
 				</div>
 				<div class="wbcom-settings-section-options">
 					<select name="bcm_admin_general_setting[bcm_multiple_user_copy_email][]" id="bcm-multiple-user-copy-email" multiple>
