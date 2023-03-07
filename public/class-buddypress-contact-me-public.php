@@ -180,6 +180,8 @@ class Buddypress_Contact_Me_Public
                 $user_role = ! empty($user_role[0]) ? $user_role[0] : array();
 
                 if (in_array($user_role, $bcm_who_contacted, true) && ! empty( $bcm_who_contact ) ) {
+                    $bcm_user = get_user_meta( bp_displayed_user_id(), 'contact_me_button' );
+                    if( 'on' == $bcm_user[0] ){
                     bp_core_new_nav_item(
                         array(
                         'name'                    => esc_html__('Contact Me', 'buddypress-contact-me'),
@@ -191,6 +193,7 @@ class Buddypress_Contact_Me_Public
                         )
                     );
                 }
+            }
             }
         }
         // for logout user
