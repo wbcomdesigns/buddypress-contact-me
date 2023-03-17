@@ -8,15 +8,14 @@ Stable tag: 1.0.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-BuddyPress Contact Me displaying a contact form on member's profile which allows logged in and non logged in visitor can be in touch with our community members.
-
+BuddyPress Contact Me displays a contact form on a member's profiles, allowing logged-in and non-logged-in visitors can be in touch with our community members.
 == Description ==
 
-BuddyPress Contact Me allows members to ask somthing to any member of the community. It also allows to contact members of community without registering to the community ( opttional). 
+BuddyPress Contact Me displays a contact form on a member's profiles, allowing logged-in and non-logged-in visitors can be in touch with our community members.
 
 == Installation ==
 
-BuddyPress Contact Me allows members to ask somthing to any member of the community. It also allows to contact members of community without registering to the community ( opttional). 
+BuddyPress Contact Me displays a contact form on a member's profiles, allowing logged-in and non-logged-in visitors can be in touch with our community members.
 
 e.g.
 
