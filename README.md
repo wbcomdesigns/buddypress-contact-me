@@ -1,2 +1,0 @@
-# buddypress-contant-me
- 
