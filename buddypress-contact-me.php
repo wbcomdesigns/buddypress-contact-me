@@ -15,7 +15,7 @@
  * @wordpress-plugin
  * Plugin Name:       Buddypress Contact Me
  * Plugin URI:        https://www.wbcomdesigns.com
- * Description:        Using this plugin members can contact to each other without friendship.
+ * Description:       BuddyPress Contact Me displaying a contact form on member's profile which allows logged in and non logged in visitor can be in touch with our community members.
  * Version:           1.0.0
  * Author:            WBCOM Designs
  * Author URI:        https://www.wbcomdesigns.com
