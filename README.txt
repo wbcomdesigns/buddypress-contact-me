@@ -8,7 +8,7 @@ Stable tag: 1.0.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-BuddyPress Contact Me plugin comes with the feature that members can contact to each other.
+BuddyPress Contact Me displaying a contact form on member's profile which allows logged in and non logged in visitor can be in touch with our community members.
 
 == Description ==
 
