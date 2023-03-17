@@ -12,11 +12,11 @@ BuddyPress Contact Me plugin comes with the feature that members can contact to 
 
 == Description ==
 
-BuddyPress Contact Me plugin comes with the feature that members can contact to each other.
+BuddyPress Contact Me allows members to ask somthing to any member of the community. It also allows to contact members of community without registering to the community ( opttional). 
 
 == Installation ==
 
-This section describes how to install the plugin and get it working.
+BuddyPress Contact Me allows members to ask somthing to any member of the community. It also allows to contact members of community without registering to the community ( opttional). 
 
 e.g.
 
