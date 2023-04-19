@@ -1,4 +1,4 @@
-=== BuddyPress Contact Me ===
+=== Wbcom Designs - BuddyPress Contact Me ===
 Contributors: Wbcom Designs
 Donate link: https://www.wbcomdesigns.com
 Tags: comments, spam
