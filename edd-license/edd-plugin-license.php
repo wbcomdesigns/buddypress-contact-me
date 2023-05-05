@@ -363,9 +363,9 @@ function wbcom_BCM_render_license_section() {
 	if ( false !== $status && 'valid' === $status  && !empty($license_data) && $license_data->license == 'valid') {
 		$status_class = 'active';
 		$status_text  = 'Active';
-	} else if ( !empty($license_data) && $license_data->license != '' ) {
+	} else if ( !empty($license_data) && $license_data->license != '' && $license_data->license != 'site_inactive' ) {
 		$status_class = 'expired';
-		$status_text  = $license_data->license;
+		$status_text  = ucfirst(str_replace('_',' ',$license_data->license));
 	}else {
 		$status_class = 'inactive';
 		$status_text  = 'Inactive';
