@@ -19,7 +19,7 @@ $user_roles                = array_reverse(get_editable_roles());
 ?>
 <div class="wbcom-tab-content">
     <div class="wbcom-admin-title-section">
-        <h3><?php esc_html_e('General Setting', 'buddypress-private-community-pro'); ?></h3>
+        <h3><?php esc_html_e('General Setting', 'buddypress-contact-me'); ?></h3>
     </div>
     <div class="wbcom-admin-option-wrap">
     <form method="post" action="options.php">
@@ -136,7 +136,7 @@ $user_roles                = array_reverse(get_editable_roles());
                 </div>
                 <div class="wbcom-settings-section-options">
                     <select name="bcm_admin_general_setting[bcm_who_contact][]" id="bcm-who-contacted" class="bcm_who_contact" multiple>
-					<option value="visitors" <?php echo isset($bcm_admin_general_setting['bcm_who_contact']) && in_array('visitors', $bcm_admin_general_setting['bcm_who_contact']) ? 'selected' : ''; ?>><?php esc_html_e('Visitors(not logged in to the site)'); ?></option>
+					<option value="visitors" <?php echo isset($bcm_admin_general_setting['bcm_who_contact']) && in_array('visitors', $bcm_admin_general_setting['bcm_who_contact']) ? 'selected' : ''; ?>><?php esc_html_e('Visitors(not logged in to the site)', 'buddypress-contact-me'); ?></option>
                         <?php
 						
                         foreach ( $user_roles as $role => $details ) {
@@ -198,7 +198,7 @@ $user_roles                = array_reverse(get_editable_roles());
 											{sender_user_name} has contacted you. 
 											%1$s to check the message. 
 											You can also go to the contact form. Thanks.',
-                            'bp-contact-me'
+                            'buddypress-contact-me'
                         ),
                         $bcm_click
                     );

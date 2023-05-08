@@ -22,15 +22,15 @@ $sum  = $num1 + $num2;
 			<?php if ( ! is_user_logged_in() ) { ?>
 				<div class="bp-content-me-fieldset" for="bp_contact_me_first_name">
 					<label>
-						<?php esc_html_e( 'Name', 'bp-contact-me' ); ?>
-						<span><?php esc_html_e( '*', 'bp-contact-me' ); ?></span>
+						<?php esc_html_e( 'Name', 'buddypress-contact-me' ); ?>
+						<span><?php esc_html_e( '*', 'buddypress-contact-me' ); ?></span>
 					</label>
 					<input type="text" class="bp_contact_me_first_name" name="bp_contact_me_first_name" required/>
 				</div>
 				<div class="bp-content-me-fieldset" for="bp_contact_me_email">
 					<label>
-						<?php esc_html_e( 'Email', 'bp-contact-me' ); ?>
-						<span><?php esc_html_e( '*', 'bp-contact-me' ); ?></span>
+						<?php esc_html_e( 'Email', 'buddypress-contact-me' ); ?>
+						<span><?php esc_html_e( '*', 'buddypress-contact-me' ); ?></span>
 					</label>
 					<input type="email" class="bp_contact_me_email" name="bp_contact_me_email" required/>
 				</div>
@@ -40,23 +40,23 @@ $sum  = $num1 + $num2;
 			?>
 			<div class="bp-content-me-fieldset" for="bp_contact_me_login_name">
 				<label>
-					<?php esc_html_e( 'Name', 'bp-contact-me' ); ?>
-					<span><?php esc_html_e( '*', 'bp-contact-me' ); ?></span>
+					<?php esc_html_e( 'Name', 'buddypress-contact-me' ); ?>
+					<span><?php esc_html_e( '*', 'buddypress-contact-me' ); ?></span>
 			</label>
 				<input type="text" name="bp_contact_me_login_name" class="bp_contact_me_login_name" value="<?php echo esc_attr( $name ); ?>" required/>
 			</div>
 			<?php } ?>	
 			<div class="bp-content-me-fieldset" for="bp_contact_me_subject">
 				<label>
-					<?php esc_html_e( 'Subject', 'bp-contact-me' ); ?>
-					<span><?php esc_html_e( '*', 'bp-contact-me' ); ?></span>
+					<?php esc_html_e( 'Subject', 'buddypress-contact-me' ); ?>
+					<span><?php esc_html_e( '*', 'buddypress-contact-me' ); ?></span>
 			</label>
 				<input type="text" class="bp_contact_me_subject" name="bp_contact_me_subject" required/>
 			</div>			
 			<div class="bp-content-me-fieldset" for="bp_contact_me_message">
 				<label>
-					<?php esc_html_e( 'Message', 'bp-contact-me' ); ?>
-					<span><?php esc_html_e( '*', 'bp-contact-me' ); ?></span>
+					<?php esc_html_e( 'Message', 'buddypress-contact-me' ); ?>
+					<span><?php esc_html_e( '*', 'buddypress-contact-me' ); ?></span>
 					</label>
 				<textarea name="bp_contact_me_msg" class="bp_contact_me_msg" rows="10" cols="100" required></textarea>
 			</div>
@@ -71,7 +71,7 @@ $sum  = $num1 + $num2;
 					<input type="text" class="form-control captcha-control" id="captcha-val" required>
 				</div>
 			</div>
-				<input data-captcha="<?php echo esc_attr( $sum ); ?>" name="bp_contact_me_form_save" class="bp-contact-me-btn" type="submit" value="<?php echo esc_attr__( 'Submit', 'bp-contact-me' ); ?>"/>
+				<input data-captcha="<?php echo esc_attr( $sum ); ?>" name="bp_contact_me_form_save" class="bp-contact-me-btn" type="submit" value="<?php echo esc_attr__( 'Submit', 'buddypress-contact-me' ); ?>"/>
 		</form>
 	</div>
 </div>
