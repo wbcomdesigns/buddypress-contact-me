@@ -6,7 +6,7 @@ if ( ! defined( 'EDD_BP_CONTACT_ME_STORE_URL' ) ) {
 
 // the name of your product. This should match the download name in EDD exactly
 if ( ! defined( 'EDD_BP_CONTACT_ME_ITEM_NAME' ) ) {
-	define( 'EDD_BP_CONTACT_ME_ITEM_NAME', 'Wbcom Designs - BuddyPress Contact Me' ); // you should use your own CONSTANT name, and be sure to replace it throughout this file
+	define( 'EDD_BP_CONTACT_ME_ITEM_NAME', 'BuddyPress Contact Me' ); // you should use your own CONSTANT name, and be sure to replace it throughout this file
 }
 
 // the name of the settings page for the license input to be displayed
