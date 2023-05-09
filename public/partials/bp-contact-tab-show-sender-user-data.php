@@ -28,9 +28,9 @@ $get_contact_allrow       = $wpdb->get_results( $get_contact_row, ARRAY_A );
 			<thead>
 				<tr>
 					<th class="contact-me-sender-id"><input type="checkbox" id="bcm-select-all-contact"/></th>                
-					<th class="contact-me-subject"><?php esc_html_e( 'Name', 'bp-contact-me' ); ?></th>
-					<th class="contact-me-message"><?php esc_html_e( 'Message', 'bp-contact-me' ); ?></th>
-					<th class="contact-me-btn"><?php esc_html_e( 'Action', 'bp-contact-me' ); ?></th>            
+					<th class="contact-me-subject"><?php esc_html_e( 'Name', 'buddypress-contact-me' ); ?></th>
+					<th class="contact-me-message"><?php esc_html_e( 'Message', 'buddypress-contact-me' ); ?></th>
+					<th class="contact-me-btn"><?php esc_html_e( 'Action', 'buddypress-contact-me' ); ?></th>            
 				</tr>
 			</thead>
 			<tbody>
@@ -72,11 +72,11 @@ $get_contact_allrow       = $wpdb->get_results( $get_contact_row, ARRAY_A );
 						<div class="bcm_action">
 							<div class="bcm_action_btn">
 								<span class="dashicons dashicons-visibility bcm_message_seen" data-id="<?php echo esc_attr( $get_contact_allrow_val['id'] ); ?>" aria-hidden="true"></span>
-								<small class="bcm-tooltip-text"><?php esc_html_e( 'View Message') ;?></small>
+								<small class="bcm-tooltip-text"><?php esc_html_e( 'View Message', 'buddypress-contact-me' ) ;?></small>
 							</div>
 							<button class="bcm_action_btn" id="bcm_message_delete">
 								<span class="dashicons dashicons-dismiss bcm_message_delete" data-id="<?php echo esc_attr( $get_contact_allrow_val['id'] ); ?>" aria-hidden="true"></span>
-								<small class="bcm-tooltip-text"><?php esc_html_e( 'Delete Message') ;?></small>
+								<small class="bcm-tooltip-text"><?php esc_html_e( 'Delete Message', 'buddypress-contact-me' ) ;?></small>
 							</button>
 						</div>
 					</td>
@@ -89,14 +89,14 @@ $get_contact_allrow       = $wpdb->get_results( $get_contact_row, ARRAY_A );
 	<div class="bcm-contact-options-nav">
 		<div class="select-wrap">
 			<label class="bp-screen-reader-text" for="bcm-select">
-				<?php esc_html_e( 'Select Bulk Action', 'bp-contact-me' );?>
+				<?php esc_html_e( 'Select Bulk Action', 'buddypress-contact-me' );?>
 			</label>
 			<select name="bcm_contact_bulk_action" id="bcm-select">
-				<option value="" selected="selected"><?php esc_html_e( 'Bulk Actions', 'bp-contact-me' ); ?></option>
-				<option value="delete"><?php esc_html_e( 'Delete', 'bp-contact-me' ); ?></option>
+				<option value="" selected="selected"><?php esc_html_e( 'Bulk Actions', 'buddypress-contact-me' ); ?></option>
+				<option value="delete"><?php esc_html_e( 'Delete', 'buddypress-contact-me' ); ?></option>
 			</select>
 		</div>
-		<input type="submit" id="bcm-bulk-manage" class="button action" value="<?php esc_attr_e( 'Apply', 'bp-contact-me' ); ?>">
+		<input type="submit" id="bcm-bulk-manage" class="button action" value="<?php esc_attr_e( 'Apply', 'buddypress-contact-me' ); ?>">
 	</div>	
 	<?php wp_nonce_field( 'bcm_contact_bulk_nonce', 'bcm_contact_bulk_nonce' ); ?>
 	</form>

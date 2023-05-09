@@ -13,11 +13,11 @@
  * @package Buddypress_Contact_Me
  *
  * @wordpress-plugin
- * Plugin Name:       Buddypress Contact Me
- * Plugin URI:        https://www.wbcomdesigns.com
+ * Plugin Name:       Wbcom Designs - Buddypress Contact Me
+ * Plugin URI:        https://wbcomdesigns.com/downloads/buddypress-contact-me/
  * Description:       BuddyPress Contact Me displaying a contact form on member's profile which allows logged in and non logged in visitor can be in touch with our community members.
  * Version:           1.0.0
- * Author:            WBCOM Designs
+ * Author:            Wbcom Designs
  * Author URI:        https://www.wbcomdesigns.com
  * License:           GPL-2.0+
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
@@ -76,7 +76,9 @@ function bp_contact_me_requires_buddypress()
         deactivate_plugins(plugin_basename(__FILE__));
         add_action('admin_notices', 'bp_contact_me_required_plugin_admin_notice');
         unset($_GET['activate']);
-    }
+    }else{
+		add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), 'bp_contact_me_plugin_links' );
+	}
 }
 add_action('admin_init', 'bp_contact_me_requires_buddypress');
 
@@ -147,4 +149,18 @@ function bp_contact_me_get_send_private_message_link( $user_id )
         $compose_url.=('r=' . bp_core_get_username($user_id));
     }
     return wp_nonce_url($compose_url);
+}
+
+/**
+ * Function to set plugin actions links.
+ *
+ * @param array $links Plugin settings link array.
+ * @since 1.0.0
+ */
+function bp_contact_me_plugin_links( $links ) {
+	$bcm_links = array(
+		'<a href="' . admin_url( 'admin.php?page=buddypress-contact-me' ) . '">' . __( 'Settings', 'buddypress-contact-me' ) . '</a>',
+		'<a href="https://wbcomdesigns.com/contact/" target="_blank">' . __( 'Support', 'buddypress-contact-me' ) . '</a>',
+	);
+	return array_merge( $links, $bcm_links );
 }
