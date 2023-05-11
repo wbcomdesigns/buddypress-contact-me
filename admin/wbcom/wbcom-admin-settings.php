@@ -235,6 +235,15 @@ if ( ! class_exists( 'Wbcom_Admin_Settings' ) ) {
 				'wbcom-support-page',
 				array( $this, 'wbcom_support_submenu_page_callback' )
 			);
+			
+			add_submenu_page(
+				'wbcomplugins',
+				esc_html__( 'License', 'buddypress-contact-me' ),
+				esc_html__( 'License', 'buddypress-contact-me' ),
+				'manage_options',
+				'wbcom-license-page',
+				array( $this, 'wbcom_license_submenu_page_callback' )
+			);
 		}
 
 		/**
@@ -265,6 +274,16 @@ if ( ! class_exists( 'Wbcom_Admin_Settings' ) ) {
 		 */
 		public function wbcom_support_submenu_page_callback() {
 			include 'templates/wbcom-support-page.php';
+		}
+		
+		/**
+		 * Function for include support page.
+		 *
+		 * @since 2.0.0
+		 * @access public
+		 */
+		public function wbcom_license_submenu_page_callback() {
+			include 'templates/wbcom-license-page.php';
 		}
 
 		/**
