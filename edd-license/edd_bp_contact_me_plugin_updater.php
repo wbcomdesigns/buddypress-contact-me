@@ -22,6 +22,7 @@ if ( ! class_exists( 'EDD_BP_CONTACT_ME_PLUGIN_UPDATER' ) ) :
 		private $version     = '';
 		private $wp_override = false;
 		private $cache_key   = '';
+		private $beta		 = '';
 
 		/**
 		 * Class constructor.

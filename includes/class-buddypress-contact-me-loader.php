@@ -42,6 +42,15 @@ class Buddypress_Contact_Me_Loader {
 	protected $filters;
 
 	/**
+	 * The array of shortcode registered with WordPress.
+	 *
+	 * @since    1.0.0
+	 * @access   protected
+	 * @var      array    $shortcode    The shortcode registered with WordPress.
+	 */
+	protected $shortcode;
+
+	/**
 	 * Initialize the collections used to maintain the actions and filters.
 	 *
 	 * @since    1.0.0
