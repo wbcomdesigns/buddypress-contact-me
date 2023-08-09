@@ -128,6 +128,9 @@ class Buddypress_Contact_Me
         /* Enqueue wbcom plugin folder file. */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/wbcom/wbcom-admin-settings.php';
 
+        /* Enqueue wbcom plugin folder file. */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/wbcom/wbcom-paid-plugin-settings.php';
+
         include_once plugin_dir_path(dirname( __FILE__ ) ) . 'edd-license/edd-plugin-license.php';
 
 
