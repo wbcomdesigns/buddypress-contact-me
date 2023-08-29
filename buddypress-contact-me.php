@@ -139,7 +139,11 @@ add_action( 'bp_include', 'run_buddypress_contact_me' );
 function bp_contact_me_get_send_private_message_link( $user_id ) {
 	$compose_url = bp_loggedin_user_domain() . bp_get_messages_slug() . '/compose/?';
 	if ( $user_id ) {
-		$compose_url .= ( 'r=' . bp_core_get_username( $user_id ) );
+		if ( function_exists( 'buddypress' ) && version_compare( buddypress()->version, '12.0', '>=' ) ) {
+			$compose_url .= ( 'r=' . bp_members_get_user_slug( $user_id ) );
+		} else {
+			$compose_url .= ( 'r=' . bp_core_get_username( $user_id ) );
+		}
 	}
 	return wp_nonce_url( $compose_url );
 }

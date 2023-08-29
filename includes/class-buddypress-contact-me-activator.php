@@ -59,7 +59,11 @@ class Buddypress_Contact_Me_Activator
         }
         $bp_contact_me_admin_settings = get_option('bcm_admin_general_setting');
         if (false === $bp_contact_me_admin_settings ) {
-            $bcm_contact_link =  bp_core_get_user_domain(bp_loggedin_user_id()) . 'contact' ;
+            if ( function_exists( 'buddypress' ) && version_compare( buddypress()->version, '12.0', '>=' ) ) {
+                $bcm_contact_link = bp_members_get_user_url(bp_loggedin_user_id()) . 'contact' ;
+            } else {
+                $bcm_contact_link = bp_core_get_user_domain(bp_loggedin_user_id()) . 'contact' ;
+            }
             $bcm_click = '<a href=" '. $bcm_contact_link .'">Click here</a>';
 			$user_roles                = array_reverse( get_editable_roles() );
 			$user_array = array('visitors');

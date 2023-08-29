@@ -387,7 +387,11 @@ class Buddypress_Contact_Me_Public
         $sender_data              = get_userdata($sender_id);
         $author_name              = isset($sender_data->data->user_login) && is_user_logged_in() ? $sender_data->data->user_login : $get_contact_r_name;
         $loggedin_user_id         = get_current_user_id();
-        $username                 = bp_core_get_username($loggedin_user_id);
+        if ( function_exists( 'buddypress' ) && version_compare( buddypress()->version, '12.0', '>=' ) ) {
+            $username = bp_members_get_user_slug($loggedin_user_id);
+        } else {
+            $username = bp_core_get_username($loggedin_user_id);
+        }
         $user_link                = get_site_url() . '/members/' . $username . '/contact/';
         if ('bcm_user_notifications_action' === $action ) {
             $notification_string = sprintf(__(' %1$s has contacted you.', 'buddypress-contact-me'), $author_name);
@@ -457,10 +461,17 @@ class Buddypress_Contact_Me_Public
         $bcm_general_setting        = get_option('bcm_admin_general_setting');
         $bcm_sender_email_id        = isset($bcm_general_setting['bcm_user_email']) && '' != $bcm_general_setting['bcm_user_email'] ? $bcm_general_setting['bcm_user_email'] : get_option('admin_email');
         $current_user_id            = get_current_user_id();
-        $username                   = bp_core_get_username($current_user_id);
-        $login_username             = bp_core_get_username($bp_display_user_id);
-        $user_contact_link          = bp_core_get_user_domain($bp_display_user_id) . 'contact';
-        $user_contact_me_link       = bp_core_get_user_domain($current_user_id) . 'contact-me';
+        if ( function_exists( 'buddypress' ) && version_compare( buddypress()->version, '12.0', '>=' ) ) {
+            $username             = bp_members_get_user_slug($current_user_id);
+            $login_username       = bp_members_get_user_slug($bp_display_user_id);
+            $user_contact_link    = bp_members_get_user_url($bp_display_user_id) . 'contact';
+            $user_contact_me_link = bp_members_get_user_url($current_user_id) . 'contact-me';
+        } else {
+            $username             = bp_core_get_username($current_user_id);
+            $login_username       = bp_core_get_username($bp_display_user_id);
+            $user_contact_link    = bp_core_get_user_domain($bp_display_user_id) . 'contact';
+            $user_contact_me_link = bp_core_get_user_domain($current_user_id) . 'contact-me';
+        }
         $bcm_contact_link           = '<a href="' . esc_url($user_contact_link) . '">' . esc_html('Click here') . '</a>';
         $bcm_contact_me_link        = '<a href="' . esc_url($user_contact_me_link) . '">' . esc_html('contact form') . '</a>';
         $bp_contact_me_table_name   = $wpdb->prefix . 'contact_me';
@@ -588,7 +599,11 @@ class Buddypress_Contact_Me_Public
                 bp_core_add_message(__('Message sent successfully.', 'buddypress-contact-me'));
                 $get_contact_id = $wpdb->insert_id;
                 do_action('bp_contact_me_form_save', $get_contact_id, $bp_display_user_id);
-                $disp_user_url = bp_core_get_user_domain($bp_display_user_id);
+                if ( function_exists( 'buddypress' ) && version_compare( buddypress()->version, '12.0', '>=' ) ) {
+                    $disp_user_url = bp_members_get_user_url($bp_display_user_id);
+                } else {
+                    $disp_user_url = bp_core_get_user_domain($bp_display_user_id);
+                }
                 if ('' !== $_POST['bcm_shortcode_user_id'] || '' !== $_POST['bcm_shortcode_username'] ) {
                     global $wp;
                     $contact_me_url = home_url($wp->request);
