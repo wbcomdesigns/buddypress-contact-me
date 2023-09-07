@@ -34,10 +34,11 @@ $sum  = $num1 + $num2;
 					</label>
 					<input type="email" class="bp_contact_me_email" name="bp_contact_me_email" required/>
 				</div>
-			<?php }
-			if ( is_user_logged_in() ) { 
-			$name = bp_core_get_user_displayname( bp_loggedin_user_id() );
-			?>
+				<?php
+			}
+			if ( is_user_logged_in() ) {
+				$name = bp_core_get_user_displayname( bp_loggedin_user_id() );
+				?>
 			<div class="bp-content-me-fieldset" for="bp_contact_me_login_name">
 				<label>
 					<?php esc_html_e( 'Name', 'buddypress-contact-me' ); ?>
@@ -62,7 +63,7 @@ $sum  = $num1 + $num2;
 			</div>
 			<div id="fieldset-captchasum" class="bp-content-me-fieldset">
 				<div for="captchasum" class="captchasum">
-					<?php echo $num1 . '+' . $num2; ?>?
+					<?php echo esc_attr( $num1 . '+' . $num2 ); ?>?
 				</div>
 				<input type="hidden" name="bcm_shortcode_user_id" value="<?php echo isset( $atts['id'] ) ? esc_html( $atts['id'] ) : ''; ?>"/>			
 				<input type="hidden" name="bcm_shortcode_username" value="<?php echo isset( $atts['user'] ) ? esc_html( $atts['user'] ) : ''; ?>"/>			

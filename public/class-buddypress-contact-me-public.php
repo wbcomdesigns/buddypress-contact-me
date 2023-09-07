@@ -390,6 +390,7 @@ class Buddypress_Contact_Me_Public
         $username                 = bp_core_get_username($loggedin_user_id);
         $user_link                = get_site_url() . '/members/' . $username . '/contact/';
         if ('bcm_user_notifications_action' === $action ) {
+            /* translators: %s: */
             $notification_string = sprintf(__(' %1$s has contacted you.', 'buddypress-contact-me'), $author_name);
             if ('string' === $format ) {
                 $return = "<a href='" . esc_url($user_link) . "'>" . $notification_string . '</a>';
@@ -506,6 +507,7 @@ class Buddypress_Contact_Me_Public
             $author_name = $get_contact_r_noti['name'];
         }
         $user_content = isset($bcm_general_setting['bcm_email_content']) && '' != $bcm_general_setting['bcm_email_content'] ? $bcm_general_setting['bcm_email_content'] : '';
+        /* translators: %s: */
         $content      = sprintf(__('Hi %1$s,<br>%2$s has contacted you.<br>%3$s to check the messages.<br>You can also go to the %4$s.<br>Thanks', 'buddypress-contact-me'), $login_username, $author_name, $bcm_contact_link, $bcm_contact_me_link);
         $headers      = "Content-Type: text/html; charset=UTF-8\r\n";
         $headers     .= 'From: ' . $bcm_sender_email_id . "\r\n";

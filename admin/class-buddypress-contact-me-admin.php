@@ -131,7 +131,7 @@ class Buddypress_Contact_Me_Admin {
 	 * @since    1.0.0
 	 */
 	public function bcm_settings_page() {
-		$current = isset( $_GET['tab'] ) ? sanitize_text_field( wp_unslash( $_GET['tab'] ) ) : 'welcome';
+		$current = isset( $_GET['tab'] ) ? sanitize_text_field( wp_unslash( $_GET['tab'] ) ) : 'welcome'; //phpcs:ignore
 		?>
 
 		<div class="wrap">
@@ -147,7 +147,8 @@ class Buddypress_Contact_Me_Admin {
 					<div class="wbcom_admin_header-wrapper">
 						<div id="wb_admin_plugin_name">
 							<?php esc_html_e( 'BuddyPress Contact Me', 'buddypress-contact-me' ); ?>
-							<span><?php printf( __( 'Version %s', 'buddypress-contact-me' ), BUDDYPRESS_CONTACT_ME_VERSION ); ?></span>
+							<?php /* translators: %s: */ ?>
+							<span><?php printf( esc_html__( 'Version %s', 'buddypress-contact-me' ), esc_attr( BUDDYPRESS_CONTACT_ME_VERSION ) ); ?></span>
 						</div>
 						<?php echo do_shortcode( '[wbcom_admin_setting_header]' ); ?>
 					</div>
