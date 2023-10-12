@@ -387,7 +387,7 @@ class Buddypress_Contact_Me_Public
         $sender_data              = get_userdata($sender_id);
         $author_name              = isset($sender_data->data->user_login) && is_user_logged_in() ? $sender_data->data->user_login : $get_contact_r_name;
         $loggedin_user_id         = get_current_user_id();
-        if ( function_exists( 'buddypress' ) && version_compare( buddypress()->version, '12.0', '>=' ) ) {
+        if ( bp_contact_me_is_buddypress_supported() ) {
             $username = bp_members_get_user_slug($loggedin_user_id);
         } else {
             $username = bp_core_get_username($loggedin_user_id);
@@ -461,7 +461,7 @@ class Buddypress_Contact_Me_Public
         $bcm_general_setting        = get_option('bcm_admin_general_setting');
         $bcm_sender_email_id        = isset($bcm_general_setting['bcm_user_email']) && '' != $bcm_general_setting['bcm_user_email'] ? $bcm_general_setting['bcm_user_email'] : get_option('admin_email');
         $current_user_id            = get_current_user_id();
-        if ( function_exists( 'buddypress' ) && version_compare( buddypress()->version, '12.0', '>=' ) ) {
+        if ( bp_contact_me_is_buddypress_supported() ) {
             $username             = bp_members_get_user_slug($current_user_id);
             $login_username       = bp_members_get_user_slug($bp_display_user_id);
             $user_contact_link    = bp_members_get_user_url($bp_display_user_id) . 'contact';
@@ -599,7 +599,7 @@ class Buddypress_Contact_Me_Public
                 bp_core_add_message(__('Message sent successfully.', 'buddypress-contact-me'));
                 $get_contact_id = $wpdb->insert_id;
                 do_action('bp_contact_me_form_save', $get_contact_id, $bp_display_user_id);
-                if ( function_exists( 'buddypress' ) && version_compare( buddypress()->version, '12.0', '>=' ) ) {
+                if ( bp_contact_me_is_buddypress_supported() ) {
                     $disp_user_url = bp_members_get_user_url($bp_display_user_id);
                 } else {
                     $disp_user_url = bp_core_get_user_domain($bp_display_user_id);

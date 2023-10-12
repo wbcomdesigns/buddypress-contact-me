@@ -20,7 +20,7 @@ $get_contact_allrow       = $wpdb->get_results( $get_contact_row, ARRAY_A );
 <?php if ( $get_contact_allrow ) { ?>
 	<div class="bp-contact-me-loader" style="display:none;">
 		<div class="bp-contact-me-loader-img">
-			<img src="<?php echo esc_url( BUDDYPRESS_CONTACT_ME_PLUGIN_URL . '/public/images/loader.gif' ) ;  ?>"/>
+			<img src="<?php echo esc_url( BUDDYPRESS_CONTACT_ME_PLUGIN_URL . '/public/images/loader.gif' ); ?>"/>
 		</div>
 	</div>
 	<form method="post">		
@@ -40,7 +40,7 @@ $get_contact_allrow       = $wpdb->get_results( $get_contact_row, ARRAY_A );
 					$subject   = $get_contact_allrow_val['subject'];
 					$message   = $get_contact_allrow_val['message'];
 					if ( 0 != $sender_id ) {
-						$bcm_first_name = bp_core_get_user_displayname( $sender_id ) ;
+						$bcm_first_name = bp_core_get_user_displayname( $sender_id );
 					} else {
 						$bcm_first_name = $get_contact_allrow_val['name'];
 					}
@@ -48,7 +48,7 @@ $get_contact_allrow       = $wpdb->get_results( $get_contact_row, ARRAY_A );
 				<tr>
 					<td class="contact-me-sender-id"><input type="checkbox" name="bcm_messages[]" class="bcm-all-check" value="<?php echo esc_attr( $get_contact_allrow_val['id'] ); ?>"/></td>
 					<td class="user_displayname">
-					<?php if ( function_exists( 'buddypress' ) && version_compare( buddypress()->version, '12.0', '>=' ) ) : ?>
+					<?php if ( bp_contact_me_is_buddypress_supported() ) : ?>
 						<a href="<?php echo esc_attr( bp_members_get_user_url( $sender_id ) ); ?>" title="<?php echo esc_attr( bp_core_get_user_displayname( $sender_id ) ); ?>">
 					<?php else : ?>
 						<a href="<?php echo esc_attr( bp_core_get_user_domain( $sender_id ) ); ?>" title="<?php echo esc_attr( bp_core_get_user_displayname( $sender_id ) ); ?>">
@@ -76,11 +76,11 @@ $get_contact_allrow       = $wpdb->get_results( $get_contact_row, ARRAY_A );
 						<div class="bcm_action">
 							<div class="bcm_action_btn">
 								<span class="dashicons dashicons-visibility bcm_message_seen" data-id="<?php echo esc_attr( $get_contact_allrow_val['id'] ); ?>" aria-hidden="true"></span>
-								<small class="bcm-tooltip-text"><?php esc_html_e( 'View Message', 'buddypress-contact-me' ) ;?></small>
+								<small class="bcm-tooltip-text"><?php esc_html_e( 'View Message', 'buddypress-contact-me' ); ?></small>
 							</div>
 							<button class="bcm_action_btn" id="bcm_message_delete">
 								<span class="dashicons dashicons-dismiss bcm_message_delete" data-id="<?php echo esc_attr( $get_contact_allrow_val['id'] ); ?>" aria-hidden="true"></span>
-								<small class="bcm-tooltip-text"><?php esc_html_e( 'Delete Message', 'buddypress-contact-me' ) ;?></small>
+								<small class="bcm-tooltip-text"><?php esc_html_e( 'Delete Message', 'buddypress-contact-me' ); ?></small>
 							</button>
 						</div>
 					</td>
@@ -93,7 +93,7 @@ $get_contact_allrow       = $wpdb->get_results( $get_contact_row, ARRAY_A );
 	<div class="bcm-contact-options-nav">
 		<div class="select-wrap">
 			<label class="bp-screen-reader-text" for="bcm-select">
-				<?php esc_html_e( 'Select Bulk Action', 'buddypress-contact-me' );?>
+				<?php esc_html_e( 'Select Bulk Action', 'buddypress-contact-me' ); ?>
 			</label>
 			<select name="bcm_contact_bulk_action" id="bcm-select">
 				<option value="" selected="selected"><?php esc_html_e( 'Bulk Actions', 'buddypress-contact-me' ); ?></option>
@@ -105,8 +105,9 @@ $get_contact_allrow       = $wpdb->get_results( $get_contact_row, ARRAY_A );
 	<?php wp_nonce_field( 'bcm_contact_bulk_nonce', 'bcm_contact_bulk_nonce' ); ?>
 	</form>
 </div>
-<?php
-} else { ?>
+	<?php
+} else {
+	?>
 	<div class="bp-contact-me-container contact-me-not-found">
 	<div id="message" class="info bp-feedback bp-messages bp-template-notice">
 		<span class="bp-icon" aria-hidden="true"></span>
@@ -115,4 +116,3 @@ $get_contact_allrow       = $wpdb->get_results( $get_contact_row, ARRAY_A );
 	</div>
 	</div>
 	<?php } ?>
-

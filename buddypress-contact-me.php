@@ -139,7 +139,7 @@ add_action( 'bp_include', 'run_buddypress_contact_me' );
 function bp_contact_me_get_send_private_message_link( $user_id ) {
 	$compose_url = bp_loggedin_user_domain() . bp_get_messages_slug() . '/compose/?';
 	if ( $user_id ) {
-		if ( function_exists( 'buddypress' ) && version_compare( buddypress()->version, '12.0', '>=' ) ) {
+		if ( bp_contact_me_is_buddypress_supported() ) {
 			$compose_url .= ( 'r=' . bp_members_get_user_slug( $user_id ) );
 		} else {
 			$compose_url .= ( 'r=' . bp_core_get_username( $user_id ) );
@@ -160,4 +160,30 @@ function bp_contact_me_plugin_links( $links ) {
 		'<a href="https://wbcomdesigns.com/contact/" target="_blank">' . __( 'Support', 'buddypress-contact-me' ) . '</a>',
 	);
 	return array_merge( $links, $bcm_links );
+}
+
+/**
+ * 
+ * Buddypress vesion comparison code
+ */
+
+function bp_contact_me_is_buddypress_supported() {
+	$bp_plugin_basename      = 'buddypress/bp-loader.php';
+	$is_buddypress_supported = false;
+	$sitewide_plugins        = (array) get_site_option( 'active_sitewide_plugins', array() );
+
+	if ( $sitewide_plugins ) {
+		$is_buddypress_supported = isset( $sitewide_plugins[ $bp_plugin_basename ] );
+	}
+
+	if ( ! $is_buddypress_supported ) {
+		$plugins                 = (array) get_option( 'active_plugins', array() );
+		$is_buddypress_supported = in_array( $bp_plugin_basename, $plugins, true );
+	}
+
+	if ( $is_buddypress_supported ) {
+		$is_buddypress_supported = version_compare( bp_get_version(), '12.0.0-beta', '>=' );
+	}
+
+	return $is_buddypress_supported;
 }
