@@ -31,7 +31,7 @@ class Buddypress_Contact_Me_Activator {
 	 * @since 1.0.0
 	 */
 	public static function activate() {
-		global $wpdb;
+		global $wpdb, $charset_collate;
 		$bp_contact_me_table_name = $wpdb->prefix . 'contact_me';
 		if ( $wpdb->get_var( "show tables like '$bp_contact_me_table_name'" ) != $bp_contact_me_table_name ) {
 			$bp_contact_sql = "CREATE TABLE $bp_contact_me_table_name (
