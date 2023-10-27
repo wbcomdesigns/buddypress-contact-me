@@ -73,7 +73,8 @@ function bp_contact_me_requires_buddypress() {
 	if ( ! class_exists( 'Buddypress' ) ) {
 		deactivate_plugins( plugin_basename( __FILE__ ) );
 		add_action( 'admin_notices', 'bp_contact_me_required_plugin_admin_notice' );
-		unset( $_GET['activate'] ); //phpcs:ignore
+		$activate = filter_input( INPUT_GET, 'activate' );
+		unset( $activate );
 	} else {
 		add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), 'bp_contact_me_plugin_links' );
 	}
@@ -92,8 +93,9 @@ function bp_contact_me_required_plugin_admin_notice() {
 	echo '<div class="error"><p>';
 	echo sprintf( esc_html__( '%1$s is ineffective now as it requires %2$s to be installed and active.', 'buddypress-contact-me' ), '<strong>' . esc_html( $bpcontact_plugin ) . '</strong>', '<strong>' . esc_html( $bp_plugin ) . '</strong>' );
 	echo '</p></div>';
-	if ( isset( $_GET['activate'] ) ) { //phpcs:ignore
-		unset( $_GET['activate'] ); //phpcs:ignore
+	$activate = filter_input( INPUT_GET, 'activate' );
+	if ( isset( $activate ) ) {
+		unset( $activate );
 	}
 
 }
@@ -106,7 +108,7 @@ add_action( 'activated_plugin', 'bp_contact_me_activation_redirect_settings' );
  * @param plugin $plugin plugin.
  */
 function bp_contact_me_activation_redirect_settings( $plugin ) {
-	if ( ! isset( $_GET['plugin'] ) ) { //phpcs:ignore
+	if ( ! filter_input( INPUT_GET, 'plugin' ) ) {
 		return;
 	}
 	if ( plugin_basename( __FILE__ ) === $plugin && class_exists( 'Buddypress' ) ) {

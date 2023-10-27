@@ -52,7 +52,7 @@ class Buddypress_Contact_Me_Admin {
 		$this->plugin_name = $plugin_name;
 		$this->version     = $version;
 		$this->init_hooks();
-		
+
 	}
 
 	/**
@@ -131,7 +131,7 @@ class Buddypress_Contact_Me_Admin {
 	 * @since    1.0.0
 	 */
 	public function bcm_settings_page() {
-		$current = isset( $_GET['tab'] ) ? sanitize_text_field( wp_unslash( $_GET['tab'] ) ) : 'welcome'; //phpcs:ignore
+		$current = filter_input( INPUT_GET, 'tab' ) ? filter_input( INPUT_GET, 'tab' ) : 'welcome';
 		?>
 
 		<div class="wrap">

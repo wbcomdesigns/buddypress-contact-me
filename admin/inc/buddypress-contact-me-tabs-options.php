@@ -11,8 +11,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if ( isset( $_GET['tab'] ) ) { //phpcs:ignore
-	$blpro_tab = sanitize_text_field( wp_unslash( $_GET['tab'] ) ); //phpcs:ignore
+if ( filter_input( INPUT_GET, 'tab' ) ) {
+	$blpro_tab = filter_input( INPUT_GET, 'tab' );
 } else {
 	$blpro_tab = 'welcome';
 }
