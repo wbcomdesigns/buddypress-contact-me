@@ -66,6 +66,9 @@ register_deactivation_hook( __FILE__, 'deactivate_buddypress_contact_me' );
  */
 require plugin_dir_path( __FILE__ ) . 'includes/class-buddypress-contact-me.php';
 
+require_once __DIR__ . '/vendor/autoload.php';
+HardG\BuddyPress120URLPolyfills\Loader::init();
+
 /**
  *  Check if buddypress activate.
  */
