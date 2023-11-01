@@ -461,7 +461,7 @@ function edd_bp_contact_me_active_license_message() {
 				if ( is_wp_error( $response ) ) {
 					$message = $response->get_error_message();
 				} else {
-					$message = __( 'An error occurred, please try again.', 'buddypress-status' );
+					$message = __( 'An error occurred, please try again.', 'buddypress-contact-me' );
 				}
 			} else {
 				$license_data = json_decode( wp_remote_retrieve_body( $response ) );
@@ -479,10 +479,10 @@ function edd_bp_contact_me_active_license_message() {
 					$license_limit = $license_data->license_limit;
 					$message = 'License key is active.';
 					if ( isset( $expires ) && 'lifetime' != $expires ) {
-						$message .= sprintf( __( ' Expires %s.' ), $expires ) . ' ';
+						$message .= sprintf( __( ' Expires %s.', 'buddypress-contact-me' ), $expires ) . ' ';
 					}
 					if ( $license_limit ) {
-						$message .= sprintf( __( 'You have %1$s/%2$s-sites activated.' ), $site_count, $license_limit );
+						$message .= sprintf( __( 'You have %1$s/%2$s-sites activated.', 'buddypress-contact-me' ), $site_count, $license_limit );
 					}
 				}
 			}
