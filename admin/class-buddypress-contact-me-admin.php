@@ -158,7 +158,7 @@ class Buddypress_Contact_Me_Admin {
 				$blpro_tabs = array(
 					'welcome' => esc_html__( 'Welcome', 'buddypress-contact-me' ),
 					'general' => esc_html__( 'General', 'buddypress-contact-me' ),
-					'support' => esc_html__( 'Support', 'buddypress-contact-me' ),
+					'support' => esc_html__( 'FAQ', 'buddypress-contact-me' ),
 				);
 
 				$tab_html = '<div class="wbcom-tabs-section"><div class="nav-tab-wrapper"><div class="wb-responsive-menu"><span>' . esc_html( 'Menu' ) . '</span><input class="wb-toggle-btn" type="checkbox" id="wb-toggle-btn"><label class="wb-toggle-icon" for="wb-toggle-btn"><span class="wb-icon-bars"></span></label></div><ul>';

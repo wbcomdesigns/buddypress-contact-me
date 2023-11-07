@@ -19,7 +19,7 @@ $user_roles                = array_reverse( get_editable_roles() );
 ?>
 <div class="wbcom-tab-content">
 	<div class="wbcom-admin-title-section">
-		<h3><?php esc_html_e( 'General Setting', 'buddypress-contact-me' ); ?></h3>
+		<h3><?php esc_html_e( 'General', 'buddypress-contact-me' ); ?></h3>
 	</div>
 	<div class="wbcom-admin-option-wrap">
 	<form method="post" action="options.php">
@@ -32,7 +32,7 @@ $user_roles                = array_reverse( get_editable_roles() );
 				<div class="wbcom-settings-section-options-heading">
 					<label for="bcm_allow_notification"><?php esc_html_e( 'BuddyPress notifications', 'buddypress-contact-me' ); ?></label>
 					<p class="description">
-						<?php esc_html_e( 'Enable this option, if you want the member to receive a BuddyPress Notification when someone contact you.', 'buddypress-contact-me' ); ?>
+						<?php esc_html_e( 'Activate this setting to allow members to receive BuddyPress notifications when someone contacts them.', 'buddypress-contact-me' ); ?>
 					</p>
 				</div>
 				<div class="wbcom-settings-section-options">
@@ -47,7 +47,7 @@ $user_roles                = array_reverse( get_editable_roles() );
 					<label for="bcm_allow_email">
 						<?php esc_html_e( 'Emails notification', 'buddypress-contact-me' ); ?>
 					</label>
-					<p class="description"><?php esc_html_e( 'Enable this option, if you want the member to receive an email when someone contact you', 'buddypress-contact-me' ); ?></p>
+					<p class="description"><?php esc_html_e( 'Activate this option to ensure that members receive email notifications when someone contacts them.', 'buddypress-contact-me' ); ?></p>
 				</div>
 				<div class="wbcom-settings-section-options">
 					<label class="bcm-switch">
@@ -61,7 +61,7 @@ $user_roles                = array_reverse( get_editable_roles() );
 					<label for="bcm_allow_email">
 						<?php esc_html_e( 'Enable contact tab', 'buddypress-contact-me' ); ?>
 					</label>
-					<p class="description"><?php esc_html_e( 'Enable this option, if you want the member to receive an email when someone contact you', 'buddypress-contact-me' ); ?></p>
+					<p class="description"><?php esc_html_e( 'Activate this option if you wish to display the contact tab on a member BuddyPress profile.', 'buddypress-contact-me' ); ?></p>
 				</div>
 				<div class="wbcom-settings-section-options">
 					<label class="bcm-switch">
@@ -73,9 +73,9 @@ $user_roles                = array_reverse( get_editable_roles() );
 			<div class="wbcom-settings-section-wrap">
 				<div class="wbcom-settings-section-options-heading">
 					<label for="bcm_user_email">
-						<?php esc_html_e( 'User email', 'buddypress-contact-me' ); ?>
+						<?php esc_html_e( 'User email customization', 'buddypress-contact-me' ); ?>
 					</label>
-					<p class="description"><?php esc_html_e( 'User change the sender mail id.', 'buddypress-contact-me' ); ?></p>
+					<p class="description"><?php esc_html_e( 'Users can modify the email address used as the sender identity.', 'buddypress-contact-me' ); ?></p>
 				</div>
 				<div class="wbcom-settings-section-options">
 					<label class="bcm-switch">
@@ -87,9 +87,9 @@ $user_roles                = array_reverse( get_editable_roles() );
 			<div class="wbcom-settings-section-wrap">
 				<div class="wbcom-settings-section-options-heading">
 					<label for="bcm_user_email">
-						<?php esc_html_e( 'Allow sender to receive a copy of email?', 'buddypress-contact-me' ); ?>
+						<?php esc_html_e( 'Should the sender receive a copy of the email?', 'buddypress-contact-me' ); ?>
 					</label>
-					<p class="description"><?php esc_html_e( 'Enable this option, copy of mail also send to the sender.', 'buddypress-contact-me' ); ?></p>
+					<p class="description"><?php esc_html_e( 'By enabling this option, a duplicate of the email will also be sent to the sender.', 'buddypress-contact-me' ); ?></p>
 				</div>
 				<div class="wbcom-settings-section-options">
 					<label class="bcm-switch">
@@ -101,9 +101,9 @@ $user_roles                = array_reverse( get_editable_roles() );
 			<div class="wbcom-settings-section-wrap">
 				<div class="wbcom-settings-section-options-heading">
 					<label for="bcm_user_email">
-						<?php esc_html_e( 'Send a copy to the admin?', 'buddypress-contact-me' ); ?>
+						<?php esc_html_e( 'Would you like to forward a copy to the admin?', 'buddypress-contact-me' ); ?>
 					</label>
-					<p class="description"><?php esc_html_e( 'Enable this option, copy of mail also send to the admin.', 'buddypress-contact-me' ); ?></p>
+					<p class="description"><?php esc_html_e( 'By enabling this option, a duplicate of the email will also be sent to the admin.', 'buddypress-contact-me' ); ?></p>
 				</div>
 				<div class="wbcom-settings-section-options">
 					<label class="bcm-switch">
@@ -130,9 +130,9 @@ $user_roles                = array_reverse( get_editable_roles() );
 			<div class="wbcom-settings-section-wrap">
 				<div class="wbcom-settings-section-options-heading">
 					<label for="bcm_user_email">
-						<?php esc_html_e( 'Who can contact?', 'buddypress-contact-me' ); ?>
+						<?php esc_html_e( 'Who has the ability to initiate contact request?', 'buddypress-contact-me' ); ?>
 					</label>
-					<p class="description"><?php esc_html_e( 'Select the user roles who can contact other users', 'buddypress-contact-me' ); ?></p>
+					<p class="description"><?php esc_html_e( 'Choose the user roles that are allowed to contact other users.', 'buddypress-contact-me' ); ?></p>
 				</div>
 				<div class="wbcom-settings-section-options">
 					<select name="bcm_admin_general_setting[bcm_who_contact][]" id="bcm-who-contacted" class="bcm_who_contact" multiple>

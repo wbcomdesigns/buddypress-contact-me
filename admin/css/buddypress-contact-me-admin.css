@@ -7,7 +7,7 @@
     content: "\f111" !important;
 }
 
-.nav-tab-wrapper ul li.Support a.nav-tab:before {
+.nav-tab-wrapper ul li.FAQ a.nav-tab:before {
     content: "\f125";
 }
 
@@ -30,4 +30,14 @@
     box-shadow: 5px 5px 20px rgba(32, 53, 85, 0.10);
     margin-bottom: 20px;
     width: auto;
+}
+
+.notice {
+    display: none !important;
+}
+
+.wbcom-settings-section-options .selectize-input,
+.wbcom-settings-section-options .selectize-input.items.has-options.has-items [type="text"] {
+    min-height: 40px;
+    height: auto;
 }

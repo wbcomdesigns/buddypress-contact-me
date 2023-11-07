@@ -1292,15 +1292,15 @@ License style
 }
 
 .wbcom-faq-section-row:hover {
-    background-color: #2A32EF;
-    border-color: #2A32EF;
+    background-color: #fff;
+    border-color: #fff;
 }
 
 .wbcom-faq-section-row:hover p,
 .wbcom-faq-section-row:hover button.wbcom-faq-accordion:after,
 .wbcom-faq-section-row:hover .wbcom-faq-panel li,
 .wbcom-faq-section-row:hover button.wbcom-faq-accordion {
-    color: #fff;
+    color: #000;
 }
 
 button.wbcom-faq-accordion {
@@ -1343,12 +1343,12 @@ button.wbcom-faq-accordion::after {
 }
 
 button.wbcom-faq-accordion:hover::after {
-    color: white;
+    color: #000;
 }
 
 button.wbcom-faq-accordion.active::after {
     content: "−";
-    color: white;
+    color: #000;
 }
 
 .wbcom-faq-admin-row {
