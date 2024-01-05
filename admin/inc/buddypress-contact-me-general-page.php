@@ -190,7 +190,8 @@ $user_roles                = array_reverse( get_editable_roles() );
 				</div>
 				<div class="wbcom-settings-section-options">
 					<?php
-					if ( bp_contact_me_is_buddypress_supported() ) {
+					// Check BuddyPress version and use the appropriate function
+					if ( function_exists( 'bp_get_version' ) && version_compare( bp_get_version(), '12.0.0', '>=' ) ) {
 						$bcm_contact_link = bp_members_get_user_url( bp_loggedin_user_id() ) . 'contact';
 					} else {
 						$bcm_contact_link = bp_core_get_user_domain( bp_loggedin_user_id() ) . 'contact';

@@ -48,7 +48,8 @@ $get_contact_allrow       = $wpdb->get_results( $get_contact_row, ARRAY_A );
 				<tr>
 					<td class="contact-me-sender-id"><input type="checkbox" name="bcm_messages[]" class="bcm-all-check" value="<?php echo esc_attr( $get_contact_allrow_val['id'] ); ?>"/></td>
 					<td class="user_displayname">
-					<?php if ( bp_contact_me_is_buddypress_supported() ) : ?>
+					 <!-- Check BuddyPress version and use the appropriate function -->
+					<?php if ( function_exists( 'bp_get_version' ) && version_compare( bp_get_version(), '12.0.0', '>=' ) ) : ?>
 						<a href="<?php echo esc_attr( bp_members_get_user_url( $sender_id ) ); ?>" title="<?php echo esc_attr( bp_core_get_user_displayname( $sender_id ) ); ?>">
 					<?php else : ?>
 						<a href="<?php echo esc_attr( bp_core_get_user_domain( $sender_id ) ); ?>" title="<?php echo esc_attr( bp_core_get_user_displayname( $sender_id ) ); ?>">
