@@ -109,7 +109,7 @@ $get_contact_allrow       = $wpdb->get_results( $get_contact_row, ARRAY_A );
 	<div class="bp-contact-me-container contact-me-not-found">
 	<div id="message" class="info bp-feedback bp-messages bp-template-notice">
 		<span class="bp-icon" aria-hidden="true"></span>
-		<p><?php echo esc_html( 'No any contact message found.' ); ?></p>
+		<p><?php echo esc_html( 'Unfortunately, there are no contact messages found.' ); ?></p>
 	</div>
 	</div>
 	</div>
