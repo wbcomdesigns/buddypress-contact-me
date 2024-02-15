@@ -48,7 +48,11 @@ $get_contact_allrow       = $wpdb->get_results( $get_contact_row, ARRAY_A );
 				<tr>
 					<td class="contact-me-sender-id"><input type="checkbox" name="bcm_messages[]" class="bcm-all-check" value="<?php echo esc_attr( $get_contact_allrow_val['id'] ); ?>"/></td>
 					<td class="user_displayname">
+						<?php if ( function_exists( 'buddypress' ) && version_compare( buddypress()->version, '12.0', '>=' ) ) { ?>
 						<a href="<?php echo esc_attr( bp_members_get_user_url( $sender_id ) ); ?>" title="<?php echo esc_attr( bp_core_get_user_displayname( $sender_id ) ); ?>">
+					 <?php } else { ?>
+						<a href="<?php echo esc_attr( bp_core_get_user_domain( $sender_id ) ); ?>" title="<?php echo esc_attr( bp_core_get_user_displayname( $sender_id ) ); ?>">
+						<?php } ?>
 					<?php
 						echo wp_kses_post(
 							bp_core_fetch_avatar(
