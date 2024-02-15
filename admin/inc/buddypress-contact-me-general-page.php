@@ -190,7 +190,7 @@ $user_roles                = array_reverse( get_editable_roles() );
 				</div>
 				<div class="wbcom-settings-section-options">
 					<?php
-					$bcm_contact_link    = bp_core_get_user_domain( bp_loggedin_user_id() ) . 'contact';
+					$bcm_contact_link    = bp_members_get_user_url( bp_loggedin_user_id() ) . 'contact';
 					$bcm_click           = '<a href=" ' . $bcm_contact_link . '">Click here</a>';
 					$bcm_default_content = sprintf(
 						esc_html__(
