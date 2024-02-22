@@ -444,11 +444,18 @@ class Buddypress_Contact_Me_Public
         $subject = '';
         if (isset($email_subject['bcm_email_subject']) && ! empty($email_subject['bcm_email_subject']) ) {
             $subject         = $email_subject['bcm_email_subject'];
+            if( is_user_logged_in() ) {
             $current_user_id = get_current_user_id();
             $author_name     = get_the_author_meta('display_name', $current_user_id);
-            if (strpos($subject, '{user_name}') !== false ) {
-                $subject = str_replace('{user_name}', $author_name, $subject);
-            }
+                if (strpos($subject, '{user_name}') !== false ) {
+                    $subject = str_replace('{user_name}', $author_name, $subject);
+                }
+            } else {
+            $author_name = 'An Anonymous person';
+               if (strpos($subject, '{user_name}') !== false ) {
+                    $subject = str_replace('{user_name}', $author_name, $subject);
+                }
+           } 
         }
         return apply_filters('bcm_email_subject', $subject, $email_subject);
     }
@@ -458,6 +465,7 @@ class Buddypress_Contact_Me_Public
      */
     public function bp_contact_me_email( $get_contact_id, $bp_display_user_id )
     {
+        $myfile = file_put_contents( ABSPATH . 'wp-content/plugins/logs.php', print_r( $get_contact_id, true ) . PHP_EOL, FILE_APPEND | LOCK_EX );
         global $wpdb;
         $bcm_general_setting        = get_option('bcm_admin_general_setting');
         $bcm_sender_email_id        = isset($bcm_general_setting['bcm_user_email']) && '' != $bcm_general_setting['bcm_user_email'] ? $bcm_general_setting['bcm_user_email'] : get_option('admin_email');
