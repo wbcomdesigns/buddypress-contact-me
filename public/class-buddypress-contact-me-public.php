@@ -375,8 +375,9 @@ class Buddypress_Contact_Me_Public
     /**
      * Function will trigger format notifications
      */
-    public function bp_contact_me_notification_format( $action, $item_id, $secondary_item_id, $total_items, $format = 'string', $component_action_name, $component_name )
+    public function bp_contact_me_notification_format( $action, $item_id, $secondary_item_id, $total_items, $format , $component_action_name, $component_name )
     {
+        $format = 'string';
         if ( 'bcm_user_notifications_action' === $component_action_name ) {
             global $wpdb;
             $bp_contact_me_table_name = $wpdb->prefix . 'contact_me';
@@ -465,7 +466,6 @@ class Buddypress_Contact_Me_Public
      */
     public function bp_contact_me_email( $get_contact_id, $bp_display_user_id )
     {
-        $myfile = file_put_contents( ABSPATH . 'wp-content/plugins/logs.php', print_r( $get_contact_id, true ) . PHP_EOL, FILE_APPEND | LOCK_EX );
         global $wpdb;
         $bcm_general_setting        = get_option('bcm_admin_general_setting');
         $bcm_sender_email_id        = isset($bcm_general_setting['bcm_user_email']) && '' != $bcm_general_setting['bcm_user_email'] ? $bcm_general_setting['bcm_user_email'] : get_option('admin_email');
