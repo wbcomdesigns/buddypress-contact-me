@@ -3,8 +3,8 @@ Contributors: Wbcom Designs
 Donate link: https://www.wbcomdesigns.com
 Tags: comments, spam
 Requires at least: 3.0.1
-Tested up to: 6.4.1
-Stable tag: 1.1.2
+Tested up to: 6.5.0
+Stable tag: 1.2.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -24,6 +24,11 @@ e.g.
 1. Place `<?php do_action('plugin_name_hook'); ?>` in your templates
 
 == Changelog ==
+= 1.2.0 =
+* Fix: (#38) Fixed PHPv8 warnings 
+* Fix: (#39) Fixed issue in email subject name
+* Fix: Updated code of bp12 function replacement
+* Fix: (#14, #26) Fixed conflict notification issue with member review and blog pro
 
 = 1.1.2 =
 * Updated: Admin label and description
