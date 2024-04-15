@@ -230,7 +230,7 @@ function edd_wbcom_BCM_deactivate_license() {
 		delete_transient( 'edd_wbcom_bp_contact_me_license_key_data' );
 
 		// $license_data->license will be either "deactivated" or "failed"
-		if ( $license_data->license == 'deactivated' ) {
+		if ( $license_data->license == 'deactivated' || 'failed' === $license_data->license ) {
 			delete_option( 'edd_wbcom_bp_contact_me_license_status' );
 		}
 
@@ -358,7 +358,7 @@ function wbcom_BCM_render_license_section() {
 	$status  = get_option( 'edd_wbcom_bp_contact_me_license_status' );
 
 	$license_output = edd_bp_contact_me_active_license_message();
-	
+
 	if ( false !== $status && 'valid' === $status && ! empty( $license_output ) && $license_output['license_data']->license == 'valid' ) {
 		$status_class = 'active';
 		$status_text  = 'Active';
@@ -430,7 +430,6 @@ function edd_bp_contact_me_active_license_message() {
 		$license_data = get_transient( 'edd_wbcom_bp_contact_me_license_key_data' );
 		$license      = trim( get_option( 'edd_wbcom_bp_contact_me_license_key' ) );
 
-
 			$api_params = array(
 				'edd_action' => 'check_license',
 				'license'    => $license,
@@ -448,44 +447,44 @@ function edd_bp_contact_me_active_license_message() {
 				)
 			);
 
-			if ( is_wp_error( $response ) ) {
-				return false;
-			}
+		if ( is_wp_error( $response ) ) {
+			return false;
+		}
 
 			$output = array();
 			$output['license_data'] = json_decode( wp_remote_retrieve_body( $response ) );
 			$message = '';
 			// make sure the response came back okay
-			if ( is_wp_error( $response ) || 200 !== wp_remote_retrieve_response_code( $response ) ) {
+		if ( is_wp_error( $response ) || 200 !== wp_remote_retrieve_response_code( $response ) ) {
 
-				if ( is_wp_error( $response ) ) {
-					$message = $response->get_error_message();
-				} else {
-					$message = __( 'An error occurred, please try again.', 'buddypress-contact-me' );
-				}
+			if ( is_wp_error( $response ) ) {
+				$message = $response->get_error_message();
 			} else {
-				$license_data = json_decode( wp_remote_retrieve_body( $response ) );
-				// Get expire date
-				$expires = false;
-				if ( isset( $license_data->expires ) && 'lifetime' != $license_data->expires ) {
-					$expires    = date_i18n( get_option( 'date_format' ), strtotime( $license_data->expires, current_time( 'timestamp' ) ) );
-				} elseif ( isset( $license_data->expires ) && 'lifetime' == $license_data->expires ) {
-					$expires = 'lifetime';
+				$message = __( 'An error occurred, please try again.', 'buddypress-contact-me' );
+			}
+		} else {
+			$license_data = json_decode( wp_remote_retrieve_body( $response ) );
+			// Get expire date
+			$expires = false;
+			if ( isset( $license_data->expires ) && 'lifetime' != $license_data->expires ) {
+				$expires    = date_i18n( get_option( 'date_format' ), strtotime( $license_data->expires, current_time( 'timestamp' ) ) );
+			} elseif ( isset( $license_data->expires ) && 'lifetime' == $license_data->expires ) {
+				$expires = 'lifetime';
+			}
+
+			if ( $license_data->license == 'valid' ) {
+				// Get site counts
+				$site_count    = $license_data->site_count;
+				$license_limit = $license_data->license_limit;
+				$message = 'License key is active.';
+				if ( isset( $expires ) && 'lifetime' != $expires ) {
+					$message .= sprintf( __( ' Expires %s.', 'buddypress-contact-me' ), $expires ) . ' ';
 				}
-				
-				if ( $license_data->license == 'valid' ) {
-					// Get site counts
-					$site_count    = $license_data->site_count;
-					$license_limit = $license_data->license_limit;
-					$message = 'License key is active.';
-					if ( isset( $expires ) && 'lifetime' != $expires ) {
-						$message .= sprintf( __( ' Expires %s.', 'buddypress-contact-me' ), $expires ) . ' ';
-					}
-					if ( $license_limit ) {
-						$message .= sprintf( __( 'You have %1$s/%2$s-sites activated.', 'buddypress-contact-me' ), $site_count, $license_limit );
-					}
+				if ( $license_limit ) {
+					$message .= sprintf( __( 'You have %1$s/%2$s-sites activated.', 'buddypress-contact-me' ), $site_count, $license_limit );
 				}
 			}
+		}
 			$output['message'] = $message;
 			return $output;
 	}
