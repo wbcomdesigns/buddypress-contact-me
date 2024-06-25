@@ -125,6 +125,22 @@ class Buddypress_Contact_Me_Admin {
 		add_submenu_page( 'wbcomplugins', esc_html__( 'BuddyPress Contact Me', 'buddypress-contact-me' ), esc_html__( 'Contact Me', 'buddypress-contact-me' ), 'manage_options', 'buddypress-contact-me', array( $this, 'bcm_settings_page' ) );
 	}
 
+		/**
+		 * Hide all notices from the setting page.
+		 *
+		 * @return void
+		 */
+	public function wbcom_hide_all_admin_notices_from_setting_page() {
+		$wbcom_pages_array  = array( 'wbcomplugins', 'wbcom-plugins-page', 'wbcom-support-page', 'buddypress-contact-me' );
+		$wbcom_setting_page = filter_input( INPUT_GET, 'page' ) ? filter_input( INPUT_GET, 'page' ) : '';
+
+		if ( in_array( $wbcom_setting_page, $wbcom_pages_array, true ) ) {
+			remove_all_actions( 'admin_notices' );
+			remove_all_actions( 'all_admin_notices' );
+		}
+
+	}
+
 	/**
 	 * Bpsp_settings_page
 	 *
