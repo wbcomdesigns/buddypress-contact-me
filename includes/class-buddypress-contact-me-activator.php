@@ -40,7 +40,7 @@ class Buddypress_Contact_Me_Activator {
 						sender int(11) NOT NULL,
 						reciever  int(11) NOT NULL, 
 						subject  varchar(255) NOT NULL,
-						message varchar(255)   NOT NULL,
+						message TEXT  NOT NULL,
 						name varchar(255)   NOT NULL,
 						email varchar(255) NULL,
 						datetime varchar(255) NULL,
