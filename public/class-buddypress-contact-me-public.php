@@ -373,41 +373,60 @@ class Buddypress_Contact_Me_Public
     }
 
     /**
-     * Function will trigger format notifications
+     * Function will trigger format notifications.
+     *
+     * @param string $action The notification action.
+     * @param int $item_id The item ID.
+     * @param int $secondary_item_id The secondary item ID.
+     * @param int $total_items The total number of items.
+     * @param string $format The format of the notification.
+     * @param string $component_action_name The component action name.
+     * @param string $component_name The component name.
+     * @return mixed The formatted notification.
      */
-    public function bp_contact_me_notification_format( $action, $item_id, $secondary_item_id, $total_items, $format , $component_action_name, $component_name )
+    public function bp_contact_me_notification_format($action, $item_id, $secondary_item_id, $total_items, $format, $component_action_name, $component_name)
     {
         $format = 'string';
-        if ( 'bcm_user_notifications_action' === $component_action_name ) {
+        if (
+            'bcm_user_notifications_action' === $component_action_name
+        ) {
             global $wpdb;
             $bp_contact_me_table_name = $wpdb->prefix . 'contact_me';
-            $get_contact_q_noti       = "SELECT * FROM $bp_contact_me_table_name  WHERE `id` = $item_id";
+            $get_contact_q_noti       = $wpdb->prepare("SELECT * FROM $bp_contact_me_table_name WHERE `id` = %d", $item_id);
             $get_contact_r_noti       = $wpdb->get_row($get_contact_q_noti, ARRAY_A);
-            $get_contact_r_name       = isset($get_contact_r_noti['name']) && ! empty($get_contact_r_noti['name']) ? $get_contact_r_noti['name'] : '';
+            $get_contact_r_name       = isset($get_contact_r_noti['name']) && !empty($get_contact_r_noti['name']) ? $get_contact_r_noti['name'] : '';
             $sender_id                = isset($get_contact_r_noti['sender']) ? $get_contact_r_noti['sender'] : '';
             $sender_data              = get_userdata($sender_id);
             $author_name              = isset($sender_data->data->user_login) && is_user_logged_in() ? $sender_data->data->user_login : $get_contact_r_name;
             $loggedin_user_id         = get_current_user_id();
-            if ( function_exists( 'buddypress' ) && version_compare( buddypress()->version, '12.0', '>=' ) ) {
-                $username                 = bp_members_get_user_slug($loggedin_user_id);
+
+            // Get the members root slug dynamically.
+            $members_slug = bp_get_members_root_slug();
+
+            if (function_exists('buddypress') && version_compare(buddypress()->version, '12.0', '>=')) {
+                $username = bp_members_get_user_slug($loggedin_user_id);
             } else {
-                $username                 = bp_core_get_username($loggedin_user_id);
+                $username = bp_core_get_username($loggedin_user_id);
             }
-            $user_link                = get_site_url() . '/members/' . $username . '/contact/';
+
+            $user_link = get_site_url() . '/' . $members_slug . '/' . $username . '/contact/';
+
             /* translators: %s: */
             $notification_string = sprintf(__(' %1$s has contacted you.', 'buddypress-contact-me'), $author_name);
-            if ('string' === $format ) {
+
+            if ('string' === $format) {
                 $return = "<a href='" . esc_url($user_link) . "'>" . $notification_string . '</a>';
             } else {
                 $return = array(
-                'text' => $notification_string,
-                'link' => $user_link,
+                    'text' => $notification_string,
+                    'link' => $user_link,
                 );
             }
             return $return;
         }
         return $action;
     }
+
 
     /**
      * Function will trigger notifications to member users
