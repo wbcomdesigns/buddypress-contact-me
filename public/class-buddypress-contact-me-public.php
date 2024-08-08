@@ -487,93 +487,115 @@ class Buddypress_Contact_Me_Public
 
 
     /**
-     * Function will trigger to send email notifiction
+     * Sends an email notification when a contact is made.
+     *
+     * @param int $get_contact_id The ID of the contact message.
+     * @param int $bp_display_user_id The ID of the user receiving the contact message.
      */
-    public function bp_contact_me_email( $get_contact_id, $bp_display_user_id )
+    public function bp_contact_me_email($get_contact_id, $bp_display_user_id)
     {
         global $wpdb;
-        $bcm_general_setting        = get_option('bcm_admin_general_setting');
-        $bcm_sender_email_id        = isset($bcm_general_setting['bcm_user_email']) && '' != $bcm_general_setting['bcm_user_email'] ? $bcm_general_setting['bcm_user_email'] : get_option('admin_email');
-        $current_user_id            = get_current_user_id();
-        if ( function_exists( 'buddypress' ) && version_compare( buddypress()->version, '12.0', '>=' ) ) {
-            $username                   = bp_members_get_user_slug($current_user_id);
-            $login_username             = bp_members_get_user_slug($bp_display_user_id);
+
+        // Retrieve plugin settings.
+        $bcm_general_setting = get_option('bcm_admin_general_setting');
+        $bcm_sender_email_id = isset($bcm_general_setting['bcm_user_email']) && !empty($bcm_general_setting['bcm_user_email']) ? $bcm_general_setting['bcm_user_email'] : get_option('admin_email');
+        $current_user_id = get_current_user_id();
+
+        // Retrieve user slugs based on BuddyPress version.
+        if (
+            function_exists('buddypress') && version_compare(buddypress()->version, '12.0', '>=')
+        ) {
+            $username = bp_members_get_user_slug($current_user_id);
+            $login_username = bp_members_get_user_slug($bp_display_user_id);
+            $user_contact_link = bp_members_get_user_url($bp_display_user_id) . 'contact';
+            $user_contact_me_link = bp_members_get_user_url($current_user_id) . 'contact-me';
         } else {
-            $username                   = bp_core_get_username($current_user_id);
-            $login_username             = bp_core_get_username($bp_display_user_id);  
+            $username = bp_core_get_username($current_user_id);
+            $login_username = bp_core_get_username($bp_display_user_id);
+            $user_contact_link = bp_core_get_user_domain($bp_display_user_id) . 'contact';
+            $user_contact_me_link = bp_core_get_user_domain($current_user_id) . 'contact-me';
         }
-        if ( function_exists( 'buddypress' ) && version_compare( buddypress()->version, '12.0', '>=' ) ) {
-            $user_contact_link          = bp_members_get_user_url($bp_display_user_id) . 'contact';
-            $user_contact_me_link       = bp_members_get_user_url($current_user_id) . 'contact-me';
-        } else {
-            $user_contact_link          = bp_core_get_user_domain($bp_display_user_id) . 'contact';
-            $user_contact_me_link       = bp_core_get_user_domain($current_user_id) . 'contact-me';
-        }
-        $bcm_contact_link           = '<a href="' . esc_url($user_contact_link) . '">' . esc_html('Click here') . '</a>';
-        $bcm_contact_me_link        = '<a href="' . esc_url($user_contact_me_link) . '">' . esc_html('contact form') . '</a>';
-        $bp_contact_me_table_name   = $wpdb->prefix . 'contact_me';
-        $get_contact_q_noti         = "SELECT * FROM $bp_contact_me_table_name  WHERE `id` = $get_contact_id";
-        $get_contact_r_noti         = $wpdb->get_row($get_contact_q_noti, ARRAY_A);
-        $subject                    = $this->bcm_get_email_subject($bcm_general_setting);
-        $bcm_admin_multiuser_mail   = array();
-        $to                         = get_the_author_meta('user_email', $bp_display_user_id);
+
+        // Create contact links.
+        $bcm_contact_link = '<a href="' . esc_url($user_contact_link) . '">' . esc_html__('Click here', 'buddypress-contact-me') . '</a>';
+        $bcm_contact_me_link = '<a href="' . esc_url($user_contact_me_link) . '">' . esc_html__('contact form', 'buddypress-contact-me') . '</a>';
+
+        // Retrieve contact message details.
+        $bp_contact_me_table_name = $wpdb->prefix . 'contact_me';
+        $get_contact_q_noti = $wpdb->prepare("SELECT * FROM $bp_contact_me_table_name WHERE `id` = %d", $get_contact_id);
+        $get_contact_r_noti = $wpdb->get_row($get_contact_q_noti, ARRAY_A);
+
+        // Get the email subject.
+        $subject = $this->bcm_get_email_subject($bcm_general_setting);
+
+        // Prepare recipients list.
+        $bcm_admin_multiuser_mail = array();
+        $to = get_the_author_meta('user_email', $bp_display_user_id);
         $bcm_admin_multiuser_mail[] = $to;
 
-        // sender mail.
-
-        if (array_key_exists('bcm_allow_sender_copy_email', $bcm_general_setting) ) {
-            $sender_mail_id             = '';
-            $sender_mail_id             = get_the_author_meta('user_email', $current_user_id);
+        // Include sender's email if the option is enabled.
+        if (
+            array_key_exists('bcm_allow_sender_copy_email', $bcm_general_setting)
+        ) {
+            $sender_mail_id = get_the_author_meta('user_email', $current_user_id);
             $bcm_admin_multiuser_mail[] = $sender_mail_id;
         }
 
-        // admin mail.
-        if (! empty($bcm_general_setting['bcm_allow_admin_copy_email']) && 'yes' === $bcm_general_setting['bcm_allow_admin_copy_email'] ) {
+        // Include admin emails if the option is enabled.
+        if (
+            !empty($bcm_general_setting['bcm_allow_admin_copy_email']) && 'yes' === $bcm_general_setting['bcm_allow_admin_copy_email']
+        ) {
             $admin_users = get_users(
                 array(
-                'role'   => 'administrator',
-                'fields' => array( 'ID', 'display_name' ),
+                    'role'   => 'administrator',
+                    'fields' => array('ID', 'display_name'),
                 )
             );
-            foreach ( $admin_users as $admin_user ) {
-                $bcm_admin_mail_id          = get_the_author_meta('user_email', $admin_user->ID);
+            foreach ($admin_users as $admin_user) {
+                $bcm_admin_mail_id = get_the_author_meta('user_email', $admin_user->ID);
                 $bcm_admin_multiuser_mail[] = $bcm_admin_mail_id;
             }
         }
-        // multiple users.
-        if (array_key_exists('bcm_multiple_user_copy_email', $bcm_general_setting) ) {
+
+        // Include multiple user emails if the option is enabled.
+        if (
+            array_key_exists('bcm_multiple_user_copy_email', $bcm_general_setting)
+        ) {
             $bcm_multi_data_users = $bcm_general_setting['bcm_multiple_user_copy_email'];
-            foreach ( $bcm_multi_data_users as $bcm_multi_data_key => $bcm_multi_data_val ) {
-                $bcm_multi_users_mail_id    = get_the_author_meta('user_email', $bcm_multi_data_val);
+            foreach ($bcm_multi_data_users as $bcm_multi_data_val) {
+                $bcm_multi_users_mail_id = get_the_author_meta('user_email', $bcm_multi_data_val);
                 $bcm_admin_multiuser_mail[] = $bcm_multi_users_mail_id;
             }
         }
-        if (is_user_logged_in() ) {
-            $author_name = get_the_author_meta('display_name', $current_user_id);
-        } else {
-            $author_name = $get_contact_r_noti['name'];
-        }
-        $user_content = isset($bcm_general_setting['bcm_email_content']) && '' != $bcm_general_setting['bcm_email_content'] ? $bcm_general_setting['bcm_email_content'] : '';
-        /* translators: %s: */
-        $content      = sprintf(__('Hi %1$s,<br>%2$s has contacted you.<br>%3$s to check the messages.<br>You can also go to the %4$s.<br>Thanks', 'buddypress-contact-me'), $login_username, $author_name, $bcm_contact_link, $bcm_contact_me_link);
-        $headers      = "Content-Type: text/html; charset=UTF-8\r\n";
-        $headers     .= 'From: ' . $bcm_sender_email_id . "\r\n";
-        // add all mails in cc.
-        $bcm_cc_mails = '';
-        foreach ( $bcm_admin_multiuser_mail as $bcm_admin_multiuser_mail_key => $bcm_admin_multiuser_mail_val ) {
-            $bcm_cc_mails .= $bcm_admin_multiuser_mail_val . ',';
-        }
-        $headers .= 'Cc:' . $bcm_cc_mails;
-        if (! empty($bcm_admin_multiuser_mail) ) {
-            $bcm_emails = array_unique($bcm_admin_multiuser_mail);
-        }
-        $bcm_general_setting = get_option('bcm_admin_general_setting');
-        if (isset($bcm_general_setting['bcm_allow_email']) && 'yes' === $bcm_general_setting['bcm_allow_email'] ) {
-            foreach ( $bcm_emails as $bcm_email ) {
+
+        // Get the author name.
+        $author_name = is_user_logged_in() ? get_the_author_meta('display_name', $current_user_id) : $get_contact_r_noti['name'];
+
+        // Get the email content.
+        $user_content = isset($bcm_general_setting['bcm_email_content']) && !empty($bcm_general_setting['bcm_email_content']) ? $bcm_general_setting['bcm_email_content'] : '';
+        $content = sprintf(
+            __('Hi %1$s,<br>%2$s has contacted you.<br>%3$s to check the messages.<br>You can also go to the %4$s.<br>Thanks', 'buddypress-contact-me'),
+            $login_username,
+            $author_name,
+            $bcm_contact_link,
+            $bcm_contact_me_link
+        );
+
+        // Prepare email headers.
+        $headers = "Content-Type: text/html; charset=UTF-8\r\n";
+        $headers .= 'From: ' . $bcm_sender_email_id . "\r\n";
+        $headers .= 'Cc:' . implode(',', array_unique($bcm_admin_multiuser_mail));
+
+        // Send the email if the option is enabled.
+        if (
+            isset($bcm_general_setting['bcm_allow_email']) && 'yes' === $bcm_general_setting['bcm_allow_email']
+        ) {
+            foreach (array_unique($bcm_admin_multiuser_mail) as $bcm_email) {
                 wp_mail($bcm_email, $subject, $content, $headers);
             }
         }
     }
+
 
     /**
      * Call BuddyPress Contact Me shortcode
