@@ -452,33 +452,39 @@ class Buddypress_Contact_Me_Public
     }
 
     /**
-     * Formate email subject
+     * Format email subject.
      *
-     * Dynamically replace tags with corsponsding string
+     * Dynamically replace tags with corresponding strings.
      *
-     * @param  array $email_subject
-     * @return string
+     * @param array $email_subject The email subject array.
+     * @return string The formatted email subject.
      */
-    public function bcm_get_email_subject( $email_subject )
+    public function bcm_get_email_subject($email_subject)
     {
         $subject = '';
-        if (isset($email_subject['bcm_email_subject']) && ! empty($email_subject['bcm_email_subject']) ) {
-            $subject         = $email_subject['bcm_email_subject'];
-            if( is_user_logged_in() ) {
-            $current_user_id = get_current_user_id();
-            $author_name     = get_the_author_meta('display_name', $current_user_id);
-                if (strpos($subject, '{user_name}') !== false ) {
-                    $subject = str_replace('{user_name}', $author_name, $subject);
-                }
-            } else {
-            $author_name = 'An Anonymous person';
-               if (strpos($subject, '{user_name}') !== false ) {
-                    $subject = str_replace('{user_name}', $author_name, $subject);
-                }
-           } 
+
+        // Check if email subject is set and not empty.
+        if (
+            isset($email_subject['bcm_email_subject']) && !empty($email_subject['bcm_email_subject'])
+        ) {
+            $subject = $email_subject['bcm_email_subject'];
+            $author_name = 'An Anonymous person'; // Default value for non-logged in users.
+
+            // Check if the user is logged in.
+            if (is_user_logged_in()) {
+                $current_user_id = get_current_user_id();
+                $author_name = get_the_author_meta('display_name', $current_user_id);
+            }
+
+            // Replace {user_name} placeholder with the actual author name.
+            if (strpos($subject, '{user_name}') !== false) {
+                $subject = str_replace('{user_name}', $author_name, $subject);
+            }
         }
+
         return apply_filters('bcm_email_subject', $subject, $email_subject);
     }
+
 
     /**
      * Function will trigger to send email notifiction
