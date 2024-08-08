@@ -612,70 +612,81 @@ class Buddypress_Contact_Me_Public
     }
 
     /**
-     * Call BuddyPress Contact Me Form submission
+     * Handle BuddyPress Contact Me Form submission.
      *
      * @since 1.0.0
      */
     public function bp_contact_me_form_submitted()
     {
-        if (! isset($_POST['bcm_nonce']) || ! wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['bcm_nonce'])), 'bcm_form_nonce') ) {
+        if (
+            !isset($_POST['bcm_nonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['bcm_nonce'])), 'bcm_form_nonce')
+        ) {
             return false;
         }
-        if (isset($_POST['bp_contact_me_form_save']) ) {
+
+        if (
+            isset($_POST['bp_contact_me_form_save'])
+        ) {
             global $wpdb;
+
             $bp_sender_user_id = get_current_user_id();
-            if (isset($_POST['bcm_shortcode_user_id']) && '' !== $_POST['bcm_shortcode_user_id'] ) {
-                $bp_display_user_id = isset($_POST['bcm_shortcode_user_id']) ? sanitize_text_field(wp_unslash($_POST['bcm_shortcode_user_id'])) : '';
-            } elseif (isset($_POST['bcm_shortcode_username']) && '' !== sanitize_text_field(wp_unslash($_POST['bcm_shortcode_username'])) ) {
-                $bcm_get_user_data  = get_user_by('login', sanitize_text_field(wp_unslash($_POST['bcm_shortcode_username'])));
-                $bp_display_user_id = $bcm_get_user_data->data->ID;
+
+            // Determine the displayed user ID based on the submitted form data.
+            if (isset($_POST['bcm_shortcode_user_id']) && '' !== $_POST['bcm_shortcode_user_id']) {
+                $bp_display_user_id = sanitize_text_field(wp_unslash($_POST['bcm_shortcode_user_id']));
+            } elseif (isset($_POST['bcm_shortcode_username']) && '' !== sanitize_text_field(wp_unslash($_POST['bcm_shortcode_username']))) {
+                $bcm_get_user_data = get_user_by('login', sanitize_text_field(wp_unslash($_POST['bcm_shortcode_username'])));
+                $bp_display_user_id = $bcm_get_user_data->ID;
             } else {
                 $bp_display_user_id = bp_displayed_user_id();
             }
+
+            // Sanitize and retrieve form data.
             $bp_contact_me_subject = isset($_POST['bp_contact_me_subject']) ? sanitize_text_field(wp_unslash($_POST['bp_contact_me_subject'])) : '';
             $bp_contact_me_msg     = isset($_POST['bp_contact_me_msg']) ? sanitize_text_field(wp_unslash($_POST['bp_contact_me_msg'])) : '';
-            if (is_user_logged_in() ) {
-                $bp_contact_me_fname = isset($_POST['bp_contact_me_login_name']) ? sanitize_text_field(wp_unslash($_POST['bp_contact_me_login_name'])) : '';
-            } else {
-                $bp_contact_me_fname = isset($_POST['bp_contact_me_first_name']) ? sanitize_text_field(wp_unslash($_POST['bp_contact_me_first_name'])) : '';
-            }
-            $bp_contact_me_email    = isset($_POST['bp_contact_me_email']) ? sanitize_text_field(wp_unslash($_POST['bp_contact_me_email'])) : '';
+            $bp_contact_me_fname   = is_user_logged_in()
+                ? (isset($_POST['bp_contact_me_login_name']) ? sanitize_text_field(wp_unslash($_POST['bp_contact_me_login_name'])) : '')
+                : (isset($_POST['bp_contact_me_first_name']) ? sanitize_text_field(wp_unslash($_POST['bp_contact_me_first_name'])) : '');
+            $bp_contact_me_email   = isset($_POST['bp_contact_me_email']) ? sanitize_text_field(wp_unslash($_POST['bp_contact_me_email'])) : '';
             $bp_contact_me_datetime = current_datetime()->format('Y-m-d H:i:s');
-            $bp_contact_me_table    = $wpdb->prefix . 'contact_me';
+
+            // Insert contact message data into the database.
+            $bp_contact_me_table = $wpdb->prefix . 'contact_me';
             $insert_data_contact_me = $wpdb->insert(
                 $bp_contact_me_table,
                 array(
-                'sender'   => $bp_sender_user_id,
-                'reciever' => $bp_display_user_id,
-                'subject'  => $bp_contact_me_subject,
-                'message'  => $bp_contact_me_msg,
-                'name'     => $bp_contact_me_fname,
-                'email'    => $bp_contact_me_email,
-                'datetime' => $bp_contact_me_datetime,
+                    'sender'   => $bp_sender_user_id,
+                    'reciever' => $bp_display_user_id,
+                    'subject'  => $bp_contact_me_subject,
+                    'message'  => $bp_contact_me_msg,
+                    'name'     => $bp_contact_me_fname,
+                    'email'    => $bp_contact_me_email,
+                    'datetime' => $bp_contact_me_datetime,
                 ),
-                array( '%d', '%d', '%s', '%s', '%s', '%s', '%s' )
+                array('%d', '%d', '%s', '%s', '%s', '%s', '%s')
             );
-            if (isset($insert_data_contact_me) && '' !== $insert_data_contact_me ) {
+
+            if ($insert_data_contact_me) {
                 bp_core_add_message(__('Message sent successfully.', 'buddypress-contact-me'));
                 $get_contact_id = $wpdb->insert_id;
                 do_action('bp_contact_me_form_save', $get_contact_id, $bp_display_user_id);
-                if ( function_exists( 'buddypress' ) && version_compare( buddypress()->version, '12.0', '>=' ) ) {
-                    $disp_user_url = bp_members_get_user_url($bp_display_user_id);
-                } else {
-                    $disp_user_url = bp_core_get_user_domain($bp_display_user_id);
-                }
-                if ('' !== $_POST['bcm_shortcode_user_id'] || '' !== $_POST['bcm_shortcode_username'] ) {
-                    global $wp;
-                    $contact_me_url = home_url($wp->request);
-                } else {
-                    $contact_me_url = $disp_user_url . '/contact-me/';
-                }
+
+                // Determine the redirect URL.
+                $disp_user_url = function_exists('buddypress') && version_compare(buddypress()->version, '12.0', '>=')
+                ? bp_members_get_user_url($bp_display_user_id)
+                    : bp_core_get_user_domain($bp_display_user_id);
+
+                $contact_me_url = ('' !== $_POST['bcm_shortcode_user_id'] || '' !== $_POST['bcm_shortcode_username'])
+                ? home_url($wp->request)
+                    : $disp_user_url . 'contact-me/';
+
                 $contact_me_url_qp = add_query_arg('output', 'success', $contact_me_url);
                 wp_redirect($contact_me_url_qp);
-                die();
+                exit;
             }
         }
     }
+
 
     /**
      * Call for deleted contact messages
