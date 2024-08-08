@@ -23,7 +23,7 @@ $user_roles = array_reverse(get_editable_roles());
 
 <div class="wbcom-tab-content">
 	<div class="wbcom-admin-title-section">
-		<h3><?php esc_html_e('General', 'buddypress-contact-me'); ?></h3>
+		<h3><?php esc_html_e('General Settings', 'buddypress-contact-me'); ?></h3>
 	</div>
 	<div class="wbcom-admin-option-wrap">
 		<form method="post" action="options.php">
@@ -35,8 +35,8 @@ $user_roles = array_reverse(get_editable_roles());
 				<!-- BuddyPress Notifications Setting -->
 				<div class="wbcom-settings-section-wrap">
 					<div class="wbcom-settings-section-options-heading">
-						<label for="bcm_allow_notification"><?php esc_html_e('BuddyPress notifications', 'buddypress-contact-me'); ?></label>
-						<p class="description"><?php esc_html_e('Activate this setting to allow members to receive BuddyPress notifications when someone contacts them.', 'buddypress-contact-me'); ?></p>
+						<label for="bcm_allow_notification"><?php esc_html_e('Enable BuddyPress Notifications', 'buddypress-contact-me'); ?></label>
+						<p class="description"><?php esc_html_e('Allow members to receive notifications when someone contacts them.', 'buddypress-contact-me'); ?></p>
 					</div>
 					<div class="wbcom-settings-section-options">
 						<label class="wb-switch">
@@ -49,8 +49,8 @@ $user_roles = array_reverse(get_editable_roles());
 				<!-- Email Notifications Setting -->
 				<div class="wbcom-settings-section-wrap">
 					<div class="wbcom-settings-section-options-heading">
-						<label for="bcm_allow_email"><?php esc_html_e('Emails notification', 'buddypress-contact-me'); ?></label>
-						<p class="description"><?php esc_html_e('Activate this option to ensure that members receive email notifications when someone contacts them.', 'buddypress-contact-me'); ?></p>
+						<label for="bcm_allow_email"><?php esc_html_e('Enable Email Notifications', 'buddypress-contact-me'); ?></label>
+						<p class="description"><?php esc_html_e('Send email notifications to members when someone contacts them.', 'buddypress-contact-me'); ?></p>
 					</div>
 					<div class="wbcom-settings-section-options">
 						<label class="bcm-switch">
@@ -63,8 +63,8 @@ $user_roles = array_reverse(get_editable_roles());
 				<!-- Enable Contact Tab Setting -->
 				<div class="wbcom-settings-section-wrap">
 					<div class="wbcom-settings-section-options-heading">
-						<label for="bcm_allow_contact_tab"><?php esc_html_e('Enable contact tab', 'buddypress-contact-me'); ?></label>
-						<p class="description"><?php esc_html_e('Activate this option if you wish to display the contact tab on a member BuddyPress profile.', 'buddypress-contact-me'); ?></p>
+						<label for="bcm_allow_contact_tab"><?php esc_html_e('Show Contact Tab', 'buddypress-contact-me'); ?></label>
+						<p class="description"><?php esc_html_e('Display the contact tab on member profiles.', 'buddypress-contact-me'); ?></p>
 					</div>
 					<div class="wbcom-settings-section-options">
 						<label class="bcm-switch">
@@ -77,8 +77,8 @@ $user_roles = array_reverse(get_editable_roles());
 				<!-- User Email Customization Setting -->
 				<div class="wbcom-settings-section-wrap">
 					<div class="wbcom-settings-section-options-heading">
-						<label for="bcm_user_email"><?php esc_html_e('User email customization', 'buddypress-contact-me'); ?></label>
-						<p class="description"><?php esc_html_e('Users can modify the email address used as the sender identity.', 'buddypress-contact-me'); ?></p>
+						<label for="bcm_user_email"><?php esc_html_e('Customize Sender Email', 'buddypress-contact-me'); ?></label>
+						<p class="description"><?php esc_html_e('Allow users to modify the email address used as the sender.', 'buddypress-contact-me'); ?></p>
 					</div>
 					<div class="wbcom-settings-section-options">
 						<input type="text" id="bcm_user_email" name="bcm_admin_general_setting[bcm_user_email]" value="<?php echo esc_attr(isset($bcm_admin_general_setting['bcm_user_email']) ? $bcm_admin_general_setting['bcm_user_email'] : $bcm_admin_email); ?>">
@@ -88,8 +88,8 @@ $user_roles = array_reverse(get_editable_roles());
 				<!-- Sender Copy Email Setting -->
 				<div class="wbcom-settings-section-wrap">
 					<div class="wbcom-settings-section-options-heading">
-						<label for="bcm_sender_copy_email"><?php esc_html_e('Should the sender receive a copy of the email?', 'buddypress-contact-me'); ?></label>
-						<p class="description"><?php esc_html_e('By enabling this option, a duplicate of the email will also be sent to the sender.', 'buddypress-contact-me'); ?></p>
+						<label for="bcm_sender_copy_email"><?php esc_html_e('Send Copy to Sender', 'buddypress-contact-me'); ?></label>
+						<p class="description"><?php esc_html_e('Send a copy of the email to the sender.', 'buddypress-contact-me'); ?></p>
 					</div>
 					<div class="wbcom-settings-section-options">
 						<label class="bcm-switch">
@@ -102,8 +102,8 @@ $user_roles = array_reverse(get_editable_roles());
 				<!-- Admin Copy Email Setting -->
 				<div class="wbcom-settings-section-wrap">
 					<div class="wbcom-settings-section-options-heading">
-						<label for="bcm_admin_copy_email"><?php esc_html_e('Would you like to forward a copy to the admin?', 'buddypress-contact-me'); ?></label>
-						<p class="description"><?php esc_html_e('By enabling this option, a duplicate of the email will also be sent to the admin.', 'buddypress-contact-me'); ?></p>
+						<label for="bcm_admin_copy_email"><?php esc_html_e('Send Copy to Admin', 'buddypress-contact-me'); ?></label>
+						<p class="description"><?php esc_html_e('Send a copy of the email to the admin.', 'buddypress-contact-me'); ?></p>
 					</div>
 					<div class="wbcom-settings-section-options">
 						<label class="bcm-switch">
@@ -116,8 +116,8 @@ $user_roles = array_reverse(get_editable_roles());
 				<!-- Multiple User Copy Email Setting -->
 				<div class="wbcom-settings-section-wrap">
 					<div class="wbcom-settings-section-options-heading">
-						<label for="bcm_multiple_user_copy_email"><?php esc_html_e('Send admin notification emails to more people?', 'buddypress-contact-me'); ?></label>
-						<p class="description"><?php esc_html_e('Select the users to send a copy of the mail.', 'buddypress-contact-me'); ?></p>
+						<label for="bcm_multiple_user_copy_email"><?php esc_html_e('Send Notifications to Multiple Users', 'buddypress-contact-me'); ?></label>
+						<p class="description"><?php esc_html_e('Select additional users to receive email notifications.', 'buddypress-contact-me'); ?></p>
 					</div>
 					<div class="wbcom-settings-section-options">
 						<select name="bcm_admin_general_setting[bcm_multiple_user_copy_email][]" id="bcm-multiple-user-copy-email" multiple>
@@ -131,12 +131,12 @@ $user_roles = array_reverse(get_editable_roles());
 				<!-- Who Can Initiate Contact Setting -->
 				<div class="wbcom-settings-section-wrap">
 					<div class="wbcom-settings-section-options-heading">
-						<label for="bcm_who_contact"><?php esc_html_e('Who has the ability to initiate contact request?', 'buddypress-contact-me'); ?></label>
-						<p class="description"><?php esc_html_e('Choose the user roles that are allowed to contact other users.', 'buddypress-contact-me'); ?></p>
+						<label for="bcm_who_contact"><?php esc_html_e('Allowed to Initiate Contact', 'buddypress-contact-me'); ?></label>
+						<p class="description"><?php esc_html_e('Select the user roles allowed to initiate contact requests.', 'buddypress-contact-me'); ?></p>
 					</div>
 					<div class="wbcom-settings-section-options">
 						<select name="bcm_admin_general_setting[bcm_who_contact][]" id="bcm-who-contact" class="bcm_who_contact" multiple>
-							<option value="visitors" <?php selected(isset($bcm_admin_general_setting['bcm_who_contact']) && in_array('visitors', $bcm_admin_general_setting['bcm_who_contact'])); ?>><?php esc_html_e('Visitors (not logged in to the site)', 'buddypress-contact-me'); ?></option>
+							<option value="visitors" <?php selected(isset($bcm_admin_general_setting['bcm_who_contact']) && in_array('visitors', $bcm_admin_general_setting['bcm_who_contact'])); ?>><?php esc_html_e('Visitors (not logged in)', 'buddypress-contact-me'); ?></option>
 							<?php foreach ($user_roles as $role => $details) : ?>
 								<option value="<?php echo esc_attr($role); ?>" <?php selected(isset($bcm_admin_general_setting['bcm_who_contact']) && in_array($role, $bcm_admin_general_setting['bcm_who_contact'])); ?>><?php echo esc_html(translate_user_role($details['name'])); ?></option>
 							<?php endforeach; ?>
@@ -147,7 +147,7 @@ $user_roles = array_reverse(get_editable_roles());
 				<!-- Who Can Be Contacted Setting -->
 				<div class="wbcom-settings-section-wrap">
 					<div class="wbcom-settings-section-options-heading">
-						<label for="bcm_who_contacted"><?php esc_html_e('Who can be contacted?', 'buddypress-contact-me'); ?></label>
+						<label for="bcm_who_contacted"><?php esc_html_e('Allowed to Be Contacted', 'buddypress-contact-me'); ?></label>
 						<p class="description"><?php esc_html_e('Select the user roles who can be contacted.', 'buddypress-contact-me'); ?></p>
 					</div>
 					<div class="wbcom-settings-section-options">
@@ -162,19 +162,19 @@ $user_roles = array_reverse(get_editable_roles());
 				<!-- Email Subject Setting -->
 				<div class="wbcom-settings-section-wrap">
 					<div class="wbcom-settings-section-options-heading">
-						<label for="bcm_email_subject"><?php esc_html_e('Email subject', 'buddypress-contact-me'); ?></label>
-						<p class="description"><?php esc_html_e('Enter the subject line for email notification subject.', 'buddypress-contact-me'); ?></p>
+						<label for="bcm_email_subject"><?php esc_html_e('Email Subject', 'buddypress-contact-me'); ?></label>
+						<p class="description"><?php esc_html_e('Enter the subject line for email notifications.', 'buddypress-contact-me'); ?></p>
 					</div>
 					<div class="wbcom-settings-section-options">
-						<input id="bcm_email_subject" class="bcm_email_subject" name="bcm_admin_general_setting[bcm_email_subject]" value="<?php echo esc_attr(isset($bcm_admin_general_setting['bcm_email_subject']) ? $bcm_admin_general_setting['bcm_email_subject'] : ''); ?>" placeholder="{user_name} has contacted you.">
+						<input id="bcm_email_subject" class="bcm_email_subject" name="bcm_admin_general_setting[bcm_email_subject]" value="<?php echo esc_attr(isset($bcm_admin_general_setting['bcm_email_subject']) ? $bcm_admin_general_setting['bcm_email_subject'] : ''); ?>" placeholder="<?php esc_attr_e('{user_name} has contacted you.', 'buddypress-contact-me'); ?>">
 					</div>
 				</div>
 
 				<!-- Email Body Content Setting -->
 				<div class="wbcom-settings-section-wrap">
 					<div class="wbcom-settings-section-options-heading">
-						<label for="bcm_email_content"><?php esc_html_e('Email body content', 'buddypress-contact-me'); ?></label>
-						<p class="description"><?php esc_html_e('Enter text to send email to the user', 'buddypress-contact-me'); ?></p>
+						<label for="bcm_email_content"><?php esc_html_e('Email Body Content', 'buddypress-contact-me'); ?></label>
+						<p class="description"><?php esc_html_e('Enter the text for the email notification.', 'buddypress-contact-me'); ?></p>
 					</div>
 					<div class="wbcom-settings-section-options">
 						<?php
@@ -183,7 +183,7 @@ $user_roles = array_reverse(get_editable_roles());
 						} else {
 							$bcm_contact_link = bp_core_get_user_domain(bp_loggedin_user_id()) . 'contact';
 						}
-						$bcm_click           = '<a href="' . esc_url($bcm_contact_link) . '">Click here</a>';
+						$bcm_click           = '<a href="' . esc_url($bcm_contact_link) . '">' . esc_html__('Click here', 'buddypress-contact-me') . '</a>';
 						$bcm_default_content = sprintf(
 							esc_html__(
 								'Hi {user_name}, {sender_user_name} has contacted you. %1$s to check the message. You can also go to the contact form. Thanks.',
