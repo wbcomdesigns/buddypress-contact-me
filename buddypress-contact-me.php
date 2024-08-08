@@ -25,144 +25,130 @@
  * Domain Path:       /languages
  */
 
-// If this file is called directly, abort.
-if ( ! defined( 'WPINC' ) ) {
+// Abort if this file is called directly.
+if (!defined('WPINC')) {
 	die;
 }
 
-/**
- * Currently plugin version.
- * Start at version 1.0.0 and use SemVer - https://semver.org
- * Rename this for your plugin and update it as you release new versions.
- */
-define( 'BUDDYPRESS_CONTACT_ME_VERSION', '1.2.1' );
-define( 'BUDDYPRESS_CONTACT_ME_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
-define( 'BUDDYPRESS_CONTACT_ME_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
-define( 'BUDDYPRESS_CONTACT_ME_FILE', __FILE__ );
-/**
- * The code that runs during plugin activation.
- * This action is documented in includes/class-buddypress-contact-me-activator.php
- */
-function activate_buddypress_contact_me() {
-	 include_once plugin_dir_path( __FILE__ ) . 'includes/class-buddypress-contact-me-activator.php';
-	Buddypress_Contact_Me_Activator::activate();
-}
+// Define constants for the plugin.
+define('BUDDYPRESS_CONTACT_ME_VERSION', '1.2.1');
+define('BUDDYPRESS_CONTACT_ME_PLUGIN_PATH', plugin_dir_path(__FILE__));
+define('BUDDYPRESS_CONTACT_ME_PLUGIN_URL', plugin_dir_url(__FILE__));
+define('BUDDYPRESS_CONTACT_ME_FILE', __FILE__);
 
-/**
- * The code that runs during plugin deactivation.
- * This action is documented in includes/class-buddypress-contact-me-deactivator.php
- */
-function deactivate_buddypress_contact_me() {
-	include_once plugin_dir_path( __FILE__ ) . 'includes/class-buddypress-contact-me-deactivator.php';
-	Buddypress_Contact_Me_Deactivator::deactivate();
-}
-
-register_activation_hook( __FILE__, 'activate_buddypress_contact_me' );
-register_deactivation_hook( __FILE__, 'deactivate_buddypress_contact_me' );
-
-/**
- * The core plugin class that is used to define internationalization,
- * admin-specific hooks, and public-facing site hooks.
- */
-require plugin_dir_path( __FILE__ ) . 'includes/class-buddypress-contact-me.php';
-
+// Include autoload.
 require_once __DIR__ . '/vendor/autoload.php';
 HardG\BuddyPress120URLPolyfills\Loader::init();
 
 /**
- *  Check if buddypress activate.
+ * Plugin activation callback function.
  */
-function bp_contact_me_requires_buddypress() {
-	if ( ! class_exists( 'Buddypress' ) ) {
-		deactivate_plugins( plugin_basename( __FILE__ ) );
-		add_action( 'admin_notices', 'bp_contact_me_required_plugin_admin_notice' );
-		$activate = filter_input( INPUT_GET, 'activate' );
-		unset( $activate );
+function activate_buddypress_contact_me()
+{
+	include_once plugin_dir_path(__FILE__) . 'includes/class-buddypress-contact-me-activator.php';
+	Buddypress_Contact_Me_Activator::activate();
+}
+
+/**
+ * Plugin deactivation callback function.
+ */
+function deactivate_buddypress_contact_me()
+{
+	include_once plugin_dir_path(__FILE__) . 'includes/class-buddypress-contact-me-deactivator.php';
+	Buddypress_Contact_Me_Deactivator::deactivate();
+}
+
+register_activation_hook(__FILE__, 'activate_buddypress_contact_me');
+register_deactivation_hook(__FILE__, 'deactivate_buddypress_contact_me');
+
+/**
+ * Core plugin class that defines internationalization,
+ * admin-specific hooks, and public-facing site hooks.
+ */
+require plugin_dir_path(__FILE__) . 'includes/class-buddypress-contact-me.php';
+
+/**
+ * Check if BuddyPress is active.
+ */
+function bp_contact_me_requires_buddypress()
+{
+	if (!class_exists('Buddypress')) {
+		deactivate_plugins(plugin_basename(__FILE__));
+		add_action('admin_notices', 'bp_contact_me_required_plugin_admin_notice');
 	} else {
-		add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), 'bp_contact_me_plugin_links' );
+		add_filter('plugin_action_links_' . plugin_basename(__FILE__), 'bp_contact_me_plugin_links');
 	}
 }
-add_action( 'admin_init', 'bp_contact_me_requires_buddypress' );
+add_action('admin_init', 'bp_contact_me_requires_buddypress');
 
 /**
- * Throw an Alert to tell the Admin why it didn't activate.
- *
- * @author wbcomdesigns
- * @since  1.2.0
+ * Display an admin notice if BuddyPress is not active.
  */
-function bp_contact_me_required_plugin_admin_notice() {
-	 $bpcontact_plugin = esc_html__( 'BuddyPress Contact Me', 'buddypress-contact-me' );
-	$bp_plugin         = esc_html__( 'BuddyPress', 'buddypress-contact-me' );
+function bp_contact_me_required_plugin_admin_notice()
+{
 	echo '<div class="error"><p>';
-	echo sprintf( esc_html__( '%1$s is ineffective now as it requires %2$s to be installed and active.', 'buddypress-contact-me' ), '<strong>' . esc_html( $bpcontact_plugin ) . '</strong>', '<strong>' . esc_html( $bp_plugin ) . '</strong>' );
+	printf(
+		esc_html__('%1$s is inactive as it requires %2$s to be installed and active.', 'buddypress-contact-me'),
+		'<strong>' . esc_html__('BuddyPress Contact Me', 'buddypress-contact-me') . '</strong>',
+		'<strong>' . esc_html__('BuddyPress', 'buddypress-contact-me') . '</strong>'
+	);
 	echo '</p></div>';
-	$activate = filter_input( INPUT_GET, 'activate' );
-	if ( isset( $activate ) ) {
-		unset( $activate );
-	}
-
 }
 
-add_action( 'activated_plugin', 'bp_contact_me_activation_redirect_settings' );
-
 /**
- * Redirect to plugin settings page after activated
+ * Redirect to plugin settings page after activation.
  *
- * @param plugin $plugin plugin.
+ * @param string $plugin The plugin slug.
  */
-function bp_contact_me_activation_redirect_settings( $plugin ) {
-	if ( ! filter_input( INPUT_GET, 'plugin' ) ) {
-		return;
-	}
-	if ( plugin_basename( __FILE__ ) === $plugin && class_exists( 'Buddypress' ) ) {
-		wp_redirect( admin_url( 'admin.php?page=buddypress-contact-me' ) );
+function bp_contact_me_activation_redirect_settings($plugin)
+{
+	if (plugin_basename(__FILE__) === $plugin && class_exists('Buddypress')) {
+		wp_redirect(admin_url('admin.php?page=buddypress-contact-me'));
 		exit;
 	}
 }
+add_action('activated_plugin', 'bp_contact_me_activation_redirect_settings');
 
 /**
- * Begins execution of the plugin.
- *
- * Since everything within the plugin is registered via hooks,
- * then kicking off the plugin from this point in the file does
- * not affect the page life cycle.
- *
- * @since 1.0.0
+ * Begin execution of the plugin.
  */
-function run_buddypress_contact_me() {
+function run_buddypress_contact_me()
+{
 	$plugin = new Buddypress_Contact_Me();
 	$plugin->run();
 }
-add_action( 'bp_include', 'run_buddypress_contact_me' );
+add_action('bp_include', 'run_buddypress_contact_me');
 
 /**
- * This function is used for get user private message link.
+ * Get user private message link.
  *
- * @param  mixed $user_id to send private message.
- * @return void
+ * @param  int $user_id User ID to send private message.
+ * @return string       Private message URL.
  */
-function bp_contact_me_get_send_private_message_link( $user_id ) {
+function bp_contact_me_get_send_private_message_link($user_id)
+{
 	$compose_url = bp_loggedin_user_domain() . bp_get_messages_slug() . '/compose/?';
-	if ( $user_id ) {
-		if ( function_exists( 'buddypress' ) && version_compare( buddypress()->version, '12.0', '>=' ) ) {
-			$compose_url .= ( 'r=' . bp_members_get_user_slug( $user_id ) );
+	if ($user_id) {
+		if (function_exists('buddypress') && version_compare(buddypress()->version, '12.0', '>=')) {
+			$compose_url .= 'r=' . bp_members_get_user_slug($user_id);
 		} else {
-			$compose_url .= ( 'r=' . bp_core_get_username( $user_id ) );
+			$compose_url .= 'r=' . bp_core_get_username($user_id);
 		}
 	}
-	return wp_nonce_url( $compose_url );
+	return wp_nonce_url($compose_url);
 }
 
 /**
- * Function to set plugin actions links.
+ * Set plugin action links.
  *
  * @param array $links Plugin settings link array.
- * @since 1.0.0
+ * @return array       Updated settings link array.
  */
-function bp_contact_me_plugin_links( $links ) {
+function bp_contact_me_plugin_links($links)
+{
 	$bcm_links = array(
-		'<a href="' . admin_url( 'admin.php?page=buddypress-contact-me' ) . '">' . __( 'Settings', 'buddypress-contact-me' ) . '</a>',
-		'<a href="https://wbcomdesigns.com/contact/" target="_blank">' . __( 'Support', 'buddypress-contact-me' ) . '</a>',
+		'<a href="' . admin_url('admin.php?page=buddypress-contact-me') . '">' . __('Settings', 'buddypress-contact-me') . '</a>',
+		'<a href="https://wbcomdesigns.com/contact/" target="_blank">' . __('Support', 'buddypress-contact-me') . '</a>',
 	);
-	return array_merge( $links, $bcm_links );
+	return array_merge($links, $bcm_links);
 }
