@@ -189,8 +189,8 @@ if ( current_user_can( 'edit_users' ) ) {
 						}
 						$bcm_click           = '<a href="' . esc_url( $bcm_contact_link ) . '">' . esc_html__( 'Click here', 'buddypress-contact-me' ) . '</a>';
 						$bcm_default_content = sprintf(
+							// Translators: %1$s.
 							esc_html__(
-								// Translators: %1$s.
 								'Hi {user_name}, {sender_user_name} has contacted you. %1$s to check the message. You can also go to the contact form. Thanks.',
 								'buddypress-contact-me'
 							),
