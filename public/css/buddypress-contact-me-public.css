@@ -367,6 +367,18 @@ table.bp_contact-me-messages {
     margin-top: 0;
 }
 
+/*******************
+BB Theme
+********************/
+
+.bcm-contact-options-nav {
+    display: flex;
+    gap: 15px;
+}
+
+.bcm-contact-options-nav .select-wrap {
+    width: 200px;
+}
 
 /*******************
     Youzify Plugin
