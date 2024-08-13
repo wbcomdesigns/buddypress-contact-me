@@ -142,7 +142,7 @@ if ( current_user_can( 'edit_users' ) ) {
 						<select name="bcm_admin_general_setting[bcm_who_contact][]" id="bcm-who-contact" class="bcm_who_contact" multiple>
 							<option value="visitors" <?php selected( isset( $bcm_admin_general_setting['bcm_who_contact'] ) && in_array( 'visitors', $bcm_admin_general_setting['bcm_who_contact'] ) ); ?>><?php esc_html_e( 'Visitors (not logged in)', 'buddypress-contact-me' ); ?></option>
 							<?php foreach ( $user_roles as $role => $details ) : ?>
-								<option value="<?php echo esc_attr( $role ); ?>" <?php selected( isset( $bcm_admin_general_setting['bcm_who_contact'] ) && in_array( $role, $bcm_admin_general_setting['bcm_who_contact'] ) ); ?>><?php echo ( $details['name'] ); ?></option>
+								<option value="<?php echo esc_attr( $role ); ?>" <?php selected( isset( $bcm_admin_general_setting['bcm_who_contact'] ) && in_array( $role, $bcm_admin_general_setting['bcm_who_contact'] ) ); ?>><?php echo esc_html( $details['name'] ); ?></option>
 							<?php endforeach; ?>
 						</select>
 					</div>
@@ -190,12 +190,13 @@ if ( current_user_can( 'edit_users' ) ) {
 						$bcm_click           = '<a href="' . esc_url( $bcm_contact_link ) . '">' . esc_html__( 'Click here', 'buddypress-contact-me' ) . '</a>';
 						$bcm_default_content = sprintf(
 							esc_html__(
+								// Translators: %1$s.
 								'Hi {user_name}, {sender_user_name} has contacted you. %1$s to check the message. You can also go to the contact form. Thanks.',
 								'buddypress-contact-me'
 							),
 							$bcm_click
 						);
-						$settings            = array(
+						$settings = array(
 							'media_buttons' => true,
 							'editor_height' => 200,
 							'textarea_name' => 'bcm_admin_general_setting[bcm_email_content]',
