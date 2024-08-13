@@ -574,6 +574,7 @@ class Buddypress_Contact_Me_Public
         // Get the email content.
         $user_content = isset($bcm_general_setting['bcm_email_content']) && !empty($bcm_general_setting['bcm_email_content']) ? $bcm_general_setting['bcm_email_content'] : '';
         $content = sprintf(
+            // Translators: %1$s.
             __('Hi %1$s,<br>%2$s has contacted you.<br>%3$s to check the messages.<br>You can also go to the %4$s.<br>Thanks', 'buddypress-contact-me'),
             $login_username,
             $author_name,
