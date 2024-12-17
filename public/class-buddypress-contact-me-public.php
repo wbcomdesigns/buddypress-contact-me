@@ -300,6 +300,7 @@ class Buddypress_Contact_Me_Public
      */
     public function bp_contact_me_function_to_show_data()
     {
+        bp_notifications_mark_notifications_by_type( get_current_user_id(), 'bcm_user_notifications', 'bcm_user_notifications_action' );
         include 'partials/bp-contact-tab-show-sender-user-data.php';
     }
 
