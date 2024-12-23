@@ -197,17 +197,20 @@ class Buddypress_Contact_Me_Public
             }
         }
         // for logout user
-        if (! empty( $bcm_who_contact ) && in_array('visitors', $bcm_who_contact, true) && ! is_user_logged_in() ) {
-            bp_core_new_nav_item(
-                array(
-                'name'                    => esc_html__('Contact Me', 'buddypress-contact-me'),
-                'slug'                    => 'contact-me',
-                'screen_function'         => array( $this, 'bp_contact_me_show_screen' ),
-                'position'                => 80,
-                'default_subnav_slug'     => 'contact-me',
-                'show_for_displayed_user' => true,
-                )
-            );
+        if ( ! empty( $bcm_who_contact ) && in_array('visitors', $bcm_who_contact, true) && ! is_user_logged_in() ) {
+            $contact_me_btn = get_user_meta( bp_displayed_user_id(), 'contact_me_button' );
+            if( ! empty( $contact_me_btn[0] ) && ( 'on' === $contact_me_btn[0] ) )   {
+                bp_core_new_nav_item(
+                    array(
+                        'name'                    => esc_html__('Contact Me', 'buddypress-contact-me'),
+                        'slug'                    => 'contact-me',
+                        'screen_function'         => array( $this, 'bp_contact_me_show_screen' ),
+                        'position'                => 80,
+                        'default_subnav_slug'     => 'contact-me',
+                        'show_for_displayed_user' => true,
+                    )
+                );
+            }
         }
     }
 
