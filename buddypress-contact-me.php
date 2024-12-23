@@ -44,8 +44,13 @@ HardG\BuddyPress120URLPolyfills\Loader::init();
  * Plugin activation callback function.
  */
 function activate_buddypress_contact_me() {
-	include_once plugin_dir_path( __FILE__ ) . 'includes/class-buddypress-contact-me-activator.php';
-	Buddypress_Contact_Me_Activator::activate();
+	if ( class_exists( 'Buddypress' ) ) {
+		include_once plugin_dir_path( __FILE__ ) . 'includes/class-buddypress-contact-me-activator.php';
+		Buddypress_Contact_Me_Activator::activate();
+	} else {
+		add_action( 'admin_notices', 'bp_contact_me_required_plugin_admin_notice' );
+	}
+	
 }
 
 /**

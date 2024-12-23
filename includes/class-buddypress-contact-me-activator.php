@@ -62,7 +62,9 @@ class Buddypress_Contact_Me_Activator {
 			if ( function_exists( 'buddypress' ) && version_compare( buddypress()->version, '12.0', '>=' ) ) {
 				$bcm_contact_link = bp_members_get_user_url( bp_loggedin_user_id() ) . 'contact';
 			} else {
-				$bcm_contact_link = bp_core_get_user_domain( bp_loggedin_user_id() ) . 'contact';
+				if ( class_exists( 'Buddypress' ) && function_exists( 'bp_core_get_user_domain' ) ) {
+					$bcm_contact_link = bp_core_get_user_domain( bp_loggedin_user_id() ) . 'contact';
+				}
 			}
 			$bcm_click  = '<a href=" ' . $bcm_contact_link . '">Click here</a>';
 			$user_roles = array_reverse( get_editable_roles() );
