@@ -268,17 +268,21 @@ class Buddypress_Contact_Me_Public
     public function bp_contact_me_setup_admin_bar( $wp_admin_nav = array() )
     {
         global $wp_admin_bar, $current_user;
-        $contact_tab_slug = bp_loggedin_user_domain() . 'contact';
-        // Menus for logged in user.
-        if (is_user_logged_in() ) {
-            $wp_admin_bar->add_menu(
-                array(
-                'parent' => 'my-account-buddypress',
-                'id'     => 'my-account-contact',
-                'title'  => esc_html__('Contact', 'buddypress-contact-me'),
-                'href'   => trailingslashit($contact_tab_slug),
-                )
-            );
+        $bcm_get_contact = get_option('bcm_admin_general_setting');
+
+        if ( array_key_exists( 'bcm_allow_contact_tab', $bcm_get_contact ) ) {
+            $contact_tab_slug = bp_loggedin_user_domain() . 'contact';
+            // Menus for logged in user.
+            if (is_user_logged_in() ) {
+                $wp_admin_bar->add_menu(
+                    array(
+                    'parent' => 'my-account-buddypress',
+                    'id'     => 'my-account-contact',
+                    'title'  => esc_html__('Contact', 'buddypress-contact-me'),
+                    'href'   => trailingslashit($contact_tab_slug),
+                    )
+                );
+            }
         }
     }
 
