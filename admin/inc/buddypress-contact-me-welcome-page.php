@@ -32,7 +32,7 @@ if (!defined('ABSPATH')) {
 						<div class="wbcom-support-inner">
 							<h3><span class="dashicons dashicons-book"></span><?php esc_html_e('Documentation', 'buddypress-contact-me'); ?></h3>
 							<p><?php esc_html_e('We have prepared an extensive guide on BuddyPress Sticky Post to cover all aspects of the plugin. Most of your questions will be answered here.', 'buddypress-contact-me'); ?></p>
-							<a href="<?php echo esc_url('https://docs.wbcomdesigns.com/doc_category/buddypress-contact-me/'); ?>" class="button button-primary button-welcome-support" target="_blank"><?php esc_html_e('Read Documentation', 'buddypress-contact-me'); ?></a>
+							<a href="<?php echo esc_url('https://docs.wbcomdesigns.com/doc_category/bp-contact-me/'); ?>" class="button button-primary button-welcome-support" target="_blank"><?php esc_html_e('Read Documentation', 'buddypress-contact-me'); ?></a>
 						</div>
 					</div>
 
@@ -50,7 +50,7 @@ if (!defined('ABSPATH')) {
 						<div class="wbcom-support-inner">
 							<h3><span class="dashicons dashicons-admin-comments"></span><?php esc_html_e('Got Feedback?', 'buddypress-contact-me'); ?></h3>
 							<p><?php esc_html_e('We want to hear about your experience with the plugin. We would also love to hear any suggestions you may have for future updates.', 'buddypress-contact-me'); ?></p>
-							<a href="<?php echo esc_url('https://wbcomdesigns.com/contact/'); ?>" class="button button-primary button-welcome-support" target="_blank"><?php esc_html_e('Send Feedback', 'buddypress-contact-me'); ?></a>
+							<a href="<?php echo esc_url('https://wbcomdesigns.com/submit-review/'); ?>" class="button button-primary button-welcome-support" target="_blank"><?php esc_html_e('Send Feedback', 'buddypress-contact-me'); ?></a>
 						</div>
 					</div>
 				</div><!-- .wbcom-support-info-wrap -->
