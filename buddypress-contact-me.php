@@ -103,9 +103,12 @@ function bp_contact_me_required_plugin_admin_notice() {
  * @param string $plugin The plugin slug.
  */
 function bp_contact_me_activation_redirect_settings( $plugin ) {
-	if ( plugin_basename( __FILE__ ) === $plugin && class_exists( 'Buddypress' ) ) {
-		wp_redirect( admin_url( 'admin.php?page=buddypress-contact-me' ) );
-		exit;
+	
+	if ( $plugin === plugin_basename( __FILE__ ) && class_exists( 'Buddypress' ) ) {
+		if ( isset( $_REQUEST['action'] ) && $_REQUEST['action'] === 'activate' && isset( $_REQUEST['plugin'] ) && $_REQUEST['plugin'] === $plugin ) { //phpcs:ignore
+			wp_redirect( admin_url( 'admin.php?page=buddypress-contact-me&redirects=1' ) );
+			exit;
+		}
 	}
 }
 add_action( 'activated_plugin', 'bp_contact_me_activation_redirect_settings' );
