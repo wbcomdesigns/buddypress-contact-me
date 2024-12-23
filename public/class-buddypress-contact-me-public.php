@@ -304,7 +304,9 @@ class Buddypress_Contact_Me_Public
      */
     public function bp_contact_me_function_to_show_data()
     {
-        bp_notifications_mark_notifications_by_type( get_current_user_id(), 'bcm_user_notifications', 'bcm_user_notifications_action' );
+        if( function_exists( 'bp_is_active' ) && bp_is_active( 'notifications' ) && function_exists( 'bp_notifications_mark_notifications_by_type' ) ) {
+            bp_notifications_mark_notifications_by_type( get_current_user_id(), 'bcm_user_notifications', 'bcm_user_notifications_action' );
+        }
         include 'partials/bp-contact-tab-show-sender-user-data.php';
     }
 
@@ -438,7 +440,7 @@ class Buddypress_Contact_Me_Public
      */
     public function bp_contact_me_notification( $get_contact_id, $bp_display_user_id )
     {
-        if (bp_is_active('notifications') ) {
+        if ( function_exists( 'bp_is_active' ) && bp_is_active('notifications') ) {
             $args = array(
             'user_id'           => $bp_display_user_id,
             'item_id'           => $get_contact_id,
@@ -449,11 +451,16 @@ class Buddypress_Contact_Me_Public
             'is_new'            => 1,
             'allow_duplicate'   => true,
             );
+
+            $bcm_general_setting = get_option('bcm_admin_general_setting');
+            if (isset($bcm_general_setting['bcm_allow_notification']) && 'yes' === $bcm_general_setting['bcm_allow_notification'] ) {
+                if ( function_exists( 'bp_notifications_add_notification' ) ) {
+                    bp_notifications_add_notification($args);
+                }
+                
+            }
         }
-        $bcm_general_setting = get_option('bcm_admin_general_setting');
-        if (isset($bcm_general_setting['bcm_allow_notification']) && 'yes' === $bcm_general_setting['bcm_allow_notification'] ) {
-            bp_notifications_add_notification($args);
-        }
+        
     }
 
     /**

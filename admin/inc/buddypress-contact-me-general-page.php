@@ -42,8 +42,11 @@ if ( current_user_can( 'edit_users' ) ) {
 						<p class="description"><?php esc_html_e( 'Allow members to receive notifications when someone contacts them.', 'buddypress-contact-me' ); ?></p>
 					</div>
 					<div class="wbcom-settings-section-options">
+						<?php if( function_exists( 'bp_is_active' ) && ! bp_is_active( 'notifications' ) ){ ?>
+							<p style='color:red;'><?php esc_html_e( 'Please enable Buddypress notifications component !!', 'buddypress-contact-me' ); ?></p>
+						<?php } ?>
 						<label class="wb-switch">
-							<input name='bcm_admin_general_setting[bcm_allow_notification]' type='checkbox' id="bcm_notification" class="bcm_notification" value='yes' <?php isset( $bcm_admin_general_setting['bcm_allow_notification'] ) ? checked( $bcm_admin_general_setting['bcm_allow_notification'], 'yes' ) : ''; ?> />
+							<input name='bcm_admin_general_setting[bcm_allow_notification]' type='checkbox' id="bcm_notification" class="bcm_notification" value='yes' <?php ( function_exists( 'bp_is_active' ) && bp_is_active( 'notifications' ) ) ? ( isset( $bcm_admin_general_setting['bcm_allow_notification'] ) ? checked( $bcm_admin_general_setting['bcm_allow_notification'], 'yes' ) : '' ) : ''  ?>  />
 							<div class="wb-slider wb-round"></div>
 						</label>
 					</div>
