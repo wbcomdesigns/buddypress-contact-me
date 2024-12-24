@@ -254,7 +254,7 @@ body.wbcom-bp-contact .bp-contact-me-popup-message li {
     display: flex;
     font-size: 16px;
     padding: 15px;
-    align-items: center;
+    align-items: flex-start;
     flex-wrap: wrap;    
 }
 body.wbcom-bp-contact .bp-contact-me-popup-message li:nth-child(2n+2){
@@ -262,13 +262,14 @@ body.wbcom-bp-contact .bp-contact-me-popup-message li:nth-child(2n+2){
 }
 body.wbcom-bp-contact .bp-contact-me-popup-message li strong {
     width: 22%;
+    min-width: 110px;
     text-align: left;
 }
 body.wbcom-bp-contact .bp-contact-me-popup-message li span{
     width: 78%;
     text-align: left;
 }
-.bp-contact-me-detials table.bp_contact-me-messages tr:nth-child(2n+2) {
+.bp-contact-me-details table.bp_contact-me-messages tr:nth-child(2n+2) {
     background: #f8f8f8;
 }
 
@@ -354,7 +355,7 @@ table.bp_contact-me-messages {
     display: none;
 }
 
-.reign-theme .bp-contact-me-detials {
+.reign-theme .bp-contact-me-details {
     margin-top: 15px;
 }
 
@@ -430,57 +431,55 @@ BB Theme
     border-width: 0 2px 2px 0;
 }
 
-.theme-buddyx-pro .enable-bp-contact-tab input[type="checkbox"]:checked{
-    background: var(--button-background-hover-color) !important;
-    border-color: var(--button-background-hover-color) ;
-}
-
-
 /*Contact Message Table Mobile*/
 
-@media only screen and (max-width: 689px) {
-    .bp-contact-me-detials table.bp_contact-me-messages thead,
-    .bp-contact-me-detials table.bp_contact-me-messages tbody,
-    .bp-contact-me-detials table.bp_contact-me-messages th,
-    .bp-contact-me-detials table.bp_contact-me-messages td,
-    .bp-contact-me-detials table.bp_contact-me-messages tr {
+@media only screen and (max-width: 768px) {
+    .bp-contact-me-details table.bp_contact-me-messages thead,
+    .bp-contact-me-details table.bp_contact-me-messages tbody,
+    .bp-contact-me-details table.bp_contact-me-messages th,
+    .bp-contact-me-details table.bp_contact-me-messages td,
+    .bp-contact-me-details table.bp_contact-me-messages tr {
         display: block;
     }
-    .bp-contact-me-detials table.bp_contact-me-messages thead tr {
+    .bp-contact-me-details table.bp_contact-me-messages thead tr {
         position: absolute;
         top: -9999px;
         left: -9999px;
     }
-    .bp-contact-me-detials table.bp_contact-me-messages td {
+    .bp-contact-me-details table.bp_contact-me-messages td {
         border: none;
         border-bottom: 1px solid #ddd;
         position: relative;
         padding-left: 40% !important;
     }
-    .bp-contact-me-detials table.bp_contact-me-messages td:before {
+    .bp-contact-me-details table.bp_contact-me-messages td:before {
+        content: attr(data-label);
         position: absolute;
         top: 10px;
         left: 12px;
         width: 40%;
         padding-right: 10px;
         white-space: nowrap;
+        text-transform: capitalize;
     }
-    .bp-contact-me-detials table.bp_contact-me-messages tr:nth-child(2n+2) {
+
+    /* .bp-contact-me-details table.bp_contact-me-messages tr:nth-child(2n+2) {
         background: #f8f8f8;
     }
-    .bp-contact-me-detials table.bp_contact-me-messages td:nth-of-type(1):before {
+    .bp-contact-me-details table.bp_contact-me-messages td:nth-of-type(1):before {
         content: attr(data-attr);
     }
-    .bp-contact-me-detials table.bp_contact-me-messages td:nth-of-type(2):before {
+    .bp-contact-me-details table.bp_contact-me-messages td:nth-of-type(2):before {
         content: attr(data-attr);
     }
-    .bp-contact-me-detials table.bp_contact-me-messages td:nth-of-type(3):before {
+    .bp-contact-me-details table.bp_contact-me-messages td:nth-of-type(3):before {
         content: attr(data-attr);
     }
-    .bp-contact-me-detials table.bp_contact-me-messages td:nth-of-type(4):before {
+    .bp-contact-me-details table.bp_contact-me-messages td:nth-of-type(4):before {
         content: attr(data-attr);
     }
-    .bp-contact-me-detials table.bp_contact-me-messages td:nth-of-type(5):before {
+    .bp-contact-me-details table.bp_contact-me-messages td:nth-of-type(5):before {
         content: attr(data-attr);
-    }
+    } */
+
 }

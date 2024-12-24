@@ -47,8 +47,8 @@ $get_contact_allrow       = $wpdb->get_results( $get_contact_row, ARRAY_A );
 						$bcm_first_name = $sender_id ? bp_core_get_user_displayname( $sender_id ) : $get_contact_allrow_val['name'];
 						?>
 						<tr>
-							<td class="contact-me-sender-id"><input type="checkbox" name="bcm_messages[]" class="bcm-all-check" value="<?php echo esc_attr( $get_contact_allrow_val['id'] ); ?>" /></td>
-							<td class="user_displayname">
+							<td class="contact-me-sender-id" ><input type="checkbox" name="bcm_messages[]" class="bcm-all-check" value="<?php echo esc_attr( $get_contact_allrow_val['id'] ); ?>" /></td>
+							<td class="user_displayname" data-label="name">
 								 <?php if ( function_exists( 'buddypress' ) && version_compare( buddypress()->version, '12.0', '>=' ) ) { ?>
 								<a href="<?php echo esc_url( bp_members_get_user_url( $sender_id ) ); ?>" title="<?php echo esc_attr( bp_core_get_user_displayname( $sender_id ) ); ?>">
 										<?php
@@ -79,11 +79,11 @@ $get_contact_allrow       = $wpdb->get_results( $get_contact_row, ARRAY_A );
 								</a>
 							<?php	} ?>
 							</td>
-							<td>
+							<td data-label="message">
 								<div class="bcm-user-subject"><?php echo esc_html( $subject ); ?></div>
 								<div class="bcm-user-message"><?php echo esc_html( $message ); ?></div>
 							</td>
-							<td>
+							<td data-label="action">
 								<div class="bcm_action">
 									<div class="bcm_action_btn">
 										<span class="dashicons dashicons-visibility bcm_message_seen" data-id="<?php echo esc_attr( $get_contact_allrow_val['id'] ); ?>" aria-hidden="true"></span>
