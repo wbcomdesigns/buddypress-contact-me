@@ -401,6 +401,41 @@ BB Theme
     cursor: pointer;
 }
 
+.theme-buddyx-pro .youzify-inner-content.settings-inner-content .youzify-section-content .enable-bp-contact-tab{
+    padding: 25px 45px;
+}
+
+.youzify-inner-content.settings-inner-content .youzify-section-content .enable-bp-contact-tab{
+    padding: 25px 45px;
+}
+
+.youzify-inner-content.settings-inner-content .youzify-section-content .enable-bp-contact-tab label{
+    display: flex    ;
+    color: var(--yzfy-option-label-color);
+    font-size: var(--yzfy-primary-font-size);
+    font-weight: 600;
+    margin-left: 5px !important;
+}
+
+.youzify-inner-content.settings-inner-content .youzify-section-content .enable-bp-contact-tab input[type="checkbox"]{
+    width: 20px !important;
+    height: 20px !important;
+}
+
+.youzify-inner-content.settings-inner-content .youzify-section-content .enable-bp-contact-tab input[type=checkbox]:checked::before {
+    left: 5px;
+    top: 0px;
+    width: 8px;
+    height: 13px;
+    border-width: 0 2px 2px 0;
+}
+
+.theme-buddyx-pro .enable-bp-contact-tab input[type="checkbox"]:checked{
+    background: var(--button-background-hover-color) !important;
+    border-color: var(--button-background-hover-color) ;
+}
+
+
 /*Contact Message Table Mobile*/
 
 @media only screen and (max-width: 689px) {
