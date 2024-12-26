@@ -594,15 +594,9 @@ class Buddypress_Contact_Me_Public
 
         // Get the email content.
         $user_content = isset($bcm_general_setting['bcm_email_content']) && !empty($bcm_general_setting['bcm_email_content']) ? $bcm_general_setting['bcm_email_content'] : '';
-        $content = sprintf(
-            // Translators: %1$s.
-            __('Hi %1$s,<br>%2$s has contacted you.<br>%3$s to check the messages.<br>You can also go to the %4$s.<br>Thanks', 'buddypress-contact-me'),
-            $login_username,
-            $author_name,
-            $bcm_contact_link,
-            $bcm_contact_me_link
-        );
-
+        $user_content = str_replace( array( "{user_name}", "{sender_user_name}" ) ,  array( $login_username , $author_name  ), $user_content);
+        
+        
         // Prepare email headers.
         $headers = "Content-Type: text/html; charset=UTF-8\r\n";
         $headers .= 'From: ' . $bcm_sender_email_id . "\r\n";
@@ -613,7 +607,7 @@ class Buddypress_Contact_Me_Public
             isset($bcm_general_setting['bcm_allow_email']) && 'yes' === $bcm_general_setting['bcm_allow_email']
         ) {
             foreach (array_unique($bcm_admin_multiuser_mail) as $bcm_email) {
-                wp_mail($bcm_email, $subject, $content, $headers);
+                wp_mail($bcm_email, $subject, $user_content, $headers);
             }
         }
     }
