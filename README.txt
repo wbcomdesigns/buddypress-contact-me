@@ -3,8 +3,8 @@ Contributors: Wbcom Designs
 Donate link: https://www.wbcomdesigns.com
 Tags: comments, spam
 Requires at least: 3.0.1
-Tested up to: 6.6.1
-Stable tag: 1.2.2
+Tested up to: 6.7.2
+Stable tag: 1.3.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -24,6 +24,18 @@ e.g.
 1. Place `<?php do_action('plugin_name_hook'); ?>` in your templates
 
 == Changelog ==
+= 1.3.0 =
+* Fixed: Issue to dynamically change email content as specified by the admin.
+* Fixed: Fatal error when notifications component is disabled, including admin settings message.
+* Fixed: Plugin activation issue during bulk activation.
+* Fixed: Redirection links related to plugin documentation and feedback form.
+* Fixed: Fatal error related to BP function during plugin activation.
+* Fixed: Mobile view table issue with BuddyX Pro theme.
+* Fixed: Enable/disable contact tab button issue with BuddyX Pro theme.
+* Updated: Improved `.pot` file for translations.
+* Updated: Removed hard-coded dependency for better flexibility.
+* Enhanced: Logic to hide the "Contact Me" tab for restricted roles and logged-out users.
+
 = 1.2.2 =
 * Fix: UI Issue with Buddyboss theme
 * Fix: Translate
