@@ -537,6 +537,10 @@ div#wb_admin_plugin_name span {
     margin-right: 8px;
 }
 
+#wb_admin_header #wb_admin_nav ul li.wb_admin_nav_item a svg {
+    margin-right: 8px;
+}
+
 #wb_admin_header #wb_admin_nav ul li.wb_admin_nav_item a h4 {
     font-size: 1em;
     font-weight: var(--font-weight-medium);
