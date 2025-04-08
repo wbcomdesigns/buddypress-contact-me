@@ -881,11 +881,12 @@ div#wb_admin_plugin_name span {
 }
 
 .wb-license-form-table td.wb-license-status:before {
-    content: "\f057";
-    font: normal normal normal 20px/1 FontAwesome;
-    margin-right: 8px;
-    top: 3px;
+    content: "\f335";
+    font-family: 'dashicons';
+    margin-right: 5px;
     position: relative;
+    font-size: 24px;
+    vertical-align: middle;
 }
 
 .wb-license-form-table td.wb-license-status.active {
@@ -894,7 +895,7 @@ div#wb_admin_plugin_name span {
 }
 
 .wb-license-form-table td.wb-license-status.active:before {
-    content: "\f058";
+    content: "\f147";
 }
 
 .wb-license-form-table .button {
