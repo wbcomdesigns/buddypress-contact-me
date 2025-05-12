@@ -252,12 +252,23 @@ class Buddypress_Contact_Me_Public
      */
     public function bp_contact_me_show_data()
     {
+        global $wpdb;
         if (is_user_logged_in() && bp_displayed_user_id() === bp_loggedin_user_id() ) {
             $bcm_get_contact = get_option('bcm_admin_general_setting');
             if (array_key_exists('bcm_allow_contact_tab', $bcm_get_contact) ) {
+                $bp_contact_me_table_name = $wpdb->prefix . 'contact_me';
+
+                $get_contact_row = $wpdb->prepare(
+                    "SELECT COUNT(*) FROM $bp_contact_me_table_name WHERE `reciever` = %d",
+                    get_current_user_id()
+                );
+
+                $contact_count = $wpdb->get_var( $get_contact_row );
+
+
                 bp_core_new_nav_item(
                     array(
-                    'name'                    => esc_html__('Contact', 'buddypress-contact-me'),
+                    'name'                    => esc_html__('Contact ', 'buddypress-contact-me').'<span class="count">'.$contact_count.'</span>',
                     'slug'                    => 'contact',
                     'screen_function'         => array( $this, 'bp_contact_me_show_data_screen' ),
                     'position'                => 75,
