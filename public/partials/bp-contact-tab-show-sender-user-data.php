@@ -12,14 +12,35 @@
  * @subpackage Buddypress_Contact_Me/public/partials
  */
 
-global $wpdb;
-$loggedin_user_id         = get_current_user_id();
-$bp_contact_me_table_name = $wpdb->prefix . 'contact_me';
-$get_contact_row          = $wpdb->prepare(
-	"SELECT * FROM $bp_contact_me_table_name WHERE `reciever` = %d ORDER BY `id` DESC",
-	$loggedin_user_id
-);
-$get_contact_allrow       = $wpdb->get_results( $get_contact_row, ARRAY_A );
+ global $wpdb;
+
+ $loggedin_user_id         = get_current_user_id();
+ $bp_contact_me_table_name = $wpdb->prefix . 'contact_me';
+ 
+ // Set pagination variables
+ $items_per_page = 10;
+ $paged          = isset( $_GET['cpage'] ) ? max( 1, intval( $_GET['cpage'] ) ) : 1;
+ $offset         = ( $paged - 1 ) * $items_per_page;
+ 
+ // Get paginated results
+ $get_contact_allrow = $wpdb->get_results(
+	 $wpdb->prepare(
+		 "SELECT * FROM $bp_contact_me_table_name WHERE `reciever` = %d ORDER BY `id` DESC LIMIT %d OFFSET %d",
+		 $loggedin_user_id,
+		 $items_per_page,
+		 $offset
+	 ),
+	 ARRAY_A
+ );
+ 
+ // Get total count for pagination
+ $total_items = $wpdb->get_var(
+	 $wpdb->prepare(
+		 "SELECT COUNT(*) FROM $bp_contact_me_table_name WHERE `reciever` = %d",
+		 $loggedin_user_id
+	 )
+ );
+ $total_pages = ceil( $total_items / $items_per_page ); 
 ?>
 <div class="bp-contact-me-details">
 	<?php if ( $get_contact_allrow ) : ?>
@@ -113,6 +134,20 @@ $get_contact_allrow       = $wpdb->get_results( $get_contact_row, ARRAY_A );
 			</div>
 			<?php wp_nonce_field( 'bcm_contact_bulk_nonce', 'bcm_contact_bulk_nonce' ); ?>
 		</form>
+		<?php
+		if ( $total_pages > 1 ) {
+			echo "<div class='bcm-pagination'>";
+			echo paginate_links( array(
+				'base'      => add_query_arg( 'cpage', '%#%' ),
+				'format'    => '',
+				'current'   => $paged,
+				'total'     => $total_pages,
+				'prev_text' => __('« Prev'),
+				'next_text' => __('Next »'),
+			) );
+			echo "</div>";
+		}
+		?>
 	<?php else : ?>
 		<div class="bp-contact-me-container contact-me-not-found">
 			<div id="message" class="info bp-feedback bp-messages bp-template-notice">
