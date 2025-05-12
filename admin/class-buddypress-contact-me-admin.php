@@ -59,8 +59,10 @@ class Buddypress_Contact_Me_Admin {
 	 * @since    1.0.0
 	 */
 	public function enqueue_styles() {
-		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/buddypress-contact-me-admin.css', array(), $this->version, 'all' );
-		wp_enqueue_style( 'selectize', plugin_dir_url( __FILE__ ) . 'css/selectize.css', array(), $this->version, 'all' );
+		if( isset( $_GET['page'] ) && ( 'buddypress-contact-me' === $_GET['page'] || 'wbcom-plugins-page' === $_GET['page'] || 'wbcomplugins' === $_GET['page'] ) ){
+			wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/buddypress-contact-me-admin.css', array(), $this->version, 'all' );
+			wp_enqueue_style( 'selectize', plugin_dir_url( __FILE__ ) . 'css/selectize.css', array(), $this->version, 'all' );
+		}
 	}
 
 	/**
@@ -69,8 +71,10 @@ class Buddypress_Contact_Me_Admin {
 	 * @since    1.0.0
 	 */
 	public function enqueue_scripts() {
-		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/buddypress-contact-me-admin.js', array( 'jquery' ), $this->version, false );
-		wp_enqueue_script( 'selectize', plugin_dir_url( __FILE__ ) . 'js/selectize.min.js', array( 'jquery' ), $this->version, false );
+		if( isset( $_GET['page'] ) && ( 'buddypress-contact-me' === $_GET['page'] || 'wbcom-plugins-page' === $_GET['page'] || 'wbcomplugins' === $_GET['page'] ) ){
+			wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/buddypress-contact-me-admin.js', array( 'jquery' ), $this->version, false );
+			wp_enqueue_script( 'selectize', plugin_dir_url( __FILE__ ) . 'js/selectize.min.js', array( 'jquery' ), $this->version, false );
+		}
 	}
 
 	/**

@@ -74,8 +74,10 @@ class Buddypress_Contact_Me_Public
          * between the defined hooks and the functions defined in this
          * class.
          */
-
-        wp_enqueue_style($this->plugin_name, plugin_dir_url(__FILE__) . 'css/buddypress-contact-me-public.css', array(), $this->version, 'all');
+        if(function_exists( 'bp_is_user' ) && bp_is_user() && ( bp_is_current_component( 'contact-me' ) || bp_is_current_component( 'contact' ) ) ){
+            wp_enqueue_style($this->plugin_name, plugin_dir_url(__FILE__) . 'css/buddypress-contact-me-public.css', array(), $this->version, 'all');
+        }
+        
 
     }
 
@@ -97,21 +99,23 @@ class Buddypress_Contact_Me_Public
          * between the defined hooks and the functions defined in this
          * class.
          */
-        wp_enqueue_script($this->plugin_name . '-sweetalert', plugin_dir_url(__FILE__) . 'js/sweetalert.min.js', array( 'jquery' ), $this->version, false);
-        wp_enqueue_script($this->plugin_name, plugin_dir_url(__FILE__) . 'js/buddypress-contact-me-public.js', array( 'jquery', $this->plugin_name . '-sweetalert' ), $this->version, false);
-        $user_logged = 0;
-        if (is_user_logged_in() ) {
-            $user_logged = 1;
+        if(function_exists( 'bp_is_user' ) && bp_is_user() && ( bp_is_current_component( 'contact-me' ) || bp_is_current_component( 'contact' ) ) ){
+            wp_enqueue_script($this->plugin_name . '-sweetalert', plugin_dir_url(__FILE__) . 'js/sweetalert.min.js', array( 'jquery' ), $this->version, false);
+            wp_enqueue_script($this->plugin_name, plugin_dir_url(__FILE__) . 'js/buddypress-contact-me-public.js', array( 'jquery', $this->plugin_name . '-sweetalert' ), $this->version, false);
+            $user_logged = 0;
+            if (is_user_logged_in() ) {
+                $user_logged = 1;
+            }
+            wp_localize_script(
+                $this->plugin_name,
+                'bcm_ajax_object',
+                array(
+                'ajax_url'   => admin_url('admin-ajax.php'),
+                'ajax_nonce' => wp_create_nonce('bcm-contact-nonce'),
+                'user_log'   => $user_logged,
+                )
+            );
         }
-        wp_localize_script(
-            $this->plugin_name,
-            'bcm_ajax_object',
-            array(
-            'ajax_url'   => admin_url('admin-ajax.php'),
-            'ajax_nonce' => wp_create_nonce('bcm-contact-nonce'),
-            'user_log'   => $user_logged,
-            )
-        );
     }
 
     /**
