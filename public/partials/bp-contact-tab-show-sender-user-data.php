@@ -19,10 +19,11 @@
  
  // Set pagination variables
  $items_per_page = 10;
- $paged          = isset( $_GET['cpage'] ) ? max( 1, intval( $_GET['cpage'] ) ) : 1;
+ $paged          = isset( $_GET['cpage'] ) ? max( 1, intval( $_GET['cpage'] ) ) : 1;	// phpcs:ignore
  $offset         = ( $paged - 1 ) * $items_per_page;
  
  // Get paginated results
+ // phpcs:disable
  $get_contact_allrow = $wpdb->get_results(
 	 $wpdb->prepare(
 		 "SELECT * FROM $bp_contact_me_table_name WHERE `reciever` = %d ORDER BY `id` DESC LIMIT %d OFFSET %d",
@@ -40,6 +41,7 @@
 		 $loggedin_user_id
 	 )
  );
+  // phpcs:enable
  $total_pages = ceil( $total_items / $items_per_page ); 
 ?>
 <div class="bp-contact-me-details">
@@ -70,35 +72,45 @@
 						<tr>
 							<td class="contact-me-sender-id" ><input type="checkbox" name="bcm_messages[]" class="bcm-all-check" value="<?php echo esc_attr( $get_contact_allrow_val['id'] ); ?>" /></td>
 							<td class="user_displayname" data-label="name">
-								 <?php if ( function_exists( 'buddypress' ) && version_compare( buddypress()->version, '12.0', '>=' ) ) { ?>
-								<a href="<?php echo esc_url( bp_members_get_user_url( $sender_id ) ); ?>" title="<?php echo esc_attr( bp_core_get_user_displayname( $sender_id ) ); ?>">
-										<?php
-										echo wp_kses_post(
-											bp_core_fetch_avatar(
-												array(
-													'item_id' => $sender_id,
-													'type' => 'full',
-												)
-											)
-										);
-										echo esc_html( $bcm_first_name );
-										?>
-								</a>
-								<?php } else { ?>
-									<a href="<?php echo esc_url( bp_core_get_user_domain( $sender_id ) ); ?>" title="<?php echo esc_attr( bp_core_get_user_displayname( $sender_id ) ); ?>">
-									 <?php
-										echo wp_kses_post(
-											bp_core_fetch_avatar(
-												array(
-													'item_id' => $sender_id,
-													'type' => 'full',
-												)
-											)
-										);
-									 echo esc_html( $bcm_first_name );
-										?>
-								</a>
-							<?php	} ?>
+								 <?php 
+								 if( empty( $sender_id ) ){
+									
+									echo "<a href='#' title='". esc_html( $bcm_first_name ) ."'>";
+									echo get_avatar( '', 96, 'mystery' );
+									echo esc_html( $bcm_first_name );
+									echo "</a>";
+								 }else{
+									if ( function_exists( 'buddypress' ) && version_compare( buddypress()->version, '12.0', '>=' ) ) { ?>
+										<a href="<?php echo esc_url( bp_members_get_user_url( $sender_id ) ); ?>" title="<?php echo esc_attr( bp_core_get_user_displayname( $sender_id ) ); ?>">
+												<?php
+												echo wp_kses_post(
+													bp_core_fetch_avatar(
+														array(
+															'item_id' => $sender_id,
+															'type' => 'full',
+														)
+													)
+												);
+												echo esc_html( $bcm_first_name );
+												?>
+										</a>
+										<?php } else { ?>
+											<a href="<?php echo esc_url( bp_core_get_user_domain( $sender_id ) ); ?>" title="<?php echo esc_attr( bp_core_get_user_displayname( $sender_id ) ); ?>">
+											 <?php
+												echo wp_kses_post(
+													bp_core_fetch_avatar(
+														array(
+															'item_id' => $sender_id,
+															'type' => 'full',
+														)
+													)
+												);
+											 echo esc_html( $bcm_first_name );
+												?>
+										</a>
+									<?php	}
+								 }
+								 ?>
 							</td>
 							<td data-label="message">
 								<div class="bcm-user-subject"><?php echo esc_html( $subject ); ?></div>
@@ -137,14 +149,14 @@
 		<?php
 		if ( $total_pages > 1 ) {
 			echo "<div class='bcm-pagination'>";
-			echo paginate_links( array(
+			echo wp_kses_post( paginate_links( array(
 				'base'      => add_query_arg( 'cpage', '%#%' ),
 				'format'    => '',
 				'current'   => $paged,
 				'total'     => $total_pages,
-				'prev_text' => __('« Prev'),
-				'next_text' => __('Next »'),
-			) );
+				'prev_text' => esc_html__('« Prev', 'buddypress-contact-me'),
+				'next_text' => esc_html__('Next »', 'buddypress-contact-me'),
+			) ) );
 			echo "</div>";
 		}
 		?>
