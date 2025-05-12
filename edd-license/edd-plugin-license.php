@@ -252,7 +252,7 @@ add_action( 'admin_init', 'edd_wbcom_BCM_check_license' );
 function edd_wbcom_BCM_check_license() {
 	global $wp_version, $pagenow;
 
-	if ( $pagenow === 'plugins.php' || $pagenow === 'index.php' || ( isset( $_GET['page'] ) && $_GET['page'] === 'wbcom-license-page' ) ) {
+	if ( $pagenow === 'plugins.php' || $pagenow === 'index.php' || ( isset( $_GET['page'] ) && $_GET['page'] === 'wbcom-license-page' ) ) {		// phpcs:ignore
 
 		$license_data = get_transient( 'edd_wbcom_bp_contact_me_license_key_data' );
 		$license      = trim( get_option( 'edd_wbcom_bp_contact_me_license_key' ) );
@@ -426,7 +426,7 @@ function wbcom_BCM_render_license_section() {
 function edd_bp_contact_me_active_license_message() {
 	global $wp_version, $pagenow;
 
-	if ( $pagenow === 'plugins.php' || $pagenow === 'index.php' || ( isset( $_GET['page'] ) && $_GET['page'] === 'wbcom-license-page' ) ) {
+	if ( $pagenow === 'plugins.php' || $pagenow === 'index.php' || ( isset( $_GET['page'] ) && $_GET['page'] === 'wbcom-license-page' ) ) {		// phpcs:ignore
 
 		$license_data = get_transient( 'edd_wbcom_bp_contact_me_license_key_data' );
 		$license      = trim( get_option( 'edd_wbcom_bp_contact_me_license_key' ) );
