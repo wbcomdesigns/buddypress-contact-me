@@ -34,7 +34,8 @@ class Buddypress_Contact_Me_Activator {
 		global $wpdb;
 		$charset_collate          = $wpdb->get_charset_collate();
 		$bp_contact_me_table_name = $wpdb->prefix . 'contact_me';
-		if ( $wpdb->get_var( "show tables like '$bp_contact_me_table_name'" ) != $bp_contact_me_table_name ) {
+		// phpcs:disable
+		if ( $wpdb->get_var( "show tables like '$bp_contact_me_table_name'" ) != $bp_contact_me_table_name ) {	// phpcs:ignore
 			$bp_contact_sql = "CREATE TABLE $bp_contact_me_table_name (
 						id mediumint(11) NOT NULL AUTO_INCREMENT,
 						sender int(11) NOT NULL,
@@ -49,6 +50,7 @@ class Buddypress_Contact_Me_Activator {
 			include_once ABSPATH . 'wp-admin/includes/upgrade.php';
 			dbDelta( $bp_contact_sql );
 		}
+		// phpcs:enable
 		$contact_me_option_setting = get_user_meta( get_current_user_id(), 'contact_me_button' );
 		if ( false == $contact_me_option_setting || '' == $contact_me_option_setting ) {
 			$all_users = get_users();

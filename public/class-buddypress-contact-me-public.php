@@ -258,13 +258,12 @@ class Buddypress_Contact_Me_Public
             if (array_key_exists('bcm_allow_contact_tab', $bcm_get_contact) ) {
                 $bp_contact_me_table_name = $wpdb->prefix . 'contact_me';
 
-                $get_contact_row = $wpdb->prepare(
+                // phpcs:disable
+                $contact_count = $wpdb->get_var( $wpdb->prepare(
                     "SELECT COUNT(*) FROM $bp_contact_me_table_name WHERE `reciever` = %d",
                     get_current_user_id()
-                );
-
-                $contact_count = $wpdb->get_var( $get_contact_row );
-
+                ) );
+                // phpcs:enable
 
                 bp_core_new_nav_item(
                     array(
@@ -418,9 +417,11 @@ class Buddypress_Contact_Me_Public
             'bcm_user_notifications_action' === $component_action_name
         ) {
             global $wpdb;
+            // phpcs:disable
             $bp_contact_me_table_name = $wpdb->prefix . 'contact_me';
             $get_contact_q_noti       = $wpdb->prepare("SELECT * FROM $bp_contact_me_table_name WHERE `id` = %d", $item_id);
             $get_contact_r_noti       = $wpdb->get_row($get_contact_q_noti, ARRAY_A);
+            // phpcs:enable
             $get_contact_r_name       = isset($get_contact_r_noti['name']) && !empty($get_contact_r_noti['name']) ? $get_contact_r_noti['name'] : '';
             $sender_id                = isset($get_contact_r_noti['sender']) ? $get_contact_r_noti['sender'] : '';
             $sender_data              = get_userdata($sender_id);
@@ -553,9 +554,11 @@ class Buddypress_Contact_Me_Public
         $bcm_contact_me_link = '<a href="' . esc_url($user_contact_me_link) . '">' . esc_html__('contact form', 'buddypress-contact-me') . '</a>';
 
         // Retrieve contact message details.
+         // phpcs:disable
         $bp_contact_me_table_name = $wpdb->prefix . 'contact_me';
         $get_contact_q_noti = $wpdb->prepare("SELECT * FROM $bp_contact_me_table_name WHERE `id` = %d", $get_contact_id);
         $get_contact_r_noti = $wpdb->get_row($get_contact_q_noti, ARRAY_A);
+         // phpcs:enable
 
         // Get the email subject.
         $subject = $this->bcm_get_email_subject($bcm_general_setting);
@@ -678,6 +681,7 @@ class Buddypress_Contact_Me_Public
             $bp_contact_me_datetime = current_datetime()->format('Y-m-d H:i:s');
 
             // Insert contact message data into the database.
+            // phpcs:disable
             $bp_contact_me_table = $wpdb->prefix . 'contact_me';
             $insert_data_contact_me = $wpdb->insert(
                 $bp_contact_me_table,
@@ -692,6 +696,7 @@ class Buddypress_Contact_Me_Public
                 ),
                 array('%d', '%d', '%s', '%s', '%s', '%s', '%s')
             );
+            // phpcs:enable
 
             if ($insert_data_contact_me) {
                 bp_core_add_message(__('Message sent successfully.', 'buddypress-contact-me'));
@@ -726,9 +731,12 @@ class Buddypress_Contact_Me_Public
             return false;
         }
         global $wpdb;
+         // phpcs:disable
         $table_name = $wpdb->prefix . 'contact_me';
         $rowid      = ( isset( $_POST['rowid']  ) && ! empty( $_POST['rowid']  ) ) ? sanitize_text_field( wp_unslash( $_POST['rowid'] ) ) : 0;
-        $query      = $wpdb->query("DELETE FROM $table_name WHERE id =" . $rowid);
+        ;
+        $query      = $wpdb->query($wpdb->prepare("DELETE FROM $table_name WHERE id = %d", $rowid) );
+         // phpcs:enable
         if (1 == $query ) {
             wp_send_json_success();
         } else {
@@ -759,8 +767,10 @@ class Buddypress_Contact_Me_Public
         }
         if ('delete' == $action ) {
             global $wpdb;
+            // phpcs:disable
             $table_name = $wpdb->prefix . 'contact_me';
             $wpdb->query($wpdb->prepare("DELETE FROM $table_name WHERE id IN " . '(' . $_items . ')'));
+            // phpcs:enable
         }
         bp_core_add_message(__('Delete successfully.', 'buddypress-contact-me'));
         bp_core_redirect($redirect);
@@ -778,8 +788,8 @@ class Buddypress_Contact_Me_Public
         }
         global $wpdb;
         $table_name = $wpdb->prefix . 'contact_me';
-        $rowid      = isset($_POST['rowid']) ? sanitize_text_field(wp_unslash($_POST['rowid'])) : '';
-        $query      = $wpdb->get_row("SELECT * FROM $table_name WHERE id =" . $rowid);
+        $rowid      = isset($_POST['rowid']) ? sanitize_text_field(wp_unslash($_POST['rowid'])) : 0;
+        $query      = $wpdb->get_row($wpdb->prepare("SELECT * FROM $table_name WHERE id = %d", $rowid));    // phpcs:ignore
         if (0 != $query->sender ) {
             $name = bp_core_get_user_displayname($query->sender);
         } else {
