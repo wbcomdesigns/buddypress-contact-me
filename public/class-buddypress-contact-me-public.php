@@ -75,7 +75,16 @@ class Buddypress_Contact_Me_Public
          * class.
          */
         if( function_exists( 'bp_is_user' ) && bp_is_user() && ( bp_is_current_component( 'contact-me' ) || bp_is_current_component( 'contact' ) || bp_is_current_component( 'settings' ) ) ) {
-            wp_enqueue_style($this->plugin_name, plugin_dir_url(__FILE__) . 'css/buddypress-contact-me-public.css', array(), $this->version, 'all');
+
+            if ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) {
+				$extension = is_rtl() ? '.rtl.css' : '.css';
+				$path      = is_rtl() ? '/rtl' : '';
+			} else {
+				$extension = is_rtl() ? '.rtl.css' : '.min.css';
+				$path      = is_rtl() ? '/rtl' : '/min';
+			}
+
+            wp_enqueue_style($this->plugin_name, plugin_dir_url(__FILE__) . 'css' . $path . '/buddypress-contact-me-public' . $extension, array(), $this->version, 'all');
         }
         
 
@@ -100,8 +109,17 @@ class Buddypress_Contact_Me_Public
          * class.
          */
         if(function_exists( 'bp_is_user' ) && bp_is_user() && ( bp_is_current_component( 'contact-me' ) || bp_is_current_component( 'contact' ) ) ){
-            wp_enqueue_script($this->plugin_name . '-sweetalert', plugin_dir_url(__FILE__) . 'js/sweetalert.min.js', array( 'jquery' ), $this->version, false);
-            wp_enqueue_script($this->plugin_name, plugin_dir_url(__FILE__) . 'js/buddypress-contact-me-public.js', array( 'jquery', $this->plugin_name . '-sweetalert' ), $this->version, false);
+
+            if ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) {
+				$extension = '.js';
+				$path      = '';
+			} else {
+				$extension = '.min.js';
+				$path      = '/min';
+			}
+
+            wp_enqueue_script($this->plugin_name . '-sweetalert', plugin_dir_url(__FILE__) . 'js/vendor/sweetalert.min.js', array( 'jquery' ), $this->version, false);
+            wp_enqueue_script($this->plugin_name, plugin_dir_url(__FILE__) . 'js' . $path . '/buddypress-contact-me-public' . $extension, array( 'jquery', $this->plugin_name . '-sweetalert' ), $this->version, false);
             $user_logged = 0;
             if (is_user_logged_in() ) {
                 $user_logged = 1;

@@ -60,8 +60,17 @@ class Buddypress_Contact_Me_Admin {
 	 */
 	public function enqueue_styles() {
 		if( isset( $_GET['page'] ) && ( 'buddypress-contact-me' === $_GET['page'] || 'wbcom-plugins-page' === $_GET['page'] || 'wbcomplugins' === $_GET['page'] ) ){
-			wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/buddypress-contact-me-admin.css', array(), $this->version, 'all' );
-			wp_enqueue_style( 'selectize', plugin_dir_url( __FILE__ ) . 'css/selectize.css', array(), $this->version, 'all' );
+
+			if ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) {
+				$extension = is_rtl() ? '.rtl.css' : '.css';
+				$path      = is_rtl() ? '/rtl' : '';
+			} else {
+				$extension = is_rtl() ? '.rtl.css' : '.min.css';
+				$path      = is_rtl() ? '/rtl' : '/min';
+			}
+
+			wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css' . $path . '/buddypress-contact-me-admin' . $extension, array(), $this->version, 'all' );
+			wp_enqueue_style( 'selectize', plugin_dir_url( __FILE__ ) . 'css/vendor/selectize.css', array(), $this->version, 'all' );
 		}
 	}
 
@@ -72,8 +81,17 @@ class Buddypress_Contact_Me_Admin {
 	 */
 	public function enqueue_scripts() {
 		if( isset( $_GET['page'] ) && ( 'buddypress-contact-me' === $_GET['page'] || 'wbcom-plugins-page' === $_GET['page'] || 'wbcomplugins' === $_GET['page'] ) ){
-			wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/buddypress-contact-me-admin.js', array( 'jquery' ), $this->version, false );
-			wp_enqueue_script( 'selectize', plugin_dir_url( __FILE__ ) . 'js/selectize.min.js', array( 'jquery' ), $this->version, false );
+
+			if ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) {
+				$extension = '.js';
+				$path      = '';
+			} else {
+				$extension = '.min.js';
+				$path      = '/min';
+			}
+
+			wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js' . $path . '/buddypress-contact-me-admin' . $extension, array( 'jquery' ), $this->version, false );
+			wp_enqueue_script( 'selectize', plugin_dir_url( __FILE__ ) . 'js/vendor/selectize.min.js', array( 'jquery' ), $this->version, false );
 		}
 	}
 

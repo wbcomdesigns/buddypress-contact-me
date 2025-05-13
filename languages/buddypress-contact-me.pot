@@ -1,63 +1,78 @@
-# Copyright (C) 2025 
-# This file is distributed under the same license as the  package.
+# Copyright (C) 2025 Wbcom Designs
+# This file is distributed under the GPL-2.0+.
 msgid ""
 msgstr ""
-"Project-Id-Version: \n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-05-13 05:40:03+00:00\n"
+"Project-Id-Version: Wbcom Designs - Buddypress Contact Me 1.3.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/buddypress-contact-me\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2025-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Varun Dubey\n"
-"Language-Team: Wbcom Designs\n"
-"Language: en\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Poedit-Country: United States\n"
-"X-Poedit-SourceCharset: UTF-8\n"
-"X-Poedit-KeywordsList: "
-"__;_e;_x:1,2c;_ex:1,2c;_n:1,2;_nx:1,2,4c;_n_noop:1,2;_nx_noop:1,2,3c;esc_"
-"attr__;esc_html__;esc_attr_e;esc_html_e;esc_attr_x:1,2c;esc_html_x:1,2c;\n"
-"X-Poedit-Basepath: ../\n"
-"X-Poedit-SearchPath-0: .\n"
-"X-Poedit-Bookmarks: \n"
-"X-Textdomain-Support: yes\n"
-"X-Generator: grunt-wp-i18n 1.0.3\n"
+"POT-Creation-Date: 2025-05-13T07:06:20+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.11.0\n"
+"X-Domain: buddypress-contact-me\n"
 
-#: admin/class-buddypress-contact-me-admin.php:99
-#: admin/class-buddypress-contact-me-admin.php:100
+#. Plugin Name of the plugin
+#: buddypress-contact-me.php
+msgid "Wbcom Designs - Buddypress Contact Me"
+msgstr ""
+
+#. Plugin URI of the plugin
+#: buddypress-contact-me.php
+msgid "https://wbcomdesigns.com/downloads/buddypress-contact-me/"
+msgstr ""
+
+#. Description of the plugin
+#: buddypress-contact-me.php
+msgid "BuddyPress Contact Me displays a contact form on a member's profile which allows logged-in and non-logged-in visitor can be in touch with our community members."
+msgstr ""
+
+#. Author of the plugin
+#: buddypress-contact-me.php
+msgid "Wbcom Designs"
+msgstr ""
+
+#. Author URI of the plugin
+#: buddypress-contact-me.php
+msgid "https://www.wbcomdesigns.com"
+msgstr ""
+
+#: admin/class-buddypress-contact-me-admin.php:117
+#: admin/class-buddypress-contact-me-admin.php:118
 msgid "WB Plugins"
 msgstr ""
 
-#: admin/class-buddypress-contact-me-admin.php:107
-#: admin/class-buddypress-contact-me-admin.php:163
+#: admin/class-buddypress-contact-me-admin.php:125
+#: admin/class-buddypress-contact-me-admin.php:181
 msgid "General"
 msgstr ""
 
-#: admin/class-buddypress-contact-me-admin.php:111
-#: admin/class-buddypress-contact-me-admin.php:152
+#: admin/class-buddypress-contact-me-admin.php:129
+#: admin/class-buddypress-contact-me-admin.php:170
 #: admin/wbcom/templates/wbcom-plugins-page.php:171
 #: buddypress-contact-me.php:91
 msgid "BuddyPress Contact Me"
 msgstr ""
 
-#: admin/class-buddypress-contact-me-admin.php:112
-#: public/class-buddypress-contact-me-public.php:166
-#: public/class-buddypress-contact-me-public.php:191
-#: public/class-buddypress-contact-me-public.php:214
+#: admin/class-buddypress-contact-me-admin.php:130
+#: public/class-buddypress-contact-me-public.php:184
+#: public/class-buddypress-contact-me-public.php:209
+#: public/class-buddypress-contact-me-public.php:232
 msgid "Contact Me"
 msgstr ""
 
-#: admin/class-buddypress-contact-me-admin.php:154
 #. Translators: %s.
+#: admin/class-buddypress-contact-me-admin.php:172
 msgid "Version %s"
 msgstr ""
 
-#: admin/class-buddypress-contact-me-admin.php:162
+#: admin/class-buddypress-contact-me-admin.php:180
 msgid "Welcome"
 msgstr ""
 
-#: admin/class-buddypress-contact-me-admin.php:164
+#: admin/class-buddypress-contact-me-admin.php:182
 msgid "FAQ"
 msgstr ""
 
@@ -166,15 +181,13 @@ msgid "Enter the text for the email notification."
 msgstr ""
 
 #: admin/inc/buddypress-contact-me-general-page.php:193
-#: public/class-buddypress-contact-me-public.php:557
+#: public/class-buddypress-contact-me-public.php:575
 msgid "Click here"
 msgstr ""
 
-#: admin/inc/buddypress-contact-me-general-page.php:196
 #. Translators: %1$s.
-msgid ""
-"Hi {user_name}, {sender_user_name} has contacted you. %1$s to check the "
-"message. You can also go to the contact form. Thanks."
+#: admin/inc/buddypress-contact-me-general-page.php:196
+msgid "Hi {user_name}, {sender_user_name} has contacted you. %1$s to check the message. You can also go to the contact form. Thanks."
 msgstr ""
 
 #: admin/inc/buddypress-contact-me-general-page.php:211
@@ -194,9 +207,7 @@ msgid "Does this plugin support the BuddyBoss Platform?"
 msgstr ""
 
 #: admin/inc/buddypress-contact-me-support-tab.php:28
-msgid ""
-"Yes! The BuddyPress Contact Me plugin is compatible with the BuddyBoss "
-"Platform."
+msgid "Yes! The BuddyPress Contact Me plugin is compatible with the BuddyBoss Platform."
 msgstr ""
 
 #: admin/inc/buddypress-contact-me-support-tab.php:37
@@ -204,10 +215,7 @@ msgid "How can we display the contact form on any post or page?"
 msgstr ""
 
 #: admin/inc/buddypress-contact-me-support-tab.php:41
-msgid ""
-"You can use the shortcode [bp-contact-me id=\"USER_ID\"] to display a "
-"user-specific contact form on any post or page. Replace \"USER_ID\" with "
-"the ID of the user."
+msgid "You can use the shortcode [bp-contact-me id=\"USER_ID\"] to display a user-specific contact form on any post or page. Replace \"USER_ID\" with the ID of the user."
 msgstr ""
 
 #: admin/inc/buddypress-contact-me-support-tab.php:50
@@ -215,9 +223,7 @@ msgid "Does this plugin work for logged-out users?"
 msgstr ""
 
 #: admin/inc/buddypress-contact-me-support-tab.php:54
-msgid ""
-"Yes! Visitors who are not logged in can also contact site users using this "
-"plugin."
+msgid "Yes! Visitors who are not logged in can also contact site users using this plugin."
 msgstr ""
 
 #: admin/inc/buddypress-contact-me-support-tab.php:63
@@ -225,15 +231,11 @@ msgid "What are the requirements for this plugin to work?"
 msgstr ""
 
 #: admin/inc/buddypress-contact-me-support-tab.php:67
-msgid ""
-"BuddyPress must be installed and activated on your site for this plugin to "
-"function properly."
+msgid "BuddyPress must be installed and activated on your site for this plugin to function properly."
 msgstr ""
 
 #: admin/inc/buddypress-contact-me-welcome-page.php:20
-msgid ""
-"The BuddyPress Contact Me plugin allows members to contact each other "
-"without needing to be friends."
+msgid "The BuddyPress Contact Me plugin allows members to contact each other without needing to be friends."
 msgstr ""
 
 #: admin/inc/buddypress-contact-me-welcome-page.php:26
@@ -241,10 +243,7 @@ msgid "Help & Support Resources"
 msgstr ""
 
 #: admin/inc/buddypress-contact-me-welcome-page.php:27
-msgid ""
-"Here are the resources you may need to get help. Documentation is usually "
-"the best place to start. Should you need assistance, our customer care team "
-"is available at the support center."
+msgid "Here are the resources you may need to get help. Documentation is usually the best place to start. Should you need assistance, our customer care team is available at the support center."
 msgstr ""
 
 #: admin/inc/buddypress-contact-me-welcome-page.php:33
@@ -252,9 +251,7 @@ msgid "Documentation"
 msgstr ""
 
 #: admin/inc/buddypress-contact-me-welcome-page.php:34
-msgid ""
-"We have prepared an extensive guide on BuddyPress Sticky Post to cover all "
-"aspects of the plugin. Most of your questions will be answered here."
+msgid "We have prepared an extensive guide on BuddyPress Sticky Post to cover all aspects of the plugin. Most of your questions will be answered here."
 msgstr ""
 
 #: admin/inc/buddypress-contact-me-welcome-page.php:35
@@ -266,9 +263,7 @@ msgid "Support Center"
 msgstr ""
 
 #: admin/inc/buddypress-contact-me-welcome-page.php:43
-msgid ""
-"We strive to offer the best customer care via our support center. Once your "
-"theme is activated, you can request help anytime."
+msgid "We strive to offer the best customer care via our support center. Once your theme is activated, you can request help anytime."
 msgstr ""
 
 #: admin/inc/buddypress-contact-me-welcome-page.php:44
@@ -280,9 +275,7 @@ msgid "Got Feedback?"
 msgstr ""
 
 #: admin/inc/buddypress-contact-me-welcome-page.php:52
-msgid ""
-"We want to hear about your experience with the plugin. We would also love "
-"to hear any suggestions you may have for future updates."
+msgid "We want to hear about your experience with the plugin. We would also love to hear any suggestions you may have for future updates."
 msgstr ""
 
 #: admin/inc/buddypress-contact-me-welcome-page.php:53
@@ -332,7 +325,7 @@ msgid "Action"
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:9
-#: admin/wbcom/wbcom-admin-settings.php:315
+#: admin/wbcom/wbcom-admin-settings.php:331
 msgid "Themes & Extension"
 msgstr ""
 
@@ -351,8 +344,8 @@ msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:20
 #: admin/wbcom/templates/wbcom-plugins-page.php:366
-#: admin/wbcom/wbcom-admin-settings.php:224
-#: admin/wbcom/wbcom-admin-settings.php:225
+#: admin/wbcom/wbcom-admin-settings.php:240
+#: admin/wbcom/wbcom-admin-settings.php:241
 msgid "Our Themes"
 msgstr ""
 
@@ -367,10 +360,7 @@ msgid "Advanced Username Manager"
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:32
-msgid ""
-"Allow users to change their usernames directly from their profile settings. "
-"Enhance flexibility for members while keeping admin-level approval and "
-"control over username updates."
+msgid "Allow users to change their usernames directly from their profile settings. Enhance flexibility for members while keeping admin-level approval and control over username updates."
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:34
@@ -496,10 +486,7 @@ msgid "BuddyLists"
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:42
-msgid ""
-"Empower users to create personalized lists of friends, follow curated "
-"streams, and organize their connections for a better social experience "
-"within your community."
+msgid "Empower users to create personalized lists of friends, follow curated streams, and organize their connections for a better social experience within your community."
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:51
@@ -507,9 +494,7 @@ msgid "BuddyPress Schedule Activity"
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:52
-msgid ""
-"Plan posts and activities in advance with easy scheduling tools. Keep your "
-"community active even during off-hours and automate important updates."
+msgid "Plan posts and activities in advance with easy scheduling tools. Keep your community active even during off-hours and automate important updates."
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:61
@@ -517,10 +502,7 @@ msgid "BuddyPress Anonymous Activity"
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:62
-msgid ""
-"Enable members to share updates anonymously without revealing their "
-"identity, encouraging more honest, open, and candid conversations across "
-"your platform."
+msgid "Enable members to share updates anonymously without revealing their identity, encouraging more honest, open, and candid conversations across your platform."
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:71
@@ -528,9 +510,7 @@ msgid "BuddyPress Edit Activity"
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:72
-msgid ""
-"Let users edit their posted activities anytime. Help members fix mistakes "
-"or update their posts, keeping conversations fresh and accurate."
+msgid "Let users edit their posted activities anytime. Help members fix mistakes or update their posts, keeping conversations fresh and accurate."
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:81
@@ -538,10 +518,7 @@ msgid "WP Stories"
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:82
-msgid ""
-"Introduce Instagram-style stories where users can share photos and videos. "
-"Boost community engagement through visual storytelling and real-time "
-"content sharing."
+msgid "Introduce Instagram-style stories where users can share photos and videos. Boost community engagement through visual storytelling and real-time content sharing."
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:91
@@ -549,9 +526,7 @@ msgid "BuddyPress Business Profile"
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:92
-msgid ""
-"Allow businesses to set up profile pages, showcase their services, and "
-"directly connect with potential customers through your social network."
+msgid "Allow businesses to set up profile pages, showcase their services, and directly connect with potential customers through your social network."
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:101
@@ -559,9 +534,7 @@ msgid "BuddyPress Moderation Pro"
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:102
-msgid ""
-"Allow members to flag inappropriate content and maintain a safe, "
-"respectful, and welcoming community environment."
+msgid "Allow members to flag inappropriate content and maintain a safe, respectful, and welcoming community environment."
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:111
@@ -569,9 +542,7 @@ msgid "BuddyPress Resume Manager"
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:112
-msgid ""
-"Let users upload and display professional resumes right on their profiles. "
-"Ideal for building career-focused communities."
+msgid "Let users upload and display professional resumes right on their profiles. Ideal for building career-focused communities."
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:121
@@ -579,9 +550,7 @@ msgid "BuddyPress Polls"
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:122
-msgid ""
-"Let members create polls and surveys directly inside activity streams to "
-"collect opinions, boost participation, and spark discussions easily."
+msgid "Let members create polls and surveys directly inside activity streams to collect opinions, boost participation, and spark discussions easily."
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:131
@@ -589,9 +558,7 @@ msgid "BuddyPress Private Community Pro"
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:132
-msgid ""
-"Restrict access to BuddyPress areas. Protect member profiles and create a "
-"fully private, members-only experience."
+msgid "Restrict access to BuddyPress areas. Protect member profiles and create a fully private, members-only experience."
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:141
@@ -599,9 +566,7 @@ msgid "BuddyPress Profile Pro"
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:142
-msgid ""
-"Add custom repeater fields and groups to member profiles. Collect richer "
-"information and enhance profile personalization."
+msgid "Add custom repeater fields and groups to member profiles. Collect richer information and enhance profile personalization."
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:151
@@ -609,9 +574,7 @@ msgid "BuddyPress Check-ins Pro"
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:152
-msgid ""
-"Allow users to check in at places like restaurants or events. Encourage "
-"social interactions and real-world meetups through your platform."
+msgid "Allow users to check in at places like restaurants or events. Encourage social interactions and real-world meetups through your platform."
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:161
@@ -619,16 +582,11 @@ msgid "BuddyPress Ideapush Integration"
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:162
-msgid ""
-"Streamline idea management. Let members submit ideas, provide feedback, and "
-"spark innovation directly within their profiles."
+msgid "Streamline idea management. Let members submit ideas, provide feedback, and spark innovation directly within their profiles."
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:172
-msgid ""
-"Add easy-to-use contact forms on member profiles. Enable seamless "
-"communication between visitors and users without sharing personal "
-"information."
+msgid "Add easy-to-use contact forms on member profiles. Enable seamless communication between visitors and users without sharing personal information."
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:181
@@ -636,9 +594,7 @@ msgid "BuddyPress Member Blog Pro"
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:182
-msgid ""
-"Offer personal blogging spaces for members. Let users share articles, "
-"stories, and updates, turning your community into a vibrant content hub."
+msgid "Offer personal blogging spaces for members. Let users share articles, stories, and updates, turning your community into a vibrant content hub."
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:191
@@ -646,9 +602,7 @@ msgid "BuddyVendor"
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:192
-msgid ""
-"Combine e-commerce with social networking. Allow users to buy, sell, and "
-"interact on a community-driven multi-vendor marketplace."
+msgid "Combine e-commerce with social networking. Allow users to buy, sell, and interact on a community-driven multi-vendor marketplace."
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:201
@@ -656,9 +610,7 @@ msgid "BuddyPress Statistics"
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:202
-msgid ""
-"Get detailed community analytics. Monitor activities, understand engagement "
-"patterns, and make smarter decisions to grow your site."
+msgid "Get detailed community analytics. Monitor activities, understand engagement patterns, and make smarter decisions to grow your site."
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:211
@@ -666,9 +618,7 @@ msgid "Who viewed my profile"
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:212
-msgid ""
-"Give users visibility into who has visited their profile. Build curiosity, "
-"drive more profile views, and increase member engagement."
+msgid "Give users visibility into who has visited their profile. Build curiosity, drive more profile views, and increase member engagement."
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:221
@@ -676,9 +626,7 @@ msgid "BuddyPress Friend & Follow Suggestion"
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:222
-msgid ""
-"Provide personalized friend and follow suggestions based on profile data, "
-"boosting connections and community interactions."
+msgid "Provide personalized friend and follow suggestions based on profile data, boosting connections and community interactions."
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:231
@@ -686,9 +634,7 @@ msgid "BuddyPress Giphy"
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:232
-msgid ""
-"Enable GIF sharing in activities, comments, and private messages. Make "
-"conversations more fun, expressive, and visually engaging."
+msgid "Enable GIF sharing in activities, comments, and private messages. Make conversations more fun, expressive, and visually engaging."
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:241
@@ -696,9 +642,7 @@ msgid "Shortcodes for BuddyPress Pro"
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:242
-msgid ""
-"Add BuddyPress components anywhere on your site with shortcodes and "
-"Elementor widgets. Enjoy full design freedom and flexibility."
+msgid "Add BuddyPress components anywhere on your site with shortcodes and Elementor widgets. Enjoy full design freedom and flexibility."
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:251
@@ -706,9 +650,7 @@ msgid "BuddyPress Sticky Post"
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:252
-msgid ""
-"Highlight important updates by pinning posts to the top of activity "
-"streams. Ensure key messages are always seen by members."
+msgid "Highlight important updates by pinning posts to the top of activity streams. Ensure key messages are always seen by members."
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:261
@@ -716,9 +658,7 @@ msgid "BuddyPress Quotes"
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:262
-msgid ""
-"Let users decorate their posts with vibrant backgrounds and images, making "
-"activity updates more expressive and attention-grabbing."
+msgid "Let users decorate their posts with vibrant backgrounds and images, making activity updates more expressive and attention-grabbing."
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:271
@@ -726,9 +666,7 @@ msgid "BuddyPress Auto Friends"
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:272
-msgid ""
-"Automatically add specific users as friends to new members, helping them "
-"build their network and feel connected from day one."
+msgid "Automatically add specific users as friends to new members, helping them build their network and feel connected from day one."
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:281
@@ -736,9 +674,7 @@ msgid "BuddyPress Newsfeed"
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:282
-msgid ""
-"Organize activity updates into a familiar Facebook-style newsfeed, helping "
-"members find new content quickly and engage more."
+msgid "Organize activity updates into a familiar Facebook-style newsfeed, helping members find new content quickly and engage more."
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:291
@@ -746,9 +682,7 @@ msgid "BuddyPress Status"
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:292
-msgid ""
-"Allow members to post quick status updates and react to activities, making "
-"your community more dynamic and lively."
+msgid "Allow members to post quick status updates and react to activities, making your community more dynamic and lively."
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:301
@@ -756,9 +690,7 @@ msgid "BuddyPress Hashtags"
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:302
-msgid ""
-"Boost discoverability and organize discussions by adding hashtag "
-"functionality across activities, posts, and comments."
+msgid "Boost discoverability and organize discussions by adding hashtag functionality across activities, posts, and comments."
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:311
@@ -766,9 +698,7 @@ msgid "BuddyPress Profanity Filter"
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:312
-msgid ""
-"Block unwanted words and keep your community safe, family-friendly, and "
-"free from offensive language."
+msgid "Block unwanted words and keep your community safe, family-friendly, and free from offensive language."
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:326
@@ -780,9 +710,7 @@ msgid "LMS Notes"
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:333
-msgid ""
-"LMS Notes will extend the LMS functionality to create Notes for courses, "
-"lessons and topics."
+msgid "LMS Notes will extend the LMS functionality to create Notes for courses, lessons and topics."
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:342
@@ -790,9 +718,7 @@ msgid "Learndash wpForo"
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:343
-msgid ""
-"The LearnDash wpForo integration allows you to create dedicated discussion "
-"channels for your learners and link your courses to multiple forums."
+msgid "The LearnDash wpForo integration allows you to create dedicated discussion channels for your learners and link your courses to multiple forums."
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:352
@@ -800,10 +726,7 @@ msgid "LearnDash Dashboard"
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:353
-msgid ""
-"The LearnDash Dashboard provides admins, instructors, group leaders, and "
-"students with personalized dashboards, allowing them to easily manage their "
-"courses, lessons, and communication."
+msgid "The LearnDash Dashboard provides admins, instructors, group leaders, and students with personalized dashboards, allowing them to easily manage their courses, lessons, and communication."
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:367
@@ -815,9 +738,7 @@ msgid "Reign Theme"
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:373
-msgid ""
-"Create your social network website for the company, school, sports team, or "
-"any niche community using a highly customizable WordPress, Community theme."
+msgid "Create your social network website for the company, school, sports team, or any niche community using a highly customizable WordPress, Community theme."
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:382
@@ -825,10 +746,7 @@ msgid "BuddyX Pro Theme"
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:383
-msgid ""
-"Build a flexible, code-free online community website with full control. "
-"Enjoy unique layouts, clean code, and easy customization for "
-"BuddyPress/BossBoss Platform."
+msgid "Build a flexible, code-free online community website with full control. Enjoy unique layouts, clean code, and easy customization for BuddyPress/BossBoss Platform."
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:392
@@ -836,10 +754,7 @@ msgid "BuddyX Theme"
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:393
-msgid ""
-"BuddyX is a free, fast, and responsive WordPress theme for creating social "
-"network sites like Facebook. Ideal for BuddyPress and BuddyBoss "
-"communities, memberships, eLearning, and marketplaces."
+msgid "BuddyX is a free, fast, and responsive WordPress theme for creating social network sites like Facebook. Ideal for BuddyPress and BuddyBoss communities, memberships, eLearning, and marketplaces."
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:402
@@ -847,9 +762,7 @@ msgid "KnowX Theme"
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:403
-msgid ""
-"A Free WordPress Knowledge base Theme. KnowX helps you set up a Knowledge "
-"Base in WordPress in less time than it takes to brew a coffee."
+msgid "A Free WordPress Knowledge base Theme. KnowX helps you set up a Knowledge Base in WordPress in less time than it takes to brew a coffee."
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:416
@@ -861,10 +774,7 @@ msgid "Wbcom Essential"
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:423
-msgid ""
-"Get dozens of stylish widgets packed inside Wbcom Essential. Enhance your "
-"BuddyPress site's design with advanced customizations without needing any "
-"technical skills."
+msgid "Get dozens of stylish widgets packed inside Wbcom Essential. Enhance your BuddyPress site's design with advanced customizations without needing any technical skills."
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:432
@@ -872,10 +782,7 @@ msgid "BuddyPress Member Type"
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:433
-msgid ""
-"Effortlessly create and manage multiple member types. Personalize user "
-"experiences and organize your community more effectively based on user "
-"profiles."
+msgid "Effortlessly create and manage multiple member types. Personalize user experiences and organize your community more effectively based on user profiles."
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:442
@@ -883,9 +790,7 @@ msgid "BuddyPress Advertisement Placements"
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:443
-msgid ""
-"Add advertisement placements across your BuddyPress community. Increase "
-"engagement and generate extra revenue with seamless ad integration."
+msgid "Add advertisement placements across your BuddyPress community. Increase engagement and generate extra revenue with seamless ad integration."
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:452
@@ -893,9 +798,7 @@ msgid "reCaptcha for BuddyPress"
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:453
-msgid ""
-"Secure your BuddyPress, WordPress, and WooCommerce sites by adding powerful "
-"Google reCaptcha protection against bots and spam activities."
+msgid "Secure your BuddyPress, WordPress, and WooCommerce sites by adding powerful Google reCaptcha protection against bots and spam activities."
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:462
@@ -903,9 +806,7 @@ msgid "BuddyPress Member Blog"
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:463
-msgid ""
-"Allow community members to create and manage their blog posts directly from "
-"their BuddyPress profiles, boosting engagement and user-generated content."
+msgid "Allow community members to create and manage their blog posts directly from their BuddyPress profiles, boosting engagement and user-generated content."
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:472
@@ -913,9 +814,7 @@ msgid "BuddyPress WooCommerce Integration"
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:473
-msgid ""
-"Easily integrate WooCommerce with BuddyPress. Showcase WooCommerce "
-"activities inside profiles and create a seamless social shopping experience."
+msgid "Easily integrate WooCommerce with BuddyPress. Showcase WooCommerce activities inside profiles and create a seamless social shopping experience."
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:482
@@ -923,9 +822,7 @@ msgid "BuddyPress Activity Link Preview"
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:483
-msgid ""
-"Automatically generate rich link previews inside the activity feed, "
-"displaying title, description, and image to make posts more engaging."
+msgid "Automatically generate rich link previews inside the activity feed, displaying title, description, and image to make posts more engaging."
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:492
@@ -933,9 +830,7 @@ msgid "BuddyPress Birthday Widget"
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:493
-msgid ""
-"Celebrate community members' birthdays by displaying upcoming birthdays in "
-"a sidebar widget, fostering deeper social interactions."
+msgid "Celebrate community members' birthdays by displaying upcoming birthdays in a sidebar widget, fostering deeper social interactions."
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:502
@@ -943,9 +838,7 @@ msgid "BuddyPress Redirect"
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:503
-msgid ""
-"Redirect users to custom pages after login or logout, based on their user "
-"roles, creating a more personalized navigation experience."
+msgid "Redirect users to custom pages after login or logout, based on their user roles, creating a more personalized navigation experience."
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:512
@@ -953,9 +846,7 @@ msgid "BuddyPress Activity Bump"
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:513
-msgid ""
-"Move the most recent interactions to the top of the activity feed "
-"automatically, keeping your BuddyPress newsfeed lively and active."
+msgid "Move the most recent interactions to the top of the activity feed automatically, keeping your BuddyPress newsfeed lively and active."
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:522
@@ -963,9 +854,7 @@ msgid "BuddyPress Lock – Private Community"
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:523
-msgid ""
-"Lock down selected BuddyPress components to create a private, members-only "
-"community and protect your site's content from the public."
+msgid "Lock down selected BuddyPress components to create a private, members-only community and protect your site's content from the public."
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:532
@@ -973,9 +862,7 @@ msgid "Shortcodes for BuddyPress"
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:533
-msgid ""
-"Use simple shortcodes to embed BuddyPress components like activity streams, "
-"member lists, or groups on any page or post."
+msgid "Use simple shortcodes to embed BuddyPress components like activity streams, member lists, or groups on any page or post."
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:542
@@ -983,9 +870,7 @@ msgid "BuddyPress User Todo List"
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:543
-msgid ""
-"Allow users to create, organize, and manage personal to-do lists with "
-"categories directly from their BuddyPress profiles."
+msgid "Allow users to create, organize, and manage personal to-do lists with categories directly from their BuddyPress profiles."
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:552
@@ -993,9 +878,7 @@ msgid "BuddyPress Job Manager"
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:553
-msgid ""
-"Create dedicated job tabs for employers and candidates inside their "
-"BuddyPress profiles, enhancing your site's job board functionality."
+msgid "Create dedicated job tabs for employers and candidates inside their BuddyPress profiles, enhancing your site's job board functionality."
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:562
@@ -1003,9 +886,7 @@ msgid "BuddyPress Group Reviews"
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:563
-msgid ""
-"Enable members to rate and review BuddyPress groups based on multiple "
-"criteria, improving group quality and encouraging community feedback."
+msgid "Enable members to rate and review BuddyPress groups based on multiple criteria, improving group quality and encouraging community feedback."
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:572
@@ -1013,9 +894,7 @@ msgid "BuddyPress Member Reviews"
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:573
-msgid ""
-"Allow users to rate and review other member profiles based on customizable "
-"criteria, helping build trust and credibility within your community."
+msgid "Allow users to rate and review other member profiles based on customizable criteria, helping build trust and credibility within your community."
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:582
@@ -1023,9 +902,7 @@ msgid "BuddyPress Check-ins"
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:583
-msgid ""
-"Allow community members to post activity updates along with their current "
-"location, encouraging real-world interactions and meetups."
+msgid "Allow community members to post activity updates along with their current location, encouraging real-world interactions and meetups."
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:592
@@ -1033,9 +910,7 @@ msgid "BuddyPress Activity Filter"
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:593
-msgid ""
-"Display customized activity feeds by applying filters to show specific "
-"content types based on your community's needs."
+msgid "Display customized activity feeds by applying filters to show specific content types based on your community's needs."
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:602
@@ -1043,9 +918,7 @@ msgid "BuddyPress Favorite Notification"
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:603
-msgid ""
-"Send real-time notifications to members when someone favorites their "
-"content, boosting engagement and interaction across your community."
+msgid "Send real-time notifications to members when someone favorites their content, boosting engagement and interaction across your community."
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:612
@@ -1053,13 +926,11 @@ msgid "BuddyPress Activity Social Share"
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:613
-msgid ""
-"Allow users to share their BuddyPress activity updates easily to external "
-"social media platforms, extending their reach. "
+msgid "Allow users to share their BuddyPress activity updates easily to external social media platforms, extending their reach. "
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-support-page.php:9
-#: admin/wbcom/wbcom-admin-settings.php:321
+#: admin/wbcom/wbcom-admin-settings.php:337
 msgid "Help & Support"
 msgstr ""
 
@@ -1068,10 +939,7 @@ msgid "How can we help you?"
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-support-page.php:15
-msgid ""
-"Our team is here to help you out at anytime. If you have any idea about how "
-"we could improve. You can share access to your site on our helpdesk if it "
-"can help getting faster."
+msgid "Our team is here to help you out at anytime. If you have any idea about how we could improve. You can share access to your site on our helpdesk if it can help getting faster."
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-support-page.php:24
@@ -1079,10 +947,7 @@ msgid "Tickets Support"
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-support-page.php:25
-msgid ""
-"Open a ticket on our helpdesk, we don't guarantee a fast response but "
-"within a week. Except if you've purchased one of our product we'll reply "
-"within 24 hours."
+msgid "Open a ticket on our helpdesk, we don't guarantee a fast response but within a week. Except if you've purchased one of our product we'll reply within 24 hours."
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-support-page.php:28
@@ -1095,36 +960,35 @@ msgid "Contact Us"
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-support-page.php:42
-msgid ""
-"Create a new thread on our plugin page, participation is open to anyone "
-"from all around the world. We'll be there to help as well but can't "
-"guarantee any delay."
+msgid "Create a new thread on our plugin page, participation is open to anyone from all around the world. We'll be there to help as well but can't guarantee any delay."
 msgstr ""
 
-#: admin/wbcom/wbcom-admin-settings.php:193
+#: admin/wbcom/wbcom-admin-settings.php:201
 msgid "Activate"
 msgstr ""
 
-#: admin/wbcom/wbcom-admin-settings.php:194
+#: admin/wbcom/wbcom-admin-settings.php:202
 msgid "Deactivate"
 msgstr ""
 
-#: admin/wbcom/wbcom-admin-settings.php:216
-#: admin/wbcom/wbcom-admin-settings.php:217
+#: admin/wbcom/wbcom-admin-settings.php:232
+#: admin/wbcom/wbcom-admin-settings.php:233
 msgid "Our Plugins"
 msgstr ""
 
-#: admin/wbcom/wbcom-admin-settings.php:232
-#: admin/wbcom/wbcom-admin-settings.php:233 buddypress-contact-me.php:149
+#: admin/wbcom/wbcom-admin-settings.php:248
+#: admin/wbcom/wbcom-admin-settings.php:249
+#: buddypress-contact-me.php:149
 msgid "Support"
 msgstr ""
 
-#: admin/wbcom/wbcom-admin-settings.php:309 buddypress-contact-me.php:148
+#: admin/wbcom/wbcom-admin-settings.php:325
+#: buddypress-contact-me.php:148
 msgid "Settings"
 msgstr ""
 
-#: buddypress-contact-me.php:90
 #. Translators: %s.
+#: buddypress-contact-me.php:90
 msgid "%1$s is inactive as it requires %2$s to be installed and active."
 msgstr ""
 
@@ -1163,8 +1027,8 @@ msgstr ""
 msgid "Your license key has reached its activation limit."
 msgstr ""
 
-#: edd-license/edd-plugin-license.php:314
 #. translators: %1$s: Expire Time
+#: edd-license/edd-plugin-license.php:314
 msgid "Your Buddypress Contact Me plugin license key expired on %s."
 msgstr ""
 
@@ -1188,18 +1052,14 @@ msgstr ""
 msgid "You have %1$s/%2$s-sites activated."
 msgstr ""
 
+#. translators: %1$s: Version Info ; %2$s: changelog link ; %3$s: New Version Info
 #: edd-license/edd_bp_contact_me_plugin_updater.php:201
-#. translators: %1$s: Version Info ; %2$s: changelog link ; %3$s: New Version
-#. Info
 msgid "There is a new version of %1$s available. %2$sView version %3$s details%4$s."
 msgstr ""
 
+#. translators: %1$s: Version Info ; %2$s: changelog link ; %3$s: New Version Info
 #: edd-license/edd_bp_contact_me_plugin_updater.php:210
-#. translators: %1$s: Version Info ; %2$s: changelog link ; %3$s: New Version
-#. Info
-msgid ""
-"There is a new version of %1$s available. %2$sView version %3$s details%4$s "
-"or %5$supdate now%6$s."
+msgid "There is a new version of %1$s available. %2$sView version %3$s details%4$s or %5$supdate now%6$s."
 msgstr ""
 
 #: edd-license/edd_bp_contact_me_plugin_updater.php:396
@@ -1210,32 +1070,32 @@ msgstr ""
 msgid "Error"
 msgstr ""
 
-#: public/class-buddypress-contact-me-public.php:274
+#: public/class-buddypress-contact-me-public.php:292
 msgid "Contact "
 msgstr ""
 
-#: public/class-buddypress-contact-me-public.php:304
+#: public/class-buddypress-contact-me-public.php:322
 msgid "Contact"
 msgstr ""
 
-#: public/class-buddypress-contact-me-public.php:349
+#: public/class-buddypress-contact-me-public.php:367
 msgid "Enable/Disable Contact me tab"
 msgstr ""
 
-#: public/class-buddypress-contact-me-public.php:447
 #. translators: %s:
+#: public/class-buddypress-contact-me-public.php:465
 msgid " %1$s has contacted you."
 msgstr ""
 
-#: public/class-buddypress-contact-me-public.php:558
+#: public/class-buddypress-contact-me-public.php:576
 msgid "contact form"
 msgstr ""
 
-#: public/class-buddypress-contact-me-public.php:706
+#: public/class-buddypress-contact-me-public.php:724
 msgid "Message sent successfully."
 msgstr ""
 
-#: public/class-buddypress-contact-me-public.php:779
+#: public/class-buddypress-contact-me-public.php:797
 msgid "Delete successfully."
 msgstr ""
 
