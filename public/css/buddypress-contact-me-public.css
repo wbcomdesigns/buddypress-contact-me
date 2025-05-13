@@ -326,6 +326,62 @@ body.wbcom-bp-contact .bp-contact-me-popup-message li span{
     position: absolute;
 }
 
+/* Pagination */
+.bcm-pagination {
+    margin: 15px 0;
+    text-align: right;
+}
+
+.bcm-pagination .page-numbers {
+    display: inline-block;
+    text-decoration: none;
+    font-size: 13px;
+    line-height: 2.15384615;
+    min-height: 30px;
+    margin: 0;
+    padding: 0 10px;
+    cursor: pointer;
+    border-width: 1px;
+    border-style: solid;
+    border-radius: 3px;
+    white-space: nowrap;
+    box-sizing: border-box;
+}
+
+.bcm-pagination .page-numbers.current,
+.bcm-pagination .page-numbers:hover {
+    color: #2271b1;
+    border-color: #2271b1;
+    background: #f6f7f7;
+    vertical-align: top;
+}
+
+.bcm-pagination .page-numbers:hover {
+    cursor: pointer;
+}
+
+.bcm-pagination .page-numbers {
+    display: inline-block;
+    vertical-align: baseline;
+    min-width: 30px;
+    min-height: 30px;
+    margin: 3px;
+    padding: 5px 12px;
+    font-size: 14px;
+    line-height: 1.625;
+    text-align: center;
+}
+
+.bcm-pagination .page-numbers {
+    color: #a7aaad;
+    border-color: #dcdcde;
+    background: #f6f7f7;
+    box-shadow: none;
+    cursor: default;
+    -webkit-transform: none;
+    -ms-transform: none;
+    transform: none;
+}
 
 /*Reign Theme Icon*/
 .contact-me.buddypress .bp-member-blog-post-form {
@@ -375,10 +431,21 @@ BB Theme
 .bcm-contact-options-nav {
     display: flex;
     gap: 15px;
+    float: left;
+}
+
+.bcm-contact-options-nav::after {
+    content: '';
+    display: table;
+    clear: both;
 }
 
 .bcm-contact-options-nav .select-wrap {
     width: 200px;
+}
+
+.bcm-contact-options-nav .select-wrap select {
+    width: 100%;
 }
 
 /*******************

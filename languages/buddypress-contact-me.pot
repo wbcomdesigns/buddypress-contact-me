@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-08 13:38:02+00:00\n"
+"POT-Creation-Date: 2025-05-13 05:33:14+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -24,40 +24,40 @@ msgstr ""
 "X-Textdomain-Support: yes\n"
 "X-Generator: grunt-wp-i18n 1.0.3\n"
 
-#: admin/class-buddypress-contact-me-admin.php:95
-#: admin/class-buddypress-contact-me-admin.php:96
+#: admin/class-buddypress-contact-me-admin.php:99
+#: admin/class-buddypress-contact-me-admin.php:100
 msgid "WB Plugins"
 msgstr ""
 
-#: admin/class-buddypress-contact-me-admin.php:103
-#: admin/class-buddypress-contact-me-admin.php:159
+#: admin/class-buddypress-contact-me-admin.php:107
+#: admin/class-buddypress-contact-me-admin.php:163
 msgid "General"
 msgstr ""
 
-#: admin/class-buddypress-contact-me-admin.php:107
-#: admin/class-buddypress-contact-me-admin.php:148
+#: admin/class-buddypress-contact-me-admin.php:111
+#: admin/class-buddypress-contact-me-admin.php:152
 #: admin/wbcom/templates/wbcom-plugins-page.php:171
 #: buddypress-contact-me.php:91
 msgid "BuddyPress Contact Me"
 msgstr ""
 
-#: admin/class-buddypress-contact-me-admin.php:108
-#: public/class-buddypress-contact-me-public.php:162
-#: public/class-buddypress-contact-me-public.php:187
-#: public/class-buddypress-contact-me-public.php:210
+#: admin/class-buddypress-contact-me-admin.php:112
+#: public/class-buddypress-contact-me-public.php:166
+#: public/class-buddypress-contact-me-public.php:191
+#: public/class-buddypress-contact-me-public.php:214
 msgid "Contact Me"
 msgstr ""
 
-#: admin/class-buddypress-contact-me-admin.php:150
+#: admin/class-buddypress-contact-me-admin.php:154
 #. Translators: %s.
 msgid "Version %s"
 msgstr ""
 
-#: admin/class-buddypress-contact-me-admin.php:158
+#: admin/class-buddypress-contact-me-admin.php:162
 msgid "Welcome"
 msgstr ""
 
-#: admin/class-buddypress-contact-me-admin.php:160
+#: admin/class-buddypress-contact-me-admin.php:164
 msgid "FAQ"
 msgstr ""
 
@@ -166,7 +166,7 @@ msgid "Enter the text for the email notification."
 msgstr ""
 
 #: admin/inc/buddypress-contact-me-general-page.php:193
-#: public/class-buddypress-contact-me-public.php:541
+#: public/class-buddypress-contact-me-public.php:557
 msgid "Click here"
 msgstr ""
 
@@ -327,7 +327,7 @@ msgstr ""
 #: admin/wbcom/templates/wbcom-license-page.php:24
 #: admin/wbcom/templates/wbcom-license-page.php:36
 #: edd-license/edd-plugin-license.php:386
-#: public/partials/bp-contact-tab-show-sender-user-data.php:38
+#: public/partials/bp-contact-tab-show-sender-user-data.php:61
 msgid "Action"
 msgstr ""
 
@@ -1210,35 +1210,38 @@ msgstr ""
 msgid "Error"
 msgstr ""
 
-#: public/class-buddypress-contact-me-public.php:260
-#: public/class-buddypress-contact-me-public.php:290
+#: public/class-buddypress-contact-me-public.php:274
+msgid "Contact "
+msgstr ""
+
+#: public/class-buddypress-contact-me-public.php:304
 msgid "Contact"
 msgstr ""
 
-#: public/class-buddypress-contact-me-public.php:335
+#: public/class-buddypress-contact-me-public.php:349
 msgid "Enable/Disable Contact me tab"
 msgstr ""
 
-#: public/class-buddypress-contact-me-public.php:431
+#: public/class-buddypress-contact-me-public.php:447
 #. translators: %s:
 msgid " %1$s has contacted you."
 msgstr ""
 
-#: public/class-buddypress-contact-me-public.php:542
+#: public/class-buddypress-contact-me-public.php:558
 msgid "contact form"
 msgstr ""
 
-#: public/class-buddypress-contact-me-public.php:686
+#: public/class-buddypress-contact-me-public.php:706
 msgid "Message sent successfully."
 msgstr ""
 
-#: public/class-buddypress-contact-me-public.php:754
+#: public/class-buddypress-contact-me-public.php:779
 msgid "Delete successfully."
 msgstr ""
 
 #: public/partials/bp-contact-me-tab-content.php:27
 #: public/partials/bp-contact-me-tab-content.php:44
-#: public/partials/bp-contact-tab-show-sender-user-data.php:36
+#: public/partials/bp-contact-tab-show-sender-user-data.php:59
 msgid "Name"
 msgstr ""
 
@@ -1259,7 +1262,7 @@ msgid "Subject"
 msgstr ""
 
 #: public/partials/bp-contact-me-tab-content.php:60
-#: public/partials/bp-contact-tab-show-sender-user-data.php:37
+#: public/partials/bp-contact-tab-show-sender-user-data.php:60
 msgid "Message"
 msgstr ""
 
@@ -1267,34 +1270,42 @@ msgstr ""
 msgid "Submit"
 msgstr ""
 
-#: public/partials/bp-contact-tab-show-sender-user-data.php:28
+#: public/partials/bp-contact-tab-show-sender-user-data.php:51
 msgid "Loading..."
 msgstr ""
 
-#: public/partials/bp-contact-tab-show-sender-user-data.php:90
+#: public/partials/bp-contact-tab-show-sender-user-data.php:123
 msgid "View Message"
 msgstr ""
 
-#: public/partials/bp-contact-tab-show-sender-user-data.php:94
+#: public/partials/bp-contact-tab-show-sender-user-data.php:127
 msgid "Delete Message"
 msgstr ""
 
-#: public/partials/bp-contact-tab-show-sender-user-data.php:105
+#: public/partials/bp-contact-tab-show-sender-user-data.php:138
 msgid "Select Bulk Action"
 msgstr ""
 
-#: public/partials/bp-contact-tab-show-sender-user-data.php:108
+#: public/partials/bp-contact-tab-show-sender-user-data.php:141
 msgid "Bulk Actions"
 msgstr ""
 
-#: public/partials/bp-contact-tab-show-sender-user-data.php:109
+#: public/partials/bp-contact-tab-show-sender-user-data.php:142
 msgid "Delete"
 msgstr ""
 
-#: public/partials/bp-contact-tab-show-sender-user-data.php:112
+#: public/partials/bp-contact-tab-show-sender-user-data.php:145
 msgid "Apply"
 msgstr ""
 
-#: public/partials/bp-contact-tab-show-sender-user-data.php:120
+#: public/partials/bp-contact-tab-show-sender-user-data.php:157
+msgid "« Prev"
+msgstr ""
+
+#: public/partials/bp-contact-tab-show-sender-user-data.php:158
+msgid "Next »"
+msgstr ""
+
+#: public/partials/bp-contact-tab-show-sender-user-data.php:167
 msgid "Unfortunately, there are no contact messages found."
 msgstr ""
