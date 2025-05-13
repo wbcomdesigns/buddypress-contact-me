@@ -74,7 +74,7 @@ class Buddypress_Contact_Me_Public
          * between the defined hooks and the functions defined in this
          * class.
          */
-        if(function_exists( 'bp_is_user' ) && bp_is_user() && ( bp_is_current_component( 'contact-me' ) || bp_is_current_component( 'contact' ) ) ){
+        if( function_exists( 'bp_is_user' ) && bp_is_user() && ( bp_is_current_component( 'contact-me' ) || bp_is_current_component( 'contact' ) || bp_is_current_component( 'settings' ) ) ) {
             wp_enqueue_style($this->plugin_name, plugin_dir_url(__FILE__) . 'css/buddypress-contact-me-public.css', array(), $this->version, 'all');
         }
         

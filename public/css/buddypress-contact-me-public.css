@@ -282,14 +282,14 @@ body.wbcom-bp-contact .bp-contact-me-popup-message li span{
 }
 
 .enable-bp-contact-tab label {
-    font-size: 18px;
+    font-size: inherit;
     margin: 0 !important;
     font-weight: normal !important;
 }
 
 .enable-bp-contact-tab input[type="checkbox"] {
-    width: 25px !important;
-    height: 25px !important;
+    width: 22px !important;
+    height: 22px !important;
     border: 1px solid #a0a0a0;
     border-radius: 6px;
     background: #fff;
@@ -313,12 +313,12 @@ body.wbcom-bp-contact .bp-contact-me-popup-message li span{
 }
 
 .enable-bp-contact-tab input[type=checkbox]:checked::before {
-    left: 8px;
-    top: 4px;
-    width: 8px;
-    height: 13px;
+    left: 7px;
+    top: 3px;
+    width: 6px;
+    height: 11px;
     border: solid white;
-    border-width: 0 3px 3px 0;
+    border-width: 0 2px 2px 0;
     -webkit-transform: rotate(45deg);
     -ms-transform: rotate(45deg);
     transform: rotate(45deg);
