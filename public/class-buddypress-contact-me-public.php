@@ -97,6 +97,7 @@ class Buddypress_Contact_Me_Public
      */
     public function enqueue_scripts()
     {
+        global $wpdb;
         /**
          * This function is provided for demonstration purposes only.
          *
@@ -117,6 +118,14 @@ class Buddypress_Contact_Me_Public
 				$extension = '.min.js';
 				$path      = '/min';
 			}
+            $bp_contact_me_table_name = $wpdb->prefix . 'contact_me';
+            // phpcs:disable
+            $contact_count = $wpdb->get_var($wpdb->prepare(
+                "SELECT COUNT(*) FROM $bp_contact_me_table_name WHERE `reciever` = %d",
+                get_current_user_id()
+            ));
+            // phpcs:enable
+            $is_buddyboss_active = (function_exists('buddypress') && buddypress()->buddyboss) ? true : false;
 
             wp_enqueue_script($this->plugin_name . '-sweetalert', plugin_dir_url(__FILE__) . 'js/vendor/sweetalert.min.js', array( 'jquery' ), $this->version, false);
             wp_enqueue_script($this->plugin_name, plugin_dir_url(__FILE__) . 'js' . $path . '/buddypress-contact-me-public' . $extension, array( 'jquery', $this->plugin_name . '-sweetalert' ), $this->version, false);
@@ -128,9 +137,11 @@ class Buddypress_Contact_Me_Public
                 $this->plugin_name,
                 'bcm_ajax_object',
                 array(
-                'ajax_url'   => admin_url('admin-ajax.php'),
-                'ajax_nonce' => wp_create_nonce('bcm-contact-nonce'),
-                'user_log'   => $user_logged,
+                    'ajax_url'   => admin_url('admin-ajax.php'),
+                    'ajax_nonce' => wp_create_nonce('bcm-contact-nonce'),
+                    'user_log'   => $user_logged,
+                    'contact_count' => $contact_count,
+                    'is_buddyboss_active' => $is_buddyboss_active,
                 )
             );
         }
@@ -295,6 +306,7 @@ class Buddypress_Contact_Me_Public
                     'position'                => 75,
                     'default_subnav_slug'     => 'contact',
                     'show_for_displayed_user' => true,
+                    'item_css_id' => 'bp_contact_count',
                     )
                 );
             }

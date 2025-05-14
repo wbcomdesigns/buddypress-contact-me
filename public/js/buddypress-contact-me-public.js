@@ -29,6 +29,10 @@
      * practising this, we should strive to set a better example in our own work.
      */
     $(document).ready(function() {
+        if(bcm_ajax_object.is_buddyboss_active){
+            var count = '<span class = "count">'+ bcm_ajax_object.contact_count +'</span>';
+            $('#user-bp_contact_count').append(count);
+        }
         var userlog = bcm_ajax_object.user_log;       
         if( userlog == 1 ){
             var name    = $('.bp_contact_me_login_name').val();           
