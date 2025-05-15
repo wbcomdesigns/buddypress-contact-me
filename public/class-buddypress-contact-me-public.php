@@ -413,8 +413,6 @@ class Buddypress_Contact_Me_Public
         } else {
             update_user_meta(bp_loggedin_user_id(), 'contact_me_button', '');
         }
-        $redirect_to = trailingslashit(bp_displayed_user_domain() . bp_get_settings_slug() . '/general');
-        bp_core_redirect($redirect_to);
     }
 
     /**
