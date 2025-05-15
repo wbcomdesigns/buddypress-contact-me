@@ -38,3 +38,40 @@
     min-height: 40px;
     height: auto;
 }
+
+.bp_contact_me_settings_save_notice {
+    position: absolute;
+    right: 50px;
+    z-index: 99;
+    margin-top: -35px;
+    border-radius: 10px;
+    line-height: normal;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    color: #10AB00;
+}
+
+.bp_contact_me_settings_save_notice p {
+    display: inline-block;
+}
+
+.bp_contact_me_settings_save_notice button.notice-dismiss {
+    position: static;
+    display: inline;
+    padding: 0;
+    vertical-align: middle;
+}
+
+@media screen and (max-width: 1189px) {
+    .bp_contact_me_settings_save_notice {
+        margin: 0;
+        position: relative;
+        right: auto;
+        left: auto;
+    }
+}
+
+.bp_contact_me_settings_save_notice button.notice-dismiss:before {
+    color: red !important;
+}

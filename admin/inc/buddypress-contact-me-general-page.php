@@ -21,7 +21,12 @@ $bcm_users_except_admin    = get_users(
 if ( current_user_can( 'edit_users' ) ) {
 	$user_roles = array_reverse( get_editable_roles() );
 }
-// print_r( $user_roles );
+
+$bp_contact_me_settings_save_notice  = 'display:none';
+
+if( isset( $_GET['settings-updated'] ) && ( 'true' === $_GET['settings-updated'] ) ) { 
+	$bp_contact_me_settings_save_notice  = '';
+}
 ?>
 
 <div class="wbcom-tab-content">
@@ -29,6 +34,11 @@ if ( current_user_can( 'edit_users' ) ) {
 		<h3><?php esc_html_e( 'General Settings', 'buddypress-contact-me' ); ?></h3>
 	</div>
 	<div class="wbcom-admin-option-wrap">
+
+		<div class="bp_contact_me_settings_save_notice" style=<?php echo esc_attr( $bp_contact_me_settings_save_notice ); ?>> 
+			<p><strong><?php esc_html_e('Settings saved successfully.', 'buddypress-contact-me' );?></strong></p>
+			<button type="button" class="notice-dismiss"></button>
+		</div>
 		<form method="post" action="options.php">
 			<?php
 			settings_fields( 'bcm_admin_general_email_notification_setting' );

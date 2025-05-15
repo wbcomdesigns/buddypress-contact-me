@@ -46,5 +46,14 @@
         jQuery('#bcm-multiple-user-copy-email, #bcm-who-contacted, #bcm-who-contact').selectize({
             plugins: ["remove_button"],
         });
+
+
+        // Make notices dismissible
+        $(document).on('click', '.notice-dismiss', function () {
+            $(this).closest('.bp_contact_me_settings_save_notice').fadeOut(300, function () {
+                $(this).hide();
+            });
+        });
+
     });
 })(jQuery);
