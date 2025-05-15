@@ -14,8 +14,8 @@
 
 $min  = 1;
 $max  = 20;
-$num1 = rand($min, $max);
-$num2 = rand($min, $max);
+$num1 = wp_rand($min, $max);
+$num2 = wp_rand($min, $max);
 $sum  = $num1 + $num2;
 ?>
 <div class="bp-content-me-container">
