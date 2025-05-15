@@ -59,7 +59,7 @@ class Buddypress_Contact_Me_Admin {
 	 * @since    1.0.0
 	 */
 	public function enqueue_styles() {
-		if( isset( $_GET['page'] ) && ( 'buddypress-contact-me' === $_GET['page'] || 'wbcom-plugins-page' === $_GET['page'] || 'wbcomplugins' === $_GET['page'] ) ){
+		if( isset( $_GET['page'] ) && ( 'buddypress-contact-me' === $_GET['page'] || 'wbcom-plugins-page' === $_GET['page'] || 'wbcomplugins' === $_GET['page'] ) ){ //phpcs:ignore
 
 			if ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) {
 				$extension = is_rtl() ? '.rtl.css' : '.css';
@@ -80,7 +80,7 @@ class Buddypress_Contact_Me_Admin {
 	 * @since    1.0.0
 	 */
 	public function enqueue_scripts() {
-		if( isset( $_GET['page'] ) && ( 'buddypress-contact-me' === $_GET['page'] || 'wbcom-plugins-page' === $_GET['page'] || 'wbcomplugins' === $_GET['page'] ) ){
+		if( isset( $_GET['page'] ) && ( 'buddypress-contact-me' === $_GET['page'] || 'wbcom-plugins-page' === $_GET['page'] || 'wbcomplugins' === $_GET['page'] ) ){ //phpcs:ignore
 
 			if ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) {
 				$extension = '.js';
