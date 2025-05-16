@@ -415,6 +415,17 @@ class Buddypress_Contact_Me_Public
         }
     }
 
+    public function bp_contact_me_render_user_settings_save_notice( $user_id, $redirect_to) { 
+
+        $feedback[]    = __( 'Your settings have been saved.', 'buddypress-contact-me' );
+		$feedback_type = 'success';
+        
+        bp_core_add_message( implode( "\n", $feedback ), $feedback_type );
+
+        $path_chunks[] = 'settings/general';
+	    $redirect_to   = bp_displayed_user_url( bp_members_get_path_chunks( $path_chunks ) );
+        bp_core_redirect($redirect_to);
+    }
     /**
      * Function will trigger to register notification component
      */
@@ -791,7 +802,7 @@ class Buddypress_Contact_Me_Public
             return false;
         }
         $action   = ! empty($_POST['bcm_contact_bulk_action']) ? sanitize_text_field(wp_unslash($_POST['bcm_contact_bulk_action'])) : '';
-        $items    = ! empty($_POST['bcm_messages']) ? sanitize_text_field( wp_unslash( $_POST['bcm_messages'] ) ) : '';
+        $items    = ! empty($_POST['bcm_messages']) ?  wp_unslash( $_POST['bcm_messages'] )  : ''; //phpcs:ignore
         $redirect = ! empty($_POST['_wp_http_referer']) ? sanitize_text_field(wp_unslash($_POST['_wp_http_referer'])) : '';
         $_items   = implode(',', wp_parse_id_list($items));
         if (! is_array($items) ) {
@@ -804,7 +815,7 @@ class Buddypress_Contact_Me_Public
             $wpdb->query($wpdb->prepare("DELETE FROM $table_name WHERE id IN " . '(' . $_items . ')'));
             // phpcs:enable
         }
-        bp_core_add_message(__('Delete successfully.', 'buddypress-contact-me'));
+        bp_core_add_message( __('Deletion successful.', 'buddypress-contact-me') );
         bp_core_redirect($redirect);
     }
 

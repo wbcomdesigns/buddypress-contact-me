@@ -199,6 +199,8 @@ class Buddypress_Contact_Me {
 		$this->loader->add_action( 'wp_ajax_bcm_message_popup', $plugin_public, 'bcm_contact_message_popup' );
 		$this->loader->add_filter( 'body_class', $plugin_public, 'bcm_body_class', 10, 1 );
 
+		$this->loader->add_action( 'bp_core_general_settings_after_save', $plugin_public, 'bp_contact_me_render_user_settings_save_notice', 10,2 );
+
 	}
 
 	/**
