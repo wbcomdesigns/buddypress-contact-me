@@ -49,11 +49,11 @@ if( isset( $_GET['settings-updated'] ) && ( 'true' === $_GET['settings-updated']
 				<div class="wbcom-settings-section-wrap">
 					<div class="wbcom-settings-section-options-heading">
 						<label for="bcm_allow_notification"><?php esc_html_e( 'Enable BuddyPress Notifications', 'buddypress-contact-me' ); ?></label>
-						<p class="description"><?php esc_html_e( 'Allow members to receive notifications when someone contacts them.', 'buddypress-contact-me' ); ?></p>
+						<p class="description"><?php esc_html_e( 'Allow members to receive a BuddyPress notification when someone contacts them.', 'buddypress-contact-me' ); ?></p>
 					</div>
 					<div class="wbcom-settings-section-options">
 						<?php if( function_exists( 'bp_is_active' ) && ! bp_is_active( 'notifications' ) ){ ?>
-							<p style='color:red;'><?php esc_html_e( 'Please enable Buddypress notifications component !!', 'buddypress-contact-me' ); ?></p>
+							<p style='color:red;'><?php esc_html_e( 'Please enable the BuddyPress notifications component to use this feature.', 'buddypress-contact-me' ); ?></p>
 						<?php } ?>
 						<label class="wb-switch">
 							<input name='bcm_admin_general_setting[bcm_allow_notification]' type='checkbox' id="bcm_notification" class="bcm_notification" value='yes' <?php ( function_exists( 'bp_is_active' ) && bp_is_active( 'notifications' ) ) ? ( isset( $bcm_admin_general_setting['bcm_allow_notification'] ) ? checked( $bcm_admin_general_setting['bcm_allow_notification'], 'yes' ) : '' ) : ''  ?>  />
@@ -66,7 +66,7 @@ if( isset( $_GET['settings-updated'] ) && ( 'true' === $_GET['settings-updated']
 				<div class="wbcom-settings-section-wrap">
 					<div class="wbcom-settings-section-options-heading">
 						<label for="bcm_allow_email"><?php esc_html_e( 'Enable Email Notifications', 'buddypress-contact-me' ); ?></label>
-						<p class="description"><?php esc_html_e( 'Send email notifications to members when someone contacts them.', 'buddypress-contact-me' ); ?></p>
+						<p class="description"><?php esc_html_e( 'Send email notifications to members when they receive a new contact message.ss', 'buddypress-contact-me' ); ?></p>
 					</div>
 					<div class="wbcom-settings-section-options">
 						<label class="bcm-switch">
@@ -80,7 +80,7 @@ if( isset( $_GET['settings-updated'] ) && ( 'true' === $_GET['settings-updated']
 				<div class="wbcom-settings-section-wrap">
 					<div class="wbcom-settings-section-options-heading">
 						<label for="bcm_allow_contact_tab"><?php esc_html_e( 'Show Contact Tab', 'buddypress-contact-me' ); ?></label>
-						<p class="description"><?php esc_html_e( 'Display the contact tab on member profiles.', 'buddypress-contact-me' ); ?></p>
+						<p class="description"><?php esc_html_e( 'Display a "Contact me" tab on member profile pages.', 'buddypress-contact-me' ); ?></p>
 					</div>
 					<div class="wbcom-settings-section-options">
 						<label class="bcm-switch">
@@ -94,7 +94,7 @@ if( isset( $_GET['settings-updated'] ) && ( 'true' === $_GET['settings-updated']
 				<div class="wbcom-settings-section-wrap">
 					<div class="wbcom-settings-section-options-heading">
 						<label for="bcm_user_email"><?php esc_html_e( 'Customize Sender Email', 'buddypress-contact-me' ); ?></label>
-						<p class="description"><?php esc_html_e( 'Allow users to modify the email address used as the sender.', 'buddypress-contact-me' ); ?></p>
+						<p class="description"><?php esc_html_e( 'Allow users to customize the email address used as the sender.', 'buddypress-contact-me' ); ?></p>
 					</div>
 					<div class="wbcom-settings-section-options">
 						<input type="text" id="bcm_user_email" name="bcm_admin_general_setting[bcm_user_email]" value="<?php echo esc_attr( isset( $bcm_admin_general_setting['bcm_user_email'] ) ? $bcm_admin_general_setting['bcm_user_email'] : $bcm_admin_email ); ?>">
@@ -105,7 +105,7 @@ if( isset( $_GET['settings-updated'] ) && ( 'true' === $_GET['settings-updated']
 				<div class="wbcom-settings-section-wrap">
 					<div class="wbcom-settings-section-options-heading">
 						<label for="bcm_sender_copy_email"><?php esc_html_e( 'Send Copy to Sender', 'buddypress-contact-me' ); ?></label>
-						<p class="description"><?php esc_html_e( 'Send a copy of the email to the sender.', 'buddypress-contact-me' ); ?></p>
+						<p class="description"><?php esc_html_e( 'Send a copy of the contact email to the sender.', 'buddypress-contact-me' ); ?></p>
 					</div>
 					<div class="wbcom-settings-section-options">
 						<label class="bcm-switch">
@@ -119,7 +119,7 @@ if( isset( $_GET['settings-updated'] ) && ( 'true' === $_GET['settings-updated']
 				<div class="wbcom-settings-section-wrap">
 					<div class="wbcom-settings-section-options-heading">
 						<label for="bcm_admin_copy_email"><?php esc_html_e( 'Send Copy to Admin', 'buddypress-contact-me' ); ?></label>
-						<p class="description"><?php esc_html_e( 'Send a copy of the email to the admin.', 'buddypress-contact-me' ); ?></p>
+						<p class="description"><?php esc_html_e( 'Send a copy of the contact email to the site administrator.', 'buddypress-contact-me' ); ?></p>
 					</div>
 					<div class="wbcom-settings-section-options">
 						<label class="bcm-switch">
@@ -133,7 +133,7 @@ if( isset( $_GET['settings-updated'] ) && ( 'true' === $_GET['settings-updated']
 				<div class="wbcom-settings-section-wrap">
 					<div class="wbcom-settings-section-options-heading">
 						<label for="bcm_multiple_user_copy_email"><?php esc_html_e( 'Send Notifications to Multiple Users', 'buddypress-contact-me' ); ?></label>
-						<p class="description"><?php esc_html_e( 'Select additional users to receive email notifications.', 'buddypress-contact-me' ); ?></p>
+						<p class="description"><?php esc_html_e( 'Select additional users who should receive email notifications.', 'buddypress-contact-me' ); ?></p>
 					</div>
 					<div class="wbcom-settings-section-options">
 						<select name="bcm_admin_general_setting[bcm_multiple_user_copy_email][]" id="bcm-multiple-user-copy-email" multiple>
@@ -148,7 +148,7 @@ if( isset( $_GET['settings-updated'] ) && ( 'true' === $_GET['settings-updated']
 				<div class="wbcom-settings-section-wrap">
 					<div class="wbcom-settings-section-options-heading">
 						<label for="bcm_who_contact"><?php esc_html_e( 'Allowed to Initiate Contact', 'buddypress-contact-me' ); ?></label>
-						<p class="description"><?php esc_html_e( 'Select the user roles allowed to initiate contact requests.', 'buddypress-contact-me' ); ?></p>
+						<p class="description"><?php esc_html_e( 'Choose which user roles are allowed to send contact requests.', 'buddypress-contact-me' ); ?></p>
 					</div>
 					<div class="wbcom-settings-section-optio-options">
 
@@ -165,7 +165,7 @@ if( isset( $_GET['settings-updated'] ) && ( 'true' === $_GET['settings-updated']
 				<div class="wbcom-settings-section-wrap">
 					<div class="wbcom-settings-section-options-heading">
 						<label for="bcm_who_contacted"><?php esc_html_e( 'Allowed to Be Contacted', 'buddypress-contact-me' ); ?></label>
-						<p class="description"><?php esc_html_e( 'Select the user roles who can be contacted.', 'buddypress-contact-me' ); ?></p>
+						<p class="description"><?php esc_html_e( 'Choose which user roles can receive contact requests.', 'buddypress-contact-me' ); ?></p>
 					</div>
 					<div class="wbcom-settings-section-options">
 						<select name="bcm_admin_general_setting[bcm_who_contacted][]" id="bcm-who-contacted" class="bcm_who_contacted" multiple>
@@ -180,7 +180,7 @@ if( isset( $_GET['settings-updated'] ) && ( 'true' === $_GET['settings-updated']
 				<div class="wbcom-settings-section-wrap">
 					<div class="wbcom-settings-section-options-heading">
 						<label for="bcm_email_subject"><?php esc_html_e( 'Email Subject', 'buddypress-contact-me' ); ?></label>
-						<p class="description"><?php esc_html_e( 'Enter the subject line for email notifications.', 'buddypress-contact-me' ); ?></p>
+						<p class="description"><?php esc_html_e( 'Specify the subject line for the email notification.', 'buddypress-contact-me' ); ?></p>
 					</div>
 					<div class="wbcom-settings-section-options">
 						<input id="bcm_email_subject" class="bcm_email_subject" name="bcm_admin_general_setting[bcm_email_subject]" value="<?php echo esc_attr( isset( $bcm_admin_general_setting['bcm_email_subject'] ) ? $bcm_admin_general_setting['bcm_email_subject'] : '' ); ?>" placeholder="<?php esc_attr_e( '{user_name} has contacted you.', 'buddypress-contact-me' ); ?>">
@@ -191,7 +191,7 @@ if( isset( $_GET['settings-updated'] ) && ( 'true' === $_GET['settings-updated']
 				<div class="wbcom-settings-section-wrap">
 					<div class="wbcom-settings-section-options-heading">
 						<label for="bcm_email_content"><?php esc_html_e( 'Email Body Content', 'buddypress-contact-me' ); ?></label>
-						<p class="description"><?php esc_html_e( 'Enter the text for the email notification.', 'buddypress-contact-me' ); ?></p>
+						<p class="description"><?php esc_html_e( 'Enter the message content to be included in the email notification.', 'buddypress-contact-me' ); ?></p>
 					</div>
 					<div class="wbcom-settings-section-options">
 						<?php

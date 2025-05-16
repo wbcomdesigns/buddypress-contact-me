@@ -10,12 +10,12 @@
  *
  * @link    https://www.wbcomdesigns.com
  * @since   1.0.0
- * @package Buddypress_Contact_Me
+ * @package BuddyPress_Contact_Me
  *
  * @wordpress-plugin
- * Plugin Name:       Wbcom Designs - Buddypress Contact Me
+ * Plugin Name:       Wbcom Designs - BuddyPress Contact Me
  * Plugin URI:        https://wbcomdesigns.com/downloads/buddypress-contact-me/
- * Description:       BuddyPress Contact Me displays a contact form on a member's profile which allows logged-in and non-logged-in visitor can be in touch with our community members.
+ * Description:       BuddyPress Contact Me displays a contact form on members' profiles, allowing both logged-in and non-logged-in visitors to connect with community members.
  * Version:           1.3.0
  * Author:            Wbcom Designs
  * Author URI:        https://www.wbcomdesigns.com
@@ -41,9 +41,9 @@ define( 'BUDDYPRESS_CONTACT_ME_FILE', __FILE__ );
  * Plugin activation callback function.
  */
 function activate_buddypress_contact_me() {
-	if ( class_exists( 'Buddypress' ) ) {
+	if ( class_exists( 'BuddyPress' ) ) {
 		include_once plugin_dir_path( __FILE__ ) . 'includes/class-buddypress-contact-me-activator.php';
-		Buddypress_Contact_Me_Activator::activate();
+		BuddyPress_Contact_Me_Activator::activate();
 	} else {
 		add_action( 'admin_notices', 'bp_contact_me_required_plugin_admin_notice' );
 	}
@@ -55,7 +55,7 @@ function activate_buddypress_contact_me() {
  */
 function deactivate_buddypress_contact_me() {
 	include_once plugin_dir_path( __FILE__ ) . 'includes/class-buddypress-contact-me-deactivator.php';
-	Buddypress_Contact_Me_Deactivator::deactivate();
+	BuddyPress_Contact_Me_Deactivator::deactivate();
 }
 
 register_activation_hook( __FILE__, 'activate_buddypress_contact_me' );
@@ -71,7 +71,7 @@ require plugin_dir_path( __FILE__ ) . 'includes/class-buddypress-contact-me.php'
  * Check if BuddyPress is active.
  */
 function bp_contact_me_requires_buddypress() {
-	if ( ! class_exists( 'Buddypress' ) ) {
+	if ( ! class_exists( 'BuddyPress' ) ) {
 		deactivate_plugins( plugin_basename( __FILE__ ) );
 		add_action( 'admin_notices', 'bp_contact_me_required_plugin_admin_notice' );
 	} else {
@@ -101,7 +101,7 @@ function bp_contact_me_required_plugin_admin_notice() {
  */
 function bp_contact_me_activation_redirect_settings( $plugin ) {
 	
-	if ( $plugin === plugin_basename( __FILE__ ) && class_exists( 'Buddypress' ) ) {
+	if ( $plugin === plugin_basename( __FILE__ ) && class_exists( 'BuddyPress' ) ) {
 		if ( isset( $_REQUEST['action'] ) && $_REQUEST['action'] === 'activate' && isset( $_REQUEST['plugin'] ) && $_REQUEST['plugin'] === $plugin ) { //phpcs:ignore
 			wp_redirect( admin_url( 'admin.php?page=buddypress-contact-me&redirects=1' ) );
 			exit;
@@ -114,7 +114,7 @@ add_action( 'activated_plugin', 'bp_contact_me_activation_redirect_settings' );
  * Begin execution of the plugin.
  */
 function run_buddypress_contact_me() {
-	$plugin = new Buddypress_Contact_Me();
+	$plugin = new BuddyPress_Contact_Me();
 	$plugin->run();
 }
 add_action( 'bp_include', 'run_buddypress_contact_me' );

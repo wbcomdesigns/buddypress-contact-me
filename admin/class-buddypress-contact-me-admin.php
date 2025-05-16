@@ -1,25 +1,18 @@
 <?php
 
-/**
- * The admin-specific functionality of the plugin.
- *
- * @link       https://www.wbcomdesigns.com
- * @since      1.0.0
- *
- * @package    Buddypress_Contact_Me
- * @subpackage Buddypress_Contact_Me/admin
- */
 
 /**
  * The admin-specific functionality of the plugin.
  *
  * Defines the plugin name, version, and hooks for enqueuing the admin-specific stylesheets and JavaScript.
  *
- * @package    Buddypress_Contact_Me
- * @subpackage Buddypress_Contact_Me/admin
+ * @package    BuddyPress_Contact_Me
+ * @subpackage BuddyPress_Contact_Me/admin
  * @author     WBCOM Designs <admin@wbcomdesigns.com>
+ * @link       https://www.wbcomdesigns.com
+ * @since      1.0.0
  */
-class Buddypress_Contact_Me_Admin {
+class BuddyPress_Contact_Me_Admin {
 
 
 	/**

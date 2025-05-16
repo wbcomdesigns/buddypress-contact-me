@@ -3,19 +3,6 @@
 /**
  * The file that defines the core plugin class
  *
- * A class definition that includes attributes and functions used across both the
- * public-facing side of the site and the admin area.
- *
- * @link  https://www.wbcomdesigns.com
- * @since 1.0.0
- *
- * @package    Buddypress_Contact_Me
- * @subpackage Buddypress_Contact_Me/includes
- */
-
-/**
- * The core plugin class.
- *
  * This is used to define internationalization, admin-specific hooks, and
  * public-facing site hooks.
  *
@@ -23,11 +10,12 @@
  * version of the plugin.
  *
  * @since      1.0.0
- * @package    Buddypress_Contact_Me
- * @subpackage Buddypress_Contact_Me/includes
+ * @package    BuddyPress_Contact_Me
+ * @subpackage BuddyPress_Contact_Me/includes
  * @author     WBCOM Designs <admin@wbcomdesigns.com>
+ * @link  https://www.wbcomdesigns.com
  */
-class Buddypress_Contact_Me {
+class BuddyPress_Contact_Me {
 
 
 	/**
@@ -36,7 +24,7 @@ class Buddypress_Contact_Me {
 	 *
 	 * @since  1.0.0
 	 * @access protected
-	 * @var    Buddypress_Contact_Me_Loader    $loader    Maintains and registers all hooks for the plugin.
+	 * @var    BuddyPress_Contact_Me_Loader    $loader    Maintains and registers all hooks for the plugin.
 	 */
 	protected $loader;
 
@@ -87,10 +75,10 @@ class Buddypress_Contact_Me {
 	 *
 	 * Include the following files that make up the plugin:
 	 *
-	 * - Buddypress_Contact_Me_Loader. Orchestrates the hooks of the plugin.
-	 * - Buddypress_Contact_Me_i18n. Defines internationalization functionality.
-	 * - Buddypress_Contact_Me_Admin. Defines all hooks for the admin area.
-	 * - Buddypress_Contact_Me_Public. Defines all hooks for the public side of the site.
+	 * - BuddyPress_Contact_Me_Loader. Orchestrates the hooks of the plugin.
+	 * - BuddyPress_Contact_Me_i18n. Defines internationalization functionality.
+	 * - BuddyPress_Contact_Me_Admin. Defines all hooks for the admin area.
+	 * - BuddyPress_Contact_Me_Public. Defines all hooks for the public side of the site.
 	 *
 	 * Create an instance of the loader which will be used to register the hooks
 	 * with WordPress.
@@ -131,14 +119,14 @@ class Buddypress_Contact_Me {
 
 		include_once plugin_dir_path( dirname( __FILE__ ) ) . 'edd-license/edd-plugin-license.php';
 
-		$this->loader = new Buddypress_Contact_Me_Loader();
+		$this->loader = new BuddyPress_Contact_Me_Loader();
 
 	}
 
 	/**
 	 * Define the locale for this plugin for internationalization.
 	 *
-	 * Uses the Buddypress_Contact_Me_i18n class in order to set the domain and to register the hook
+	 * Uses the BuddyPress_Contact_Me_i18n class in order to set the domain and to register the hook
 	 * with WordPress.
 	 *
 	 * @since  1.0.0
@@ -146,7 +134,7 @@ class Buddypress_Contact_Me {
 	 */
 	private function set_locale() {
 
-		$plugin_i18n = new Buddypress_Contact_Me_i18n();
+		$plugin_i18n = new BuddyPress_Contact_Me_i18n();
 
 		$this->loader->add_action( 'plugins_loaded', $plugin_i18n, 'load_plugin_textdomain' );
 
@@ -161,7 +149,7 @@ class Buddypress_Contact_Me {
 	 */
 	private function define_admin_hooks() {
 
-		$plugin_admin = new Buddypress_Contact_Me_Admin( $this->get_plugin_name(), $this->get_version() );
+		$plugin_admin = new BuddyPress_Contact_Me_Admin( $this->get_plugin_name(), $this->get_version() );
 
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
@@ -179,7 +167,7 @@ class Buddypress_Contact_Me {
 	 */
 	private function define_public_hooks() {
 
-		$plugin_public = new Buddypress_Contact_Me_Public( $this->get_plugin_name(), $this->get_version() );
+		$plugin_public = new BuddyPress_Contact_Me_Public( $this->get_plugin_name(), $this->get_version() );
 
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
@@ -227,7 +215,7 @@ class Buddypress_Contact_Me {
 	 * The reference to the class that orchestrates the hooks with the plugin.
 	 *
 	 * @since  1.0.0
-	 * @return Buddypress_Contact_Me_Loader    Orchestrates the hooks of the plugin.
+	 * @return BuddyPress_Contact_Me_Loader    Orchestrates the hooks of the plugin.
 	 */
 	public function get_loader() {
 		return $this->loader;

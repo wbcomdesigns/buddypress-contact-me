@@ -13,7 +13,7 @@ if (!defined('ABSPATH')) {
 <div class="wbcom-tab-content">
 	<div class="wbcom-faq-admin-setting">
 		<div class="wbcom-admin-title-section">
-			<h3><?php esc_html_e('Have some questions?', 'buddypress-contact-me'); ?></h3>
+			<h3><?php esc_html_e('Frequently Asked Questions', 'buddypress-contact-me'); ?></h3>
 		</div>
 		<div class="wbcom-faq-admin-settings-block">
 			<div id="wbcom-faq-settings-section" class="blpro-faqs-block-contain">
@@ -25,7 +25,7 @@ if (!defined('ABSPATH')) {
 						</button>
 						<div class="wbcom-faq-panel">
 							<p>
-								<?php esc_html_e('Yes! The BuddyPress Contact Me plugin is compatible with the BuddyBoss Platform.', 'buddypress-contact-me'); ?>
+								<?php esc_html_e('Yes, the BuddyPress Contact Me plugin is compatible with the BuddyBoss Platform.', 'buddypress-contact-me'); ?>
 							</p>
 						</div>
 					</div>
@@ -38,7 +38,7 @@ if (!defined('ABSPATH')) {
 						</button>
 						<div class="wbcom-faq-panel">
 							<p>
-								<?php esc_html_e('You can use the shortcode [bp-contact-me id="USER_ID"] to display a user-specific contact form on any post or page. Replace "USER_ID" with the ID of the user.', 'buddypress-contact-me'); ?>
+								<?php esc_html_e('You can use the shortcode [bp-contact-me id="USER_ID"] to display a user-specific contact form on any post or page. Simply replace "USER_ID" with the actual ID of the user.', 'buddypress-contact-me'); ?>
 							</p>
 						</div>
 					</div>
@@ -51,7 +51,7 @@ if (!defined('ABSPATH')) {
 						</button>
 						<div class="wbcom-faq-panel">
 							<p>
-								<?php esc_html_e('Yes! Visitors who are not logged in can also contact site users using this plugin.', 'buddypress-contact-me'); ?>
+								<?php esc_html_e('Yes, visitors who are not logged in can also contact site users using this plugin.', 'buddypress-contact-me'); ?>
 							</p>
 						</div>
 					</div>

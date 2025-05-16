@@ -8,8 +8,8 @@
  * @link       https://www.wbcomdesigns.com
  * @since      1.0.0
  *
- * @package    Buddypress_Contact_Me
- * @subpackage Buddypress_Contact_Me/admin/partials
+ * @package    BuddyPress_Contact_Me
+ * @subpackage BuddyPress_Contact_Me/admin/partials
  */
 ?>
 

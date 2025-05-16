@@ -2,7 +2,7 @@
 # This file is distributed under the GPL-2.0+.
 msgid ""
 msgstr ""
-"Project-Id-Version: Wbcom Designs - Buddypress Contact Me 1.3.0\n"
+"Project-Id-Version: Wbcom Designs - BuddyPress Contact Me 1.3.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/buddypress-contact-me\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,7 +16,7 @@ msgstr ""
 
 #. Plugin Name of the plugin
 #: buddypress-contact-me.php
-msgid "Wbcom Designs - Buddypress Contact Me"
+msgid "Wbcom Designs - BuddyPress Contact Me"
 msgstr ""
 
 #. Plugin URI of the plugin
@@ -89,7 +89,7 @@ msgid "Allow members to receive notifications when someone contacts them."
 msgstr ""
 
 #: admin/inc/buddypress-contact-me-general-page.php:46
-msgid "Please enable Buddypress notifications component !!"
+msgid "Please enable BuddyPress notifications component !!"
 msgstr ""
 
 #: admin/inc/buddypress-contact-me-general-page.php:58
@@ -1029,11 +1029,11 @@ msgstr ""
 
 #. translators: %1$s: Expire Time
 #: edd-license/edd-plugin-license.php:314
-msgid "Your Buddypress Contact Me plugin license key expired on %s."
+msgid "Your BuddyPress Contact Me plugin license key expired on %s."
 msgstr ""
 
 #: edd-license/edd-plugin-license.php:345
-msgid "Please activate your Buddypress Contact Me plugin license key."
+msgid "Please activate your BuddyPress Contact Me plugin license key."
 msgstr ""
 
 #: edd-license/edd-plugin-license.php:407

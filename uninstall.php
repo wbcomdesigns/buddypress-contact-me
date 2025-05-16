@@ -22,7 +22,7 @@
  * @link       https://www.wbcomdesigns.com
  * @since      1.0.0
  *
- * @package    Buddypress_Contact_Me
+ * @package    BuddyPress_Contact_Me
  */
 
 // If uninstall not called from WordPress, then exit.

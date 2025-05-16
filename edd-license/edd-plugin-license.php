@@ -311,7 +311,7 @@ function edd_wbcom_BCM_admin_notices() {
 				<?php
 				$message = sprintf(
 					/* translators: %1$s: Expire Time*/
-					__( 'Your Buddypress Contact Me plugin license key expired on %s.', 'buddypress-contact-me' ),
+					__( 'Your BuddyPress Contact Me plugin license key expired on %s.', 'buddypress-contact-me' ),
 					date_i18n( get_option( 'date_format' ), strtotime( $license_data->expires, current_time( 'timestamp' ) ) )
 				);
 				echo esc_html( $message );
@@ -342,7 +342,7 @@ function edd_wbcom_BCM_admin_notices() {
 		<div class="notice notice-error is-dismissible">
 			<p>
 			<?php
-			echo esc_html__( 'Please activate your Buddypress Contact Me plugin license key.', 'buddypress-contact-me' );
+			echo esc_html__( 'Please activate your BuddyPress Contact Me plugin license key.', 'buddypress-contact-me' );
 			?>
 			</p>			
 		</div>

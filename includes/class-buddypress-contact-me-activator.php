@@ -1,14 +1,5 @@
 <?php
 
-/**
- * Fired during plugin activation
- *
- * @link  https://www.wbcomdesigns.com
- * @since 1.0.0
- *
- * @package    Buddypress_Contact_Me
- * @subpackage Buddypress_Contact_Me/includes
- */
 
 /**
  * Fired during plugin activation.
@@ -16,11 +7,12 @@
  * This class defines all code necessary to run during the plugin's activation.
  *
  * @since      1.0.0
- * @package    Buddypress_Contact_Me
- * @subpackage Buddypress_Contact_Me/includes
+ * @package    BuddyPress_Contact_Me
+ * @subpackage BuddyPress_Contact_Me/includes
  * @author     WBCOM Designs <admin@wbcomdesigns.com>
+ * @link       https://www.wbcomdesigns.com
  */
-class Buddypress_Contact_Me_Activator {
+class BuddyPress_Contact_Me_Activator {
 
 
 	/**
@@ -64,7 +56,7 @@ class Buddypress_Contact_Me_Activator {
 			if ( function_exists( 'buddypress' ) && version_compare( buddypress()->version, '12.0', '>=' ) ) {
 				$bcm_contact_link = bp_members_get_user_url( bp_loggedin_user_id() ) . 'contact';
 			} else {
-				if ( class_exists( 'Buddypress' ) && function_exists( 'bp_core_get_user_domain' ) ) {
+				if ( class_exists( 'BuddyPress' ) && function_exists( 'bp_core_get_user_domain' ) ) {
 					$bcm_contact_link = bp_core_get_user_domain( bp_loggedin_user_id() ) . 'contact';
 				}
 			}

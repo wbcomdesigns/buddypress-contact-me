@@ -4,7 +4,7 @@
  * This file is used for rendering and saving plugin welcome settings.
  *
  * @since    1.0.0
- * @package  Bp_Add_Group_Types
+ * @package  BuddyPress_Contact_Me
  * @author   Wbcom Designs
  */
 
@@ -17,21 +17,21 @@ if (!defined('ABSPATH')) {
 	<div class="wbcom-welcome-main-wrapper">
 		<div class="wbcom-welcome-head">
 			<p class="wbcom-welcome-description">
-				<?php esc_html_e('The BuddyPress Contact Me plugin allows members to contact each other without needing to be friends.', 'buddypress-contact-me'); ?>
+				<?php esc_html_e('BuddyPress Contact Me displays a contact form on members\' profiles, allowing both logged-in and non-logged-in visitors to connect with community members.', 'buddypress-contact-me'); ?>
 			</p>
 		</div><!-- .wbcom-welcome-head -->
 
 		<div class="wbcom-welcome-content">
 			<div class="wbcom-welcome-support-info">
 				<h3><?php esc_html_e('Help & Support Resources', 'buddypress-contact-me'); ?></h3>
-				<p><?php esc_html_e('Here are the resources you may need to get help. Documentation is usually the best place to start. Should you need assistance, our customer care team is available at the support center.', 'buddypress-contact-me'); ?></p>
+				<p><?php esc_html_e('If you need assistance, here are some helpful resources. Our documentation is a great place to start, and our support team is available if you require further help.', 'buddypress-contact-me'); ?></p>
 
 				<div class="wbcom-support-info-wrap">
 					<!-- Documentation Widget -->
 					<div class="wbcom-support-info-widgets">
 						<div class="wbcom-support-inner">
 							<h3><span class="dashicons dashicons-book"></span><?php esc_html_e('Documentation', 'buddypress-contact-me'); ?></h3>
-							<p><?php esc_html_e('We have prepared an extensive guide on BuddyPress Sticky Post to cover all aspects of the plugin. Most of your questions will be answered here.', 'buddypress-contact-me'); ?></p>
+							<p><?php esc_html_e('Explore our detailed guide on BuddyPress Contact Me to understand all the features and how to make the most of them.', 'buddypress-contact-me'); ?></p>
 							<a href="<?php echo esc_url('https://docs.wbcomdesigns.com/doc_category/bp-contact-me/'); ?>" class="button button-primary button-welcome-support" target="_blank"><?php esc_html_e('Read Documentation', 'buddypress-contact-me'); ?></a>
 						</div>
 					</div>
@@ -40,7 +40,7 @@ if (!defined('ABSPATH')) {
 					<div class="wbcom-support-info-widgets">
 						<div class="wbcom-support-inner">
 							<h3><span class="dashicons dashicons-sos"></span><?php esc_html_e('Support Center', 'buddypress-contact-me'); ?></h3>
-							<p><?php esc_html_e('We strive to offer the best customer care via our support center. Once your theme is activated, you can request help anytime.', 'buddypress-contact-me'); ?></p>
+							<p><?php esc_html_e('Our support team is here to assist you with any questions or issues. Feel free to contact us anytime through our support center.', 'buddypress-contact-me'); ?></p>
 							<a href="<?php echo esc_url('https://wbcomdesigns.com/support/'); ?>" class="button button-primary button-welcome-support" target="_blank"><?php esc_html_e('Get Support', 'buddypress-contact-me'); ?></a>
 						</div>
 					</div>
@@ -48,8 +48,8 @@ if (!defined('ABSPATH')) {
 					<!-- Feedback Widget -->
 					<div class="wbcom-support-info-widgets">
 						<div class="wbcom-support-inner">
-							<h3><span class="dashicons dashicons-admin-comments"></span><?php esc_html_e('Got Feedback?', 'buddypress-contact-me'); ?></h3>
-							<p><?php esc_html_e('We want to hear about your experience with the plugin. We would also love to hear any suggestions you may have for future updates.', 'buddypress-contact-me'); ?></p>
+							<h3><span class="dashicons dashicons-admin-comments"></span><?php esc_html_e('Share Your Feedback', 'buddypress-contact-me'); ?></h3>
+							<p><?php esc_html_e('We’d love to hear about your experience with the plugin. Your feedback and suggestions help us improve future updates.', 'buddypress-contact-me'); ?></p>
 							<a href="<?php echo esc_url('https://wbcomdesigns.com/submit-review/'); ?>" class="button button-primary button-welcome-support" target="_blank"><?php esc_html_e('Send Feedback', 'buddypress-contact-me'); ?></a>
 						</div>
 					</div>

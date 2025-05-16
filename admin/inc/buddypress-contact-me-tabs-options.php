@@ -3,7 +3,7 @@
  *
  * This template file is used for fetching desired options page file at admin settings.
  *
- * @package Buddypress_Sticky_Post
+ * @package BuddyPress_Contact_Me
  */
 
 // Exit if accessed directly.

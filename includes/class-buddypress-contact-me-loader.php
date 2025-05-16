@@ -1,14 +1,5 @@
 <?php
 
-/**
- * Register all actions and filters for the plugin
- *
- * @link       https://www.wbcomdesigns.com
- * @since      1.0.0
- *
- * @package    Buddypress_Contact_Me
- * @subpackage Buddypress_Contact_Me/includes
- */
 
 /**
  * Register all actions and filters for the plugin.
@@ -17,11 +8,13 @@
  * the plugin, and register them with the WordPress API. Call the
  * run function to execute the list of actions and filters.
  *
- * @package    Buddypress_Contact_Me
- * @subpackage Buddypress_Contact_Me/includes
+ * @package    BuddyPress_Contact_Me
+ * @subpackage BuddyPress_Contact_Me/includes
  * @author     WBCOM Designs <admin@wbcomdesigns.com>
+ * @link       https://www.wbcomdesigns.com
+ * @since      1.0.0
  */
-class Buddypress_Contact_Me_Loader {
+class BuddyPress_Contact_Me_Loader {
 
 	/**
 	 * The array of actions registered with WordPress.
