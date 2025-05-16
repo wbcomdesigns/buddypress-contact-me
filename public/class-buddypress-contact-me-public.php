@@ -644,7 +644,7 @@ class BuddyPress_Contact_Me_Public
 
         // Get the email content.
         $user_content = isset($bcm_general_setting['bcm_email_content']) && !empty($bcm_general_setting['bcm_email_content']) ? $bcm_general_setting['bcm_email_content'] : '';
-        $user_content = str_replace( array( "{user_name}", "{sender_user_name}" ) ,  array( $login_username , $author_name  ), $user_content);
+        $user_content = str_replace( array( "{user_name}", "{sender_user_name}", "{site_name}" ) ,  array( $login_username , $author_name , get_bloginfo( 'name' )  ), $user_content);
         
         $user_content = str_replace( "Click here", $bcm_contact_link, $user_content );
 
@@ -658,7 +658,7 @@ class BuddyPress_Contact_Me_Public
             isset($bcm_general_setting['bcm_allow_email']) && 'yes' === $bcm_general_setting['bcm_allow_email']
         ) {
             foreach (array_unique($bcm_admin_multiuser_mail) as $bcm_email) {
-                wp_mail($bcm_email, $subject, $user_content, $headers);
+                wp_mail($bcm_email, $subject, nl2br( $user_content ), $headers);
             }
         }
     }

@@ -204,7 +204,13 @@ if( isset( $_GET['settings-updated'] ) && ( 'true' === $_GET['settings-updated']
 						$bcm_default_content = sprintf(
 							// Translators: %1$s.
 							esc_html__(
-								'Hi {user_name}, {sender_user_name} has contacted you. %1$s to check the message. You can also go to the contact form. Thanks.',
+								'Hi {user_name}, 
+								You have received a new message from {sender_user_name}. 
+								Click the link below to view the message: 
+								%1$s 
+								You can also check the message from the Contact tab on your profile. 
+								Thank You, 
+								{site_name} team',
 								'buddypress-contact-me'
 							),
 							$bcm_click
@@ -219,7 +225,8 @@ if( isset( $_GET['settings-updated'] ) && ( 'true' === $_GET['settings-updated']
 					</div>
 					<code>
 						{user_name} - <?php esc_html_e( 'User Name', 'buddypress-contact-me' ); ?><br>
-						{sender_user_name} - <?php esc_html_e( 'Sender User Name', 'buddypress-contact-me' ); ?>
+						{sender_user_name} - <?php esc_html_e( 'Sender User Name', 'buddypress-contact-me' ); ?><br>
+						{site_name} - <?php esc_html_e( 'Site Name', 'buddypress-contact-me' ); ?>
 					</code>
 				</div>
 			</div>
