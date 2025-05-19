@@ -408,6 +408,15 @@ class BuddyPress_Contact_Me_Public
         }
     }
 
+    /**
+     * Function to add notice when the setting is saved in the user settings section.
+     * @param $user_id int User ID
+     * @param $redirect_to string Redirection url after settings are saved.
+     * 
+     * @since 1.3.1
+     * @return void
+     * 
+     */
     public function bp_contact_me_render_user_settings_save_notice( $user_id, $redirect_to) { 
 
         $feedback[]    = __( 'Your settings have been saved.', 'buddypress-contact-me' );
