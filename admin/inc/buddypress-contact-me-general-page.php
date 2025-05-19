@@ -24,7 +24,7 @@ if ( current_user_can( 'edit_users' ) ) {
 
 $bp_contact_me_settings_save_notice  = 'display:none';
 
-if( isset( $_GET['settings-updated'] ) && ( 'true' === $_GET['settings-updated'] ) ) { 
+if( isset( $_GET['settings-updated'] ) && ( 'true' === $_GET['settings-updated'] ) ) { //phpcs:ignore
 	$bp_contact_me_settings_save_notice  = '';
 }
 ?>
