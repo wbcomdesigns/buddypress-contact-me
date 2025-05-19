@@ -66,7 +66,7 @@ if( isset( $_GET['settings-updated'] ) && ( 'true' === $_GET['settings-updated']
 				<div class="wbcom-settings-section-wrap">
 					<div class="wbcom-settings-section-options-heading">
 						<label for="bcm_allow_email"><?php esc_html_e( 'Enable Email Notifications', 'buddypress-contact-me' ); ?></label>
-						<p class="description"><?php esc_html_e( 'Send email notifications to members when they receive a new contact message.ss', 'buddypress-contact-me' ); ?></p>
+						<p class="description"><?php esc_html_e( 'Send email notifications to members when they receive a new contact message.', 'buddypress-contact-me' ); ?></p>
 					</div>
 					<div class="wbcom-settings-section-options">
 						<label class="bcm-switch">
