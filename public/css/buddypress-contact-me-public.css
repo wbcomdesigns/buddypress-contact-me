@@ -410,6 +410,14 @@ table.bp_contact-me-messages {
     margin-top: 0;
 }
 
+.buddyx-nav-iconic .rg-nouveau-sidebar-menu a#user-contact:before {
+    content: "\f658";
+}
+
+.buddyx-nav-iconic .rg-nouveau-sidebar-menu a#user-contact-me:before {
+    content: "\f1d8";
+}
+
 /*******************
 BB Theme
 ********************/
