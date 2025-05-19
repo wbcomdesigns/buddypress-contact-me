@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-05-13T07:06:20+00:00\n"
+"POT-Creation-Date: 2025-05-19T17:33:54+05:30\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.11.0\n"
 "X-Domain: buddypress-contact-me\n"
@@ -26,7 +26,8 @@ msgstr ""
 
 #. Description of the plugin
 #: buddypress-contact-me.php
-msgid "BuddyPress Contact Me displays a contact form on a member's profile which allows logged-in and non-logged-in visitor can be in touch with our community members."
+#: admin/inc/buddypress-contact-me-welcome-page.php:20
+msgid "BuddyPress Contact Me displays a contact form on members' profiles, allowing both logged-in and non-logged-in visitors to connect with community members."
 msgstr ""
 
 #. Author of the plugin
@@ -39,167 +40,182 @@ msgstr ""
 msgid "https://www.wbcomdesigns.com"
 msgstr ""
 
-#: admin/class-buddypress-contact-me-admin.php:117
-#: admin/class-buddypress-contact-me-admin.php:118
+#: admin/class-buddypress-contact-me-admin.php:110
+#: admin/class-buddypress-contact-me-admin.php:111
 msgid "WB Plugins"
 msgstr ""
 
-#: admin/class-buddypress-contact-me-admin.php:125
-#: admin/class-buddypress-contact-me-admin.php:181
+#: admin/class-buddypress-contact-me-admin.php:118
+#: admin/class-buddypress-contact-me-admin.php:174
 msgid "General"
 msgstr ""
 
-#: admin/class-buddypress-contact-me-admin.php:129
-#: admin/class-buddypress-contact-me-admin.php:170
+#: admin/class-buddypress-contact-me-admin.php:122
+#: admin/class-buddypress-contact-me-admin.php:163
 #: admin/wbcom/templates/wbcom-plugins-page.php:171
 #: buddypress-contact-me.php:91
 msgid "BuddyPress Contact Me"
 msgstr ""
 
-#: admin/class-buddypress-contact-me-admin.php:130
-#: public/class-buddypress-contact-me-public.php:184
-#: public/class-buddypress-contact-me-public.php:209
-#: public/class-buddypress-contact-me-public.php:232
+#: admin/class-buddypress-contact-me-admin.php:123
+#: public/class-buddypress-contact-me-public.php:188
+#: public/class-buddypress-contact-me-public.php:213
+#: public/class-buddypress-contact-me-public.php:236
 msgid "Contact Me"
 msgstr ""
 
 #. Translators: %s.
-#: admin/class-buddypress-contact-me-admin.php:172
+#: admin/class-buddypress-contact-me-admin.php:165
 msgid "Version %s"
 msgstr ""
 
-#: admin/class-buddypress-contact-me-admin.php:180
+#: admin/class-buddypress-contact-me-admin.php:173
 msgid "Welcome"
 msgstr ""
 
-#: admin/class-buddypress-contact-me-admin.php:182
+#: admin/class-buddypress-contact-me-admin.php:175
 msgid "FAQ"
 msgstr ""
 
-#: admin/inc/buddypress-contact-me-general-page.php:29
+#: admin/inc/buddypress-contact-me-general-page.php:34
 msgid "General Settings"
 msgstr ""
 
-#: admin/inc/buddypress-contact-me-general-page.php:41
+#: admin/inc/buddypress-contact-me-general-page.php:39
+msgid "Settings saved successfully."
+msgstr ""
+
+#: admin/inc/buddypress-contact-me-general-page.php:51
 msgid "Enable BuddyPress Notifications"
 msgstr ""
 
-#: admin/inc/buddypress-contact-me-general-page.php:42
-msgid "Allow members to receive notifications when someone contacts them."
+#: admin/inc/buddypress-contact-me-general-page.php:52
+msgid "Allow members to receive a BuddyPress notification when someone contacts them."
 msgstr ""
 
-#: admin/inc/buddypress-contact-me-general-page.php:46
-msgid "Please enable BuddyPress notifications component !!"
+#: admin/inc/buddypress-contact-me-general-page.php:56
+msgid "Please enable the BuddyPress notifications component to use this feature."
 msgstr ""
 
-#: admin/inc/buddypress-contact-me-general-page.php:58
+#: admin/inc/buddypress-contact-me-general-page.php:68
 msgid "Enable Email Notifications"
 msgstr ""
 
-#: admin/inc/buddypress-contact-me-general-page.php:59
-msgid "Send email notifications to members when someone contacts them."
+#: admin/inc/buddypress-contact-me-general-page.php:69
+msgid "Send email notifications to members when they receive a new contact message."
 msgstr ""
 
-#: admin/inc/buddypress-contact-me-general-page.php:72
+#: admin/inc/buddypress-contact-me-general-page.php:82
 msgid "Show Contact Tab"
 msgstr ""
 
-#: admin/inc/buddypress-contact-me-general-page.php:73
-msgid "Display the contact tab on member profiles."
+#: admin/inc/buddypress-contact-me-general-page.php:83
+msgid "Display a \"Contact me\" tab on member profile pages."
 msgstr ""
 
-#: admin/inc/buddypress-contact-me-general-page.php:86
+#: admin/inc/buddypress-contact-me-general-page.php:96
 msgid "Customize Sender Email"
 msgstr ""
 
-#: admin/inc/buddypress-contact-me-general-page.php:87
-msgid "Allow users to modify the email address used as the sender."
+#: admin/inc/buddypress-contact-me-general-page.php:97
+msgid "Allow users to customize the email address used as the sender."
 msgstr ""
 
-#: admin/inc/buddypress-contact-me-general-page.php:97
+#: admin/inc/buddypress-contact-me-general-page.php:107
 msgid "Send Copy to Sender"
 msgstr ""
 
-#: admin/inc/buddypress-contact-me-general-page.php:98
-msgid "Send a copy of the email to the sender."
+#: admin/inc/buddypress-contact-me-general-page.php:108
+msgid "Send a copy of the contact email to the sender."
 msgstr ""
 
-#: admin/inc/buddypress-contact-me-general-page.php:111
+#: admin/inc/buddypress-contact-me-general-page.php:121
 msgid "Send Copy to Admin"
 msgstr ""
 
-#: admin/inc/buddypress-contact-me-general-page.php:112
-msgid "Send a copy of the email to the admin."
+#: admin/inc/buddypress-contact-me-general-page.php:122
+msgid "Send a copy of the contact email to the site administrator."
 msgstr ""
 
-#: admin/inc/buddypress-contact-me-general-page.php:125
+#: admin/inc/buddypress-contact-me-general-page.php:135
 msgid "Send Notifications to Multiple Users"
 msgstr ""
 
-#: admin/inc/buddypress-contact-me-general-page.php:126
-msgid "Select additional users to receive email notifications."
+#: admin/inc/buddypress-contact-me-general-page.php:136
+msgid "Select additional users who should receive email notifications."
 msgstr ""
 
-#: admin/inc/buddypress-contact-me-general-page.php:140
+#: admin/inc/buddypress-contact-me-general-page.php:150
 msgid "Allowed to Initiate Contact"
 msgstr ""
 
-#: admin/inc/buddypress-contact-me-general-page.php:141
-msgid "Select the user roles allowed to initiate contact requests."
+#: admin/inc/buddypress-contact-me-general-page.php:151
+msgid "Choose which user roles are allowed to send contact requests."
 msgstr ""
 
-#: admin/inc/buddypress-contact-me-general-page.php:146
+#: admin/inc/buddypress-contact-me-general-page.php:156
 msgid "Visitors (not logged in)"
 msgstr ""
 
-#: admin/inc/buddypress-contact-me-general-page.php:157
+#: admin/inc/buddypress-contact-me-general-page.php:167
 msgid "Allowed to Be Contacted"
 msgstr ""
 
-#: admin/inc/buddypress-contact-me-general-page.php:158
-msgid "Select the user roles who can be contacted."
+#: admin/inc/buddypress-contact-me-general-page.php:168
+msgid "Choose which user roles can receive contact requests."
 msgstr ""
 
-#: admin/inc/buddypress-contact-me-general-page.php:172
+#: admin/inc/buddypress-contact-me-general-page.php:182
 msgid "Email Subject"
 msgstr ""
 
-#: admin/inc/buddypress-contact-me-general-page.php:173
-msgid "Enter the subject line for email notifications."
+#: admin/inc/buddypress-contact-me-general-page.php:183
+msgid "Specify the subject line for the email notification."
 msgstr ""
 
-#: admin/inc/buddypress-contact-me-general-page.php:176
+#: admin/inc/buddypress-contact-me-general-page.php:186
 msgid "{user_name} has contacted you."
 msgstr ""
 
-#: admin/inc/buddypress-contact-me-general-page.php:183
+#: admin/inc/buddypress-contact-me-general-page.php:193
 msgid "Email Body Content"
 msgstr ""
 
-#: admin/inc/buddypress-contact-me-general-page.php:184
-msgid "Enter the text for the email notification."
+#: admin/inc/buddypress-contact-me-general-page.php:194
+msgid "Enter the message content to be included in the email notification."
 msgstr ""
 
-#: admin/inc/buddypress-contact-me-general-page.php:193
-#: public/class-buddypress-contact-me-public.php:575
+#: admin/inc/buddypress-contact-me-general-page.php:203
+#: public/class-buddypress-contact-me-public.php:587
 msgid "Click here"
 msgstr ""
 
 #. Translators: %1$s.
-#: admin/inc/buddypress-contact-me-general-page.php:196
-msgid "Hi {user_name}, {sender_user_name} has contacted you. %1$s to check the message. You can also go to the contact form. Thanks."
+#: admin/inc/buddypress-contact-me-general-page.php:206
+msgid ""
+"Hi {user_name}, \n"
+"\t\t\t\t\t\t\t\tYou have received a new message from {sender_user_name}. \n"
+"\t\t\t\t\t\t\t\tClick the link below to view the message: \n"
+"\t\t\t\t\t\t\t\t%1$s \n"
+"\t\t\t\t\t\t\t\tYou can also check the message from the Contact tab on your profile. \n"
+"\t\t\t\t\t\t\t\tThank You, \n"
+"\t\t\t\t\t\t\t\t{site_name} team"
 msgstr ""
 
-#: admin/inc/buddypress-contact-me-general-page.php:211
+#: admin/inc/buddypress-contact-me-general-page.php:227
 msgid "User Name"
 msgstr ""
 
-#: admin/inc/buddypress-contact-me-general-page.php:212
+#: admin/inc/buddypress-contact-me-general-page.php:228
 msgid "Sender User Name"
 msgstr ""
 
+#: admin/inc/buddypress-contact-me-general-page.php:229
+msgid "Site Name"
+msgstr ""
+
 #: admin/inc/buddypress-contact-me-support-tab.php:16
-msgid "Have some questions?"
+msgid "Frequently Asked Questions"
 msgstr ""
 
 #: admin/inc/buddypress-contact-me-support-tab.php:24
@@ -207,7 +223,7 @@ msgid "Does this plugin support the BuddyBoss Platform?"
 msgstr ""
 
 #: admin/inc/buddypress-contact-me-support-tab.php:28
-msgid "Yes! The BuddyPress Contact Me plugin is compatible with the BuddyBoss Platform."
+msgid "Yes, the BuddyPress Contact Me plugin is compatible with the BuddyBoss Platform."
 msgstr ""
 
 #: admin/inc/buddypress-contact-me-support-tab.php:37
@@ -215,7 +231,7 @@ msgid "How can we display the contact form on any post or page?"
 msgstr ""
 
 #: admin/inc/buddypress-contact-me-support-tab.php:41
-msgid "You can use the shortcode [bp-contact-me id=\"USER_ID\"] to display a user-specific contact form on any post or page. Replace \"USER_ID\" with the ID of the user."
+msgid "You can use the shortcode [bp-contact-me id=\"USER_ID\"] to display a user-specific contact form on any post or page. Simply replace \"USER_ID\" with the actual ID of the user."
 msgstr ""
 
 #: admin/inc/buddypress-contact-me-support-tab.php:50
@@ -223,7 +239,7 @@ msgid "Does this plugin work for logged-out users?"
 msgstr ""
 
 #: admin/inc/buddypress-contact-me-support-tab.php:54
-msgid "Yes! Visitors who are not logged in can also contact site users using this plugin."
+msgid "Yes, visitors who are not logged in can also contact site users using this plugin."
 msgstr ""
 
 #: admin/inc/buddypress-contact-me-support-tab.php:63
@@ -234,16 +250,12 @@ msgstr ""
 msgid "BuddyPress must be installed and activated on your site for this plugin to function properly."
 msgstr ""
 
-#: admin/inc/buddypress-contact-me-welcome-page.php:20
-msgid "The BuddyPress Contact Me plugin allows members to contact each other without needing to be friends."
-msgstr ""
-
 #: admin/inc/buddypress-contact-me-welcome-page.php:26
 msgid "Help & Support Resources"
 msgstr ""
 
 #: admin/inc/buddypress-contact-me-welcome-page.php:27
-msgid "Here are the resources you may need to get help. Documentation is usually the best place to start. Should you need assistance, our customer care team is available at the support center."
+msgid "If you need assistance, here are some helpful resources. Our documentation is a great place to start, and our support team is available if you require further help."
 msgstr ""
 
 #: admin/inc/buddypress-contact-me-welcome-page.php:33
@@ -251,7 +263,7 @@ msgid "Documentation"
 msgstr ""
 
 #: admin/inc/buddypress-contact-me-welcome-page.php:34
-msgid "We have prepared an extensive guide on BuddyPress Sticky Post to cover all aspects of the plugin. Most of your questions will be answered here."
+msgid "Explore our detailed guide on BuddyPress Contact Me to understand all the features and how to make the most of them."
 msgstr ""
 
 #: admin/inc/buddypress-contact-me-welcome-page.php:35
@@ -263,7 +275,7 @@ msgid "Support Center"
 msgstr ""
 
 #: admin/inc/buddypress-contact-me-welcome-page.php:43
-msgid "We strive to offer the best customer care via our support center. Once your theme is activated, you can request help anytime."
+msgid "Our support team is here to assist you with any questions or issues. Feel free to contact us anytime through our support center."
 msgstr ""
 
 #: admin/inc/buddypress-contact-me-welcome-page.php:44
@@ -271,11 +283,11 @@ msgid "Get Support"
 msgstr ""
 
 #: admin/inc/buddypress-contact-me-welcome-page.php:51
-msgid "Got Feedback?"
+msgid "Share Your Feedback"
 msgstr ""
 
 #: admin/inc/buddypress-contact-me-welcome-page.php:52
-msgid "We want to hear about your experience with the plugin. We would also love to hear any suggestions you may have for future updates."
+msgid "We’d love to hear about your experience with the plugin. Your feedback and suggestions help us improve future updates."
 msgstr ""
 
 #: admin/inc/buddypress-contact-me-welcome-page.php:53
@@ -947,7 +959,7 @@ msgid "Tickets Support"
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-support-page.php:25
-msgid "Open a ticket on our helpdesk, we don't guarantee a fast response but within a week. Except if you've purchased one of our product we'll reply within 24 hours."
+msgid "Open a ticket on our helpdesk. We aim to respond within a week, but if you’ve purchased one of our products, you’ll receive a reply within 24 hours."
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-support-page.php:28
@@ -1070,33 +1082,37 @@ msgstr ""
 msgid "Error"
 msgstr ""
 
-#: public/class-buddypress-contact-me-public.php:292
+#: public/class-buddypress-contact-me-public.php:296
 msgid "Contact "
 msgstr ""
 
-#: public/class-buddypress-contact-me-public.php:322
+#: public/class-buddypress-contact-me-public.php:327
 msgid "Contact"
 msgstr ""
 
-#: public/class-buddypress-contact-me-public.php:367
+#: public/class-buddypress-contact-me-public.php:372
 msgid "Enable/Disable Contact me tab"
 msgstr ""
 
+#: public/class-buddypress-contact-me-public.php:413
+msgid "Your settings have been saved."
+msgstr ""
+
 #. translators: %s:
-#: public/class-buddypress-contact-me-public.php:465
+#: public/class-buddypress-contact-me-public.php:479
 msgid " %1$s has contacted you."
 msgstr ""
 
-#: public/class-buddypress-contact-me-public.php:576
+#: public/class-buddypress-contact-me-public.php:588
 msgid "contact form"
 msgstr ""
 
-#: public/class-buddypress-contact-me-public.php:724
+#: public/class-buddypress-contact-me-public.php:739
 msgid "Message sent successfully."
 msgstr ""
 
-#: public/class-buddypress-contact-me-public.php:797
-msgid "Delete successfully."
+#: public/class-buddypress-contact-me-public.php:812
+msgid "Deletion successful."
 msgstr ""
 
 #: public/partials/bp-contact-me-tab-content.php:27
