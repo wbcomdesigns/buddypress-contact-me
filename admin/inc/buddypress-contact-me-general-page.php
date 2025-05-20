@@ -195,11 +195,8 @@ if( isset( $_GET['settings-updated'] ) && ( 'true' === $_GET['settings-updated']
 					</div>
 					<div class="wbcom-settings-section-options">
 						<?php
-						if ( function_exists( 'buddypress' ) && version_compare( buddypress()->version, '12.0', '>=' ) ) {
-							$bcm_contact_link = bp_members_get_user_url( bp_loggedin_user_id() ) . 'contact';
-						} else {
-							$bcm_contact_link = bp_core_get_user_domain( bp_loggedin_user_id() ) . 'contact';
-						}
+						
+						$bcm_contact_link    = ( function_exists( 'buddypress' ) && isset( buddypress()->buddyboss ) ) ? bp_core_get_user_domain( bp_loggedin_user_id() ) . 'contact' : bp_members_get_user_url( bp_loggedin_user_id() ) . 'contact';
 						$bcm_click           = '<a href="' . esc_url( $bcm_contact_link ) . '">' . esc_html__( 'Click here', 'buddypress-contact-me' ) . '</a>';
 						$bcm_default_content = sprintf(
 							// Translators: %1$s.

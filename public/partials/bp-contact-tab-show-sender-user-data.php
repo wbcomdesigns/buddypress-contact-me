@@ -80,37 +80,15 @@
 									echo esc_html( $bcm_first_name );
 									echo "</a>";
 								 }else{
-									if ( function_exists( 'buddypress' ) && version_compare( buddypress()->version, '12.0', '>=' ) ) { ?>
-										<a href="<?php echo esc_url( bp_members_get_user_url( $sender_id ) ); ?>" title="<?php echo esc_attr( bp_core_get_user_displayname( $sender_id ) ); ?>">
-												<?php
-												echo wp_kses_post(
-													bp_core_fetch_avatar(
-														array(
-															'item_id' => $sender_id,
-															'type' => 'full',
-														)
-													)
-												);
-												echo esc_html( $bcm_first_name );
-												?>
-										</a>
-										<?php } else { ?>
-											<a href="<?php echo esc_url( bp_core_get_user_domain( $sender_id ) ); ?>" title="<?php echo esc_attr( bp_core_get_user_displayname( $sender_id ) ); ?>">
-											 <?php
-												echo wp_kses_post(
-													bp_core_fetch_avatar(
-														array(
-															'item_id' => $sender_id,
-															'type' => 'full',
-														)
-													)
-												);
-											 echo esc_html( $bcm_first_name );
-												?>
-										</a>
-									<?php	}
-								 }
-								 ?>
+									$user_url = ( function_exists( 'buddypress' ) && isset( buddypress()->buddyboss ) ) ? bp_core_get_user_domain( $sender_id ) : bp_members_get_user_url( $sender_id ); 
+									?>
+									<a href="<?php echo esc_url( $user_url ); ?>" title="<?php echo esc_attr( bp_core_get_user_displayname( $sender_id ) ); ?>">
+									<?php
+										echo wp_kses_post( bp_core_fetch_avatar( array( 'item_id' => $sender_id, 'type' => 'full') ) );
+										echo esc_html( $bcm_first_name );
+									?>
+									</a>
+								<?php } ?>
 							</td>
 							<td data-label="message">
 								<div class="bcm-user-subject"><?php echo esc_html( $subject ); ?></div>
