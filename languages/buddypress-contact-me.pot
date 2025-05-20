@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-05-19T19:09:48+05:30\n"
+"POT-Creation-Date: 2025-05-20T11:50:37+05:30\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.11.0\n"
 "X-Domain: buddypress-contact-me\n"
@@ -185,13 +185,13 @@ msgstr ""
 msgid "Enter the message content to be included in the email notification."
 msgstr ""
 
-#: admin/inc/buddypress-contact-me-general-page.php:203
-#: public/class-buddypress-contact-me-public.php:596
+#: admin/inc/buddypress-contact-me-general-page.php:200
+#: public/class-buddypress-contact-me-public.php:595
 msgid "Click here"
 msgstr ""
 
 #. Translators: %1$s.
-#: admin/inc/buddypress-contact-me-general-page.php:206
+#: admin/inc/buddypress-contact-me-general-page.php:203
 msgid ""
 "Hi {user_name}, \n"
 "\t\t\t\t\t\t\t\tYou have received a new message from {sender_user_name}. \n"
@@ -202,15 +202,15 @@ msgid ""
 "\t\t\t\t\t\t\t\t{site_name} team"
 msgstr ""
 
-#: admin/inc/buddypress-contact-me-general-page.php:227
+#: admin/inc/buddypress-contact-me-general-page.php:224
 msgid "User Name"
 msgstr ""
 
-#: admin/inc/buddypress-contact-me-general-page.php:228
+#: admin/inc/buddypress-contact-me-general-page.php:225
 msgid "Sender User Name"
 msgstr ""
 
-#: admin/inc/buddypress-contact-me-general-page.php:229
+#: admin/inc/buddypress-contact-me-general-page.php:226
 msgid "Site Name"
 msgstr ""
 
@@ -990,12 +990,12 @@ msgstr ""
 
 #: admin/wbcom/wbcom-admin-settings.php:248
 #: admin/wbcom/wbcom-admin-settings.php:249
-#: buddypress-contact-me.php:149
+#: buddypress-contact-me.php:150
 msgid "Support"
 msgstr ""
 
 #: admin/wbcom/wbcom-admin-settings.php:325
-#: buddypress-contact-me.php:148
+#: buddypress-contact-me.php:149
 msgid "Settings"
 msgstr ""
 
@@ -1099,19 +1099,19 @@ msgid "Your settings have been saved."
 msgstr ""
 
 #. translators: %s:
-#: public/class-buddypress-contact-me-public.php:488
+#: public/class-buddypress-contact-me-public.php:487
 msgid " %1$s has contacted you."
 msgstr ""
 
-#: public/class-buddypress-contact-me-public.php:597
+#: public/class-buddypress-contact-me-public.php:596
 msgid "contact form"
 msgstr ""
 
-#: public/class-buddypress-contact-me-public.php:748
+#: public/class-buddypress-contact-me-public.php:747
 msgid "Message sent successfully."
 msgstr ""
 
-#: public/class-buddypress-contact-me-public.php:821
+#: public/class-buddypress-contact-me-public.php:818
 msgid "Deletion successful."
 msgstr ""
 
@@ -1150,38 +1150,38 @@ msgstr ""
 msgid "Loading..."
 msgstr ""
 
-#: public/partials/bp-contact-tab-show-sender-user-data.php:123
+#: public/partials/bp-contact-tab-show-sender-user-data.php:101
 msgid "View Message"
 msgstr ""
 
-#: public/partials/bp-contact-tab-show-sender-user-data.php:127
+#: public/partials/bp-contact-tab-show-sender-user-data.php:105
 msgid "Delete Message"
 msgstr ""
 
-#: public/partials/bp-contact-tab-show-sender-user-data.php:138
+#: public/partials/bp-contact-tab-show-sender-user-data.php:116
 msgid "Select Bulk Action"
 msgstr ""
 
-#: public/partials/bp-contact-tab-show-sender-user-data.php:141
+#: public/partials/bp-contact-tab-show-sender-user-data.php:119
 msgid "Bulk Actions"
 msgstr ""
 
-#: public/partials/bp-contact-tab-show-sender-user-data.php:142
+#: public/partials/bp-contact-tab-show-sender-user-data.php:120
 msgid "Delete"
 msgstr ""
 
-#: public/partials/bp-contact-tab-show-sender-user-data.php:145
+#: public/partials/bp-contact-tab-show-sender-user-data.php:123
 msgid "Apply"
 msgstr ""
 
-#: public/partials/bp-contact-tab-show-sender-user-data.php:157
+#: public/partials/bp-contact-tab-show-sender-user-data.php:135
 msgid "« Prev"
 msgstr ""
 
-#: public/partials/bp-contact-tab-show-sender-user-data.php:158
+#: public/partials/bp-contact-tab-show-sender-user-data.php:136
 msgid "Next »"
 msgstr ""
 
-#: public/partials/bp-contact-tab-show-sender-user-data.php:167
+#: public/partials/bp-contact-tab-show-sender-user-data.php:145
 msgid "Unfortunately, there are no contact messages found."
 msgstr ""
