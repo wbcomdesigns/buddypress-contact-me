@@ -812,7 +812,13 @@ class BuddyPress_Contact_Me_Public
             global $wpdb;
             // phpcs:disable
             $table_name = $wpdb->prefix . 'contact_me';
-            $wpdb->query($wpdb->prepare("DELETE FROM $table_name WHERE id IN " . '(' . $_items . ')'));
+            $placeholders = array_fill(0, count($items), '%d');
+            $wpdb->query(
+                $wpdb->prepare(
+                    "DELETE FROM $table_name WHERE id IN (" . implode(',', $placeholders) . ")",
+                    $items
+                )
+            );
             // phpcs:enable
         }
         bp_core_add_message( __('Deletion successful.', 'buddypress-contact-me') );
