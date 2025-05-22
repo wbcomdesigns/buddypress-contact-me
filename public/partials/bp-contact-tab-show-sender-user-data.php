@@ -100,8 +100,11 @@
 										<span class="dashicons dashicons-visibility bcm_message_seen" data-id="<?php echo esc_attr( $get_contact_allrow_val['id'] ); ?>" aria-hidden="true"></span>
 										<small class="bcm-tooltip-text"><?php esc_html_e( 'View Message', 'buddypress-contact-me' ); ?></small>
 									</div>
-									<button class="bcm_action_btn" id="bcm_message_delete" type="button">
-										<span class="dashicons dashicons-dismiss bcm_message_delete" data-id="<?php echo esc_attr( $get_contact_allrow_val['id'] ); ?>" aria-hidden="true"></span>
+									<button class="bcm_action_btn" type="button">
+										<span class="dashicons dashicons-dismiss bcm_message_delete" 
+											data-id="<?php echo esc_attr( $get_contact_allrow_val['id'] ); ?>" 
+											data-nonce="<?php echo esc_attr( wp_create_nonce( 'bcm_delete_message_' . $get_contact_allrow_val['id'] ) ); ?>"
+											aria-hidden="true"></span>
 										<small class="bcm-tooltip-text"><?php esc_html_e( 'Delete Message', 'buddypress-contact-me' ); ?></small>
 									</button>
 								</div>

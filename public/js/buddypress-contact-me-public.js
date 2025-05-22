@@ -77,8 +77,10 @@
         // Contact tab delete functionality
         $(document).on('click', '.bcm_message_delete', function(e) {
             e.preventDefault();
-            var rowid = $(this).data('id');
-            var $row = $(this).closest('tr');
+            var $this = $(this);
+            var rowid = $this.data('id');
+            var nonce = $this.data('nonce');
+            var $row = $this.closest('tr');
             
             if (confirm(bcm_ajax_object.delete_confirm || 'Are you sure you want to delete this message?')) {
                 $.ajax({
@@ -87,7 +89,7 @@
                     data: {
                         'action': 'bcm_message_del',
                         'rowid': rowid,
-                        'nonce': bcm_ajax_object.ajax_nonce,
+                        'nonce': nonce,  // Send the unique nonce
                     },
                     beforeSend: function() {
                         $row.css('opacity', '0.5');
@@ -97,10 +99,14 @@
                             $row.fadeOut(300, function() {
                                 $(this).remove();
                                 updateContactCount();
+                                // Check if no more rows exist
+                                if ($('.bp_contact-me-messages tbody tr').length === 0) {
+                                    location.reload(); // Reload to show "no messages" state
+                                }
                             });
                         } else {
                             $row.css('opacity', '1');
-                            alert(bcm_ajax_object.delete_error || 'Error deleting message. Please try again.');
+                            alert(data.data && data.data.message ? data.data.message : (bcm_ajax_object.delete_error || 'Error deleting message. Please try again.'));
                         }
                     },
                     error: function() {

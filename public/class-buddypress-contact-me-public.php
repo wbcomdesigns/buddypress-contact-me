@@ -884,20 +884,57 @@ class BuddyPress_Contact_Me_Public
      */
     public function bcm_message_delete()
     {
-        if (! isset($_POST['nonce']) || ! wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['nonce'])), 'bcm-contact-nonce') ) {
-            return false;
+        // Check if the required data is present
+        if (!isset($_POST['nonce']) || !isset($_POST['rowid'])) {
+            wp_send_json_error(array(
+                'message' => __('Invalid request. Missing required data.', 'buddypress-contact-me')
+            ));
+            return;
         }
+        
+        // Sanitize the row ID
+        $rowid = absint($_POST['rowid']);
+        
+        // Verify the nonce with the specific action for this message
+        if (!wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['nonce'])), 'bcm_delete_message_' . $rowid)) {
+            wp_send_json_error(array(
+                'message' => __('Security check failed. Please refresh the page and try again.', 'buddypress-contact-me')
+            ));
+            return;
+        }
+        
+        // Additional permission check - ensure user can only delete their own messages
         global $wpdb;
-         // phpcs:disable
         $table_name = $wpdb->prefix . 'contact_me';
-        $rowid      = ( isset( $_POST['rowid']  ) && ! empty( $_POST['rowid']  ) ) ? sanitize_text_field( wp_unslash( $_POST['rowid'] ) ) : 0;
-        ;
-        $query      = $wpdb->query($wpdb->prepare("DELETE FROM $table_name WHERE id = %d", $rowid) );
-         // phpcs:enable
-        if (1 == $query ) {
-            wp_send_json_success();
+        
+        // First, verify the message belongs to the current user
+        $message_owner = $wpdb->get_var($wpdb->prepare(
+            "SELECT reciever FROM $table_name WHERE id = %d",
+            $rowid
+        ));
+        
+        if ($message_owner != get_current_user_id()) {
+            wp_send_json_error(array(
+                'message' => __('You do not have permission to delete this message.', 'buddypress-contact-me')
+            ));
+            return;
+        }
+        
+        // Perform the deletion
+        $deleted = $wpdb->delete(
+            $table_name,
+            array('id' => $rowid),
+            array('%d')
+        );
+        
+        if ($deleted) {
+            wp_send_json_success(array(
+                'message' => __('Message deleted successfully.', 'buddypress-contact-me')
+            ));
         } else {
-            wp_send_json_error();
+            wp_send_json_error(array(
+                'message' => __('Failed to delete message. Please try again.', 'buddypress-contact-me')
+            ));
         }
     }
 
@@ -908,34 +945,58 @@ class BuddyPress_Contact_Me_Public
      */
     public function bcm_contact_action_bulk_manage()
     {
-        if ('contact' != bp_current_action() ) {
+        if ('contact' != bp_current_action()) {
             return false;
         }
-        $nonce = ! empty($_POST['bcm_contact_bulk_nonce']) ? sanitize_text_field(wp_unslash($_POST['bcm_contact_bulk_nonce'])) : '';
-        if (! wp_verify_nonce($nonce, 'bcm_contact_bulk_nonce') ) {
+        
+        $nonce = !empty($_POST['bcm_contact_bulk_nonce']) ? sanitize_text_field(wp_unslash($_POST['bcm_contact_bulk_nonce'])) : '';
+        if (!wp_verify_nonce($nonce, 'bcm_contact_bulk_nonce')) {
             return false;
         }
-        $action   = ! empty($_POST['bcm_contact_bulk_action']) ? sanitize_text_field(wp_unslash($_POST['bcm_contact_bulk_action'])) : '';
-        $items    = ! empty($_POST['bcm_messages']) ?  wp_unslash( $_POST['bcm_messages'] )  : ''; //phpcs:ignore
-        $redirect = ! empty($_POST['_wp_http_referer']) ? sanitize_text_field(wp_unslash($_POST['_wp_http_referer'])) : '';
-        $_items   = implode(',', wp_parse_id_list($items));
-        if (! is_array($items) ) {
+        
+        $action = !empty($_POST['bcm_contact_bulk_action']) ? sanitize_text_field(wp_unslash($_POST['bcm_contact_bulk_action'])) : '';
+        $items = !empty($_POST['bcm_messages']) ? array_map('absint', $_POST['bcm_messages']) : array();
+        $redirect = !empty($_POST['_wp_http_referer']) ? sanitize_text_field(wp_unslash($_POST['_wp_http_referer'])) : '';
+        
+        if (!is_array($items) || empty($items)) {
             return false;
         }
-        if ('delete' == $action ) {
+        
+        if ('delete' == $action) {
             global $wpdb;
-            // phpcs:disable
             $table_name = $wpdb->prefix . 'contact_me';
+            $current_user_id = get_current_user_id();
+            
+            // Verify ownership of all messages before deletion
             $placeholders = array_fill(0, count($items), '%d');
-            $wpdb->query(
+            $query = $wpdb->prepare(
+                "SELECT COUNT(*) FROM $table_name WHERE id IN (" . implode(',', $placeholders) . ") AND reciever = %d",
+                array_merge($items, array($current_user_id))
+            );
+            
+            $owned_count = $wpdb->get_var($query);
+            
+            if ($owned_count != count($items)) {
+                bp_core_add_message(__('You can only delete your own messages.', 'buddypress-contact-me'), 'error');
+                bp_core_redirect($redirect);
+                return;
+            }
+            
+            // Delete only messages owned by current user
+            $deleted = $wpdb->query(
                 $wpdb->prepare(
-                    "DELETE FROM $table_name WHERE id IN (" . implode(',', $placeholders) . ")",
-                    $items
+                    "DELETE FROM $table_name WHERE id IN (" . implode(',', $placeholders) . ") AND reciever = %d",
+                    array_merge($items, array($current_user_id))
                 )
             );
-            // phpcs:enable
+            
+            if ($deleted > 0) {
+                bp_core_add_message(sprintf(_n('%d message deleted successfully.', '%d messages deleted successfully.', $deleted, 'buddypress-contact-me'), $deleted));
+            } else {
+                bp_core_add_message(__('No messages were deleted.', 'buddypress-contact-me'), 'error');
+            }
         }
-        bp_core_add_message( __('Deletion successful.', 'buddypress-contact-me') );
+        
         bp_core_redirect($redirect);
     }
 
