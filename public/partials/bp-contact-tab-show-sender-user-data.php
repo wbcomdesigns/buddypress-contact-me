@@ -75,7 +75,7 @@
 								 <?php 
 								 if( empty( $sender_id ) ){
 									
-									echo "<a href='#' title='". esc_html( $bcm_first_name ) ."'>";
+									echo '<a href="#" title="' . esc_attr( $bcm_first_name ) . '">';
 									echo get_avatar( '', 96, 'mystery' );
 									echo esc_html( $bcm_first_name );
 									echo "</a>";
