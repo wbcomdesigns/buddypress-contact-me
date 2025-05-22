@@ -738,6 +738,29 @@ class BuddyPress_Contact_Me_Public
             // Initialize validation errors array
             $validation_errors = array();
 
+            // Validate captcha FIRST (before other validations)
+            $captcha_answer = isset($_POST['bcm_captcha_answer']) ? intval($_POST['bcm_captcha_answer']) : '';
+            $captcha_hash = isset($_POST['bcm_captcha_hash']) ? sanitize_text_field(wp_unslash($_POST['bcm_captcha_hash'])) : '';
+            
+            // Validate captcha answer
+            if (empty($captcha_answer)) {
+                $validation_errors[] = __('Please answer the security question.', 'buddypress-contact-me');
+            } else {
+                // Check multiple possible answers to prevent timing attacks
+                $valid_captcha = false;
+                // Check reasonable range of answers (prevents brute force)
+                for ($i = 1; $i <= 40; $i++) {
+                    if (wp_hash($i) === $captcha_hash && $i === $captcha_answer) {
+                        $valid_captcha = true;
+                        break;
+                    }
+                }
+                
+                if (!$valid_captcha) {
+                    $validation_errors[] = __('The security question answer is incorrect. Please try again.', 'buddypress-contact-me');
+                }
+            }
+
             // Validate name
             if (empty($bp_contact_me_fname)) {
                 $validation_errors[] = __('Name is required.', 'buddypress-contact-me');
@@ -777,6 +800,11 @@ class BuddyPress_Contact_Me_Public
             // Check for spam patterns in message
             if ($this->bcm_check_spam_patterns($bp_contact_me_msg)) {
                 $validation_errors[] = __('Your message appears to contain spam content.', 'buddypress-contact-me');
+            }
+
+            // Add rate limiting check (optional but recommended)
+            if ($this->bcm_check_rate_limit($bp_display_user_id)) {
+                $validation_errors[] = __('You are sending messages too quickly. Please wait a moment and try again.', 'buddypress-contact-me');
             }
 
             // If there are validation errors, show them and redirect back

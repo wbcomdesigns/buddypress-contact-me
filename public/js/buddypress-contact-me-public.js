@@ -36,7 +36,7 @@
             if (email && !emailRegex.test(email)) {
                 $(this).addClass('bcm-error');
                 if (!$(this).next('.bcm-error-message').length) {
-                    $(this).after('<span class="bcm-error-message">' + bcm_ajax_object.email_error || 'Please enter a valid email address' + '</span>');
+                    $(this).after('<span class="bcm-error-message">' + (bcm_ajax_object.email_error || 'Please enter a valid email address') + '</span>');
                 }
             } else {
                 $(this).removeClass('bcm-error');
@@ -54,7 +54,7 @@
 
         // Improved captcha validation
         if ($('.bp-contact-me-form').length) {
-            const captchaInput = document.querySelector(".captcha-control");
+            const captchaInput = document.querySelector('input[name="bcm_captcha_answer"]');
             if (captchaInput) {
                 captchaInput.addEventListener("input", function(e) {
                     validateCaptcha();
@@ -74,7 +74,7 @@
             $('.bp-contact-me-btn').prop('disabled', true);
         });
 
-        // Contact tab delete functionality
+        // Contact tab delete functionality with unique nonce
         $(document).on('click', '.bcm_message_delete', function(e) {
             e.preventDefault();
             var $this = $(this);
@@ -211,7 +211,7 @@
         }
         
         function validateCaptcha() {
-            const captchaInput = $('.captcha-control');
+            const captchaInput = $('input[name="bcm_captcha_answer"]');
             const submitButton = $('.bp-contact-me-btn');
             const captchaAnswer = parseInt(captchaInput.val());
             const expectedAnswer = parseInt(submitButton.data('captcha'));
@@ -237,7 +237,7 @@
             
             // Check all required fields
             $('.bp-contact-me-form input[required], .bp-contact-me-form textarea[required]').each(function() {
-                if (!$(this).val().trim() && !$(this).hasClass('captcha-control')) {
+                if (!$(this).val().trim() && !$(this).hasClass('captcha-control') && $(this).attr('name') !== 'bcm_captcha_answer') {
                     isValid = false;
                 }
             });
@@ -271,7 +271,7 @@
             
             // Validate all fields
             $('.bp-contact-me-form input[required], .bp-contact-me-form textarea[required]').each(function() {
-                if (!validateField($(this))) {
+                if ($(this).attr('name') !== 'bcm_captcha_answer' && !validateField($(this))) {
                     isValid = false;
                 }
             });
@@ -289,7 +289,7 @@
             // Validate captcha
             if (!validateCaptcha()) {
                 isValid = false;
-                $('.captcha-control').focus();
+                $('input[name="bcm_captcha_answer"]').focus();
             }
             
             return isValid;
