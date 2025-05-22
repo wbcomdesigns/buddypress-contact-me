@@ -62,6 +62,115 @@ form.bp-contact-me-form .bp-contact-me-btn[type="submit"] {
     border-radius: 8px;
 }
 
+/* NEW: Form Validation & UI Styles */
+
+/* Form field descriptions */
+.bp-contact-me-form .bcm-field-description,
+.bp-member-blog-post-form .bcm-field-description {
+    display: block;
+    font-size: 12px;
+    color: #666;
+    margin-top: 5px;
+}
+
+/* Character counter */
+.bp-contact-me-form .bcm-char-count,
+.bp-member-blog-post-form .bcm-char-count {
+    float: right;
+    font-weight: bold;
+    color: #666;
+}
+
+.bp-contact-me-form .bcm-char-count.bcm-warning,
+.bp-member-blog-post-form .bcm-char-count.bcm-warning {
+    color: #ff6b6b;
+}
+
+/* Error states for form fields */
+.bp-contact-me-form input.bcm-error,
+.bp-contact-me-form textarea.bcm-error,
+.bp-member-blog-post-form input.bcm-error,
+.bp-member-blog-post-form textarea.bcm-error {
+    border-color: #ff6b6b !important;
+    background-color: #fff5f5;
+}
+
+/* Error messages */
+.bp-contact-me-form .bcm-error-message,
+.bp-member-blog-post-form .bcm-error-message {
+    display: block;
+    color: #ff6b6b;
+    font-size: 12px;
+    margin-top: 5px;
+    font-weight: normal;
+}
+
+/* Captcha wrapper improvements */
+.bp-contact-me-form .captcha-wrapper,
+.bp-member-blog-post-form .captcha-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 5px;
+}
+
+.bp-contact-me-form .captcha-wrapper .captchasum,
+.bp-member-blog-post-form .captcha-wrapper .captchasum {
+    font-weight: bold;
+    background-color: #f5f5f5;
+    padding: 5px 10px;
+    border-radius: 3px;
+    min-width: 80px;
+    text-align: center;
+}
+
+/* Submit button area */
+.bp-contact-me-form .bp-content-me-submit,
+.bp-member-blog-post-form .bp-content-me-submit {
+    display: flex;
+    align-items: center;
+    margin-top: 20px;
+}
+
+/* Loading spinner */
+.bp-contact-me-form .bcm-submit-spinner,
+.bp-member-blog-post-form .bcm-submit-spinner {
+    display: inline-block;
+    margin-left: 10px;
+}
+
+/* Required field asterisk */
+.bp-contact-me-form label .required,
+.bp-member-blog-post-form label .required,
+.bp-content-me-fieldset label .required {
+    color: #ff0000;
+    font-weight: bold;
+    margin-left: 2px;
+}
+
+/* Input focus states */
+.bp-contact-me-form input:focus,
+.bp-contact-me-form textarea:focus,
+.bp-member-blog-post-form input:focus,
+.bp-member-blog-post-form textarea:focus {
+    outline: none;
+    border-color: #5b9dd9;
+    box-shadow: 0 0 2px rgba(91, 157, 217, 0.3);
+}
+
+/* Responsive captcha */
+@media (max-width: 480px) {
+    .bp-contact-me-form .captcha-wrapper,
+    .bp-member-blog-post-form .captcha-wrapper {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .bp-contact-me-form .captcha-wrapper .captchasum,
+    .bp-member-blog-post-form .captcha-wrapper .captchasum {
+        margin-bottom: 10px;
+    }
+}
 
 /*Contact Message*/
 .bp-contact-me-loader{
@@ -392,6 +501,13 @@ table.bp_contact-me-messages {
     cursor: not-allowed!important;
 }
 
+/* NEW: Disabled button state improvement */
+.bp-contact-me-form .bp-contact-me-btn.not-allowed,
+.bp-member-blog-post-form .bp-contact-me-btn.not-allowed {
+    opacity: 0.6;
+    cursor: not-allowed!important;
+}
+
 .buddypress-wrap #bcm-bulk-manage[disabled],
 .buddypress-wrap #bcm-bulk-manage[disabled] {
     display: none;
@@ -523,24 +639,4 @@ BB Theme
         white-space: nowrap;
         text-transform: capitalize;
     }
-
-    /* .bp-contact-me-details table.bp_contact-me-messages tr:nth-child(2n+2) {
-        background: #f8f8f8;
-    }
-    .bp-contact-me-details table.bp_contact-me-messages td:nth-of-type(1):before {
-        content: attr(data-attr);
-    }
-    .bp-contact-me-details table.bp_contact-me-messages td:nth-of-type(2):before {
-        content: attr(data-attr);
-    }
-    .bp-contact-me-details table.bp_contact-me-messages td:nth-of-type(3):before {
-        content: attr(data-attr);
-    }
-    .bp-contact-me-details table.bp_contact-me-messages td:nth-of-type(4):before {
-        content: attr(data-attr);
-    }
-    .bp-contact-me-details table.bp_contact-me-messages td:nth-of-type(5):before {
-        content: attr(data-attr);
-    } */
-
 }
