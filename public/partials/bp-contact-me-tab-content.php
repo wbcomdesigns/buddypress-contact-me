@@ -114,13 +114,15 @@ $sum  = $num1 + $num2;
 					<div class="captchasum">
 						<?php echo esc_html("$num1 + $num2"); ?> = ?
 					</div>
-					<input type="text" 
-						class="form-control captcha-control" 
-						id="captcha-val"
-						name="bcm_captcha_answer"
-						placeholder="<?php esc_attr_e('Enter the answer', 'buddypress-contact-me'); ?>"
-						required>
-					<span class="bcm-field-description"><?php esc_html_e('Please solve the math problem', 'buddypress-contact-me'); ?></span>
+					<div class="bp_contact_me_captcha_text">
+						<input type="text" 
+							class="form-control captcha-control" 
+							id="captcha-val"
+							name="bcm_captcha_answer"
+							placeholder="<?php esc_attr_e('Enter the answer', 'buddypress-contact-me'); ?>"
+							required>
+						<span class="bcm-field-description"><?php esc_html_e('Please solve the math problem', 'buddypress-contact-me'); ?></span>
+					</div>
 				</div>
 				<input type="hidden" name="bcm_captcha_hash" value="<?php echo esc_attr(wp_hash($sum)); ?>" />
 				<input type="hidden" name="bcm_shortcode_user_id" value="<?php echo isset($atts['id']) ? esc_attr($atts['id']) : ''; ?>" />
