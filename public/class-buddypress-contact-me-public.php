@@ -718,12 +718,77 @@ class BuddyPress_Contact_Me_Public
 
             // Sanitize and retrieve form data.
             $bp_contact_me_subject = isset($_POST['bp_contact_me_subject']) ? sanitize_text_field(wp_unslash($_POST['bp_contact_me_subject'])) : '';
-            $bp_contact_me_msg     = isset($_POST['bp_contact_me_msg']) ? sanitize_text_field(wp_unslash($_POST['bp_contact_me_msg'])) : '';
+            $bp_contact_me_msg     = isset($_POST['bp_contact_me_msg']) ? sanitize_textarea_field(wp_unslash($_POST['bp_contact_me_msg'])) : '';
             $bp_contact_me_fname   = is_user_logged_in()
                 ? (isset($_POST['bp_contact_me_login_name']) ? sanitize_text_field(wp_unslash($_POST['bp_contact_me_login_name'])) : '')
                 : (isset($_POST['bp_contact_me_first_name']) ? sanitize_text_field(wp_unslash($_POST['bp_contact_me_first_name'])) : '');
-            $bp_contact_me_email   = isset($_POST['bp_contact_me_email']) ? sanitize_text_field(wp_unslash($_POST['bp_contact_me_email'])) : '';
+            $bp_contact_me_email   = isset($_POST['bp_contact_me_email']) ? sanitize_email(wp_unslash($_POST['bp_contact_me_email'])) : '';
             $bp_contact_me_datetime = current_datetime()->format('Y-m-d H:i:s');
+
+            // Initialize validation errors array
+            $validation_errors = array();
+
+            // Validate name
+            if (empty($bp_contact_me_fname)) {
+                $validation_errors[] = __('Name is required.', 'buddypress-contact-me');
+            } elseif (strlen($bp_contact_me_fname) < 2) {
+                $validation_errors[] = __('Name must be at least 2 characters long.', 'buddypress-contact-me');
+            } elseif (strlen($bp_contact_me_fname) > 100) {
+                $validation_errors[] = __('Name cannot exceed 100 characters.', 'buddypress-contact-me');
+            }
+
+            // Validate email for non-logged-in users
+            if (!is_user_logged_in()) {
+                if (empty($bp_contact_me_email)) {
+                    $validation_errors[] = __('Email is required.', 'buddypress-contact-me');
+                } elseif (!is_email($bp_contact_me_email)) {
+                    $validation_errors[] = __('Please enter a valid email address.', 'buddypress-contact-me');
+                }
+            }
+
+            // Validate subject
+            if (empty($bp_contact_me_subject)) {
+                $validation_errors[] = __('Subject is required.', 'buddypress-contact-me');
+            } elseif (strlen($bp_contact_me_subject) < 3) {
+                $validation_errors[] = __('Subject must be at least 3 characters long.', 'buddypress-contact-me');
+            } elseif (strlen($bp_contact_me_subject) > 200) {
+                $validation_errors[] = __('Subject cannot exceed 200 characters.', 'buddypress-contact-me');
+            }
+
+            // Validate message
+            if (empty($bp_contact_me_msg)) {
+                $validation_errors[] = __('Message is required.', 'buddypress-contact-me');
+            } elseif (strlen($bp_contact_me_msg) < 10) {
+                $validation_errors[] = __('Message must be at least 10 characters long.', 'buddypress-contact-me');
+            } elseif (strlen($bp_contact_me_msg) > 5000) {
+                $validation_errors[] = __('Message cannot exceed 5000 characters.', 'buddypress-contact-me');
+            }
+
+            // Check for spam patterns in message
+            if ($this->bcm_check_spam_patterns($bp_contact_me_msg)) {
+                $validation_errors[] = __('Your message appears to contain spam content.', 'buddypress-contact-me');
+            }
+
+            // If there are validation errors, show them and redirect back
+            if (!empty($validation_errors)) {
+                foreach ($validation_errors as $error) {
+                    bp_core_add_message($error, 'error');
+                }
+                
+                // Determine the redirect URL for errors
+                $disp_user_url = ( function_exists( 'buddypress' ) && isset( buddypress()->buddyboss ) ) ? bp_core_get_user_domain($bp_display_user_id) : bp_members_get_user_url($bp_display_user_id);
+                $error_redirect_url = (isset($_POST['bcm_shortcode_user_id']) && '' !== $_POST['bcm_shortcode_user_id']) || (isset($_POST['bcm_shortcode_username']) && '' !== $_POST['bcm_shortcode_username'])
+                    ? wp_get_referer()
+                    : $disp_user_url . 'contact-me/';
+                    
+                wp_redirect($error_redirect_url);
+                exit;
+            }
+
+            // Sanitize data one more time before insertion
+            $bp_contact_me_subject = substr($bp_contact_me_subject, 0, 200);
+            $bp_contact_me_msg = substr($bp_contact_me_msg, 0, 5000);
+            $bp_contact_me_fname = substr($bp_contact_me_fname, 0, 100);
 
             // Insert contact message data into the database.
             // phpcs:disable
@@ -751,15 +816,54 @@ class BuddyPress_Contact_Me_Public
                 // Determine the redirect URL.
                 $disp_user_url = ( function_exists( 'buddypress' ) && isset( buddypress()->buddyboss ) ) ? bp_core_get_user_domain($bp_display_user_id) : bp_members_get_user_url($bp_display_user_id);
 
-                $contact_me_url = ('' !== $_POST['bcm_shortcode_user_id'] || '' !== $_POST['bcm_shortcode_username'])
-                ? home_url($wp->request)
+                $contact_me_url = (isset($_POST['bcm_shortcode_user_id']) && '' !== $_POST['bcm_shortcode_user_id']) || (isset($_POST['bcm_shortcode_username']) && '' !== $_POST['bcm_shortcode_username'])
+                    ? wp_get_referer()
                     : $disp_user_url . 'contact-me/';
 
                 $contact_me_url_qp = add_query_arg('output', 'success', $contact_me_url);
                 wp_redirect($contact_me_url_qp);
                 exit;
+            } else {
+                bp_core_add_message(__('An error occurred while sending your message. Please try again.', 'buddypress-contact-me'), 'error');
+                wp_redirect(wp_get_referer());
+                exit;
             }
         }
+    }
+    
+    /**
+     * Check for common spam patterns in message content.
+     *
+     * @since 1.3.1
+     * @param string $message The message to check.
+     * @return bool True if spam patterns detected, false otherwise.
+     */
+    private function bcm_check_spam_patterns($message) {
+        // Common spam patterns
+        $spam_patterns = array(
+            '/\b(?:viagra|cialis|levitra|pharmacy|pills|medication)\b/i',
+            '/\b(?:casino|poker|blackjack|slots|gambling)\b/i',
+            '/\b(?:loan|mortgage|credit|debt|finance)\s*(?:offer|approval|rate)/i',
+            '/(?:click\s*here|buy\s*now|order\s*now|limited\s*time)/i',
+            '/\b(?:million\s*dollar|you\s*won|congratulations\s*winner)\b/i',
+            '/https?:\/\/[^\s]+/i', // URLs - you might want to adjust this based on your needs
+            '/\b[A-Z]{5,}\b/', // Multiple consecutive capital letters
+            '/(.)\1{4,}/', // Same character repeated 5+ times
+        );
+
+        foreach ($spam_patterns as $pattern) {
+            if (preg_match($pattern, $message)) {
+                return true;
+            }
+        }
+
+        // Check for excessive special characters
+        $special_char_count = preg_match_all('/[!@#$%^&*()_+=\[\]{};\':"\\|,.<>\/?]/', $message);
+        if ($special_char_count > strlen($message) * 0.3) { // More than 30% special characters
+            return true;
+        }
+
+        return apply_filters('bcm_spam_check', false, $message);
     }
 
 
