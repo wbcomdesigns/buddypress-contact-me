@@ -135,6 +135,16 @@ class BuddyPress_Contact_Me_Public
                     'user_log'   => $user_logged,
                     'contact_count' => $contact_count,
                     'is_buddyboss_active' => $is_buddyboss_active,
+                    // Add localized strings
+                    'delete_confirm' => __('Are you sure you want to delete this message?', 'buddypress-contact-me'),
+                    'delete_error' => __('Error deleting message. Please try again.', 'buddypress-contact-me'),
+                    'email_error' => __('Please enter a valid email address', 'buddypress-contact-me'),
+                    'field_required' => __('This field is required', 'buddypress-contact-me'),
+                    'min_length' => __('Minimum {min} characters required', 'buddypress-contact-me'),
+                    'max_length' => __('Maximum {max} characters allowed', 'buddypress-contact-me'),
+                    'captcha_error' => __('Incorrect answer', 'buddypress-contact-me'),
+                    'popup_error' => __('Error loading message. Please try again.', 'buddypress-contact-me'),
+                    'close_text' => __('Close', 'buddypress-contact-me'),
                 )
             );
         }
