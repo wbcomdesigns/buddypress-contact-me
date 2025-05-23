@@ -265,6 +265,20 @@
             
             return isValid;
         }
+
+        $(document).on('change keyup', '.bp-contact-me-fields', function(e) {
+             isValid = true;
+            if (!validateCaptcha()) {
+                isValid = false;
+            }
+            console.log(isValid);
+            // Enable/disable submit button
+            if (isValid) {
+                $('.bp-contact-me-btn').prop('disabled', false).removeClass('not-allowed');
+            } else {
+                $('.bp-contact-me-btn').prop('disabled', true).addClass('not-allowed');
+            }
+        })
         
         function validateForm() {
             var isValid = true;

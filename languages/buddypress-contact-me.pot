@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-05-23T16:53:30+05:30\n"
+"POT-Creation-Date: 2025-05-23T18:47:09+05:30\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.11.0\n"
 "X-Domain: buddypress-contact-me\n"
@@ -1197,10 +1197,6 @@ msgstr ""
 
 #: public/class-buddypress-contact-me-public.php:802
 msgid "Your message appears to contain spam content."
-msgstr ""
-
-#: public/class-buddypress-contact-me-public.php:807
-msgid "You are sending messages too quickly. Please wait a moment and try again."
 msgstr ""
 
 #: public/class-buddypress-contact-me-public.php:850
