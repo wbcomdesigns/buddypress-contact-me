@@ -41,7 +41,7 @@
                 } else {
                     panel.style.maxHeight = panel.scrollHeight + "px";
                 }
-            }
+            })
         }
         jQuery('#bcm-multiple-user-copy-email, #bcm-who-contacted, #bcm-who-contact').selectize({
             plugins: ["remove_button"],
