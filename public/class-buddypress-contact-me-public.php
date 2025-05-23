@@ -710,7 +710,7 @@ class BuddyPress_Contact_Me_Public
         }
 
         if (
-            isset($_POST['bp_contact_me_form_save'])
+            !empty($_POST)
         ) {
             global $wpdb;
 
@@ -803,9 +803,9 @@ class BuddyPress_Contact_Me_Public
             }
 
             // Add rate limiting check (optional but recommended)
-            if ($this->bcm_check_rate_limit($bp_display_user_id)) {
-                $validation_errors[] = __('You are sending messages too quickly. Please wait a moment and try again.', 'buddypress-contact-me');
-            }
+            // if ($this->bcm_check_rate_limit($bp_display_user_id)) {
+            //     $validation_errors[] = __('You are sending messages too quickly. Please wait a moment and try again.', 'buddypress-contact-me');
+            // }
 
             // If there are validation errors, show them and redirect back
             if (!empty($validation_errors)) {
