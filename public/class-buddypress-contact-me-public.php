@@ -101,7 +101,7 @@ class BuddyPress_Contact_Me_Public
          * between the defined hooks and the functions defined in this
          * class.
          */
-        if(function_exists( 'bp_is_user' ) && bp_is_user() && ( bp_is_current_component( 'contact-me' ) || bp_is_current_component( 'contact' ) ) ){
+        if(function_exists( 'bp_is_user' ) && bp_is_user() ){
 
             if ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) {
 				$extension = '.js';
