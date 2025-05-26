@@ -516,7 +516,7 @@ class BuddyPress_Contact_Me_Public
     {
         if ( function_exists( 'bp_is_active' ) && bp_is_active('notifications') ) {
             $args = array(
-            'user_id'           => $bp_display_user_id,
+            'user_id'           => $get_contact_id,
             'item_id'           => $get_contact_id,
             'secondary_item_id' => $bp_display_user_id,
             'component_name'    => 'bcm_user_notifications',
