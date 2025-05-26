@@ -267,7 +267,7 @@
         }
 
         $(document).on('change keyup', '.bp-contact-me-fields', function(e) {
-             isValid = true;
+            var isValid = true;
             if (!validateCaptcha()) {
                 isValid = false;
             }
