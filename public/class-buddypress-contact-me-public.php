@@ -512,13 +512,13 @@ class BuddyPress_Contact_Me_Public
     /**
      * Function will trigger notifications to member users
      */
-    public function bp_contact_me_notification( $get_contact_id, $bp_display_user_id )
+    public function bp_contact_me_notification( $get_contact_id, $bp_display_user_id, $bp_sender_user_id)
     {
         if ( function_exists( 'bp_is_active' ) && bp_is_active('notifications') ) {
             $args = array(
             'user_id'           => $bp_display_user_id,
             'item_id'           => $get_contact_id,
-            'secondary_item_id' => $bp_display_user_id,
+            'secondary_item_id' => $bp_sender_user_id,
             'component_name'    => 'bcm_user_notifications',
             'component_action'  => 'bcm_user_notifications_action',
             'date_notified'     => bp_core_current_time(),
@@ -853,7 +853,7 @@ class BuddyPress_Contact_Me_Public
             if ($insert_data_contact_me) {
                 $this->bcm_handle_the_notice(__('Message sent successfully.', 'buddypress-contact-me'));
                 $get_contact_id = $wpdb->insert_id;
-                do_action('bp_contact_me_form_save', $get_contact_id, $bp_display_user_id);
+                do_action('bp_contact_me_form_save', $get_contact_id, $bp_display_user_id, $bp_sender_user_id);
 
                 // Determine the redirect URL.
                 $disp_user_url = ( function_exists( 'buddypress' ) && isset( buddypress()->buddyboss ) ) ? bp_core_get_user_domain($bp_display_user_id) : bp_members_get_user_url($bp_display_user_id);
