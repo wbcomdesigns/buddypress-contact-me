@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-05-26T10:52:25+05:30\n"
+"POT-Creation-Date: 2025-05-26T11:23:52+05:30\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.11.0\n"
 "X-Domain: buddypress-contact-me\n"
@@ -58,9 +58,9 @@ msgid "BuddyPress Contact Me"
 msgstr ""
 
 #: admin/class-buddypress-contact-me-admin.php:123
-#: public/class-buddypress-contact-me-public.php:198
-#: public/class-buddypress-contact-me-public.php:223
-#: public/class-buddypress-contact-me-public.php:246
+#: public/class-buddypress-contact-me-public.php:197
+#: public/class-buddypress-contact-me-public.php:222
+#: public/class-buddypress-contact-me-public.php:245
 msgid "Contact Me"
 msgstr ""
 
@@ -186,7 +186,7 @@ msgid "Enter the message content to be included in the email notification."
 msgstr ""
 
 #: admin/inc/buddypress-contact-me-general-page.php:200
-#: public/class-buddypress-contact-me-public.php:605
+#: public/class-buddypress-contact-me-public.php:604
 msgid "Click here"
 msgstr ""
 
@@ -1082,234 +1082,234 @@ msgstr ""
 msgid "Error"
 msgstr ""
 
-#: public/class-buddypress-contact-me-public.php:139
+#: public/class-buddypress-contact-me-public.php:138
 msgid "Are you sure you want to delete this message?"
 msgstr ""
 
-#: public/class-buddypress-contact-me-public.php:140
+#: public/class-buddypress-contact-me-public.php:139
 msgid "Error deleting message. Please try again."
 msgstr ""
 
-#: public/class-buddypress-contact-me-public.php:141
+#: public/class-buddypress-contact-me-public.php:140
 msgid "Please enter a valid email address"
 msgstr ""
 
-#: public/class-buddypress-contact-me-public.php:142
+#: public/class-buddypress-contact-me-public.php:141
 msgid "This field is required"
 msgstr ""
 
-#: public/class-buddypress-contact-me-public.php:143
+#: public/class-buddypress-contact-me-public.php:142
 msgid "Minimum {min} characters required"
 msgstr ""
 
-#: public/class-buddypress-contact-me-public.php:144
+#: public/class-buddypress-contact-me-public.php:143
 msgid "Maximum {max} characters allowed"
 msgstr ""
 
-#: public/class-buddypress-contact-me-public.php:145
+#: public/class-buddypress-contact-me-public.php:144
 msgid "Incorrect answer"
 msgstr ""
 
-#: public/class-buddypress-contact-me-public.php:146
+#: public/class-buddypress-contact-me-public.php:145
 msgid "Error loading message. Please try again."
 msgstr ""
 
-#: public/class-buddypress-contact-me-public.php:147
+#: public/class-buddypress-contact-me-public.php:146
 msgid "Close"
 msgstr ""
 
-#: public/class-buddypress-contact-me-public.php:306
+#: public/class-buddypress-contact-me-public.php:305
 msgid "Contact "
 msgstr ""
 
-#: public/class-buddypress-contact-me-public.php:337
+#: public/class-buddypress-contact-me-public.php:336
 msgid "Contact"
 msgstr ""
 
-#: public/class-buddypress-contact-me-public.php:382
+#: public/class-buddypress-contact-me-public.php:381
 msgid "Enable/Disable Contact me tab"
 msgstr ""
 
-#: public/class-buddypress-contact-me-public.php:432
+#: public/class-buddypress-contact-me-public.php:431
 msgid "Your settings have been saved."
 msgstr ""
 
 #. translators: %s:
-#: public/class-buddypress-contact-me-public.php:497
+#: public/class-buddypress-contact-me-public.php:496
 msgid " %1$s has contacted you."
 msgstr ""
 
-#: public/class-buddypress-contact-me-public.php:606
+#: public/class-buddypress-contact-me-public.php:605
 msgid "contact form"
 msgstr ""
 
-#: public/class-buddypress-contact-me-public.php:747
+#: public/class-buddypress-contact-me-public.php:751
 msgid "Please answer the security question."
 msgstr ""
 
-#: public/class-buddypress-contact-me-public.php:760
+#: public/class-buddypress-contact-me-public.php:764
 msgid "The security question answer is incorrect. Please try again."
 msgstr ""
 
-#: public/class-buddypress-contact-me-public.php:766
+#: public/class-buddypress-contact-me-public.php:770
 msgid "Name is required."
 msgstr ""
 
-#: public/class-buddypress-contact-me-public.php:768
+#: public/class-buddypress-contact-me-public.php:772
 msgid "Name must be at least 2 characters long."
 msgstr ""
 
-#: public/class-buddypress-contact-me-public.php:770
+#: public/class-buddypress-contact-me-public.php:774
 msgid "Name cannot exceed 100 characters."
 msgstr ""
 
-#: public/class-buddypress-contact-me-public.php:776
+#: public/class-buddypress-contact-me-public.php:780
 msgid "Email is required."
 msgstr ""
 
-#: public/class-buddypress-contact-me-public.php:778
+#: public/class-buddypress-contact-me-public.php:782
 msgid "Please enter a valid email address."
 msgstr ""
 
-#: public/class-buddypress-contact-me-public.php:784
+#: public/class-buddypress-contact-me-public.php:788
 msgid "Subject is required."
 msgstr ""
 
-#: public/class-buddypress-contact-me-public.php:786
+#: public/class-buddypress-contact-me-public.php:790
 msgid "Subject must be at least 3 characters long."
 msgstr ""
 
-#: public/class-buddypress-contact-me-public.php:788
+#: public/class-buddypress-contact-me-public.php:792
 msgid "Subject cannot exceed 200 characters."
 msgstr ""
 
-#: public/class-buddypress-contact-me-public.php:793
+#: public/class-buddypress-contact-me-public.php:797
 msgid "Message is required."
 msgstr ""
 
-#: public/class-buddypress-contact-me-public.php:795
+#: public/class-buddypress-contact-me-public.php:799
 msgid "Message must be at least 10 characters long."
 msgstr ""
 
-#: public/class-buddypress-contact-me-public.php:797
+#: public/class-buddypress-contact-me-public.php:801
 msgid "Message cannot exceed 5000 characters."
 msgstr ""
 
-#: public/class-buddypress-contact-me-public.php:802
+#: public/class-buddypress-contact-me-public.php:806
 msgid "Your message appears to contain spam content."
 msgstr ""
 
-#: public/class-buddypress-contact-me-public.php:850
+#: public/class-buddypress-contact-me-public.php:853
 msgid "Message sent successfully."
 msgstr ""
 
-#: public/class-buddypress-contact-me-public.php:865
+#: public/class-buddypress-contact-me-public.php:868
 msgid "An error occurred while sending your message. Please try again."
 msgstr ""
 
-#: public/class-buddypress-contact-me-public.php:918
+#: public/class-buddypress-contact-me-public.php:921
 msgid "Invalid request. Missing required data."
 msgstr ""
 
-#: public/class-buddypress-contact-me-public.php:929
+#: public/class-buddypress-contact-me-public.php:932
 msgid "Security check failed. Please refresh the page and try again."
 msgstr ""
 
-#: public/class-buddypress-contact-me-public.php:946
+#: public/class-buddypress-contact-me-public.php:949
 msgid "You do not have permission to delete this message."
 msgstr ""
 
-#: public/class-buddypress-contact-me-public.php:960
+#: public/class-buddypress-contact-me-public.php:963
 msgid "Message deleted successfully."
 msgstr ""
 
-#: public/class-buddypress-contact-me-public.php:964
+#: public/class-buddypress-contact-me-public.php:967
 msgid "Failed to delete message. Please try again."
 msgstr ""
 
-#: public/class-buddypress-contact-me-public.php:1008
+#: public/class-buddypress-contact-me-public.php:1011
 msgid "You can only delete your own messages."
 msgstr ""
 
-#: public/class-buddypress-contact-me-public.php:1022
+#: public/class-buddypress-contact-me-public.php:1025
 msgid "%d message deleted successfully."
 msgid_plural "%d messages deleted successfully."
 msgstr[0] ""
 msgstr[1] ""
 
-#: public/class-buddypress-contact-me-public.php:1024
+#: public/class-buddypress-contact-me-public.php:1027
 msgid "No messages were deleted."
 msgstr ""
 
-#: public/partials/bp-contact-me-tab-content.php:27
-#: public/partials/bp-contact-me-tab-content.php:59
+#: public/partials/bp-contact-me-tab-content.php:34
+#: public/partials/bp-contact-me-tab-content.php:66
 #: public/partials/bp-contact-tab-show-sender-user-data.php:59
 msgid "Name"
 msgstr ""
 
-#: public/partials/bp-contact-me-tab-content.php:36
+#: public/partials/bp-contact-me-tab-content.php:43
 msgid "Enter your name"
 msgstr ""
 
-#: public/partials/bp-contact-me-tab-content.php:38
-#: public/partials/bp-contact-me-tab-content.php:70
+#: public/partials/bp-contact-me-tab-content.php:45
+#: public/partials/bp-contact-me-tab-content.php:77
 msgid "2-100 characters"
 msgstr ""
 
-#: public/partials/bp-contact-me-tab-content.php:42
+#: public/partials/bp-contact-me-tab-content.php:49
 msgid "Email"
 msgstr ""
 
-#: public/partials/bp-contact-me-tab-content.php:49
+#: public/partials/bp-contact-me-tab-content.php:56
 msgid "your.email@example.com"
 msgstr ""
 
-#: public/partials/bp-contact-me-tab-content.php:52
+#: public/partials/bp-contact-me-tab-content.php:59
 msgid "Enter a valid email address"
 msgstr ""
 
-#: public/partials/bp-contact-me-tab-content.php:76
+#: public/partials/bp-contact-me-tab-content.php:83
 msgid "Subject"
 msgstr ""
 
-#: public/partials/bp-contact-me-tab-content.php:85
+#: public/partials/bp-contact-me-tab-content.php:92
 msgid "Brief subject of your message"
 msgstr ""
 
-#: public/partials/bp-contact-me-tab-content.php:87
+#: public/partials/bp-contact-me-tab-content.php:94
 msgid "3-200 characters"
 msgstr ""
 
-#: public/partials/bp-contact-me-tab-content.php:91
+#: public/partials/bp-contact-me-tab-content.php:98
 #: public/partials/bp-contact-tab-show-sender-user-data.php:60
 msgid "Message"
 msgstr ""
 
-#: public/partials/bp-contact-me-tab-content.php:101
+#: public/partials/bp-contact-me-tab-content.php:108
 msgid "Type your message here..."
 msgstr ""
 
-#: public/partials/bp-contact-me-tab-content.php:104
+#: public/partials/bp-contact-me-tab-content.php:111
 msgid "10-5000 characters"
 msgstr ""
 
-#: public/partials/bp-contact-me-tab-content.php:110
+#: public/partials/bp-contact-me-tab-content.php:117
 msgid "Security Question"
 msgstr ""
 
-#: public/partials/bp-contact-me-tab-content.php:122
+#: public/partials/bp-contact-me-tab-content.php:129
 msgid "Enter the answer"
 msgstr ""
 
-#: public/partials/bp-contact-me-tab-content.php:124
+#: public/partials/bp-contact-me-tab-content.php:131
 msgid "Please solve the math problem"
 msgstr ""
 
-#: public/partials/bp-contact-me-tab-content.php:137
+#: public/partials/bp-contact-me-tab-content.php:144
 msgid "Send Message"
 msgstr ""
 
-#: public/partials/bp-contact-me-tab-content.php:139
+#: public/partials/bp-contact-me-tab-content.php:146
 msgid "Sending..."
 msgstr ""
 

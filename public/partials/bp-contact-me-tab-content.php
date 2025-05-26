@@ -17,6 +17,13 @@ $max  = 20;
 $num1 = wp_rand($min, $max);
 $num2 = wp_rand($min, $max);
 $sum  = $num1 + $num2;
+if ( ! empty( $_COOKIE['bcm_notice_message'] ) ) {
+		$message = sanitize_text_field( $_COOKIE['bcm_notice_message'] );
+		$type    = sanitize_key( $_COOKIE['bcm_notice_type'] );
+	echo '<div class="bcm-notice ' . esc_attr($type) . '">';
+	echo esc_html($message);
+	echo '</div>';
+}
 ?>
 <div class="bp-content-me-container">
 	<div class="bp-member-blog-post-form">

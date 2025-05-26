@@ -46,7 +46,6 @@ class BuddyPress_Contact_Me_Public
     {
         $this->plugin_name = $plugin_name;
         $this->version     = $version;
-
     }
 
     /**
@@ -709,6 +708,11 @@ class BuddyPress_Contact_Me_Public
             return false;
         }
 
+         if ( isset( $_GET['bcm_notice'] ) ) {
+            setcookie( 'bcm_notice_message', sanitize_text_field( $_GET['bcm_notice'] ), time() + 60, COOKIEPATH, COOKIE_DOMAIN );
+            setcookie( 'bcm_notice_type', sanitize_key( $_GET['bcm_type'] ?? 'success' ), time() + 60, COOKIEPATH, COOKIE_DOMAIN );
+        }
+
         if (
             !empty($_POST)
         ) {
@@ -810,7 +814,7 @@ class BuddyPress_Contact_Me_Public
             // If there are validation errors, show them and redirect back
             if (!empty($validation_errors)) {
                 foreach ($validation_errors as $error) {
-                    bp_core_add_message($error, 'error');
+                    $this->bcm_handle_the_notice($error, 'error');
                 }
                 
                 // Determine the redirect URL for errors
@@ -845,9 +849,8 @@ class BuddyPress_Contact_Me_Public
                 array('%d', '%d', '%s', '%s', '%s', '%s', '%s')
             );
             // phpcs:enable
-
             if ($insert_data_contact_me) {
-                bp_core_add_message(__('Message sent successfully.', 'buddypress-contact-me'));
+                $this->bcm_handle_the_notice(__('Message sent successfully.', 'buddypress-contact-me'));
                 $get_contact_id = $wpdb->insert_id;
                 do_action('bp_contact_me_form_save', $get_contact_id, $bp_display_user_id);
 
@@ -862,7 +865,7 @@ class BuddyPress_Contact_Me_Public
                 wp_redirect($contact_me_url_qp);
                 exit;
             } else {
-                bp_core_add_message(__('An error occurred while sending your message. Please try again.', 'buddypress-contact-me'), 'error');
+                $this->bcm_handle_the_notice(__('An error occurred while sending your message. Please try again.', 'buddypress-contact-me'), 'error');
                 wp_redirect(wp_get_referer());
                 exit;
             }
@@ -1005,7 +1008,7 @@ class BuddyPress_Contact_Me_Public
             $owned_count = $wpdb->get_var($query);
             
             if ($owned_count != count($items)) {
-                bp_core_add_message(__('You can only delete your own messages.', 'buddypress-contact-me'), 'error');
+                $this->bcm_handle_the_notice(__('You can only delete your own messages.', 'buddypress-contact-me'), 'error');
                 bp_core_redirect($redirect);
                 return;
             }
@@ -1019,9 +1022,9 @@ class BuddyPress_Contact_Me_Public
             );
             
             if ($deleted > 0) {
-                bp_core_add_message(sprintf(_n('%d message deleted successfully.', '%d messages deleted successfully.', $deleted, 'buddypress-contact-me'), $deleted));
+                $this->bcm_handle_the_notice(sprintf(_n('%d message deleted successfully.', '%d messages deleted successfully.', $deleted, 'buddypress-contact-me'), $deleted));
             } else {
-                bp_core_add_message(__('No messages were deleted.', 'buddypress-contact-me'), 'error');
+                $this->bcm_handle_the_notice(__('No messages were deleted.', 'buddypress-contact-me'), 'error');
             }
         }
         
@@ -1086,4 +1089,19 @@ class BuddyPress_Contact_Me_Public
         return $classes;
     }
 
+    /**
+     * Call for add class in body
+     *
+     * @since 1.0.0
+     */
+    public function bcm_handle_the_notice( $message, $type = 'success' )
+    {
+        if(is_user_logged_in()){
+            bp_core_add_message( $message, $type);
+        }else{
+            // Store notice in cookie for next request
+            setcookie( 'bcm_notice_message', $message, time() + 60, COOKIEPATH, COOKIE_DOMAIN );
+            setcookie( 'bcm_notice_type', $type, time() + 60, COOKIEPATH, COOKIE_DOMAIN );
+        }
+    }
 }

@@ -271,7 +271,6 @@
             if (!validateCaptcha()) {
                 isValid = false;
             }
-            console.log(isValid);
             // Enable/disable submit button
             if (isValid) {
                 $('.bp-contact-me-btn').prop('disabled', false).removeClass('not-allowed');
