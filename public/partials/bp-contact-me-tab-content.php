@@ -78,8 +78,8 @@ $sum  = $num1 + $num2;
 				</label>
 				<input type="text" 
 				       id="bp_contact_me_subject"
-				       class="bp_contact_me_subject" 
-				       name="bp_contact_me_subject bp-contact-me-fields" 
+				       class="bp_contact_me_subject bp-contact-me-fields" 
+				       name="bp_contact_me_subject" 
 				       minlength="3" 
 				       maxlength="200" 
 				       placeholder="<?php esc_attr_e('Brief subject of your message', 'buddypress-contact-me'); ?>"
