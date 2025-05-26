@@ -702,16 +702,17 @@ class BuddyPress_Contact_Me_Public
      */
     public function bp_contact_me_form_submitted()
     {
+        if ( isset( $_COOKIE['bcm_notice_message'] ) ) {
+            setcookie( 'bcm_notice_message', '', time() - 3600, COOKIEPATH, COOKIE_DOMAIN );
+            setcookie( 'bcm_notice_type', '', time() - 3600, COOKIEPATH, COOKIE_DOMAIN );
+        }
         if (
             !isset($_POST['bcm_nonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['bcm_nonce'])), 'bcm_form_nonce')
         ) {
             return false;
         }
 
-         if ( isset( $_GET['bcm_notice'] ) ) {
-            setcookie( 'bcm_notice_message', sanitize_text_field( $_GET['bcm_notice'] ), time() + 60, COOKIEPATH, COOKIE_DOMAIN );
-            setcookie( 'bcm_notice_type', sanitize_key( $_GET['bcm_type'] ?? 'success' ), time() + 60, COOKIEPATH, COOKIE_DOMAIN );
-        }
+       
 
         if (
             !empty($_POST)

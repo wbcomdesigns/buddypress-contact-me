@@ -18,12 +18,16 @@ $num1 = wp_rand($min, $max);
 $num2 = wp_rand($min, $max);
 $sum  = $num1 + $num2;
 if ( ! empty( $_COOKIE['bcm_notice_message'] ) ) {
-		$message = sanitize_text_field( $_COOKIE['bcm_notice_message'] );
-		$type    = sanitize_key( $_COOKIE['bcm_notice_type'] );
-	echo '<div class="bcm-notice bp-feedback bp-messages ' . esc_attr($type) . '">';
-	echo '<span class="bp-icon" aria-hidden="true"></span>';
-	echo '<p>' . esc_html( $message ) . '</p>';
-	echo '</div>';
+    $message = sanitize_text_field( $_COOKIE['bcm_notice_message'] );
+    $type    = sanitize_key( $_COOKIE['bcm_notice_type'] ?? 'success' );
+
+    echo '<div class="bcm-notice bp-feedback bp-messages ' . esc_attr( $type ) . '">';
+    echo '<span class="bp-icon" aria-hidden="true"></span>';
+    echo '<p>' . esc_html( $message ) . '</p>';
+    echo '</div>';
+
+	            // Also unset from $_COOKIE so PHP doesn't use them during this request
+            unset( $_COOKIE['bcm_notice_message'], $_COOKIE['bcm_notice_type'] );
 }
 ?>
 <div class="bp-content-me-container">
