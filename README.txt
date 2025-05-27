@@ -24,6 +24,17 @@ e.g.
 1. Place `<?php do_action('plugin_name_hook'); ?>` in your templates
 
 == Changelog ==
+
+= 1.4.0 =
+* Fixed: Notification and message display issues for both logged-in and logged-out users.
+* Improved: Contact tab UI, including icon, gravatar, and notice styling.
+* Enhanced: CAPTCHA with new layout, client-side and server-side validation, and CSRF protection.
+* Improved: Form validation UX and added security with proper input handling and output escaping.
+* Fixed: Message count, pagination, and settings visibility issues in BuddyPress and BuddyBoss.
+* Updated: RTL support, dark mode compatibility, and general UI cleanup.
+* Cleaned: Deprecated code, replaced outdated jQuery functions, and resolved PHPCS issues.
+* Updated: Translation files, documentation links, and internal code structure.
+
 = 1.3.0 =
 * Fixed: Issue to dynamically change email content as specified by the admin.
 * Fixed: Fatal error when notifications component is disabled, including admin settings message.
