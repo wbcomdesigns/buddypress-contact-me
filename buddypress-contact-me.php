@@ -16,7 +16,7 @@
  * Plugin Name:       Wbcom Designs - BuddyPress Contact Me
  * Plugin URI:        https://wbcomdesigns.com/downloads/buddypress-contact-me/
  * Description:       BuddyPress Contact Me displays a contact form on members' profiles, allowing both logged-in and non-logged-in visitors to connect with community members.
- * Version:           1.4.0
+ * Version:           1.5.0
  * Author:            Wbcom Designs
  * Author URI:        https://www.wbcomdesigns.com
  * License:           GPL-2.0+
@@ -31,10 +31,30 @@ if ( ! defined( 'WPINC' ) ) {
 }
 
 // Define constants for the plugin.
-define( 'BUDDYPRESS_CONTACT_ME_VERSION', '1.4.0' );
+define( 'BUDDYPRESS_CONTACT_ME_VERSION', '1.5.0' );
 define( 'BUDDYPRESS_CONTACT_ME_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
 define( 'BUDDYPRESS_CONTACT_ME_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'BUDDYPRESS_CONTACT_ME_FILE', __FILE__ );
+
+/**
+ * Run one-time upgrade steps when the stored version is older than the
+ * current BUDDYPRESS_CONTACT_ME_VERSION. Safe to re-enter: every branch
+ * is idempotent and version-gated.
+ *
+ * @since 1.5.0
+ */
+function bcm_maybe_upgrade() {
+	$stored = get_option( 'buddypress_contact_me_db_version', '' );
+	if ( version_compare( (string) $stored, BUDDYPRESS_CONTACT_ME_VERSION, '>=' ) ) {
+		return;
+	}
+
+	// 1.5.0 admin rebuild: no schema changes, no option renames. The
+	// upgrade hook exists purely to bookmark the version so future
+	// upgrades have a reliable "stored version" to compare against.
+	update_option( 'buddypress_contact_me_db_version', BUDDYPRESS_CONTACT_ME_VERSION );
+}
+add_action( 'plugins_loaded', 'bcm_maybe_upgrade', 20 );
 
 
 /**

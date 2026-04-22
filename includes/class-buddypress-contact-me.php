@@ -101,21 +101,18 @@ class BuddyPress_Contact_Me {
 		include_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-buddypress-contact-me-i18n.php';
 
 		/**
-		 * The class responsible for defining all actions that occur in the admin area.
+		 * The 1.5.0 card-panel admin class. Replaces the legacy wbcom
+		 * wrapper admin entirely — owns menu, enqueue, settings
+		 * registration, and notice suppression. See
+		 * references/wbcom-wrapper-migration.md (skill reference).
 		 */
-		include_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-buddypress-contact-me-admin.php';
+		include_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/admin/class-bcm-admin.php';
 
 		/**
 		 * The class responsible for defining all actions that occur in the public-facing
 		 * side of the site.
 		 */
 		include_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-buddypress-contact-me-public.php';
-
-		/* Enqueue wbcom plugin folder file. */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/wbcom/wbcom-admin-settings.php';
-
-		/* Enqueue wbcom plugin folder file. */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/wbcom/wbcom-paid-plugin-settings.php';
 
 		include_once plugin_dir_path( dirname( __FILE__ ) ) . 'edd-license/edd-plugin-license.php';
 
@@ -149,12 +146,12 @@ class BuddyPress_Contact_Me {
 	 */
 	private function define_admin_hooks() {
 
-		$plugin_admin = new BuddyPress_Contact_Me_Admin( $this->get_plugin_name(), $this->get_version() );
-
-		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
-		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
-		$this->loader->add_action( 'admin_menu', $plugin_admin, 'bp_contact_me_add_admin_menu' );
-		$this->loader->add_action( 'in_admin_header', $plugin_admin, 'wbcom_hide_all_admin_notices_from_setting_page' );
+		// 1.5.0 card-panel admin — owns menu, enqueue, notice
+		// suppression, register_setting, and the hub landing takeover.
+		// The legacy BuddyPress_Contact_Me_Admin class has been
+		// retired; its entire surface moved into BCM_Admin.
+		$panel = new BCM_Admin();
+		$panel->register();
 
 	}
 

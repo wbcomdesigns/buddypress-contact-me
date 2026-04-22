@@ -9,6 +9,12 @@ if ( ! defined( 'EDD_BP_CONTACT_ME_ITEM_NAME' ) ) {
 	define( 'EDD_BP_CONTACT_ME_ITEM_NAME', 'BuddyPress Contact Me' ); // you should use your own CONSTANT name, and be sure to replace it throughout this file
 }
 
+// The EDD download row ID at wbcomdesigns.com. Preferred over item_name
+// by EDD Software Licensing 3.x — survives product renames.
+if ( ! defined( 'EDD_BP_CONTACT_ME_ITEM_ID' ) ) {
+	define( 'EDD_BP_CONTACT_ME_ITEM_ID', 1528584 );
+}
+
 // the name of the settings page for the license input to be displayed
 if ( ! defined( 'EDD_BP_CONTACT_ME_PLUGIN_LICENSE_PAGE' ) ) {
 	define( 'EDD_BP_CONTACT_ME_PLUGIN_LICENSE_PAGE', 'wbcom-license-page' );
@@ -30,7 +36,8 @@ function edd_bp_contact_me_plugin_updater() {
 		array(
 			'version'   => BUDDYPRESS_CONTACT_ME_VERSION,             // current version number.
 			'license'   => $license_key,        // license key (used get_option above to retrieve from DB).
-			'item_name' => EDD_BP_CONTACT_ME_ITEM_NAME,  // name of this plugin.
+			'item_id'   => EDD_BP_CONTACT_ME_ITEM_ID,    // EDD download ID (preferred, survives renames).
+			'item_name' => EDD_BP_CONTACT_ME_ITEM_NAME,  // name of this plugin (fallback for older stores).
 			'author'    => 'wbcomdesigns',  // author of this plugin.
 			'url'       => home_url(),
 		)
@@ -80,7 +87,8 @@ function edd_wbcom_bcm_activate_license() {
 		$api_params = array(
 			'edd_action' => 'activate_license',
 			'license'    => $license,
-			'item_name'  => urlencode( EDD_BP_CONTACT_ME_ITEM_NAME ), // the name of our product in EDD
+			'item_id'    => EDD_BP_CONTACT_ME_ITEM_ID, // preferred EDD SL 3.x product identifier.
+			'item_name'  => urlencode( EDD_BP_CONTACT_ME_ITEM_NAME ), // fallback for older stores.
 			'url'        => home_url(),
 		);
 
@@ -190,7 +198,8 @@ function edd_wbcom_BCM_deactivate_license() {
 		$api_params = array(
 			'edd_action' => 'deactivate_license',
 			'license'    => $license,
-			'item_name'  => urlencode( EDD_BP_CONTACT_ME_ITEM_NAME ), // the name of our product in EDD
+			'item_id'    => EDD_BP_CONTACT_ME_ITEM_ID, // preferred EDD SL 3.x product identifier.
+			'item_name'  => urlencode( EDD_BP_CONTACT_ME_ITEM_NAME ), // fallback for older stores.
 			'url'        => home_url(),
 		);
 
@@ -262,6 +271,7 @@ function edd_wbcom_BCM_check_license() {
 			$api_params = array(
 				'edd_action' => 'check_license',
 				'license'    => $license,
+				'item_id'    => EDD_BP_CONTACT_ME_ITEM_ID,
 				'item_name'  => urlencode( EDD_BP_CONTACT_ME_ITEM_NAME ),
 				'url'        => home_url(),
 			);
@@ -434,6 +444,7 @@ function edd_bp_contact_me_active_license_message() {
 			$api_params = array(
 				'edd_action' => 'check_license',
 				'license'    => $license,
+				'item_id'    => EDD_BP_CONTACT_ME_ITEM_ID,
 				'item_name'  => urlencode( EDD_BP_CONTACT_ME_ITEM_NAME ),
 				'url'        => home_url(),
 			);
