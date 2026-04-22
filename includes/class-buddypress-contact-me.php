@@ -67,7 +67,6 @@ class BuddyPress_Contact_Me {
 		$this->set_locale();
 		$this->define_admin_hooks();
 		$this->define_public_hooks();
-
 	}
 
 	/**
@@ -92,13 +91,13 @@ class BuddyPress_Contact_Me {
 		 * The class responsible for orchestrating the actions and filters of the
 		 * core plugin.
 		 */
-		include_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-buddypress-contact-me-loader.php';
+		include_once plugin_dir_path( __DIR__ ) . 'includes/class-buddypress-contact-me-loader.php';
 
 		/**
 		 * The class responsible for defining internationalization functionality
 		 * of the plugin.
 		 */
-		include_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-buddypress-contact-me-i18n.php';
+		include_once plugin_dir_path( __DIR__ ) . 'includes/class-buddypress-contact-me-i18n.php';
 
 		/**
 		 * The 1.5.0 card-panel admin class. Replaces the legacy wbcom
@@ -106,18 +105,17 @@ class BuddyPress_Contact_Me {
 		 * registration, and notice suppression. See
 		 * references/wbcom-wrapper-migration.md (skill reference).
 		 */
-		include_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/admin/class-bcm-admin.php';
+		include_once plugin_dir_path( __DIR__ ) . 'includes/admin/class-bcm-admin.php';
 
 		/**
 		 * The class responsible for defining all actions that occur in the public-facing
 		 * side of the site.
 		 */
-		include_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-buddypress-contact-me-public.php';
+		include_once plugin_dir_path( __DIR__ ) . 'public/class-buddypress-contact-me-public.php';
 
-		include_once plugin_dir_path( dirname( __FILE__ ) ) . 'edd-license/edd-plugin-license.php';
+		include_once plugin_dir_path( __DIR__ ) . 'edd-license/edd-plugin-license.php';
 
 		$this->loader = new BuddyPress_Contact_Me_Loader();
-
 	}
 
 	/**
@@ -134,7 +132,6 @@ class BuddyPress_Contact_Me {
 		$plugin_i18n = new BuddyPress_Contact_Me_i18n();
 
 		$this->loader->add_action( 'plugins_loaded', $plugin_i18n, 'load_plugin_textdomain' );
-
 	}
 
 	/**
@@ -152,7 +149,6 @@ class BuddyPress_Contact_Me {
 		// retired; its entire surface moved into BCM_Admin.
 		$panel = new BCM_Admin();
 		$panel->register();
-
 	}
 
 	/**
@@ -184,8 +180,7 @@ class BuddyPress_Contact_Me {
 		$this->loader->add_action( 'wp_ajax_bcm_message_popup', $plugin_public, 'bcm_contact_message_popup' );
 		$this->loader->add_filter( 'body_class', $plugin_public, 'bcm_body_class', 10, 1 );
 
-		$this->loader->add_action( 'bp_core_general_settings_after_save', $plugin_public, 'bp_contact_me_render_user_settings_save_notice', 10,2 );
-
+		$this->loader->add_action( 'bp_core_general_settings_after_save', $plugin_public, 'bp_contact_me_render_user_settings_save_notice', 10, 2 );
 	}
 
 	/**
@@ -227,5 +222,4 @@ class BuddyPress_Contact_Me {
 	public function get_version() {
 		return $this->version;
 	}
-
 }

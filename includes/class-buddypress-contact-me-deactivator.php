@@ -22,7 +22,5 @@ class BuddyPress_Contact_Me_Deactivator {
 	 * @since    1.0.0
 	 */
 	public static function deactivate() {
-
 	}
-
 }

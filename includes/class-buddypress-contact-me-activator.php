@@ -53,9 +53,9 @@ class BuddyPress_Contact_Me_Activator {
 		}
 		$bp_contact_me_admin_settings = get_option( 'bcm_admin_general_setting' );
 		if ( false === $bp_contact_me_admin_settings ) {
-			
+
 			$bcm_contact_link = ( function_exists( 'buddypress' ) && isset( buddypress()->buddyboss ) ) ? bp_core_get_user_domain( bp_loggedin_user_id() ) . 'contact' : bp_members_get_user_url( bp_loggedin_user_id() ) . 'contact';
-			
+
 			$bcm_click  = '<a href=" ' . $bcm_contact_link . '">Click here</a>';
 			$user_roles = array_reverse( get_editable_roles() );
 			$user_array = array( 'visitors' );
@@ -76,5 +76,4 @@ class BuddyPress_Contact_Me_Activator {
 			update_option( 'bcm_admin_general_setting', $bp_contact_me_admin_settings );
 		}
 	}
-
 }

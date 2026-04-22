@@ -83,13 +83,19 @@ $version = defined( 'BUDDYPRESS_CONTACT_ME_VERSION' ) ? BUDDYPRESS_CONTACT_ME_VE
 			<?php if ( $in_settings_group ) : ?>
 				<form method="post" action="options.php" id="bcm-settings-form">
 					<?php settings_fields( $settings_form_group ); ?>
-					<?php if ( file_exists( $view_path ) ) { include $view_path; } ?>
+					<?php
+					if ( file_exists( $view_path ) ) {
+						include $view_path; }
+					?>
 					<div class="bcm-save-bar">
 						<?php submit_button( __( 'Save Settings', 'buddypress-contact-me' ), 'primary bcm-btn bcm-btn-primary', 'submit', false ); ?>
 					</div>
 				</form>
 			<?php else : ?>
-				<?php if ( file_exists( $view_path ) ) { include $view_path; } ?>
+				<?php
+				if ( file_exists( $view_path ) ) {
+					include $view_path; }
+				?>
 			<?php endif; ?>
 		</div>
 

@@ -22,7 +22,7 @@ if ( ! class_exists( 'EDD_BP_CONTACT_ME_PLUGIN_UPDATER' ) ) :
 		private $version     = '';
 		private $wp_override = false;
 		private $cache_key   = '';
-		private $beta		 = '';
+		private $beta        = '';
 
 		/**
 		 * Class constructor.
@@ -482,7 +482,7 @@ if ( ! class_exists( 'EDD_BP_CONTACT_ME_PLUGIN_UPDATER' ) ) :
 		 * @return bool
 		 */
 		private function verify_ssl() {
-			 return (bool) apply_filters( 'edd_bmpro_sl_api_request_verify_ssl', true, $this );
+			return (bool) apply_filters( 'edd_bmpro_sl_api_request_verify_ssl', true, $this );
 		}
 	}
 endif;

@@ -67,7 +67,6 @@ function activate_buddypress_contact_me() {
 	} else {
 		add_action( 'admin_notices', 'bp_contact_me_required_plugin_admin_notice' );
 	}
-	
 }
 
 /**
@@ -120,7 +119,7 @@ function bp_contact_me_required_plugin_admin_notice() {
  * @param string $plugin The plugin slug.
  */
 function bp_contact_me_activation_redirect_settings( $plugin ) {
-	
+
 	if ( $plugin === plugin_basename( __FILE__ ) && class_exists( 'BuddyPress' ) ) {
 		if ( isset( $_REQUEST['action'] ) && $_REQUEST['action'] === 'activate' && isset( $_REQUEST['plugin'] ) && $_REQUEST['plugin'] === $plugin ) { //phpcs:ignore
 			wp_redirect( admin_url( 'admin.php?page=buddypress-contact-me&redirects=1' ) );
@@ -148,12 +147,11 @@ add_action( 'bp_include', 'run_buddypress_contact_me' );
 function bp_contact_me_get_send_private_message_link( $user_id ) {
 	$compose_url = bp_loggedin_user_domain() . bp_get_messages_slug() . '/compose/?';
 	if ( $user_id ) {
-		if( function_exists( 'buddypress' ) && isset( buddypress()->buddyboss ) ) {
+		if ( function_exists( 'buddypress' ) && isset( buddypress()->buddyboss ) ) {
 			$compose_url .= 'r=' . bp_core_get_username( $user_id );
 		} else {
 			$compose_url .= 'r=' . bp_members_get_user_slug( $user_id );
 		}
-		
 	}
 	return wp_nonce_url( $compose_url );
 }

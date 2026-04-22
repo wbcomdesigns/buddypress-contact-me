@@ -235,6 +235,11 @@
 	background: var(--bcm-admin-surface-1);
 	color: var(--bcm-admin-text);
 	box-shadow: none;
+}
+
+/* Mouse-focus only — keyboard users get a visible outline via the
+   .bcm-snav-link:focus-visible rule below. */
+.bcm-snav-link:focus:not(:focus-visible) {
 	outline: none;
 }
 
@@ -376,6 +381,18 @@
 .bcm-card .form-table select:focus {
 	border-color: var(--bcm-admin-accent);
 	box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+/* Mouse-focus gets the subtle box-shadow ring (above). Keyboard-focus
+   also keeps the browser's default outline so screen-reader / keyboard
+   users get the strongest indicator. Only suppress the outline on
+   mouse click. */
+.bcm-card .form-table input[type="text"]:focus:not(:focus-visible),
+.bcm-card .form-table input[type="email"]:focus:not(:focus-visible),
+.bcm-card .form-table input[type="number"]:focus:not(:focus-visible),
+.bcm-card .form-table input[type="url"]:focus:not(:focus-visible),
+.bcm-card .form-table input[type="date"]:focus:not(:focus-visible),
+.bcm-card .form-table select:focus:not(:focus-visible) {
 	outline: none;
 }
 
@@ -441,6 +458,11 @@
 .bcm-link:focus {
 	color: var(--bcm-admin-accent-hover);
 	text-decoration: underline;
+}
+
+/* Mouse-focus only — keyboard users get a visible outline via the
+   .bcm-link:focus-visible rule below. */
+.bcm-link:focus:not(:focus-visible) {
 	outline: none;
 }
 
@@ -909,6 +931,11 @@
 	transform: translateY(-1px);
 	color: var(--bcm-admin-text);
 	text-decoration: none;
+}
+
+/* Mouse-focus only — keyboard users get a visible outline via the
+   .bcm-hub-card:focus-visible rule below. */
+.bcm-hub-card:focus:not(:focus-visible) {
 	outline: none;
 }
 

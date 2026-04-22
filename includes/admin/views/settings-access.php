@@ -10,11 +10,11 @@ defined( 'ABSPATH' ) || exit;
 
 /** @var array $settings */
 
-$contact_tab_on   = ! empty( $settings['bcm_allow_contact_tab'] ) && 'yes' === $settings['bcm_allow_contact_tab'];
-$who_contact      = isset( $settings['bcm_who_contact'] ) && is_array( $settings['bcm_who_contact'] )
+$contact_tab_on = ! empty( $settings['bcm_allow_contact_tab'] ) && 'yes' === $settings['bcm_allow_contact_tab'];
+$who_contact    = isset( $settings['bcm_who_contact'] ) && is_array( $settings['bcm_who_contact'] )
 	? $settings['bcm_who_contact']
 	: array();
-$who_contacted    = isset( $settings['bcm_who_contacted'] ) && is_array( $settings['bcm_who_contacted'] )
+$who_contacted  = isset( $settings['bcm_who_contacted'] ) && is_array( $settings['bcm_who_contacted'] )
 	? $settings['bcm_who_contacted']
 	: array();
 
@@ -73,9 +73,10 @@ unset( $all_roles['administrator'] );
 				</div>
 			</div>
 			<div class="bcm-role-grid">
-				<?php foreach ( $all_roles as $role_slug => $role_label ) :
+				<?php
+				foreach ( $all_roles as $role_slug => $role_label ) :
 					$input_id = 'bcm-sender-' . sanitize_html_class( $role_slug );
-				?>
+					?>
 					<label class="bcm-role-chip" for="<?php echo esc_attr( $input_id ); ?>">
 						<input type="checkbox"
 							id="<?php echo esc_attr( $input_id ); ?>"
@@ -118,9 +119,10 @@ unset( $all_roles['administrator'] );
 				</div>
 			</div>
 			<div class="bcm-role-grid">
-				<?php foreach ( $all_roles as $role_slug => $role_label ) :
+				<?php
+				foreach ( $all_roles as $role_slug => $role_label ) :
 					$input_id = 'bcm-recipient-' . sanitize_html_class( $role_slug );
-				?>
+					?>
 					<label class="bcm-role-chip" for="<?php echo esc_attr( $input_id ); ?>">
 						<input type="checkbox"
 							id="<?php echo esc_attr( $input_id ); ?>"

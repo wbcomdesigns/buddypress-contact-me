@@ -55,7 +55,10 @@
 			<table class="bp_contact-me-messages">
 				<thead>
 					<tr>
-						<th class="contact-me-sender-id"><input type="checkbox" id="bcm-select-all-contact" /></th>
+						<th class="contact-me-sender-id">
+						<label for="bcm-select-all-contact" class="bp-screen-reader-text"><?php esc_html_e( 'Select all messages', 'buddypress-contact-me' ); ?></label>
+						<input type="checkbox" id="bcm-select-all-contact" />
+					</th>
 						<th class="contact-me-subject"><?php esc_html_e( 'Name', 'buddypress-contact-me' ); ?></th>
 						<th class="contact-me-message"><?php esc_html_e( 'Message', 'buddypress-contact-me' ); ?></th>
 						<th class="contact-me-btn"><?php esc_html_e( 'Action', 'buddypress-contact-me' ); ?></th>
@@ -70,7 +73,17 @@
 						$bcm_first_name = $sender_id ? bp_core_get_user_displayname( $sender_id ) : $get_contact_allrow_val['name'];
 						?>
 						<tr>
-							<td class="contact-me-sender-id" ><input type="checkbox" name="bcm_messages[]" class="bcm-all-check" value="<?php echo esc_attr( $get_contact_allrow_val['id'] ); ?>" /></td>
+							<td class="contact-me-sender-id" >
+								<input type="checkbox"
+									name="bcm_messages[]"
+									class="bcm-all-check"
+									value="<?php echo esc_attr( $get_contact_allrow_val['id'] ); ?>"
+									aria-label="<?php
+										/* translators: %s: sender display name */
+										echo esc_attr( sprintf( __( 'Select message from %s', 'buddypress-contact-me' ), $bcm_first_name ) );
+									?>"
+								/>
+							</td>
 							<td class="user_displayname" data-label="name">
 								 <?php 
 								 if( empty( $sender_id ) ){

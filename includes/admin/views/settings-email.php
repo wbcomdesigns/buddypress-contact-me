@@ -13,6 +13,8 @@ defined( 'ABSPATH' ) || exit;
 $subject       = isset( $settings['bcm_email_subject'] ) ? (string) $settings['bcm_email_subject'] : '';
 $content       = isset( $settings['bcm_email_content'] ) ? (string) $settings['bcm_email_content'] : '';
 $multi_copy_on = ! empty( $settings['bcm_multiple_user_copy_email'] ) && 'yes' === $settings['bcm_multiple_user_copy_email'];
+$from_email    = isset( $settings['bcm_user_email'] ) ? (string) $settings['bcm_user_email'] : '';
+$admin_email   = (string) get_option( 'admin_email' );
 ?>
 
 <div class="bcm-card">
@@ -21,6 +23,27 @@ $multi_copy_on = ! empty( $settings['bcm_multiple_user_copy_email'] ) && 'yes' =
 		<p class="bcm-card__desc"><?php esc_html_e( 'This is the email that is sent to members when someone contacts them. Use the placeholders below to include the sender\'s name, message, and your site name automatically.', 'buddypress-contact-me' ); ?></p>
 	</div>
 	<table class="form-table">
+		<tr>
+			<th scope="row"><label for="bcm_user_email"><?php esc_html_e( 'From address', 'buddypress-contact-me' ); ?></label></th>
+			<td>
+				<input type="email"
+					id="bcm_user_email"
+					name="bcm_admin_general_setting[bcm_user_email]"
+					value="<?php echo esc_attr( $from_email ); ?>"
+					class="regular-text"
+					style="width: 100%; max-width: 520px;"
+					placeholder="<?php echo esc_attr( $admin_email ); ?>">
+				<p class="description">
+					<?php
+					printf(
+						/* translators: %s: site admin email used as fallback. */
+						esc_html__( 'Email address that recipients will see in the "From" header. Leave blank to use the site admin email (%s).', 'buddypress-contact-me' ),
+						'<code>' . esc_html( $admin_email ) . '</code>'
+					);
+					?>
+				</p>
+			</td>
+		</tr>
 		<tr>
 			<th scope="row"><label for="bcm_email_subject"><?php esc_html_e( 'Subject line', 'buddypress-contact-me' ); ?></label></th>
 			<td>

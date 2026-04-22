@@ -168,8 +168,8 @@ class BCM_Admin {
 			return array();
 		}
 
-		$output         = array();
-		$bool_keys      = array(
+		$output        = array();
+		$bool_keys     = array(
 			'bcm_allow_notification',
 			'bcm_allow_email',
 			'bcm_allow_admin_copy_email',
@@ -177,8 +177,8 @@ class BCM_Admin {
 			'bcm_allow_contact_tab',
 			'bcm_multiple_user_copy_email',
 		);
-		$textarea_keys  = array( 'bcm_email_content' );
-		$email_key      = array( 'bcm_user_email' );
+		$textarea_keys = array( 'bcm_email_content' );
+		$email_key     = array( 'bcm_user_email' );
 
 		foreach ( $bool_keys as $key ) {
 			if ( isset( $input[ $key ] ) && 'yes' === $input[ $key ] ) {
@@ -303,15 +303,15 @@ class BCM_Admin {
 		$page_url = admin_url( 'admin.php?page=' . self::MENU_SLUG );
 		$settings = get_option( self::OPTION_NAME, array() );
 
-		$view_map = array(
+		$view_map            = array(
 			'overview'      => 'overview',
 			'notifications' => 'settings-notifications',
 			'email'         => 'settings-email',
 			'access'        => 'settings-access',
 			'license'       => 'license',
 		);
-		$view              = isset( $view_map[ $active ] ) ? $view_map[ $active ] : 'overview';
-		$in_settings_group = isset( $tabs[ $active ]['group'] ) && 'settings' === $tabs[ $active ]['group'];
+		$view                = isset( $view_map[ $active ] ) ? $view_map[ $active ] : 'overview';
+		$in_settings_group   = isset( $tabs[ $active ]['group'] ) && 'settings' === $tabs[ $active ]['group'];
 		$settings_form_group = self::OPTION_GROUP;
 
 		$view_path = plugin_dir_path( BUDDYPRESS_CONTACT_ME_FILE ) . 'includes/admin/views/' . $view . '.php';

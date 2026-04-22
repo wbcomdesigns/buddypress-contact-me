@@ -53,7 +53,6 @@ class BuddyPress_Contact_Me_Loader {
 		$this->actions   = array();
 		$this->filters   = array();
 		$this->shortcode = array();
-
 	}
 
 	/**
@@ -109,7 +108,6 @@ class BuddyPress_Contact_Me_Loader {
 		);
 
 		return $hooks;
-
 	}
 
 	/**
@@ -130,7 +128,6 @@ class BuddyPress_Contact_Me_Loader {
 		foreach ( $this->shortcode as $hook ) {
 			add_shortcode( $hook['hook'], array( $hook['component'], $hook['callback'] ) );
 		}
-
 	}
 
 	/**
@@ -144,5 +141,4 @@ class BuddyPress_Contact_Me_Loader {
 	public function add_shortcode( $hook, $component, $callback ) {
 		$this->shortcode = $this->add( $this->shortcode, $hook, $component, $callback, '', '' );
 	}
-
 }
