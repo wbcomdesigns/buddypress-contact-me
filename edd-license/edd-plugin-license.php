@@ -150,20 +150,25 @@ function edd_wbcom_bcm_activate_license() {
 			}
 		}
 
+		// The 1.5.0 card-panel license tab lives inside the plugin page,
+		// not on the legacy shared wbcom-license-page slug.
+		$license_tab_url = admin_url( 'admin.php?page=buddypress-contact-me&tab=license' );
+
 		// Check if anything passed on a message constituting a failure
 		if ( ! empty( $message ) ) {
-			$base_url = admin_url( 'admin.php?page=' . EDD_BP_CONTACT_ME_PLUGIN_LICENSE_PAGE );
 			$redirect = add_query_arg(
 				array(
-					'bcm_activation' => 'false',
+					'BCM_activation' => 'false',
 					'message'        => urlencode( $message ),
 				),
-				$base_url
+				$license_tab_url
 			);
 			$license  = trim( $license );
 			update_option( 'edd_wbcom_bp_contact_me_license_key', $license );
-			update_option( 'edd_wbcom_bp_contact_me_license_status', $license_data->license );
-			wp_redirect( $redirect );
+			if ( isset( $license_data->license ) ) {
+				update_option( 'edd_wbcom_bp_contact_me_license_status', $license_data->license );
+			}
+			wp_safe_redirect( $redirect );
 			exit();
 		}
 
@@ -171,7 +176,16 @@ function edd_wbcom_bcm_activate_license() {
 		$license = trim( $license );
 		update_option( 'edd_wbcom_bp_contact_me_license_key', $license );
 		update_option( 'edd_wbcom_bp_contact_me_license_status', $license_data->license );
-		wp_redirect( admin_url( 'admin.php?page=' . EDD_BP_CONTACT_ME_PLUGIN_LICENSE_PAGE ) );
+
+		// Persist expiry so the license tab can show "Renews on …".
+		// $license_data->expires is either an ISO date or the string 'lifetime'.
+		if ( isset( $license_data->expires ) && '' !== $license_data->expires ) {
+			update_option( 'edd_wbcom_bp_contact_me_license_expires', (string) $license_data->expires );
+		} else {
+			delete_option( 'edd_wbcom_bp_contact_me_license_expires' );
+		}
+
+		wp_safe_redirect( $license_tab_url );
 		exit();
 	}
 }
@@ -239,11 +253,12 @@ function edd_wbcom_BCM_deactivate_license() {
 		delete_transient( 'edd_wbcom_bp_contact_me_license_key_data' );
 
 		// $license_data->license will be either "deactivated" or "failed"
-		if ( $license_data->license == 'deactivated' || 'failed' === $license_data->license ) {
+		if ( 'deactivated' === $license_data->license || 'failed' === $license_data->license ) {
 			delete_option( 'edd_wbcom_bp_contact_me_license_status' );
+			delete_option( 'edd_wbcom_bp_contact_me_license_expires' );
 		}
 
-		wp_redirect( admin_url( 'admin.php?page=' . EDD_BP_CONTACT_ME_PLUGIN_LICENSE_PAGE ) );
+		wp_safe_redirect( admin_url( 'admin.php?page=buddypress-contact-me&tab=license' ) );
 		exit();
 	}
 }

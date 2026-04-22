@@ -517,6 +517,20 @@
 	padding: 16px 0 0;
 }
 
+/*
+ * When a save-bar sits at the bottom of a card (not inside a
+ * .bcm-card__body wrapper), give it the same horizontal padding as
+ * form-table cells + a top separator so the buttons don't sit flush
+ * against the card border. Covers `<div class="bcm-card"><form>...
+ * <div class="bcm-save-bar">` and direct-child cases.
+ */
+.bcm-card > .bcm-save-bar,
+.bcm-card > form > .bcm-save-bar {
+	padding: 16px 20px 20px;
+	border-top: 1px solid var(--bcm-admin-border);
+	background: var(--bcm-admin-surface-1);
+}
+
 .bcm-btn {
 	display: inline-flex;
 	align-items: center;
