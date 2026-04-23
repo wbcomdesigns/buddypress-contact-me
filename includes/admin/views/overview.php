@@ -8,7 +8,11 @@
 
 defined( 'ABSPATH' ) || exit;
 
-/** @var array $settings bcm_admin_general_setting already loaded by parent view. */
+/**
+ * Parent view provides $settings.
+ *
+ * @var array $settings bcm_admin_general_setting already loaded by parent view.
+ */
 
 global $wpdb;
 

@@ -48,11 +48,6 @@ class BCM_Admin {
 				'icon'  => 'dashicons-bell',
 				'group' => 'settings',
 			),
-			'email'         => array(
-				'label' => __( 'Email Template', 'buddypress-contact-me' ),
-				'icon'  => 'dashicons-email-alt',
-				'group' => 'settings',
-			),
 			'access'        => array(
 				'label' => __( 'Access', 'buddypress-contact-me' ),
 				'icon'  => 'dashicons-shield',
@@ -168,34 +163,18 @@ class BCM_Admin {
 			return array();
 		}
 
-		$output        = array();
-		$bool_keys     = array(
+		$output    = array();
+		$bool_keys = array(
 			'bcm_allow_notification',
 			'bcm_allow_email',
 			'bcm_allow_admin_copy_email',
 			'bcm_allow_sender_copy_email',
 			'bcm_allow_contact_tab',
-			'bcm_multiple_user_copy_email',
 		);
-		$textarea_keys = array( 'bcm_email_content' );
-		$email_key     = array( 'bcm_user_email' );
 
 		foreach ( $bool_keys as $key ) {
 			if ( isset( $input[ $key ] ) && 'yes' === $input[ $key ] ) {
 				$output[ $key ] = 'yes';
-			}
-		}
-		foreach ( $textarea_keys as $key ) {
-			if ( isset( $input[ $key ] ) ) {
-				$output[ $key ] = wp_kses_post( wp_unslash( $input[ $key ] ) );
-			}
-		}
-		if ( isset( $input['bcm_email_subject'] ) ) {
-			$output['bcm_email_subject'] = sanitize_text_field( wp_unslash( $input['bcm_email_subject'] ) );
-		}
-		foreach ( $email_key as $key ) {
-			if ( isset( $input[ $key ] ) ) {
-				$output[ $key ] = sanitize_email( wp_unslash( $input[ $key ] ) );
 			}
 		}
 		if ( isset( $input['bcm_who_contact'] ) && is_array( $input['bcm_who_contact'] ) ) {
@@ -214,6 +193,7 @@ class BCM_Admin {
 	 * @param string $hook_suffix Current admin page hook.
 	 */
 	public function enqueue_assets( string $hook_suffix ): void {
+		unset( $hook_suffix ); // We inspect screen object instead of the hook suffix.
 		$screen = get_current_screen();
 		if ( ! $screen || ! $this->is_our_screen( $screen ) ) {
 			return;
@@ -306,7 +286,6 @@ class BCM_Admin {
 		$view_map            = array(
 			'overview'      => 'overview',
 			'notifications' => 'settings-notifications',
-			'email'         => 'settings-email',
 			'access'        => 'settings-access',
 			'license'       => 'license',
 		);

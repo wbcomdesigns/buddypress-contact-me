@@ -1,5 +1,9 @@
 <?php
-
+/**
+ * Internationalization loader.
+ *
+ * @package BuddyPress_Contact_Me
+ */
 
 /**
  * Define the internationalization functionality.
@@ -7,13 +11,9 @@
  * Loads and defines the internationalization files for this plugin
  * so that it is ready for translation.
  *
- * @since      1.0.0
- * @package    BuddyPress_Contact_Me
- * @subpackage BuddyPress_Contact_Me/includes
- * @author     WBCOM Designs <admin@wbcomdesigns.com>
- * @link       https://www.wbcomdesigns.com
+ * @since 1.0.0
  */
-class BuddyPress_Contact_Me_i18n {
+class BuddyPress_Contact_Me_I18n {
 
 
 	/**

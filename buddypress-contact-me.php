@@ -1,5 +1,4 @@
 <?php
-
 /**
  * The plugin bootstrap file
  *
@@ -17,6 +16,8 @@
  * Plugin URI:        https://wbcomdesigns.com/downloads/buddypress-contact-me/
  * Description:       BuddyPress Contact Me displays a contact form on members' profiles, allowing both logged-in and non-logged-in visitors to connect with community members.
  * Version:           1.5.0
+ * Requires at least: 6.0
+ * Requires PHP:      7.4
  * Author:            Wbcom Designs
  * Author URI:        https://www.wbcomdesigns.com
  * License:           GPL-2.0+
@@ -49,12 +50,40 @@ function bcm_maybe_upgrade() {
 		return;
 	}
 
-	// 1.5.0 admin rebuild: no schema changes, no option renames. The
-	// upgrade hook exists purely to bookmark the version so future
-	// upgrades have a reliable "stored version" to compare against.
+	// 1.5.0 — frontend rewrite + default-on semantics. Legacy versions
+	// stored empty-string meta to mean "opt out" and only 'on' to mean
+	// "opt in". The new nav layer treats anything except 'off' as
+	// enabled, so migrate any empty strings to 'on' to make the meta
+	// set self-consistent going forward.
+	global $wpdb;
+	$wpdb->query(
+		$wpdb->prepare(
+			"UPDATE {$wpdb->usermeta} SET meta_value = %s WHERE meta_key = %s AND meta_value = ''",
+			'on',
+			'contact_me_button'
+		)
+	);
+
+	// 1.5.0 — install the BP email post so notifications render through
+	// BuddyPress's email template. No-op once the admin owns the post.
+	if ( class_exists( 'BCM_Email_Installer' ) ) {
+		BCM_Email_Installer::install();
+	}
+
 	update_option( 'buddypress_contact_me_db_version', BUDDYPRESS_CONTACT_ME_VERSION );
 }
-add_action( 'plugins_loaded', 'bcm_maybe_upgrade', 20 );
+add_action( 'bp_init', 'bcm_maybe_upgrade', 20 );
+
+/**
+ * New users default to accepting contact messages — the plugin is
+ * valuable because it "just works" out of the box.
+ */
+add_action(
+	'user_register',
+	function ( $user_id ) {
+		update_user_meta( $user_id, 'contact_me_button', 'on' );
+	}
+);
 
 
 /**
@@ -120,9 +149,9 @@ function bp_contact_me_required_plugin_admin_notice() {
  */
 function bp_contact_me_activation_redirect_settings( $plugin ) {
 
-	if ( $plugin === plugin_basename( __FILE__ ) && class_exists( 'BuddyPress' ) ) {
-		if ( isset( $_REQUEST['action'] ) && $_REQUEST['action'] === 'activate' && isset( $_REQUEST['plugin'] ) && $_REQUEST['plugin'] === $plugin ) { //phpcs:ignore
-			wp_redirect( admin_url( 'admin.php?page=buddypress-contact-me&redirects=1' ) );
+	if ( plugin_basename( __FILE__ ) === $plugin && class_exists( 'BuddyPress' ) ) {
+		if ( isset( $_REQUEST['action'] ) && 'activate' === $_REQUEST['action'] && isset( $_REQUEST['plugin'] ) && $plugin === $_REQUEST['plugin'] ) { //phpcs:ignore
+			wp_safe_redirect( admin_url( 'admin.php?page=buddypress-contact-me&redirects=1' ) );
 			exit;
 		}
 	}

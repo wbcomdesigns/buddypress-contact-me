@@ -8,7 +8,11 @@
 
 defined( 'ABSPATH' ) || exit;
 
-/** @var array $settings */
+/**
+ * Parent view provides $settings.
+ *
+ * @var array $settings
+ */
 
 $contact_tab_on = ! empty( $settings['bcm_allow_contact_tab'] ) && 'yes' === $settings['bcm_allow_contact_tab'];
 $who_contact    = isset( $settings['bcm_who_contact'] ) && is_array( $settings['bcm_who_contact'] )

@@ -8,7 +8,11 @@
 
 defined( 'ABSPATH' ) || exit;
 
-/** @var array $settings */
+/**
+ * Parent view provides $settings.
+ *
+ * @var array $settings
+ */
 
 $bp_on           = ! empty( $settings['bcm_allow_notification'] ) && 'yes' === $settings['bcm_allow_notification'];
 $email_on        = ! empty( $settings['bcm_allow_email'] ) && 'yes' === $settings['bcm_allow_email'];
@@ -54,7 +58,41 @@ $bp_notif_active = $bp_active && bp_is_active( 'notifications' );
 						<?php checked( $email_on ); ?>>
 					<?php esc_html_e( 'Email the recipient when a new message arrives', 'buddypress-contact-me' ); ?>
 				</label>
-				<p class="description"><?php esc_html_e( 'Uses the email template configured on the "Email Template" tab.', 'buddypress-contact-me' ); ?></p>
+				<?php
+				$bcm_email_term = function_exists( 'get_term_by' ) ? get_term_by( 'slug', 'bcm-contact-message', 'bp-email-type' ) : false;
+				$bcm_email_id   = 0;
+				if ( $bcm_email_term ) {
+					// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query -- Admin-only, runs once per settings render.
+					$bcm_email_posts = get_posts(
+						array(
+							'post_type'   => 'bp-email',
+							'tax_query'   => array(
+								array(
+									'taxonomy' => 'bp-email-type',
+									'field'    => 'term_id',
+									'terms'    => (int) $bcm_email_term->term_id,
+								),
+							),
+							'numberposts' => 1,
+							'fields'      => 'ids',
+						)
+					);
+					$bcm_email_id    = ! empty( $bcm_email_posts ) ? (int) $bcm_email_posts[0] : 0;
+				}
+				?>
+				<p class="description">
+					<?php
+					if ( $bcm_email_id ) {
+						printf(
+							/* translators: %s: edit-email URL */
+							wp_kses_post( __( 'The subject, body, and branding use BuddyPress\'s email template. <a href="%s">Edit the contact-message email →</a>', 'buddypress-contact-me' ) ),
+							esc_url( get_edit_post_link( $bcm_email_id ) )
+						);
+					} else {
+						esc_html_e( 'Customize subject, body, and branding under Dashboard → Emails.', 'buddypress-contact-me' );
+					}
+					?>
+				</p>
 			</td>
 		</tr>
 	</table>

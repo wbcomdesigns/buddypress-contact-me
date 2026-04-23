@@ -4,7 +4,7 @@
  *
  * Receives from BCM_Admin::render_page():
  *
- * @var array  $tabs                Tab registry keyed by slug.
+ * @var array  $bcm_tabs                Tab registry keyed by slug.
  * @var string $active              Active tab slug.
  * @var string $page_url            Base URL (admin.php?page=buddypress-contact-me).
  * @var array  $settings            bcm_admin_general_setting option.
@@ -59,8 +59,8 @@ $version = defined( 'BUDDYPRESS_CONTACT_ME_VERSION' ) ? BUDDYPRESS_CONTACT_ME_VE
 					'settings' => esc_html__( 'Settings', 'buddypress-contact-me' ),
 					'account'  => esc_html__( 'Account', 'buddypress-contact-me' ),
 				);
-				foreach ( $tabs as $slug => $tab ) {
-					$group = isset( $tab['group'] ) ? $tab['group'] : 'main';
+				foreach ( $bcm_tabs as $slug => $bcm_tab ) {
+					$group = isset( $bcm_tab['group'] ) ? $bcm_tab['group'] : 'main';
 					if ( 'main' !== $group && ! in_array( $group, $printed_groups, true ) ) {
 						echo '<div class="bcm-snav-divider" role="separator"></div>';
 						if ( isset( $group_labels[ $group ] ) ) {
@@ -71,8 +71,8 @@ $version = defined( 'BUDDYPRESS_CONTACT_ME_VERSION' ) ? BUDDYPRESS_CONTACT_ME_VE
 					$classes  = 'bcm-snav-link';
 					$classes .= $active === $slug ? ' bcm-snav-link--active' : '';
 					echo '<a href="' . esc_url( $page_url . '&tab=' . $slug ) . '" class="' . esc_attr( $classes ) . '">';
-					echo '<span class="dashicons ' . esc_attr( $tab['icon'] ) . '" aria-hidden="true"></span>';
-					echo esc_html( $tab['label'] );
+					echo '<span class="dashicons ' . esc_attr( $bcm_tab['icon'] ) . '" aria-hidden="true"></span>';
+					echo esc_html( $bcm_tab['label'] );
 					echo '</a>';
 				}
 				?>

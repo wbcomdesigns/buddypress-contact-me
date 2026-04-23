@@ -38,7 +38,7 @@ $wrapper_helper_slugs = apply_filters(
 	)
 );
 
-$plugins = array();
+$bcm_plugins = array();
 foreach ( $submenu_entries as $entry ) {
 	$slug = isset( $entry[2] ) ? (string) $entry[2] : '';
 	if ( '' === $slug || 'wbcomplugins' === $slug ) {
@@ -47,7 +47,7 @@ foreach ( $submenu_entries as $entry ) {
 	if ( in_array( $slug, $wrapper_helper_slugs, true ) ) {
 		continue;
 	}
-	$plugins[] = array(
+	$bcm_plugins[] = array(
 		'slug'       => $slug,
 		'menu_title' => isset( $entry[0] ) ? wp_strip_all_tags( (string) $entry[0] ) : $slug,
 		'page_title' => isset( $entry[3] ) ? wp_strip_all_tags( (string) $entry[3] ) : '',
@@ -55,7 +55,7 @@ foreach ( $submenu_entries as $entry ) {
 	);
 }
 
-$plugin_count = count( $plugins );
+$plugin_count = count( $bcm_plugins );
 ?>
 <div class="wrap bcm-admin">
 	<header class="bcm-page-header">
@@ -95,7 +95,7 @@ $plugin_count = count( $plugins );
 		</div>
 	<?php else : ?>
 		<div class="bcm-hub-grid">
-			<?php foreach ( $plugins as $p ) : ?>
+			<?php foreach ( $bcm_plugins as $p ) : ?>
 				<a href="<?php echo esc_url( $p['url'] ); ?>" class="bcm-hub-card">
 					<span class="bcm-hub-card__icon" aria-hidden="true">
 						<span class="dashicons dashicons-admin-plugins"></span>
