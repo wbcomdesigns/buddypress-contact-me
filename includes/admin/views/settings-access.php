@@ -26,6 +26,18 @@ global $wp_roles;
 $all_roles = isset( $wp_roles ) ? $wp_roles->get_names() : array();
 unset( $all_roles['administrator'] );
 
+/*
+ * Senders can include a synthetic "visitors" group for logged-out guests.
+ * class-bcm-frontend-nav.php::viewer_can_send() treats this slug as "allow
+ * anonymous visitors to submit the form" — keep it separate from $all_roles
+ * so it doesn't bleed into the Who-Can-Be-Contacted grid (recipients are
+ * always real users).
+ */
+$sender_groups                = $all_roles;
+$sender_groups['visitors']    = __( 'Visitors (not logged in)', 'buddypress-contact-me' );
+$sender_total                 = count( $sender_groups );
+$sender_selected              = count( array_intersect( array_keys( $sender_groups ), $who_contact ) );
+
 // Sentinel inputs so the sanitizer can tell "user unchecked me" apart
 // from "this tab never rendered me". See class-bcm-admin.php::sanitize_settings()
 // and Basecamp card 9823496113.
@@ -62,20 +74,20 @@ foreach ( $tab_rendered_keys as $tab_rendered_key ) :
 <div class="bcm-card">
 	<div class="bcm-card__head">
 		<p class="bcm-card__title"><?php esc_html_e( 'Who Can Send Messages', 'buddypress-contact-me' ); ?></p>
-		<p class="bcm-card__desc"><?php esc_html_e( 'Only members in the roles you pick can see the Contact Me form. Leave all roles unchecked to allow every logged-in member.', 'buddypress-contact-me' ); ?></p>
+		<p class="bcm-card__desc"><?php esc_html_e( 'Only members in the groups you pick can see the Contact Me form. Leave everything unchecked to allow every logged-in member.', 'buddypress-contact-me' ); ?></p>
 	</div>
 	<div class="bcm-card__body">
 		<fieldset class="bcm-role-grid-wrap" data-bcm-role-grid>
-			<legend class="screen-reader-text"><?php esc_html_e( 'Roles allowed to send messages', 'buddypress-contact-me' ); ?></legend>
+			<legend class="screen-reader-text"><?php esc_html_e( 'Groups allowed to send messages', 'buddypress-contact-me' ); ?></legend>
 			<div class="bcm-role-grid-toolbar">
 				<span class="bcm-role-grid-count" aria-live="polite">
 					<?php
 					echo esc_html(
 						sprintf(
 							/* translators: 1: selected, 2: total */
-							__( '%1$d of %2$d roles selected', 'buddypress-contact-me' ),
-							count( array_intersect( array_keys( $all_roles ), $who_contact ) ),
-							count( $all_roles )
+							__( '%1$d of %2$d groups selected', 'buddypress-contact-me' ),
+							$sender_selected,
+							$sender_total
 						)
 					);
 					?>
@@ -88,8 +100,9 @@ foreach ( $tab_rendered_keys as $tab_rendered_key ) :
 			</div>
 			<div class="bcm-role-grid">
 				<?php
-				foreach ( $all_roles as $role_slug => $role_label ) :
-					$input_id = 'bcm-sender-' . sanitize_html_class( $role_slug );
+				foreach ( $sender_groups as $role_slug => $role_label ) :
+					$input_id          = 'bcm-sender-' . sanitize_html_class( $role_slug );
+					$is_visitors_group = ( 'visitors' === $role_slug );
 					?>
 					<label class="bcm-role-chip" for="<?php echo esc_attr( $input_id ); ?>">
 						<input type="checkbox"
@@ -97,10 +110,15 @@ foreach ( $tab_rendered_keys as $tab_rendered_key ) :
 							name="bcm_admin_general_setting[bcm_who_contact][]"
 							value="<?php echo esc_attr( $role_slug ); ?>"
 							<?php checked( in_array( $role_slug, $who_contact, true ) ); ?>>
-						<span class="bcm-role-chip__label"><?php echo esc_html( translate_user_role( $role_label ) ); ?></span>
+						<span class="bcm-role-chip__label">
+							<?php echo esc_html( $is_visitors_group ? $role_label : translate_user_role( $role_label ) ); ?>
+						</span>
 					</label>
 				<?php endforeach; ?>
 			</div>
+			<p class="description" style="margin-top: 12px;">
+				<?php esc_html_e( '"Visitors (not logged in)" lets guests submit the form on public profiles. Leave it off if you only want registered members to contact each other.', 'buddypress-contact-me' ); ?>
+			</p>
 		</fieldset>
 	</div>
 </div>
