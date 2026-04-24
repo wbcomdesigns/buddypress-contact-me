@@ -25,7 +25,17 @@ $who_contacted  = isset( $settings['bcm_who_contacted'] ) && is_array( $settings
 global $wp_roles;
 $all_roles = isset( $wp_roles ) ? $wp_roles->get_names() : array();
 unset( $all_roles['administrator'] );
-?>
+
+// Sentinel inputs so the sanitizer can tell "user unchecked me" apart
+// from "this tab never rendered me". See class-bcm-admin.php::sanitize_settings()
+// and Basecamp card 9823496113.
+$tab_rendered_keys = array(
+	'bcm_allow_contact_tab',
+);
+foreach ( $tab_rendered_keys as $tab_rendered_key ) :
+	?>
+	<input type="hidden" name="bcm_admin_general_setting[bcm_tab_rendered_keys][]" value="<?php echo esc_attr( $tab_rendered_key ); ?>">
+<?php endforeach; ?>
 
 <div class="bcm-card">
 	<div class="bcm-card__head">

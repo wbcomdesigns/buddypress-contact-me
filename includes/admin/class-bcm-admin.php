@@ -160,10 +160,23 @@ class BCM_Admin {
 	 */
 	public function sanitize_settings( $input ): array {
 		if ( ! is_array( $input ) ) {
-			return array();
+			$input = array();
 		}
 
-		$output    = array();
+		// Start from the CURRENTLY saved option, not an empty array. Each
+		// admin tab submits only its own fields — when the Access tab is
+		// saved it does not include the Notifications-tab boolean keys,
+		// so rebuilding from an empty $output wipes them. Merging on top
+		// of the stored value keeps keys owned by OTHER tabs intact.
+		//
+		// Reference: Basecamp card 9823496113 ("Settings Overwrite —
+		// Access Tab Resets Notifications"). Before this change, saving
+		// the Access tab silently reset every notification preference.
+		$output = get_option( self::OPTION_NAME, array() );
+		if ( ! is_array( $output ) ) {
+			$output = array();
+		}
+
 		$bool_keys = array(
 			'bcm_allow_notification',
 			'bcm_allow_email',
@@ -172,11 +185,39 @@ class BCM_Admin {
 			'bcm_allow_contact_tab',
 		);
 
+		// Which tab is currently posting? Every admin tab submits its own
+		// subset of fields — we only want to touch the subset that was
+		// actually rendered, so an "Access"-tab save does NOT decide the
+		// value of "bcm_allow_email" just because the key happens to be
+		// absent from the POST body. For each tab-owned field we only
+		// overwrite the stored value when the field's form group was
+		// present in the submission.
+		$posted_bool_keys = array();
 		foreach ( $bool_keys as $key ) {
-			if ( isset( $input[ $key ] ) && 'yes' === $input[ $key ] ) {
-				$output[ $key ] = 'yes';
+			if ( array_key_exists( $key, $input ) ) {
+				$posted_bool_keys[] = $key;
+				$output[ $key ]     = ( 'yes' === $input[ $key ] ) ? 'yes' : '';
 			}
 		}
+
+		// A submitted form that RENDERED a checkbox but left it unchecked
+		// won't include the field in $_POST at all. To distinguish "the
+		// Access tab didn't render this field" from "the Notifications
+		// tab rendered it but the user unchecked it", views should post
+		// a hidden sentinel input `bcm_tab_rendered_keys[]` listing every
+		// bool_key their form contains. When we see the sentinel, any
+		// bool_key listed there but missing from $input is an explicit
+		// "off".
+		if ( isset( $input['bcm_tab_rendered_keys'] ) && is_array( $input['bcm_tab_rendered_keys'] ) ) {
+			foreach ( $input['bcm_tab_rendered_keys'] as $rendered ) {
+				$rendered = sanitize_key( $rendered );
+				if ( in_array( $rendered, $bool_keys, true ) && ! in_array( $rendered, $posted_bool_keys, true ) ) {
+					$output[ $rendered ] = '';
+				}
+			}
+			unset( $output['bcm_tab_rendered_keys'] );
+		}
+
 		if ( isset( $input['bcm_who_contact'] ) && is_array( $input['bcm_who_contact'] ) ) {
 			$output['bcm_who_contact'] = array_map( 'sanitize_text_field', wp_unslash( $input['bcm_who_contact'] ) );
 		}

@@ -20,7 +20,22 @@ $admin_copy      = ! empty( $settings['bcm_allow_admin_copy_email'] ) && 'yes' =
 $sender_copy     = ! empty( $settings['bcm_allow_sender_copy_email'] ) && 'yes' === $settings['bcm_allow_sender_copy_email'];
 $bp_active       = function_exists( 'bp_is_active' );
 $bp_notif_active = $bp_active && bp_is_active( 'notifications' );
-?>
+
+// Sentinel inputs so the sanitizer can tell "user unchecked me" apart
+// from "this tab never rendered me". The sanitizer inspects the keys
+// listed here and explicitly clears any that were rendered-but-absent
+// from $_POST. See class-bcm-admin.php::sanitize_settings() and
+// Basecamp card 9823496113.
+$tab_rendered_keys = array(
+	'bcm_allow_notification',
+	'bcm_allow_email',
+	'bcm_allow_admin_copy_email',
+	'bcm_allow_sender_copy_email',
+);
+foreach ( $tab_rendered_keys as $tab_rendered_key ) :
+	?>
+	<input type="hidden" name="bcm_admin_general_setting[bcm_tab_rendered_keys][]" value="<?php echo esc_attr( $tab_rendered_key ); ?>">
+<?php endforeach; ?>
 
 <div class="bcm-card">
 	<div class="bcm-card__head">
