@@ -273,10 +273,10 @@ class BCM_Admin {
 	 * Render the single admin page. Routes to the active tab.
 	 */
 	public function render_page(): void {
-		$tabs      = self::get_tabs();
-		$tab_slugs = array_keys( $tabs );
+		$bcm_tabs  = self::get_tabs();
+		$tab_slugs = array_keys( $bcm_tabs );
 		$active    = isset( $_GET['tab'] ) ? sanitize_key( wp_unslash( $_GET['tab'] ) ) : $tab_slugs[0]; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-		if ( ! isset( $tabs[ $active ] ) ) {
+		if ( ! isset( $bcm_tabs[ $active ] ) ) {
 			$active = $tab_slugs[0];
 		}
 
@@ -290,7 +290,7 @@ class BCM_Admin {
 			'license'       => 'license',
 		);
 		$view                = isset( $view_map[ $active ] ) ? $view_map[ $active ] : 'overview';
-		$in_settings_group   = isset( $tabs[ $active ]['group'] ) && 'settings' === $tabs[ $active ]['group'];
+		$in_settings_group   = isset( $bcm_tabs[ $active ]['group'] ) && 'settings' === $bcm_tabs[ $active ]['group'];
 		$settings_form_group = self::OPTION_GROUP;
 
 		$view_path = plugin_dir_path( BUDDYPRESS_CONTACT_ME_FILE ) . 'includes/admin/views/' . $view . '.php';
