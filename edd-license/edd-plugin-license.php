@@ -1,5 +1,13 @@
 <?php
-// this is the URL our updater / license checker pings. This should be the URL of the site with EDD installed
+/**
+ * EDD Software Licensing integration for BuddyPress Contact Me.
+ *
+ * @package BuddyPress_Contact_Me
+ */
+
+defined( 'ABSPATH' ) || exit;
+
+// this is the URL our updater / license checker pings. This should be the URL of the site with EDD installed.
 if ( ! defined( 'EDD_BP_CONTACT_ME_STORE_URL' ) ) {
 	define( 'EDD_BP_CONTACT_ME_STORE_URL', 'https://wbcomdesigns.com/' ); // you should use your own CONSTANT name, and be sure to replace it throughout this file
 }
@@ -114,6 +122,7 @@ function edd_wbcom_bcm_activate_license() {
 				switch ( $license_data->error ) {
 					case 'expired':
 						$message = sprintf(
+							/* translators: %s: license expiry date. */
 							__( 'Your license key expired on %s.', 'buddypress-contact-me' ),
 							date_i18n( get_option( 'date_format' ), strtotime( $license_data->expires, current_time( 'timestamp' ) ) )
 						);
@@ -133,6 +142,7 @@ function edd_wbcom_bcm_activate_license() {
 						break;
 
 					case 'item_name_mismatch':
+						/* translators: %s: product name. */
 						$message = sprintf( __( 'This appears to be an invalid license key for %s.', 'buddypress-contact-me' ), EDD_BP_CONTACT_ME_ITEM_NAME );
 						break;
 

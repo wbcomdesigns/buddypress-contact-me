@@ -8,6 +8,8 @@
  * @package BuddyPress_Contact_Me
  */
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * Collects hooks to add and registers them with WordPress in a single pass.
  */

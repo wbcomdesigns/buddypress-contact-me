@@ -5,6 +5,8 @@
  * @package BuddyPress_Contact_Me
  */
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * Defines internationalization, admin hooks, and public-facing site hooks.
  *
