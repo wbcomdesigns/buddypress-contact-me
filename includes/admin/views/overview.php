@@ -45,8 +45,36 @@ $sender_copy_on      = ! empty( $settings['bcm_allow_sender_copy_email'] ) && 'y
 $contact_tab_on      = ! empty( $settings['bcm_allow_contact_tab'] ) && 'yes' === $settings['bcm_allow_contact_tab'];
 
 $notifications_url = admin_url( 'admin.php?page=buddypress-contact-me&tab=notifications' );
-$email_url         = admin_url( 'admin.php?page=buddypress-contact-me&tab=email' );
 $access_url        = admin_url( 'admin.php?page=buddypress-contact-me&tab=access' );
+
+// Resolve the real edit URL for the BP "bcm-contact-message" email post;
+// fall back to the notifications tab (which has the same link in its
+// description) so the button is never dead.
+$email_url      = $notifications_url;
+$bcm_email_term = function_exists( 'get_term_by' ) ? get_term_by( 'slug', 'bcm-contact-message', 'bp-email-type' ) : false;
+if ( $bcm_email_term ) {
+	// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query -- Admin-only, runs once per overview render.
+	$bcm_email_posts = get_posts(
+		array(
+			'post_type'   => 'bp-email',
+			'tax_query'   => array(
+				array(
+					'taxonomy' => 'bp-email-type',
+					'field'    => 'term_id',
+					'terms'    => (int) $bcm_email_term->term_id,
+				),
+			),
+			'numberposts' => 1,
+			'fields'      => 'ids',
+		)
+	);
+	if ( ! empty( $bcm_email_posts ) ) {
+		$bcm_email_edit_url = get_edit_post_link( (int) $bcm_email_posts[0], 'url' );
+		if ( $bcm_email_edit_url ) {
+			$email_url = $bcm_email_edit_url;
+		}
+	}
+}
 ?>
 
 <div class="bcm-stats-grid">
