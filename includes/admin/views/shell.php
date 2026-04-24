@@ -38,6 +38,16 @@ $version = defined( 'BUDDYPRESS_CONTACT_ME_VERSION' ) ? BUDDYPRESS_CONTACT_ME_VE
 		</div>
 	</header>
 
+	<?php
+	/*
+	 * Without this marker, core's common.js re-parents every .notice to
+	 * sit right after the first <h1> it finds, which slots the "Settings
+	 * saved" banner between our title and its subtitle instead of below
+	 * the whole header. See basecamp card 9823543990.
+	 */
+	?>
+	<hr class="wp-header-end">
+
 	<?php settings_errors(); ?>
 
 	<div class="bcm-settings-layout">

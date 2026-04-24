@@ -86,7 +86,13 @@
 /* ---------- Contact form ---------- */
 
 .bcm-form-wrap {
-	max-width: 640px;
+	/*
+	 * Fills the theme's content column. The previous 640px cap left a
+	 * big empty right column inside BuddyX / BuddyBoss / Reign profile
+	 * pages because their content area is much wider (see basecamp
+	 * card 9823543990). Inbox and Preferences on the same tab already
+	 * fill the column — this matches that.
+	 */
 	padding: var( --bcm-gap-lg );
 	background: var( --bcm-color-bg );
 	border: 1px solid var( --bcm-color-border );
@@ -253,7 +259,6 @@
 @keyframes bcm-spin { to { transform: rotate( 360deg ); } }
 
 .bcm-card--closed {
-	max-width: 520px;
 	padding: var( --bcm-gap-lg );
 	border: 1px dashed var( --bcm-color-border-strong );
 	border-radius: var( --bcm-radius );
