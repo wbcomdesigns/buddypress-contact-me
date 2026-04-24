@@ -176,14 +176,27 @@ class BCM_Frontend_Notifications {
 			$recipients[] = $uid;
 		};
 
-		$add_email = static function ( $email ) use ( &$recipients, &$seen_emails ) {
+		/*
+		 * Construct BP_Email_Recipient with (address, name) so BP can skip
+		 * its search-email fallback. When we pass just an email, BP tries
+		 * get_user_by('email', $address) and accesses user_object->ID /
+		 * user_object->user_email — which raises undefined-property warnings
+		 * on guest emails (no matching WP user) under PHP 8.2+.
+		 *
+		 * Using the sender's saved name here also means the "Copy of your
+		 * message" email the guest receives is addressed to them by name.
+		 *
+		 * Basecamp card 9823362550.
+		 */
+		$add_email = static function ( $email, $name = '' ) use ( &$recipients, &$seen_emails ) {
 			$email = sanitize_email( $email );
 			if ( ! $email || in_array( strtolower( $email ), $seen_emails, true ) ) {
 				return;
 			}
 			$seen_emails[] = strtolower( $email );
+			$name          = (string) $name;
 			$recipients[]  = class_exists( 'BP_Email_Recipient' )
-				? new BP_Email_Recipient( $email )
+				? new BP_Email_Recipient( $email, $name )
 				: $email;
 		};
 
@@ -193,7 +206,8 @@ class BCM_Frontend_Notifications {
 			if ( $sender_id ) {
 				$add_user( $sender_id );
 			} elseif ( ! empty( $message->email ) ) {
-				$add_email( $message->email );
+				$guest_name = isset( $message->name ) ? (string) $message->name : '';
+				$add_email( $message->email, $guest_name );
 			}
 		}
 
