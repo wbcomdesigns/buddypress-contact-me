@@ -30,15 +30,12 @@ if ( 'POST' === $bcm_request_method && isset( $_POST['bcm_preferences_nonce'] ) 
 	}
 }
 
-$bcm_meta         = get_user_meta( $bcm_user_id, 'contact_me_button', true );
-$bcm_accept       = ( 'off' !== $bcm_meta );
-$bcm_profile      = function_exists( 'bp_members_get_user_url' )
+$bcm_meta    = get_user_meta( $bcm_user_id, 'contact_me_button', true );
+$bcm_accept  = ( 'off' !== $bcm_meta );
+$bcm_profile = function_exists( 'bp_members_get_user_url' )
 	? bp_members_get_user_url( $bcm_user_id )
 	: bp_core_get_user_domain( $bcm_user_id );
-$bcm_link         = trailingslashit( $bcm_profile ) . BCM_Frontend_Nav::SLUG . '/';
-$bcm_settings_url = function_exists( 'bp_get_settings_slug' )
-	? trailingslashit( $bcm_profile ) . bp_get_settings_slug() . '/notifications/'
-	: '';
+$bcm_link    = trailingslashit( $bcm_profile ) . BCM_Frontend_Nav::SLUG . '/';
 
 $bcm_flash = BCM_Frontend_Flash::consume();
 if ( $bcm_flash ) :
@@ -92,20 +89,6 @@ endif;
 			</button>
 		</div>
 	</section>
-
-	<?php if ( $bcm_settings_url ) : ?>
-		<section class="bcm-preferences__panel">
-			<h4 class="bcm-preferences__panel-title"><?php esc_html_e( 'Email + notification settings', 'buddypress-contact-me' ); ?></h4>
-			<p class="bcm-preferences__panel-body">
-				<?php esc_html_e( 'Choose whether new contact messages should also send you an email or appear in your BuddyPress notifications.', 'buddypress-contact-me' ); ?>
-			</p>
-			<p>
-				<a class="button" href="<?php echo esc_url( $bcm_settings_url ); ?>">
-					<?php esc_html_e( 'Open notification settings', 'buddypress-contact-me' ); ?>
-				</a>
-			</p>
-		</section>
-	<?php endif; ?>
 
 	<section class="bcm-preferences__panel bcm-preferences__panel--tips">
 		<h4 class="bcm-preferences__panel-title"><?php esc_html_e( 'Not receiving messages?', 'buddypress-contact-me' ); ?></h4>
