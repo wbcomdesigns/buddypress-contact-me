@@ -175,7 +175,23 @@
 					window.location.href = $el.attr( 'href' );
 				} else if ( $el.is( 'button' ) || $el.is( 'input' ) ) {
 					var form = $el.closest( 'form' ).get( 0 );
-					if ( form ) { form.submit(); }
+					if ( ! form ) { return; }
+					// Preserve which submit button was clicked so the form's
+					// named buttons (e.g. edd_BCM_license_deactivate) still
+					// POST their value. Native form.submit() drops the
+					// submitter, so the PHP handler that keys off the button
+					// name would never fire and the action silently no-ops.
+					// Reference: Basecamp card 9828852542.
+					var btnName  = $el.attr( 'name' ) || '';
+					var btnValue = $el.attr( 'value' ) || '1';
+					if ( btnName ) {
+						var hidden    = document.createElement( 'input' );
+						hidden.type   = 'hidden';
+						hidden.name   = btnName;
+						hidden.value  = btnValue;
+						form.appendChild( hidden );
+					}
+					form.submit();
 				}
 			} );
 		} );
