@@ -218,11 +218,42 @@ class BCM_Admin {
 			unset( $output['bcm_tab_rendered_keys'] );
 		}
 
-		if ( isset( $input['bcm_who_contact'] ) && is_array( $input['bcm_who_contact'] ) ) {
-			$output['bcm_who_contact'] = array_map( 'sanitize_text_field', wp_unslash( $input['bcm_who_contact'] ) );
+		// Multi-checkbox arrays (role grids on the Access tab) need the
+		// same "rendered-but-cleared" treatment as the bool keys above.
+		// When the user clicks "Clear all" every checkbox unchecks, so
+		// the array key drops out of $_POST entirely. Without a sentinel
+		// we'd merge over the stored option and the cleared selection
+		// would silently revert to the previous value on the very next
+		// page load. Views that render a role grid emit
+		// `bcm_array_rendered_keys[]` listing the array keys they own;
+		// a key listed there but missing from $input becomes an empty
+		// array, which is what "no roles selected" actually means.
+		//
+		// Reference: Basecamp card 9823496113 follow-up — "Clear all"
+		// in the Access tab role grids did not persist after save.
+		$array_keys        = array( 'bcm_who_contact', 'bcm_who_contacted' );
+		$posted_array_keys = array();
+		foreach ( $array_keys as $key ) {
+			if ( isset( $input[ $key ] ) && is_array( $input[ $key ] ) ) {
+				$posted_array_keys[] = $key;
+				$output[ $key ]      = array_values(
+					array_filter(
+						array_map( 'sanitize_text_field', wp_unslash( $input[ $key ] ) ),
+						static function ( $v ) {
+							return '' !== $v;
+						}
+					)
+				);
+			}
 		}
-		if ( isset( $input['bcm_who_contacted'] ) && is_array( $input['bcm_who_contacted'] ) ) {
-			$output['bcm_who_contacted'] = array_map( 'sanitize_text_field', wp_unslash( $input['bcm_who_contacted'] ) );
+		if ( isset( $input['bcm_array_rendered_keys'] ) && is_array( $input['bcm_array_rendered_keys'] ) ) {
+			foreach ( $input['bcm_array_rendered_keys'] as $rendered ) {
+				$rendered = sanitize_key( $rendered );
+				if ( in_array( $rendered, $array_keys, true ) && ! in_array( $rendered, $posted_array_keys, true ) ) {
+					$output[ $rendered ] = array();
+				}
+			}
+			unset( $output['bcm_array_rendered_keys'] );
 		}
 
 		return $output;

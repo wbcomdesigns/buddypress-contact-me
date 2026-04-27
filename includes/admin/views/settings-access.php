@@ -47,6 +47,20 @@ $tab_rendered_keys = array(
 foreach ( $tab_rendered_keys as $tab_rendered_key ) :
 	?>
 	<input type="hidden" name="bcm_admin_general_setting[bcm_tab_rendered_keys][]" value="<?php echo esc_attr( $tab_rendered_key ); ?>">
+	<?php
+endforeach;
+
+// Same idea for the role-grid arrays — when "Clear all" empties a grid
+// the array key drops out of $_POST entirely; this sentinel lets the
+// sanitizer treat that absence as "explicitly cleared" instead of
+// "this tab didn't render this field".
+$array_rendered_keys = array(
+	'bcm_who_contact',
+	'bcm_who_contacted',
+);
+foreach ( $array_rendered_keys as $array_rendered_key ) :
+	?>
+	<input type="hidden" name="bcm_admin_general_setting[bcm_array_rendered_keys][]" value="<?php echo esc_attr( $array_rendered_key ); ?>">
 <?php endforeach; ?>
 
 <div class="bcm-card">
