@@ -791,26 +791,44 @@
 
 .bcm-message-view__header {
 	display: grid;
-	grid-template-columns: auto 1fr;
-	gap: 14px;
-	align-items: flex-start;
+	grid-template-columns: 64px 1fr;
+	gap: 16px;
+	align-items: center;
 	padding-bottom: var( --bcm-gap );
 	border-bottom: 1px solid var( --bcm-color-border );
 }
 
-.bcm-message-view__avatar img {
+/* Pin the avatar column so theme rules that force `img { width: 100% }`
+   on profile content can't blow it up to a giant square (BuddyBoss /
+   BuddyX both ship rules like that). The wrapper enforces the box and
+   the inner img is contained. */
+.bcm-message-view__avatar,
+.bcm-message-view__avatar a {
+	display: block;
 	width: 64px;
 	height: 64px;
+	flex: 0 0 64px;
+}
+
+.bcm-message-view__avatar img {
+	width: 64px !important;
+	height: 64px !important;
+	max-width: 64px !important;
 	border-radius: 50%;
 	display: block;
+	margin: 0;
+	object-fit: cover;
 }
 
 .bcm-message-view__meta {
 	min-width: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
 }
 
 .bcm-message-view__subject {
-	margin: 0 0 4px;
+	margin: 0;
 	font-size: 22px;
 	font-weight: 600;
 	line-height: 1.25;
@@ -819,14 +837,20 @@
 }
 
 .bcm-message-view__from {
-	margin: 0 0 2px;
+	margin: 0;
 	font-size: 14px;
+	line-height: 1.5;
 	color: var( --bcm-color-text-muted );
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 6px;
 }
 
 .bcm-message-view__from a {
 	color: var( --bcm-color-primary );
 	text-decoration: none;
+	font-weight: 600;
 }
 
 .bcm-message-view__from a:hover { text-decoration: underline; }
