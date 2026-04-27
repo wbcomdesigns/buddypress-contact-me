@@ -996,3 +996,44 @@
 .bcm-hub-card:hover .bcm-hub-card__cta .dashicons {
 	transform: translateX(2px);
 }
+
+/* ---------------------------------------------------------------------
+ * Settings notices ("Settings saved.", error banners, etc.)
+ *
+ * WP core's common.js hoists every .notice up to sit right after the
+ * first <h1> inside .wrap (or after .wp-header-end), regardless of
+ * where settings_errors() is called in PHP. With the notice's default
+ * styling the banner reads as a stray browser pill against our card
+ * panel below — flat, full-width, no chrome consistency.
+ *
+ * Scope styling to .bcm-admin .notice so the banner picks up our
+ * radius + shadow + padding tokens and reads as part of the same UI.
+ * Reference: Basecamp card 9828831122.
+ * ------------------------------------------------------------------ */
+.bcm-admin .notice {
+	border-radius: var( --bcm-admin-radius );
+	box-shadow: var( --bcm-admin-shadow );
+	padding: 12px 16px;
+	margin: 0 0 18px;
+	font-size: 14px;
+	line-height: 1.5;
+	border-width: 0 0 0 4px;
+	border-style: solid;
+}
+
+.bcm-admin .notice p {
+	margin: 0;
+	padding: 0;
+	font-size: 14px;
+	line-height: 1.5;
+}
+
+/* Restore the dismiss button into the new padding rhythm. */
+.bcm-admin .notice.is-dismissible {
+	padding-right: 38px;
+}
+
+.bcm-admin .notice .notice-dismiss {
+	top: 8px;
+	right: 8px;
+}

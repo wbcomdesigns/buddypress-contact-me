@@ -48,8 +48,6 @@ $version = defined( 'BUDDYPRESS_CONTACT_ME_VERSION' ) ? BUDDYPRESS_CONTACT_ME_VE
 	?>
 	<hr class="wp-header-end">
 
-	<?php settings_errors(); ?>
-
 	<div class="bcm-settings-layout">
 
 		<aside class="bcm-settings-sidebar">
@@ -99,6 +97,17 @@ $version = defined( 'BUDDYPRESS_CONTACT_ME_VERSION' ) ? BUDDYPRESS_CONTACT_ME_VE
 		</aside>
 
 		<div class="bcm-settings-main">
+			<?php
+			/*
+			 * Render settings notices *inside* the content column so the
+			 * banner aligns with the panel chrome. WP's default position
+			 * (above the .wrap layout) makes the notice span the full
+			 * admin width while the panel below sits in a narrower bounded
+			 * column — visually disjointed; QA flagged it as a UI issue
+			 * (Basecamp card 9828831122).
+			 */
+			settings_errors();
+			?>
 			<?php if ( $in_settings_group ) : ?>
 				<form method="post" action="options.php" id="bcm-settings-form">
 					<?php settings_fields( $settings_form_group ); ?>
