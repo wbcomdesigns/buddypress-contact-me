@@ -86,6 +86,15 @@ $version = defined( 'BUDDYPRESS_CONTACT_ME_VERSION' ) ? BUDDYPRESS_CONTACT_ME_VE
 					echo '</a>';
 				}
 				?>
+
+				<div class="bcm-snav-divider" role="separator"></div>
+				<p class="bcm-snav-section-label"><?php esc_html_e( 'Resources', 'buddypress-contact-me' ); ?></p>
+				<a href="https://docs.wbcomdesigns.com/docs/bp-contact-me/" class="bcm-snav-link" target="_blank" rel="noopener noreferrer">
+					<span class="dashicons dashicons-book" aria-hidden="true"></span>
+					<?php esc_html_e( 'Documentation', 'buddypress-contact-me' ); ?>
+					<span class="dashicons dashicons-external bcm-snav-link__ext" aria-hidden="true"></span>
+					<span class="screen-reader-text"><?php esc_html_e( '(opens in a new tab)', 'buddypress-contact-me' ); ?></span>
+				</a>
 			</nav>
 		</aside>
 
