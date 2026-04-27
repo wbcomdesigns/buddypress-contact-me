@@ -47,6 +47,72 @@ class BCM_Frontend_Assets {
 	 */
 	public function register() {
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue' ) );
+		add_action( 'wp_footer', array( $this, 'output_dark_mode_mirror' ), 5 );
+	}
+
+	/**
+	 * Mirror the active theme's runtime dark-mode class onto `<body>` as
+	 * `bcm-dark` so our CSS only needs one selector to react to dark mode.
+	 *
+	 * Themes ship inconsistent dark-mode triggers — Reign sets
+	 * `html.dark-mode`, BuddyX sets `body.buddyx-dark-theme`, BuddyBoss
+	 * sets `body.bb-dark-mode`, and the wp-dark-mode plugin sets
+	 * `html.wp-dark-mode-active`. A static class list in CSS misses any
+	 * theme it wasn't built for; this observer-based bridge mirrors all
+	 * known triggers (and stays in sync with runtime toggles, which the
+	 * Reign and BuddyX pickers do via JS+cookie) onto a single sentinel
+	 * class our stylesheet can rely on.
+	 *
+	 * Pattern lifted from Jetonomy's class-theme-integration.php.
+	 *
+	 * Reference: Basecamp card 9823548013.
+	 *
+	 * @return void
+	 */
+	public function output_dark_mode_mirror() {
+		if ( ! $this->should_load() ) {
+			return;
+		}
+
+		$script = <<<'JS'
+(function () {
+	var html = document.documentElement;
+	var body = document.body;
+	if ( ! body ) { return; }
+	var darkClasses = [
+		'dark-mode',
+		'theme-dark',
+		'wp-dark-mode-active',
+		'bb-dark-mode',
+		'bb-dark-mode-on',
+		'bx-dark-theme',
+		'buddyx-dark-theme',
+		'buddyx-dark-mode'
+	];
+	function sync() {
+		var isDark = false;
+		for ( var i = 0; i < darkClasses.length; i++ ) {
+			if ( html.classList.contains( darkClasses[ i ] ) || body.classList.contains( darkClasses[ i ] ) ) {
+				isDark = true;
+				break;
+			}
+		}
+		body.classList.toggle( 'bcm-dark', isDark );
+	}
+	sync();
+	if ( typeof MutationObserver === 'function' ) {
+		var opts = { attributes: true, attributeFilter: [ 'class' ] };
+		new MutationObserver( sync ).observe( html, opts );
+		new MutationObserver( sync ).observe( body, opts );
+	}
+})();
+JS;
+
+		if ( function_exists( 'wp_print_inline_script_tag' ) ) {
+			wp_print_inline_script_tag( $script, array( 'id' => 'bcm-dark-mode-mirror' ) );
+		} else {
+			echo '<script id="bcm-dark-mode-mirror">' . $script . '</script>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		}
 	}
 
 	/**

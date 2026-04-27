@@ -1077,23 +1077,24 @@
 
 /* ---------- Dark mode (theme-driven) ---------- *
  *
- * All colours hang on CSS custom properties, so themes that have
- * their own dark mode can override these tokens under any of the
- * supported toggle classes below and we inherit the theme's palette
- * automatically. We deliberately do NOT hook into
- * prefers-color-scheme — site owners pick the trigger (BuddyBoss /
- * BuddyX / custom theme class), not the OS.
+ * All colours hang on CSS custom properties, so themes that ship dark
+ * mode get our palette automatically once the sentinel class is on the
+ * body.
  *
- * Supported toggles:
- *   - body.dark-mode          → BuddyBoss Readylaunch
- *   - body.bb-dark-mode       → BuddyBoss classic
- *   - body.bx-dark-theme      → BuddyX Pro
- *   - body.buddyx-dark-mode   → BuddyX variants
+ * The sentinel `body.bcm-dark` is set by an inline observer in
+ * BCM_Frontend_Assets::output_dark_mode_mirror() that watches both
+ * <html> and <body> for the dark-mode classes BuddyX
+ * (`buddyx-dark-theme`), Reign (`dark-mode` on <html>), BuddyBoss
+ * (`bb-dark-mode` / `bb-dark-mode-on`), and the wp-dark-mode plugin
+ * (`wp-dark-mode-active`) emit. Centralising detection in one script
+ * means future themes only need their own dark class added to that
+ * list — every dark rule below stays untouched.
+ *
+ * We deliberately do NOT hook into prefers-color-scheme: site owners
+ * pick the trigger, not the OS.
  */
-body.dark-mode .wbcom-bp-contact,
-body.bb-dark-mode .wbcom-bp-contact,
-body.bx-dark-theme .wbcom-bp-contact,
-body.buddyx-dark-mode .wbcom-bp-contact {
+body.bcm-dark .wbcom-bp-contact,
+.wbcom-bp-contact.bcm-dark {
 	--bcm-color-border: #2e3640;
 	--bcm-color-border-strong: #3c4654;
 	--bcm-color-bg: #1a1f26;
@@ -1114,19 +1115,7 @@ body.buddyx-dark-mode .wbcom-bp-contact {
 
 /* Banner tints need darker panel backgrounds too — the hard-coded
    pastel fills above would wash out against the dark card. */
-body.dark-mode .wbcom-bp-contact .bcm-alert--success,
-body.bb-dark-mode .wbcom-bp-contact .bcm-alert--success,
-body.bx-dark-theme .wbcom-bp-contact .bcm-alert--success,
-body.buddyx-dark-mode .wbcom-bp-contact .bcm-alert--success { background: rgba( 52, 199, 89, 0.12 ); }
-body.dark-mode .wbcom-bp-contact .bcm-alert--error,
-body.bb-dark-mode .wbcom-bp-contact .bcm-alert--error,
-body.bx-dark-theme .wbcom-bp-contact .bcm-alert--error,
-body.buddyx-dark-mode .wbcom-bp-contact .bcm-alert--error { background: rgba( 242, 108, 110, 0.12 ); }
-body.dark-mode .wbcom-bp-contact .bcm-alert--warning,
-body.bb-dark-mode .wbcom-bp-contact .bcm-alert--warning,
-body.bx-dark-theme .wbcom-bp-contact .bcm-alert--warning,
-body.buddyx-dark-mode .wbcom-bp-contact .bcm-alert--warning { background: rgba( 240, 180, 41, 0.12 ); }
-body.dark-mode .wbcom-bp-contact .bcm-alert--info,
-body.bb-dark-mode .wbcom-bp-contact .bcm-alert--info,
-body.bx-dark-theme .wbcom-bp-contact .bcm-alert--info,
-body.buddyx-dark-mode .wbcom-bp-contact .bcm-alert--info { background: rgba( 79, 163, 227, 0.12 ); }
+body.bcm-dark .wbcom-bp-contact .bcm-alert--success { background: rgba( 52, 199, 89, 0.12 ); }
+body.bcm-dark .wbcom-bp-contact .bcm-alert--error   { background: rgba( 242, 108, 110, 0.12 ); }
+body.bcm-dark .wbcom-bp-contact .bcm-alert--warning { background: rgba( 240, 180, 41, 0.12 ); }
+body.bcm-dark .wbcom-bp-contact .bcm-alert--info    { background: rgba( 79, 163, 227, 0.12 ); }
