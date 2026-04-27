@@ -147,7 +147,33 @@ class BCM_Frontend_Notifications {
 
 		$tokens = $this->build_tokens( $message, $recipient_id, $sender_id );
 
-		bp_send_email( BCM_Email_Installer::TYPE, $recipients, array( 'tokens' => $tokens ) );
+		// Output buffer the BP send. Two reasons:
+		//
+		// 1. send_email() runs inside the bp_contact_me_form_save action,
+		//    which fires from the REST callback (and the classic-POST
+		//    handler). bp_send_email() walks third-party hooks and BP
+		//    internals — any of them emitting a PHP notice/warning with
+		//    WP_DEBUG_DISPLAY on would echo HTML into the response stream
+		//    BEFORE wp_send_json fires, breaking apiFetch with the
+		//    "response is not a valid JSON response" error visitors saw
+		//    in card 9828092913.
+		// 2. The notices themselves (e.g. BP_Email_Recipient property
+		//    reads against missing user lookups for guest emails) are
+		//    bp-core internals we can't fix from here — silencing display
+		//    while still preserving error_log() is the right boundary.
+		$ob_started = ob_start();
+		try {
+			bp_send_email( BCM_Email_Installer::TYPE, $recipients, array( 'tokens' => $tokens ) );
+		} finally {
+			if ( $ob_started ) {
+				$leaked = ob_get_clean();
+				if ( $leaked && defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+					// Surface what leaked so we can chase root causes
+					// without letting it pollute the response.
+					error_log( '[bcm] bp_send_email leaked output: ' . wp_strip_all_tags( $leaked ) ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
+				}
+			}
+		}
 	}
 
 	/**
