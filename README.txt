@@ -1,29 +1,50 @@
 === Wbcom Designs - BuddyPress Contact Me ===
-Contributors: Wbcom Designs
-Donate link: https://www.wbcomdesigns.com
-Tags: comments, spam
-Requires at least: 3.0.1
-Tested up to: 6.8.0
-Stable tag: 1.4.0
+Contributors: wbcomdesigns
+Donate link: https://wbcomdesigns.com/
+Tags: buddypress, contact, profile, messaging, community
+Requires at least: 6.0
+Tested up to: 6.9
+Requires PHP: 7.4
+Stable tag: 1.5.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-BuddyPress Contact Me displays a contact form on a member's profile, allowing logged-in and non-logged-in visitors can be in touch with our community members.
+Put a private contact form on every member profile, with BuddyPress notifications, email delivery, role-based access, and a clean admin.
+
 == Description ==
 
-BuddyPress Contact Me displays a contact form on a member's profile, allowing logged-in and non-logged-in visitors can be in touch with our community members.
+BuddyPress Contact Me drops a private contact form into every member's BuddyPress profile. Logged-in members can message each other directly; non-logged-in visitors can reach members too, so your community stays reachable without anyone sharing personal email addresses.
+
+Highlights:
+
+* A "Contact" tab on every member profile with a modal or inline form.
+* BuddyPress notifications + email notifications, with optional admin and sender copies.
+* Editable email template with placeholders for sender, subject, message, and site name.
+* Role-based access control: choose who can send messages and whose profiles show the form.
+* Per-member opt-out — members can hide their own form even when their role allows it.
+* Clean, modern admin UI shared across every Wbcom plugin via the "WB Plugins" hub.
 
 == Installation ==
 
-BuddyPress Contact Me displays a contact form on a member's profile, allowing logged-in and non-logged-in visitors can be in touch with our community members.
-
-e.g.
-
-1. Upload `buddypress-contact-me.php` to the `/wp-content/plugins/` directory
-1. Activate the plugin through the 'Plugins' menu in WordPress
-1. Place `<?php do_action('plugin_name_hook'); ?>` in your templates
+1. Upload the `buddypress-contact-me` folder to `/wp-content/plugins/`.
+2. Activate the plugin through the Plugins menu in WordPress.
+3. Go to WB Plugins → Contact Me and configure notifications, email template, and access rules.
 
 == Changelog ==
+
+= 1.5.0 =
+* New: Brand-new admin UI — every screen was rewritten as a clean card-panel layout with a sidebar, proper page header, and plain-English labels. No more legacy wrapper chrome.
+* New: "WB Plugins" hub — all Wbcom plugins now share a single top-level menu with a card-grid dashboard, so the admin sidebar stays tidy even when a site runs the full community bundle. Legacy (un-migrated) Wbcom plugins coexist cleanly with the new hub.
+* New: Overview dashboard with live counts of total messages, unique senders, unique recipients, and members with the Contact Me button on, plus a snapshot of the current configuration at a glance.
+* New: Dedicated Notifications, Email Template, Access, and License tabs — each one focused on a single decision so site owners don't have to hunt across screens.
+* New: License tab directly inside Contact Me — enter, activate, and check your license key without leaving the plugin's admin page.
+* Improvement: Access tab uses a role-chip grid with select-all / clear-all actions instead of a selectize dropdown. Much friendlier on mobile and faster to scan.
+* Improvement: Admin assets load only on our own screens and the shared hub — other admin pages are untouched, reducing conflicts with third-party plugins.
+* Improvement: Toast notifications and an accessible confirmation modal replace browser alerts and confirms across the admin.
+* Improvement: Plain-language labels across every settings screen — "Notify the recipient", "Send a copy to…", "Who can send messages", "Who can be contacted". No jargon or internal option names.
+* Improvement: Per-recipient email delivery by default (each recipient gets their own email) with an explicit toggle for the multi-recipient "show other recipients" mode.
+* Improvement: Activation routine bookmarks the current plugin version so future upgrades have a reliable comparison point.
+* Compatibility: Tested against WordPress 6.9, BuddyPress 14.x, BuddyBoss Platform, and PHP 8.4.
 
 = 1.4.0 =
 * Fixed: Notification and message display issues for both logged-in and logged-out users.

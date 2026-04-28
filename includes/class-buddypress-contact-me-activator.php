@@ -1,16 +1,16 @@
 <?php
-
+/**
+ * Plugin activation handler.
+ *
+ * @package BuddyPress_Contact_Me
+ */
 
 /**
  * Fired during plugin activation.
  *
  * This class defines all code necessary to run during the plugin's activation.
  *
- * @since      1.0.0
- * @package    BuddyPress_Contact_Me
- * @subpackage BuddyPress_Contact_Me/includes
- * @author     WBCOM Designs <admin@wbcomdesigns.com>
- * @link       https://www.wbcomdesigns.com
+ * @since 1.0.0
  */
 class BuddyPress_Contact_Me_Activator {
 
@@ -43,8 +43,8 @@ class BuddyPress_Contact_Me_Activator {
 			dbDelta( $bp_contact_sql );
 		}
 		// phpcs:enable
-		$contact_me_option_setting = get_user_meta( get_current_user_id(), 'contact_me_button' );
-		if ( false == $contact_me_option_setting || '' == $contact_me_option_setting ) {
+		$contact_me_option_setting = get_user_meta( get_current_user_id(), 'contact_me_button', true );
+		if ( false === $contact_me_option_setting || '' === $contact_me_option_setting ) {
 			$all_users = get_users();
 			foreach ( $all_users as $all_userdata ) {
 				$all_users_id = $all_userdata->ID;
@@ -53,10 +53,7 @@ class BuddyPress_Contact_Me_Activator {
 		}
 		$bp_contact_me_admin_settings = get_option( 'bcm_admin_general_setting' );
 		if ( false === $bp_contact_me_admin_settings ) {
-			
-			$bcm_contact_link = ( function_exists( 'buddypress' ) && isset( buddypress()->buddyboss ) ) ? bp_core_get_user_domain( bp_loggedin_user_id() ) . 'contact' : bp_members_get_user_url( bp_loggedin_user_id() ) . 'contact';
-			
-			$bcm_click  = '<a href=" ' . $bcm_contact_link . '">Click here</a>';
+
 			$user_roles = array_reverse( get_editable_roles() );
 			$user_array = array( 'visitors' );
 			foreach ( $user_roles as $role => $details ) {
@@ -67,7 +64,6 @@ class BuddyPress_Contact_Me_Activator {
 				'bcm_allow_notification'      => 'yes',
 				'bcm_allow_email'             => 'yes',
 				'bcm_allow_contact_tab'       => 'yes',
-				'bcm_email_subject'           => '{user_name} has contacted you.',
 				'bcm_allow_sender_copy_email' => 'yes',
 				'bcm_allow_admin_copy_email'  => 'no',
 				'bcm_who_contact'             => $user_array,
@@ -76,5 +72,4 @@ class BuddyPress_Contact_Me_Activator {
 			update_option( 'bcm_admin_general_setting', $bp_contact_me_admin_settings );
 		}
 	}
-
 }

@@ -1,18 +1,17 @@
 <?php
+/**
+ * Hook loader for the plugin.
+ *
+ * Maintains the list of actions and filters added throughout the plugin
+ * and registers them with WordPress when run() is called.
+ *
+ * @package BuddyPress_Contact_Me
+ */
 
+defined( 'ABSPATH' ) || exit;
 
 /**
- * Register all actions and filters for the plugin.
- *
- * Maintain a list of all hooks that are registered throughout
- * the plugin, and register them with the WordPress API. Call the
- * run function to execute the list of actions and filters.
- *
- * @package    BuddyPress_Contact_Me
- * @subpackage BuddyPress_Contact_Me/includes
- * @author     WBCOM Designs <admin@wbcomdesigns.com>
- * @link       https://www.wbcomdesigns.com
- * @since      1.0.0
+ * Collects hooks to add and registers them with WordPress in a single pass.
  */
 class BuddyPress_Contact_Me_Loader {
 
@@ -53,7 +52,6 @@ class BuddyPress_Contact_Me_Loader {
 		$this->actions   = array();
 		$this->filters   = array();
 		$this->shortcode = array();
-
 	}
 
 	/**
@@ -64,7 +62,7 @@ class BuddyPress_Contact_Me_Loader {
 	 * @param    object $component        A reference to the instance of the object on which the action is defined.
 	 * @param    string $callback         The name of the function definition on the $component.
 	 * @param    int    $priority         Optional. The priority at which the function should be fired. Default is 10.
-	 * @param    int    $accepted_args    Optional. The number of arguments that should be passed to the $callback. Default is 1.
+	 * @param    int    $accepted_args    Optional. The number of arguments that should be passed to the $callback. Default is 1..
 	 */
 	public function add_action( $hook, $component, $callback, $priority = 10, $accepted_args = 1 ) {
 		$this->actions = $this->add( $this->actions, $hook, $component, $callback, $priority, $accepted_args );
@@ -78,7 +76,7 @@ class BuddyPress_Contact_Me_Loader {
 	 * @param    object $component        A reference to the instance of the object on which the filter is defined.
 	 * @param    string $callback         The name of the function definition on the $component.
 	 * @param    int    $priority         Optional. The priority at which the function should be fired. Default is 10.
-	 * @param    int    $accepted_args    Optional. The number of arguments that should be passed to the $callback. Default is 1
+	 * @param    int    $accepted_args    Optional. The number of arguments that should be passed to the $callback. Default is 1.
 	 */
 	public function add_filter( $hook, $component, $callback, $priority = 10, $accepted_args = 1 ) {
 		$this->filters = $this->add( $this->filters, $hook, $component, $callback, $priority, $accepted_args );
@@ -109,7 +107,6 @@ class BuddyPress_Contact_Me_Loader {
 		);
 
 		return $hooks;
-
 	}
 
 	/**
@@ -130,7 +127,6 @@ class BuddyPress_Contact_Me_Loader {
 		foreach ( $this->shortcode as $hook ) {
 			add_shortcode( $hook['hook'], array( $hook['component'], $hook['callback'] ) );
 		}
-
 	}
 
 	/**
@@ -144,5 +140,4 @@ class BuddyPress_Contact_Me_Loader {
 	public function add_shortcode( $hook, $component, $callback ) {
 		$this->shortcode = $this->add( $this->shortcode, $hook, $component, $callback, '', '' );
 	}
-
 }
