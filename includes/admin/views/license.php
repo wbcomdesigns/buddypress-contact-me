@@ -143,10 +143,7 @@ if ( $has_key ) {
 
 		<div class="bcm-save-bar">
 			<?php if ( $is_valid ) : ?>
-				<button type="submit"
-					name="edd_BCM_license_deactivate"
-					class="bcm-btn bcm-btn-danger"
-					data-bcm-confirm="<?php esc_attr_e( 'Deactivating will stop automatic updates for this site until you activate again. Continue?', 'buddypress-contact-me' ); ?>">
+				<button type="submit" name="edd_BCM_license_deactivate" class="bcm-btn bcm-btn-danger">
 					<span class="dashicons dashicons-unlock" aria-hidden="true"></span>
 					<?php esc_html_e( 'Deactivate License', 'buddypress-contact-me' ); ?>
 				</button>
