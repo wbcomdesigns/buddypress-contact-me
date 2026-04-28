@@ -85,37 +85,44 @@ BuddyPress Contact Me allows community members and visitors to send private mess
 
 ## For Site Administrators
 
+### Admin Layout (v1.5.0+)
+
+The admin panel was rewritten in v1.5.0. You'll find every Wbcom plugin under a single **WB Plugins** top-level menu in the WordPress sidebar; pick **Contact Me** to land on the panel.
+
+The panel uses a sidebar with these tabs:
+
+- **Overview** — live counts (total messages, unique senders, unique recipients, members with Contact Me enabled) plus a snapshot of your current configuration.
+- **Notifications** — recipient and admin/sender email + in-site notification toggles.
+- **Access** — who can send and who can receive messages.
+- **License** — paste your license key, activate / deactivate updates.
+- **Resources** (sidebar link) — opens the plugin documentation.
+
+A success banner ("Settings saved.") appears in-panel after every save and stays until you switch tabs. Dark mode renders correctly on **BuddyX**, **Reign**, **BuddyBoss**, and their child variants — the panel reads system tokens and adapts automatically.
+
 ### Plugin Configuration
 
 #### Access Control Settings
-1. **Navigate to Admin**
-   - Go to **WB Plugins → Contact Me**
-   - Click **"Access"** tab
-
-2. **Configure Who Can Send**
-   - Select user roles that can send messages
-   - Include "Visitors (not logged in)" if desired
-   - Leave all unchecked to allow all logged-in users
-
-3. **Configure Who Can Be Contacted**
-   - Select roles that can receive messages
-   - Useful for limiting to specific member types
-   - Affects which profiles show contact forms
+1. Go to **WB Plugins → Contact Me → Access**.
+2. **Configure Who Can Send** — pick the roles allowed to send messages from a contact form. Each role appears as a chip in a grid; the **Select all** / **Clear all** buttons apply to the visible group, and an empty grid is persisted (so you can intentionally lock all roles out without reverting to "all logged-in users").
+   - Tick **Visitors (not logged in)** if you want guest submissions.
+3. **Configure Who Can Be Contacted** — same chip grid for receivers. Members in unchecked roles do not show the Contact tab on their profile.
 
 #### Notification Settings
-1. **Navigate to Notifications**
-   - Go to **WB Plugins → Contact Me**
-   - Click **"Notifications"** tab
-
+1. Go to **WB Plugins → Contact Me → Notifications**.
 2. **Recipient Notifications**
-   - **In-site notifications**: BuddyPress notifications
-   - **Email notifications**: Direct email to recipients
-   - Both can be enabled simultaneously
-
+   - **In-site notifications** — BuddyPress notification bell.
+   - **Email notifications** — direct email to the recipient.
+   - Both can be on at the same time.
 3. **Additional Copies**
-   - **Site admin copy**: BCC admin on all messages
-   - **Sender copy**: Send copy to message sender
-   - Useful for moderation and records
+   - **Site admin copy** — BCC the site admin on every message (useful for moderation).
+   - **Sender copy** — send the sender a copy of what they submitted (useful for receipt).
+
+#### License Tab (v1.5.0+)
+
+1. Go to **WB Plugins → Contact Me → License**.
+2. Paste the license key you received in your Wbcom Designs account. Click **Activate License**. The status flips to "Active: receiving updates" and the key field becomes read-only.
+3. To rotate keys, click **Deactivate License** — the field unlocks and you can paste a new key. Deactivation is a single click and submits inline; there is no confirmation popup (changed in 1.5.0 to match the standard EDD pattern).
+4. Failure messages ("Invalid license.", "Your license is not active for this URL", etc.) render inline on the License tab; you don't get bounced to a different screen.
 
 ### Managing Messages
 
