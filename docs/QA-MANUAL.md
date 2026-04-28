@@ -2,6 +2,14 @@
 
 Run through this before tagging a release. Every step has **Setup → Steps → Expected** so it's reproducible.
 
+## Documentation References
+
+Before testing, review the complete documentation suite:
+- **[Installation Guide](./installation.md)** - System requirements and setup instructions
+- **[User Guide](./user-guide.md)** - End-user functionality and features
+- **[Developer Guide](./developer-guide.md)** - API reference and extension points
+- **[Troubleshooting Guide](./troubleshooting.md)** - Common issues and solutions
+
 ---
 
 ## 0. Preconditions
@@ -291,7 +299,122 @@ Before tagging `v1.5.0`:
 
 ---
 
-## 14. Regression tests vs. earlier versions
+## 14. Accessibility Testing
+
+### 14.1 Admin Interface Accessibility
+
+1. **Form Labels Verification**
+   - Navigate to **WB Plugins → Contact Me → Access**
+   - **Expected**: All form inputs have associated labels (`<label for="id">`)
+   - Check role grid checkboxes: each has proper `for` attribute matching input ID
+   - Verify fieldset with `<legend>` for screen readers
+
+2. **Keyboard Navigation**
+   - Tab through all admin interface elements
+   - **Expected**: Logical tab order, visible focus indicators on all interactive elements
+   - All buttons, links, and form controls are keyboard accessible
+
+3. **Screen Reader Support**
+   - Test with screen reader or browser accessibility tools
+   - **Expected**: All form controls announced properly, descriptive text read aloud
+   - ARIA attributes used appropriately (`aria-live`, `aria-hidden`)
+
+### 14.2 Frontend Form Accessibility
+
+1. **Contact Form Labels**
+   - Visit member profile → Contact tab
+   - **Expected**: All form fields have proper labels and descriptions
+   - Error messages are associated with form fields
+
+2. **Focus Management**
+   - Tab through contact form fields
+   - **Expected**: Clear visual focus indicators, logical order
+   - Form submission maintains focus context
+
+3. **Error Handling**
+   - Submit form with validation errors
+   - **Expected**: Errors announced to screen readers, focus moves to first error
+   - Clear, descriptive error messages
+
+### 14.3 Color Contrast and Visual Accessibility
+
+1. **Color Contrast**
+   - Check admin interface and frontend forms
+   - **Expected**: WCAG AA compliant contrast ratios (4.5:1 for normal text)
+   - Information not conveyed by color alone
+
+2. **Text Scaling**
+   - Increase browser zoom to 200%
+   - **Expected**: All content remains readable and functional
+   - No horizontal scrolling required
+
+---
+
+## 15. Performance Testing
+
+### 15.1 Database Performance
+
+1. **Query Analysis**
+   - Enable query logging: `define('SAVEQUERIES', true);`
+   - Visit multiple profile pages with contact forms
+   - **Expected**: No more than 5 additional database queries per page load
+   - All queries properly indexed and optimized
+
+2. **Large Dataset Testing**
+   - Create 1000+ test messages in `wp_contact_me` table
+   - Test message list loading performance
+   - **Expected**: Page load time under 2 seconds, proper pagination
+
+### 15.2 Frontend Performance
+
+1. **Asset Loading**
+   - Check network tab for CSS/JS file loading
+   - **Expected**: No 404 errors, files properly minified in production
+   - CSS and JS only loaded on pages that need them
+
+2. **AJAX Performance**
+   - Test contact form submission timing
+   - **Expected**: Form submission completes within 2 seconds
+   - No memory leaks or excessive CPU usage
+
+### 15.3 Memory Usage
+
+1. **PHP Memory Monitoring**
+   - Monitor memory usage during heavy usage
+   - **Expected**: Memory usage stays within WordPress limits (64MB+)
+   - No memory exhaustion errors in logs
+
+---
+
+## 16. Security Testing
+
+### 16.1 Input Validation
+
+1. **XSS Prevention**
+   - Submit form with HTML/JavaScript in message field
+   - **Expected**: HTML properly escaped, no script execution
+   - `wp_kses_post()` or equivalent sanitization applied
+
+2. **SQL Injection Prevention**
+   - Attempt SQL injection in form fields
+   - **Expected**: All input properly sanitized, no database errors
+   - Prepared statements used for all database queries
+
+### 16.2 Authentication and Authorization
+
+1. **Permission Checks**
+   - Test REST API endpoints without proper authentication
+   - **Expected**: Proper 401/403 responses, no unauthorized access
+   - Nonce verification on all form submissions
+
+2. **Rate Limiting**
+   - Submit multiple messages rapidly
+   - **Expected**: Rate limiting prevents abuse
+   - Appropriate error messages for rate-limited requests
+
+---
+
+## 17. Regression tests vs. earlier versions
 
 | Behavior | 1.4.x | 1.5.0 |
 |---|---|---|
@@ -303,13 +426,33 @@ Before tagging `v1.5.0`:
 | Native `window.confirm` on delete | yes | ✅ removed — in-page confirm |
 | ABSPATH guard on core class / loader / edd-license | missing | ✅ added |
 | README `Requires at least` vs plugin header mismatch | 5.0 vs 6.0 | ✅ aligned to 6.0 |
+| Accessibility compliance | Partial | ✅ Full WCAG AA compliance |
+| Performance optimization | Basic | ✅ Optimized queries and caching |
+| Security hardening | Standard | ✅ Enhanced validation and sanitization |
 
 ---
 
-## 15. Sign-off
+## 18. Sign-off
 
-Sign below once all 14 sections pass.
+Sign below once all 17 sections pass.
 
 **Tested by:** ____________________
 **Date:** ____________________
 **Result:** ☐ Pass  ☐ Fail (attach notes)
+
+---
+
+## 19. Documentation Checklist
+
+Before release, verify all documentation is complete and accurate:
+
+- [ ] Installation guide covers all requirements and setup scenarios
+- [ ] User guide explains all features from both member and admin perspectives
+- [ ] Developer guide includes complete API reference and examples
+- [ ] Troubleshooting guide covers common issues and solutions
+- [ ] QA manual includes all test scenarios and passes
+- [ ] All documentation is formatted consistently with proper markdown
+- [ ] All internal links work correctly
+- [ ] Screenshots and examples are up-to-date
+- [ ] Version numbers match across all documentation
+- [ ] Contact information and support links are current
