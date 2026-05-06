@@ -1,12 +1,12 @@
 <?php
 /**
- * License tab: EDD software licensing form (partial rendered inside shell.php).
+ * License tab: card-panel form for activate / deactivate.
  *
- * Backed by the handlers in edd-license/edd-plugin-license.php:
- *   - edd_wbcom_bcm_activate_license()    on admin_init
- *   - edd_wbcom_BCM_deactivate_license()  on admin_init
- * Both verify the shared nonce `edd_wbcom_contact_me_nonce` and toggle
- * the edd_wbcom_bp_contact_me_license_key / _status options accordingly.
+ * Pulls the renderable license fields through `edd_BCM_get_license_status()`
+ * (defined in edd-license/edd-plugin-license.php) so status, expiry,
+ * and activations all read from a single cached snapshot - no
+ * duplicate API round-trips, no defensive null checks scattered
+ * across the template.
  *
  * @package Buddypress_Contact_Me
  * @since   1.5.0
@@ -14,158 +14,172 @@
 
 defined( 'ABSPATH' ) || exit;
 
-$license_key     = (string) get_option( 'edd_wbcom_bp_contact_me_license_key', '' );
-$license_status  = (string) get_option( 'edd_wbcom_bp_contact_me_license_status', '' );
-$license_expires = (string) get_option( 'edd_wbcom_bp_contact_me_license_expires', '' );
-$has_key         = '' !== $license_key;
-$is_valid        = 'valid' === $license_status;
-$is_lifetime     = 'lifetime' === $license_expires;
+$license_key = (string) get_option( 'edd_wbcom_bp_contact_me_license_key', '' );
+$snapshot    = function_exists( 'edd_BCM_get_license_status' )
+	? edd_BCM_get_license_status()
+	: array(
+		'license' => (string) get_option( 'edd_wbcom_bp_contact_me_license_status', '' ),
+		'data'    => null,
+		'message' => '',
+	);
 
-// How many days until expiry (0 if unknown/lifetime).
-$days_remaining = 0;
-if ( $is_valid && $license_expires && ! $is_lifetime ) {
-	$expires_ts = strtotime( $license_expires );
-	if ( $expires_ts ) {
-		$days_remaining = (int) floor( ( $expires_ts - time() ) / DAY_IN_SECONDS );
+$is_active = ( 'valid' === $snapshot['license'] );
+$has_key   = '' !== $license_key;
+$data      = $snapshot['data'];
+
+// Mask all but the last 4 chars when active; show plaintext while
+// editing so the admin can see what they pasted.
+$display_key = $license_key;
+if ( $is_active && strlen( $license_key ) > 4 ) {
+	$display_key = str_repeat( '•', max( 8, strlen( $license_key ) - 4 ) ) . substr( $license_key, -4 );
+}
+
+// Expiration string. EDD reports either 'lifetime' or a timestamp
+// string. Renders the localised date or an em-dash when unknown.
+$expires_raw  = is_object( $data ) && isset( $data->expires )
+	? (string) $data->expires
+	: (string) get_option( 'edd_wbcom_bp_contact_me_license_expires', '' );
+$is_lifetime  = ( 'lifetime' === $expires_raw );
+$expires_text = '&mdash;';
+$days_left    = 0;
+if ( $is_lifetime ) {
+	$expires_text = esc_html__( 'Lifetime', 'buddypress-contact-me' );
+} elseif ( '' !== $expires_raw ) {
+	$ts = strtotime( $expires_raw, current_time( 'timestamp' ) );
+	if ( $ts ) {
+		$expires_text = esc_html( date_i18n( get_option( 'date_format' ), $ts ) );
+		$days_left    = (int) floor( ( $ts - time() ) / DAY_IN_SECONDS );
 	}
 }
-$expiring_soon = $is_valid && ! $is_lifetime && $license_expires && $days_remaining > 0 && $days_remaining <= 30;
+$expiring_soon = $is_active && ! $is_lifetime && $days_left > 0 && $days_left <= 30;
 
-// Surface any activation feedback the EDD handler redirects back with.
-$activation_msg = '';
-if ( isset( $_GET['BCM_activation'] ) && 'false' === $_GET['BCM_activation'] && isset( $_GET['message'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-	$activation_msg = sanitize_text_field( wp_unslash( $_GET['message'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+// Activations counter. license_limit = 0 means unlimited - render
+// that explicitly so customers don't see "1/0 sites" and panic.
+$activations_text = '&mdash;';
+if ( is_object( $data ) && isset( $data->site_count, $data->license_limit ) ) {
+	$site_count    = (int) $data->site_count;
+	$license_limit = (int) $data->license_limit;
+	$activations_text = $license_limit > 0
+		? esc_html(
+			sprintf(
+				/* translators: %1$d activated sites, %2$d max sites */
+				__( '%1$d of %2$d sites', 'buddypress-contact-me' ),
+				$site_count,
+				$license_limit
+			)
+		)
+		: esc_html(
+			sprintf(
+				/* translators: %d activated sites */
+				_n( '%d site (unlimited)', '%d sites (unlimited)', $site_count, 'buddypress-contact-me' ),
+				$site_count
+			)
+		);
 }
 
-// Mask everything but the last 4 characters of the saved key for display.
-$masked_key = '';
-if ( $has_key ) {
-	$len        = strlen( $license_key );
-	$masked_key = $len > 4
-		? str_repeat( '•', max( 8, $len - 4 ) ) . substr( $license_key, -4 )
-		: $license_key;
-}
+// Status pill spec - mirrors EDD's `license` slug.
+$status_map = array(
+	'valid'         => array( 'class' => 'is-active',   'label' => __( 'Active', 'buddypress-contact-me' ) ),
+	'expired'       => array( 'class' => 'is-expired',  'label' => __( 'Expired', 'buddypress-contact-me' ) ),
+	'invalid'       => array( 'class' => 'is-invalid',  'label' => __( 'Invalid', 'buddypress-contact-me' ) ),
+	'disabled'      => array( 'class' => 'is-invalid',  'label' => __( 'Disabled', 'buddypress-contact-me' ) ),
+	'site_inactive' => array( 'class' => 'is-inactive', 'label' => __( 'Site inactive', 'buddypress-contact-me' ) ),
+);
+$status = isset( $status_map[ $snapshot['license'] ] )
+	? $status_map[ $snapshot['license'] ]
+	: array(
+		'class' => $has_key ? 'is-pending' : 'is-inactive',
+		'label' => $has_key ? __( 'Saved, not activated', 'buddypress-contact-me' ) : __( 'Not activated', 'buddypress-contact-me' ),
+	);
 ?>
-
-<?php if ( $activation_msg ) : ?>
-	<div class="bcm-notice bcm-notice--warn">
-		<span class="dashicons dashicons-warning" aria-hidden="true"></span>
-		<div><?php echo esc_html( $activation_msg ); ?></div>
-	</div>
-<?php endif; ?>
-
 <div class="bcm-card">
 	<div class="bcm-card__head">
 		<p class="bcm-card__title"><?php esc_html_e( 'Plugin License', 'buddypress-contact-me' ); ?></p>
-		<p class="bcm-card__desc"><?php esc_html_e( 'Activate your license to receive automatic updates and support. The key is emailed with your purchase receipt.', 'buddypress-contact-me' ); ?></p>
-	</div>
-	<table class="form-table">
-		<tr>
-			<th scope="row"><?php esc_html_e( 'Status', 'buddypress-contact-me' ); ?></th>
-			<td>
-				<?php if ( $is_valid ) : ?>
-					<span style="color: var(--bcm-admin-success); font-weight: 600;">
-						<span class="dashicons dashicons-yes-alt" aria-hidden="true"></span>
-						<?php esc_html_e( 'Active: receiving updates', 'buddypress-contact-me' ); ?>
-					</span>
-					<?php if ( $is_lifetime ) : ?>
-						<p class="description" style="color: var(--bcm-admin-success);">
-							<?php esc_html_e( 'Lifetime license — never expires.', 'buddypress-contact-me' ); ?>
-						</p>
-					<?php elseif ( $license_expires && $expiring_soon ) : ?>
-						<p class="description" style="color: var(--bcm-admin-warn);">
-							<?php
-							printf(
-								/* translators: 1: expiry date, 2: days remaining */
-								esc_html( _n( 'Renews on %1$s — only %2$d day left.', 'Renews on %1$s — only %2$d days left. Renew to keep receiving updates.', $days_remaining, 'buddypress-contact-me' ) ),
-								esc_html( date_i18n( get_option( 'date_format' ), strtotime( $license_expires ) ) ),
-								(int) $days_remaining
-							);
-							?>
-						</p>
-					<?php elseif ( $license_expires ) : ?>
-						<p class="description">
-							<?php
-							printf(
-								/* translators: %s: expiry date. */
-								esc_html__( 'Renews on %s.', 'buddypress-contact-me' ),
-								esc_html( date_i18n( get_option( 'date_format' ), strtotime( $license_expires ) ) )
-							);
-							?>
-						</p>
-					<?php endif; ?>
-				<?php elseif ( $has_key ) : ?>
-					<span style="color: var(--bcm-admin-warn); font-weight: 600;">
-						<span class="dashicons dashicons-warning" aria-hidden="true"></span>
-						<?php esc_html_e( 'Key saved but not activated', 'buddypress-contact-me' ); ?>
-					</span>
-					<p class="description"><?php esc_html_e( 'Click "Activate License" below to link this key to your site.', 'buddypress-contact-me' ); ?></p>
-				<?php else : ?>
-					<span style="color: var(--bcm-admin-danger); font-weight: 600;">
-						<span class="dashicons dashicons-dismiss" aria-hidden="true"></span>
-						<?php esc_html_e( 'Not activated: updates are paused', 'buddypress-contact-me' ); ?>
-					</span>
-					<p class="description">
-						<?php
-						printf(
-							/* translators: %s: URL to customer account */
-							esc_html__( 'You can find your license key in your %s.', 'buddypress-contact-me' ),
-							'<a href="https://wbcomdesigns.com/profile/" target="_blank" rel="noopener noreferrer">' . esc_html__( 'Wbcom Designs account', 'buddypress-contact-me' ) . '</a>'
-						);
-						?>
-					</p>
-				<?php endif; ?>
-			</td>
-		</tr>
-	</table>
-
-	<form method="post" class="bcm-license-form">
-		<?php wp_nonce_field( 'edd_wbcom_contact_me_nonce', 'edd_wbcom_contact_me_nonce' ); ?>
-		<table class="form-table">
-			<tr>
-				<th scope="row"><label for="bcm-license-key"><?php esc_html_e( 'License key', 'buddypress-contact-me' ); ?></label></th>
-				<td>
-					<input type="text"
-						id="bcm-license-key"
-						name="edd_wbcom_bp_contact_me_license_key"
-						value="<?php echo esc_attr( $is_valid ? $masked_key : $license_key ); ?>"
-						class="regular-text"
-						autocomplete="off"
-						spellcheck="false"
-						<?php echo $is_valid ? 'readonly' : ''; ?>
-						placeholder="<?php esc_attr_e( 'Paste your license key', 'buddypress-contact-me' ); ?>">
-					<?php if ( $is_valid ) : ?>
-						<p class="description"><?php esc_html_e( 'Deactivate first to change the key.', 'buddypress-contact-me' ); ?></p>
-					<?php endif; ?>
-				</td>
-			</tr>
-		</table>
-
-		<div class="bcm-save-bar">
-			<?php if ( $is_valid ) : ?>
-				<button type="submit" name="edd_BCM_license_deactivate" class="bcm-btn bcm-btn-danger">
-					<span class="dashicons dashicons-unlock" aria-hidden="true"></span>
-					<?php esc_html_e( 'Deactivate License', 'buddypress-contact-me' ); ?>
-				</button>
-			<?php else : ?>
-				<button type="submit" name="edd_bp_contact_me_license_activate" class="bcm-btn bcm-btn-primary">
-					<span class="dashicons dashicons-yes" aria-hidden="true"></span>
-					<?php esc_html_e( 'Activate License', 'buddypress-contact-me' ); ?>
-				</button>
-			<?php endif; ?>
-		</div>
-	</form>
-</div>
-
-<div class="bcm-card">
-	<div class="bcm-card__head">
-		<p class="bcm-card__title"><?php esc_html_e( 'What activation unlocks', 'buddypress-contact-me' ); ?></p>
+		<p class="bcm-card__desc"><?php esc_html_e( 'Activate your license to receive automatic updates and priority support.', 'buddypress-contact-me' ); ?></p>
 	</div>
 	<div class="bcm-card__body">
-		<ul style="margin: 0; padding-left: 18px; color: var(--bcm-admin-text-2); line-height: 1.7;">
-			<li><?php esc_html_e( 'Automatic update notifications in the WordPress Plugins screen.', 'buddypress-contact-me' ); ?></li>
-			<li><?php esc_html_e( 'Priority support from the Wbcom Designs team.', 'buddypress-contact-me' ); ?></li>
-			<li><?php esc_html_e( 'Access to premium integrations as they ship.', 'buddypress-contact-me' ); ?></li>
-		</ul>
+		<form method="post" class="bcm-license-form">
+			<?php wp_nonce_field( 'edd_wbcom_contact_me_nonce', 'edd_wbcom_contact_me_nonce' ); ?>
+
+			<table class="form-table" role="presentation">
+				<tr>
+					<th scope="row">
+						<label for="bcm-license-key"><?php esc_html_e( 'License key', 'buddypress-contact-me' ); ?></label>
+					</th>
+					<td>
+						<input type="text"
+							id="bcm-license-key"
+							name="edd_wbcom_bp_contact_me_license_key"
+							value="<?php echo esc_attr( $display_key ); ?>"
+							class="regular-text"
+							autocomplete="off"
+							spellcheck="false"
+							<?php echo $is_active ? 'readonly' : ''; ?>
+							placeholder="<?php esc_attr_e( 'Paste your license key', 'buddypress-contact-me' ); ?>" />
+						<p class="description">
+							<?php
+							if ( $is_active ) {
+								esc_html_e( 'Deactivate first to change the key.', 'buddypress-contact-me' );
+							} else {
+								printf(
+									/* translators: %s: link to Wbcom account. */
+									wp_kses(
+										__( 'Find your key in your <a href="%s" target="_blank" rel="noopener noreferrer">Wbcom Designs account</a>.', 'buddypress-contact-me' ),
+										array( 'a' => array( 'href' => array(), 'target' => array(), 'rel' => array() ) )
+									),
+									esc_url( 'https://wbcomdesigns.com/profile/' )
+								);
+							}
+							?>
+						</p>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row"><?php esc_html_e( 'Status', 'buddypress-contact-me' ); ?></th>
+					<td>
+						<span class="bcm-license-status <?php echo esc_attr( $status['class'] ); ?>"><?php echo esc_html( $status['label'] ); ?></span>
+						<?php if ( $is_active || ( is_object( $data ) && isset( $data->expires ) ) ) : ?>
+							<span class="bcm-license-meta-sep" aria-hidden="true">&middot;</span>
+							<span class="bcm-license-meta">
+								<strong><?php esc_html_e( 'Expires:', 'buddypress-contact-me' ); ?></strong>
+								<?php echo $expires_text; // already escaped above. ?>
+							</span>
+						<?php endif; ?>
+						<?php if ( $is_active || ( is_object( $data ) && isset( $data->site_count, $data->license_limit ) ) ) : ?>
+							<span class="bcm-license-meta-sep" aria-hidden="true">&middot;</span>
+							<span class="bcm-license-meta">
+								<strong><?php esc_html_e( 'Activations:', 'buddypress-contact-me' ); ?></strong>
+								<?php echo $activations_text; // already escaped above. ?>
+							</span>
+						<?php endif; ?>
+						<?php if ( $expiring_soon ) : ?>
+							<p class="bcm-license-renew-warn">
+								<?php
+								printf(
+									/* translators: %d: days remaining. */
+									esc_html( _n( 'Renews in %d day - renew to keep receiving updates.', 'Renews in %d days - renew to keep receiving updates.', $days_left, 'buddypress-contact-me' ) ),
+									(int) $days_left
+								);
+								?>
+							</p>
+						<?php endif; ?>
+					</td>
+				</tr>
+			</table>
+
+			<div class="bcm-save-bar">
+				<?php if ( $is_active ) : ?>
+					<button type="submit" name="edd_BCM_license_deactivate" class="bcm-btn bcm-btn-danger">
+						<span class="dashicons dashicons-unlock" aria-hidden="true"></span>
+						<?php esc_html_e( 'Deactivate License', 'buddypress-contact-me' ); ?>
+					</button>
+				<?php else : ?>
+					<button type="submit" name="edd_bp_contact_me_license_activate" class="bcm-btn bcm-btn-primary">
+						<span class="dashicons dashicons-yes" aria-hidden="true"></span>
+						<?php esc_html_e( 'Activate License', 'buddypress-contact-me' ); ?>
+					</button>
+				<?php endif; ?>
+			</div>
+		</form>
 	</div>
 </div>

@@ -1,384 +1,388 @@
 <?php
 /**
- * EDD Software Licensing integration for BuddyPress Contact Me.
+ * BuddyPress Contact Me - License handling.
+ *
+ * EDD Software Licensing client. Self-contained: every redirect lands
+ * on `?page=buddypress-contact-me&tab=license`, no reference to any
+ * other Wbcom plugin's admin pages.
+ *
+ * Public surface (registered actions):
+ *   admin_init    -> edd_BCM_plugin_updater (priority 0)
+ *   admin_init    -> edd_BCM_register_option
+ *   admin_init    -> edd_BCM_handle_activate
+ *   admin_init    -> edd_BCM_handle_deactivate
+ *   admin_notices -> edd_BCM_render_admin_notices
  *
  * @package BuddyPress_Contact_Me
  */
 
 defined( 'ABSPATH' ) || exit;
 
-// this is the URL our updater / license checker pings. This should be the URL of the site with EDD installed.
+/* ---------------------------------------------------------------- *
+ * Constants                                                        *
+ * ---------------------------------------------------------------- */
+
 if ( ! defined( 'EDD_BP_CONTACT_ME_STORE_URL' ) ) {
-	define( 'EDD_BP_CONTACT_ME_STORE_URL', 'https://wbcomdesigns.com/' ); // you should use your own CONSTANT name, and be sure to replace it throughout this file
+	define( 'EDD_BP_CONTACT_ME_STORE_URL', 'https://wbcomdesigns.com/' );
 }
-
-// the name of your product. This should match the download name in EDD exactly
 if ( ! defined( 'EDD_BP_CONTACT_ME_ITEM_NAME' ) ) {
-	define( 'EDD_BP_CONTACT_ME_ITEM_NAME', 'BuddyPress Contact Me' ); // you should use your own CONSTANT name, and be sure to replace it throughout this file
+	define( 'EDD_BP_CONTACT_ME_ITEM_NAME', 'BuddyPress Contact Me' );
 }
-
-// The EDD download row ID at wbcomdesigns.com. Preferred over item_name
-// by EDD Software Licensing 3.x — survives product renames.
 if ( ! defined( 'EDD_BP_CONTACT_ME_ITEM_ID' ) ) {
 	define( 'EDD_BP_CONTACT_ME_ITEM_ID', 1528584 );
 }
 
-// the name of the settings page for the license input to be displayed
+// Canonical license screen for this plugin.
 if ( ! defined( 'EDD_BP_CONTACT_ME_PLUGIN_LICENSE_PAGE' ) ) {
-	define( 'EDD_BP_CONTACT_ME_PLUGIN_LICENSE_PAGE', 'wbcom-license-page' );
+	define( 'EDD_BP_CONTACT_ME_PLUGIN_LICENSE_PAGE', 'buddypress-contact-me' );
+}
+if ( ! defined( 'EDD_BP_CONTACT_ME_PLUGIN_LICENSE_TAB' ) ) {
+	define( 'EDD_BP_CONTACT_ME_PLUGIN_LICENSE_TAB', 'license' );
 }
 
+const EDD_BCM_LICENSE_KEY_OPTION    = 'edd_wbcom_bp_contact_me_license_key';
+const EDD_BCM_LICENSE_STATUS_OPTION = 'edd_wbcom_bp_contact_me_license_status';
+const EDD_BCM_LICENSE_EXPIRES_OPTION = 'edd_wbcom_bp_contact_me_license_expires';
+const EDD_BCM_LICENSE_CACHE_KEY     = 'edd_wbcom_bp_contact_me_license_key_data';
+const EDD_BCM_LICENSE_CACHE_TTL     = 12 * HOUR_IN_SECONDS;
+const EDD_BCM_LICENSE_NONCE_ACTION  = 'edd_wbcom_contact_me_nonce';
+const EDD_BCM_LICENSE_NONCE_NAME    = 'edd_wbcom_contact_me_nonce';
+
 if ( ! class_exists( 'EDD_BP_CONTACT_ME_PLUGIN_UPDATER' ) ) {
-	// load our custom updater.
 	include __DIR__ . '/class-edd-bp-contact-me-plugin-updater.php';
 }
 
-function edd_bp_contact_me_plugin_updater() {
-	// retrieve our license key from the DB.
-	$license_key = trim( get_option( 'edd_wbcom_bp_contact_me_license_key' ) );
+/* ---------------------------------------------------------------- *
+ * Updater bootstrap                                                *
+ * ---------------------------------------------------------------- */
 
-	// setup the updater
-	$edd_updater = new EDD_BP_CONTACT_ME_PLUGIN_UPDATER(
+function edd_BCM_plugin_updater() {
+	$license_key = trim( (string) get_option( EDD_BCM_LICENSE_KEY_OPTION ) );
+
+	new EDD_BP_CONTACT_ME_PLUGIN_UPDATER(
 		EDD_BP_CONTACT_ME_STORE_URL,
 		BUDDYPRESS_CONTACT_ME_FILE,
 		array(
-			'version'   => BUDDYPRESS_CONTACT_ME_VERSION,             // current version number.
-			'license'   => $license_key,        // license key (used get_option above to retrieve from DB).
-			'item_id'   => EDD_BP_CONTACT_ME_ITEM_ID,    // EDD download ID (preferred, survives renames).
-			'item_name' => EDD_BP_CONTACT_ME_ITEM_NAME,  // name of this plugin (fallback for older stores).
-			'author'    => 'wbcomdesigns',  // author of this plugin.
+			'version'   => BUDDYPRESS_CONTACT_ME_VERSION,
+			'license'   => $license_key,
+			'item_id'   => EDD_BP_CONTACT_ME_ITEM_ID,
+			'item_name' => EDD_BP_CONTACT_ME_ITEM_NAME,
+			'author'    => 'wbcomdesigns',
 			'url'       => home_url(),
 		)
 	);
 }
-add_action( 'admin_init', 'edd_bp_contact_me_plugin_updater', 0 );
+add_action( 'admin_init', 'edd_BCM_plugin_updater', 0 );
 
+/* ---------------------------------------------------------------- *
+ * Settings registration                                            *
+ * ---------------------------------------------------------------- */
 
-/************************************
- * the code below is just a standard
- * options page. Substitute with
- * your own.
- */
-function edd_wbcom_bp_contact_me_register_option() {
-	// creates our settings in the options table
-	register_setting( 'edd_wbcom_bp_contact_me_license', 'edd_wbcom_bp_contact_me_license_key', 'edd_bcm_sanitize_license' );
+function edd_BCM_register_option() {
+	register_setting(
+		'edd_wbcom_bp_contact_me_license',
+		EDD_BCM_LICENSE_KEY_OPTION,
+		array(
+			'type'              => 'string',
+			'sanitize_callback' => 'edd_BCM_sanitize_license',
+		)
+	);
 }
-add_action( 'admin_init', 'edd_wbcom_bp_contact_me_register_option' );
+add_action( 'admin_init', 'edd_BCM_register_option' );
 
-function edd_bcm_sanitize_license( $new ) {
-	$old = get_option( 'edd_wbcom_bp_contact_me_license_key' );
-	if ( $old && $old != $new ) {
-		delete_option( 'edd_wbcom_bp_contact_me_license_status' ); // new license has been entered, so must reactivate
+function edd_BCM_sanitize_license( $new ) {
+	$new = sanitize_text_field( (string) $new );
+	$old = (string) get_option( EDD_BCM_LICENSE_KEY_OPTION );
+
+	if ( '' !== $old && $old !== $new ) {
+		delete_option( EDD_BCM_LICENSE_STATUS_OPTION );
+		delete_option( EDD_BCM_LICENSE_EXPIRES_OPTION );
+		delete_transient( EDD_BCM_LICENSE_CACHE_KEY );
 	}
+
 	return $new;
 }
 
-
-
-/************************************
- * this illustrates how to activate
- * a license key
- *************************************/
-function edd_wbcom_bcm_activate_license() {
-	// listen for our activate button to be clicked
-	if ( isset( $_POST['edd_bp_contact_me_license_activate'] ) ) {
-		// run a quick security check
-		if ( ! check_admin_referer( 'edd_wbcom_contact_me_nonce', 'edd_wbcom_contact_me_nonce' ) ) {
-			return; // get out if we didn't click the Activate button
-		}
-
-		// retrieve the license from the database
-		$license = isset( $_POST['edd_wbcom_bp_contact_me_license_key'] ) ? sanitize_text_field( wp_unslash( $_POST['edd_wbcom_bp_contact_me_license_key'] ) ) : '';
-
-		// data to send in our API request
-		$api_params = array(
-			'edd_action' => 'activate_license',
-			'license'    => $license,
-			'item_id'    => EDD_BP_CONTACT_ME_ITEM_ID, // preferred EDD SL 3.x product identifier.
-			'item_name'  => urlencode( EDD_BP_CONTACT_ME_ITEM_NAME ), // fallback for older stores.
-			'url'        => home_url(),
-		);
-
-		// Call the custom API.
-		$response = wp_remote_post(
-			EDD_BP_CONTACT_ME_STORE_URL,
-			array(
-				'timeout'   => 15,
-				'sslverify' => false,
-				'body'      => $api_params,
-			)
-		);
-		// make sure the response came back okay
-		if ( is_wp_error( $response ) || 200 !== wp_remote_retrieve_response_code( $response ) ) {
-			if ( is_wp_error( $response ) ) {
-				$message = $response->get_error_message();
-			} else {
-				$message = __( 'An error occurred, please try again.', 'buddypress-contact-me' );
-			}
-		} else {
-			$license_data = json_decode( wp_remote_retrieve_body( $response ) );
-
-			if ( false === $license_data->success ) {
-				switch ( $license_data->error ) {
-					case 'expired':
-						$message = sprintf(
-							/* translators: %s: license expiry date. */
-							__( 'Your license key expired on %s.', 'buddypress-contact-me' ),
-							date_i18n( get_option( 'date_format' ), strtotime( $license_data->expires, current_time( 'timestamp' ) ) )
-						);
-						break;
-
-					case 'revoked':
-						$message = __( 'Your license key has been disabled.', 'buddypress-contact-me' );
-						break;
-
-					case 'missing':
-						$message = __( 'Invalid license.', 'buddypress-contact-me' );
-						break;
-
-					case 'invalid':
-					case 'site_inactive':
-						$message = __( 'Your license is not active for this URL.', 'buddypress-contact-me' );
-						break;
-
-					case 'item_name_mismatch':
-						/* translators: %s: product name. */
-						$message = sprintf( __( 'This appears to be an invalid license key for %s.', 'buddypress-contact-me' ), EDD_BP_CONTACT_ME_ITEM_NAME );
-						break;
-
-					case 'no_activations_left':
-						$message = __( 'Your license key has reached its activation limit.', 'buddypress-contact-me' );
-						break;
-
-					default:
-						$message = __( 'An error occurred, please try again.', 'buddypress-contact-me' );
-						break;
-				}
-			} else {
-				set_transient( 'edd_wbcom_bp_contact_me_license_key_data', $license_data, 12 * HOUR_IN_SECONDS );
-			}
-		}
-
-		// The 1.5.0 card-panel license tab lives inside the plugin page,
-		// not on the legacy shared wbcom-license-page slug.
-		$license_tab_url = admin_url( 'admin.php?page=buddypress-contact-me&tab=license' );
-
-		// Check if anything passed on a message constituting a failure
-		if ( ! empty( $message ) ) {
-			$redirect = add_query_arg(
-				array(
-					'BCM_activation' => 'false',
-					'message'        => urlencode( $message ),
-				),
-				$license_tab_url
-			);
-			$license  = trim( $license );
-			update_option( 'edd_wbcom_bp_contact_me_license_key', $license );
-			if ( isset( $license_data->license ) ) {
-				update_option( 'edd_wbcom_bp_contact_me_license_status', $license_data->license );
-			}
-			wp_safe_redirect( $redirect );
-			exit();
-		}
-
-		// $license_data->license will be either "valid" or "invalid"
-		$license = trim( $license );
-		update_option( 'edd_wbcom_bp_contact_me_license_key', $license );
-		update_option( 'edd_wbcom_bp_contact_me_license_status', $license_data->license );
-
-		// Persist expiry so the license tab can show "Renews on …".
-		// $license_data->expires is either an ISO date or the string 'lifetime'.
-		if ( isset( $license_data->expires ) && '' !== $license_data->expires ) {
-			update_option( 'edd_wbcom_bp_contact_me_license_expires', (string) $license_data->expires );
-		} else {
-			delete_option( 'edd_wbcom_bp_contact_me_license_expires' );
-		}
-
-		wp_safe_redirect( $license_tab_url );
-		exit();
-	}
-}
-add_action( 'admin_init', 'edd_wbcom_bcm_activate_license' );
-
-
-/***********************************************
- * Illustrates how to deactivate a license key.
- * This will decrease the site count
- ***********************************************/
-function edd_wbcom_bcm_deactivate_license() {
-	// listen for our activate button to be clicked
-	if ( isset( $_POST['edd_BCM_license_deactivate'] ) ) {
-		// run a quick security check
-		if ( ! check_admin_referer( 'edd_wbcom_contact_me_nonce', 'edd_wbcom_contact_me_nonce' ) ) {
-			return; // get out if we didn't click the Activate button
-		}
-
-		// retrieve the license from the database
-		$license = trim( get_option( 'edd_wbcom_bp_contact_me_license_key' ) );
-
-		// data to send in our API request
-		$api_params = array(
-			'edd_action' => 'deactivate_license',
-			'license'    => $license,
-			'item_id'    => EDD_BP_CONTACT_ME_ITEM_ID, // preferred EDD SL 3.x product identifier.
-			'item_name'  => urlencode( EDD_BP_CONTACT_ME_ITEM_NAME ), // fallback for older stores.
-			'url'        => home_url(),
-		);
-
-		// Call the custom API.
-		$response = wp_remote_post(
-			EDD_BP_CONTACT_ME_STORE_URL,
-			array(
-				'timeout'   => 15,
-				'sslverify' => false,
-				'body'      => $api_params,
-			)
-		);
-
-		// make sure the response came back okay
-		if ( is_wp_error( $response ) || 200 !== wp_remote_retrieve_response_code( $response ) ) {
-			if ( is_wp_error( $response ) ) {
-				$message = $response->get_error_message();
-			} else {
-				$message = __( 'An error occurred, please try again.', 'buddypress-contact-me' );
-			}
-
-			$base_url = admin_url( 'admin.php?page=' . EDD_BP_CONTACT_ME_PLUGIN_LICENSE_PAGE );
-			$redirect = add_query_arg(
-				array(
-					'bcm_activation' => 'false',
-					'message'        => urlencode( $message ),
-				),
-				$base_url
-			);
-
-			wp_redirect( $redirect );
-			exit();
-		}
-
-		// decode the license data
-		$license_data = json_decode( wp_remote_retrieve_body( $response ) );
-		delete_transient( 'edd_wbcom_bp_contact_me_license_key_data' );
-
-		// $license_data->license will be either "deactivated" or "failed"
-		if ( 'deactivated' === $license_data->license || 'failed' === $license_data->license ) {
-			delete_option( 'edd_wbcom_bp_contact_me_license_status' );
-			delete_option( 'edd_wbcom_bp_contact_me_license_expires' );
-		}
-
-		wp_safe_redirect( admin_url( 'admin.php?page=buddypress-contact-me&tab=license' ) );
-		exit();
-	}
-}
-add_action( 'admin_init', 'edd_wbcom_bcm_deactivate_license' );
-
-
-/************************************
- * this illustrates how to check if
- * a license key is still valid
- * the updater does this for you,
- * so this is only needed if you
- * want to do something custom
- */
-add_action( 'admin_init', 'edd_wbcom_bcm_check_license' );
-function edd_wbcom_bcm_check_license() {
-	global $wp_version, $pagenow;
-
-	if ( $pagenow === 'plugins.php' || $pagenow === 'index.php' || ( isset( $_GET['page'] ) && $_GET['page'] === 'wbcom-license-page' ) ) {		// phpcs:ignore
-
-		$license_data = get_transient( 'edd_wbcom_bp_contact_me_license_key_data' );
-		$license      = trim( get_option( 'edd_wbcom_bp_contact_me_license_key' ) );
-
-		if ( empty( $license_data ) && $license != '' ) {
-
-			$api_params = array(
-				'edd_action' => 'check_license',
-				'license'    => $license,
-				'item_id'    => EDD_BP_CONTACT_ME_ITEM_ID,
-				'item_name'  => urlencode( EDD_BP_CONTACT_ME_ITEM_NAME ),
-				'url'        => home_url(),
-			);
-
-			// Call the custom API.
-			$response = wp_remote_post(
-				EDD_BP_CONTACT_ME_STORE_URL,
-				array(
-					'timeout'   => 15,
-					'sslverify' => false,
-					'body'      => $api_params,
-				)
-			);
-
-			if ( is_wp_error( $response ) ) {
-				return false;
-			}
-
-			$license_data = json_decode( wp_remote_retrieve_body( $response ) );
-
-			if ( ! empty( $license_data ) ) {
-				set_transient( 'edd_wbcom_bp_contact_me_license_key_data', $license_data, 12 * HOUR_IN_SECONDS );
-			}
-		}
-	}
-}
+/* ---------------------------------------------------------------- *
+ * EDD store API client                                             *
+ * ---------------------------------------------------------------- */
 
 /**
- * This is a means of catching errors from the activation method above and displaying it to the customer
+ * Single entry point for every license API round-trip. Returns
+ * stdClass on success or WP_Error on failure - callers branch on
+ * `is_wp_error()` and never type-check intermediate values.
+ *
+ * @param string $action  EDD action: activate_license, deactivate_license, check_license.
+ * @param string $license Key to send.
+ * @return stdClass|WP_Error
  */
-function edd_wbcom_bcm_admin_notices() {
-	$license_activation = filter_input( INPUT_GET, 'BCM_activation' ) ? filter_input( INPUT_GET, 'BCM_activation' ) : '';
-	$error_message      = filter_input( INPUT_GET, 'message' ) ? filter_input( INPUT_GET, 'message' ) : '';
-	$license_data       = get_transient( 'edd_wbcom_bp_contact_me_license_key_data' );
-	$license            = trim( get_option( 'edd_wbcom_bp_contact_me_license_key' ) );
+function edd_BCM_call_api( $action, $license ) {
+	$response = wp_remote_post(
+		EDD_BP_CONTACT_ME_STORE_URL,
+		array(
+			'timeout'   => 15,
+			'sslverify' => apply_filters( 'bcm_license_api_sslverify', true ),
+			'body'      => array(
+				'edd_action' => $action,
+				'license'    => $license,
+				'item_id'    => EDD_BP_CONTACT_ME_ITEM_ID,
+				'item_name'  => rawurlencode( EDD_BP_CONTACT_ME_ITEM_NAME ),
+				'url'        => home_url(),
+			),
+		)
+	);
 
-	if ( isset( $license_activation ) && ! empty( $error_message ) || ( ! empty( $license_data ) && $license_data->license == 'expired' ) ) {
-		if ( $license_activation === '' ) {
-			$license_activation = $license_data->license;
-		}
-		switch ( $license_activation ) {
-			case 'expired':
-				?>
-				<div class="notice notice-error is-dismissible">
-				<p>
-				<?php
-				$message = sprintf(
-					/* translators: %1$s: Expire Time*/
-					__( 'Your BuddyPress Contact Me plugin license key expired on %s.', 'buddypress-contact-me' ),
-					date_i18n( get_option( 'date_format' ), strtotime( $license_data->expires, current_time( 'timestamp' ) ) )
-				);
-				echo esc_html( $message );
-				?>
-				</p>
-				</div>
-				<?php
-
-				break;
-			case 'false':
-				$message = urldecode( $error_message );
-				?>
-				<div class="error">
-					<p><?php echo esc_html( $message ); ?></p>
-				</div>
-				<?php
-				break;
-
-			case 'true':
-			default:
-				// Developers can put a custom success message here for when activation is successful if they way.
-				break;
-		}
+	if ( is_wp_error( $response ) ) {
+		return $response;
 	}
 
-	if ( $license === '' ) {
-		?>
-		<div class="notice notice-error is-dismissible">
-			<p>
-			<?php
-			echo esc_html__( 'Please activate your BuddyPress Contact Me plugin license key.', 'buddypress-contact-me' );
-			?>
-			</p>			
-		</div>
-		<?php
+	$status = (int) wp_remote_retrieve_response_code( $response );
+	$body   = (string) wp_remote_retrieve_body( $response );
+
+	if ( 200 !== $status ) {
+		return new WP_Error(
+			'bcm_license_http_error',
+			__( 'An error occurred, please try again.', 'buddypress-contact-me' ),
+			array( 'http_status' => $status )
+		);
+	}
+
+	$decoded = '' !== $body ? json_decode( $body ) : null;
+
+	if ( ! is_object( $decoded ) ) {
+		return new WP_Error(
+			'bcm_license_invalid_response',
+			__( 'Invalid response from license server. Please try again.', 'buddypress-contact-me' )
+		);
+	}
+
+	return $decoded;
+}
+
+/* ---------------------------------------------------------------- *
+ * Activation handler                                               *
+ * ---------------------------------------------------------------- */
+
+function edd_BCM_handle_activate() {
+	if ( ! isset( $_POST['edd_bp_contact_me_license_activate'] ) ) {
+		return;
+	}
+	if ( ! check_admin_referer( EDD_BCM_LICENSE_NONCE_ACTION, EDD_BCM_LICENSE_NONCE_NAME ) ) {
+		return;
+	}
+
+	$license = isset( $_POST[ EDD_BCM_LICENSE_KEY_OPTION ] )
+		? sanitize_text_field( wp_unslash( $_POST[ EDD_BCM_LICENSE_KEY_OPTION ] ) )
+		: '';
+
+	update_option( EDD_BCM_LICENSE_KEY_OPTION, $license );
+
+	if ( '' === $license ) {
+		edd_BCM_redirect_with(
+			array(
+				'BCM_activation' => 'false',
+				'message'        => __( 'Please enter a license key.', 'buddypress-contact-me' ),
+			)
+		);
+	}
+
+	$result = edd_BCM_call_api( 'activate_license', $license );
+
+	if ( is_wp_error( $result ) ) {
+		edd_BCM_redirect_with(
+			array(
+				'BCM_activation' => 'false',
+				'message'        => $result->get_error_message(),
+			)
+		);
+	}
+
+	if ( empty( $result->success ) ) {
+		$code    = isset( $result->error ) ? (string) $result->error : '';
+		$message = edd_BCM_format_activation_error( $code, $result );
+		edd_BCM_redirect_with(
+			array(
+				'BCM_activation' => 'false',
+				'message'        => $message,
+			)
+		);
+	}
+
+	$state = isset( $result->license ) ? (string) $result->license : 'invalid';
+	update_option( EDD_BCM_LICENSE_STATUS_OPTION, $state );
+	if ( isset( $result->expires ) && '' !== $result->expires ) {
+		update_option( EDD_BCM_LICENSE_EXPIRES_OPTION, (string) $result->expires );
+	} else {
+		delete_option( EDD_BCM_LICENSE_EXPIRES_OPTION );
+	}
+	set_transient( EDD_BCM_LICENSE_CACHE_KEY, $result, EDD_BCM_LICENSE_CACHE_TTL );
+
+	edd_BCM_redirect_with( array( 'BCM_activation' => 'true' ) );
+}
+add_action( 'admin_init', 'edd_BCM_handle_activate' );
+
+function edd_BCM_format_activation_error( $code, $result ) {
+	switch ( $code ) {
+		case 'expired':
+			$expires_ts = isset( $result->expires )
+				? strtotime( $result->expires, current_time( 'timestamp' ) )
+				: false;
+			return $expires_ts
+				? sprintf(
+					/* translators: %s: expiration date */
+					__( 'Your license key expired on %s.', 'buddypress-contact-me' ),
+					date_i18n( get_option( 'date_format' ), $expires_ts )
+				)
+				: __( 'Your license key has expired.', 'buddypress-contact-me' );
+
+		case 'revoked':
+			return __( 'Your license key has been disabled.', 'buddypress-contact-me' );
+
+		case 'missing':
+			return __( 'Invalid license.', 'buddypress-contact-me' );
+
+		case 'invalid':
+		case 'site_inactive':
+			return __( 'Your license is not active for this URL.', 'buddypress-contact-me' );
+
+		case 'item_name_mismatch':
+			return sprintf(
+				/* translators: %s: product name */
+				__( 'This appears to be an invalid license key for %s.', 'buddypress-contact-me' ),
+				EDD_BP_CONTACT_ME_ITEM_NAME
+			);
+
+		case 'no_activations_left':
+			return __( 'Your license key has reached its activation limit.', 'buddypress-contact-me' );
+
+		default:
+			return __( 'An error occurred, please try again.', 'buddypress-contact-me' );
 	}
 }
-add_action( 'admin_notices', 'edd_wbcom_bcm_admin_notices' );
+
+/* ---------------------------------------------------------------- *
+ * Deactivation handler                                             *
+ * ---------------------------------------------------------------- */
+
+function edd_BCM_handle_deactivate() {
+	if ( ! isset( $_POST['edd_BCM_license_deactivate'] ) ) {
+		return;
+	}
+	if ( ! check_admin_referer( EDD_BCM_LICENSE_NONCE_ACTION, EDD_BCM_LICENSE_NONCE_NAME ) ) {
+		return;
+	}
+
+	$license = trim( (string) get_option( EDD_BCM_LICENSE_KEY_OPTION ) );
+	$result  = edd_BCM_call_api( 'deactivate_license', $license );
+
+	if ( is_wp_error( $result ) ) {
+		edd_BCM_redirect_with(
+			array(
+				'BCM_deactivation' => 'false',
+				'message'          => $result->get_error_message(),
+			)
+		);
+	}
+
+	delete_transient( EDD_BCM_LICENSE_CACHE_KEY );
+	if ( isset( $result->license ) && in_array( (string) $result->license, array( 'deactivated', 'failed' ), true ) ) {
+		delete_option( EDD_BCM_LICENSE_STATUS_OPTION );
+		delete_option( EDD_BCM_LICENSE_EXPIRES_OPTION );
+	}
+
+	edd_BCM_redirect_with( array( 'BCM_deactivation' => 'true' ) );
+}
+add_action( 'admin_init', 'edd_BCM_handle_deactivate' );
+
+/* ---------------------------------------------------------------- *
+ * Redirect helper                                                  *
+ * ---------------------------------------------------------------- */
+
+function edd_BCM_redirect_with( array $args ) {
+	$url = admin_url(
+		'admin.php?page=' . rawurlencode( EDD_BP_CONTACT_ME_PLUGIN_LICENSE_PAGE )
+		. '&tab=' . rawurlencode( EDD_BP_CONTACT_ME_PLUGIN_LICENSE_TAB )
+	);
+
+	$url = remove_query_arg(
+		array( 'BCM_activation', 'BCM_deactivation', 'message', '_wpnonce', '_wp_http_referer' ),
+		$url
+	);
+
+	wp_safe_redirect( add_query_arg( $args, $url ) );
+	exit;
+}
+
+/* ---------------------------------------------------------------- *
+ * Status snapshot used by the renderer                             *
+ * ---------------------------------------------------------------- */
+
+/**
+ * Return the current license status snapshot. Reads through the
+ * transient cache when present, only hits the remote when the
+ * cache is empty AND a key is configured. Always returns a
+ * fully-populated array.
+ *
+ * @return array { license: string, data: stdClass|null, message: string }
+ */
+function edd_BCM_get_license_status() {
+	$snapshot = array(
+		'license' => (string) get_option( EDD_BCM_LICENSE_STATUS_OPTION, '' ),
+		'data'    => null,
+		'message' => '',
+	);
+
+	$key = trim( (string) get_option( EDD_BCM_LICENSE_KEY_OPTION ) );
+	if ( '' === $key ) {
+		return $snapshot;
+	}
+
+	$cached = get_transient( EDD_BCM_LICENSE_CACHE_KEY );
+	if ( is_object( $cached ) ) {
+		$snapshot['data']    = $cached;
+		$snapshot['license'] = isset( $cached->license ) ? (string) $cached->license : $snapshot['license'];
+		return $snapshot;
+	}
+
+	$result = edd_BCM_call_api( 'check_license', $key );
+	if ( is_wp_error( $result ) ) {
+		$snapshot['message'] = $result->get_error_message();
+		return $snapshot;
+	}
+
+	set_transient( EDD_BCM_LICENSE_CACHE_KEY, $result, EDD_BCM_LICENSE_CACHE_TTL );
+
+	$snapshot['data']    = $result;
+	$snapshot['license'] = isset( $result->license ) ? (string) $result->license : $snapshot['license'];
+
+	return $snapshot;
+}
+
+/* ---------------------------------------------------------------- *
+ * Admin notices                                                    *
+ * ---------------------------------------------------------------- */
+
+function edd_BCM_render_admin_notices() {
+	if ( ! is_admin() ) {
+		return;
+	}
+
+	// phpcs:disable WordPress.Security.NonceVerification.Recommended
+	$activation   = isset( $_GET['BCM_activation'] ) ? sanitize_text_field( wp_unslash( $_GET['BCM_activation'] ) ) : '';
+	$deactivation = isset( $_GET['BCM_deactivation'] ) ? sanitize_text_field( wp_unslash( $_GET['BCM_deactivation'] ) ) : '';
+	$message      = isset( $_GET['message'] ) ? rawurldecode( sanitize_text_field( wp_unslash( $_GET['message'] ) ) ) : '';
+	// phpcs:enable
+
+	if ( 'true' === $activation ) {
+		printf( '<div class="notice notice-success is-dismissible"><p>%s</p></div>', esc_html__( 'License activated successfully.', 'buddypress-contact-me' ) );
+	} elseif ( 'false' === $activation && '' !== $message ) {
+		printf( '<div class="notice notice-error is-dismissible"><p>%s</p></div>', esc_html( $message ) );
+	}
+
+	if ( 'true' === $deactivation ) {
+		printf( '<div class="notice notice-success is-dismissible"><p>%s</p></div>', esc_html__( 'License deactivated successfully.', 'buddypress-contact-me' ) );
+	} elseif ( 'false' === $deactivation && '' !== $message ) {
+		printf( '<div class="notice notice-error is-dismissible"><p>%s</p></div>', esc_html( $message ) );
+	}
+}
+add_action( 'admin_notices', 'edd_BCM_render_admin_notices' );
