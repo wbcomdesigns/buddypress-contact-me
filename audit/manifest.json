@@ -1,0 +1,121 @@
+{
+  "$schema": "https://wpmediaverse.com/schemas/wp-plugin-manifest-v2.json",
+  "plugin": {
+    "slug": "buddypress-contact-me",
+    "name": "Wbcom Designs - BuddyPress Contact Me",
+    "version": "1.5.0",
+    "namespace": null,
+    "main_file": "buddypress-contact-me.php",
+    "text_domain": "buddypress-contact-me",
+    "extends": null,
+    "license": "EDD (edd-license/)",
+    "requires": ["BuddyPress or BuddyBoss Platform"]
+  },
+  "rest": {
+    "namespace": "bcm/v1",
+    "endpoints": [
+      { "route": "/messages", "methods": ["POST"], "handler": "BCM_Rest_Messages::submit", "permission": "__return_true (gated by nonce + captcha + BCM_Frontend_Nav::viewer_can_send role allow-list)", "purpose": "Submit a new contact message (logged-in or anonymous with captcha)" },
+      { "route": "/messages/(?P<id>\\d+)", "methods": ["DELETE"], "handler": "BCM_Rest_Messages::delete_one", "permission": "BCM_Rest_Messages::require_message_owner", "purpose": "Delete a message owned by the requesting user" },
+      { "route": "/preferences/intro-dismiss", "methods": ["POST"], "handler": "BCM_Rest_Messages::dismiss_intro", "permission": "BCM_Rest_Messages::require_logged_in", "purpose": "Mark the inbox intro panel as dismissed for the current user (sets bcm_intro_dismissed usermeta)" }
+    ]
+  },
+  "ajax": [],
+  "admin_pages": [
+    { "title": "WB Plugins", "slug": "wbcomplugins", "parent": null, "capability": "manage_options", "source": "includes/admin/class-bcm-admin.php:92", "note": "Shared top-level hub; first Wbcom plugin to load creates it" },
+    { "title": "BuddyPress Contact Me", "slug": "buddypress-contact-me", "parent": "wbcomplugins", "capability": "manage_options", "source": "includes/admin/class-bcm-admin.php:103" }
+  ],
+  "settings": [
+    { "key": "bcm_admin_general_setting", "storage": "wp_options", "type": "array", "register_setting": "includes/admin/class-bcm-admin.php:145", "controls": "Main settings (array): bcm_allow_notification, bcm_allow_email, bcm_allow_admin_copy_email, bcm_allow_sender_copy_email, bcm_allow_contact_tab, bcm_who_contact (role allow-list of senders), bcm_who_contacted (role allow-list of recipients)" },
+    { "key": "edd_wbcom_bp_contact_me_license_key", "storage": "wp_options", "type": "string", "register_setting": "edd-license/edd-plugin-license.php:82", "controls": "EDD license key for plugin updates" },
+    { "key": "edd_wbcom_bp_contact_me_license_status", "storage": "wp_options", "type": "string", "controls": "License status (active|invalid|expired|...) - managed via EDD API" },
+    { "key": "edd_wbcom_bp_contact_me_license_expires", "storage": "wp_options", "type": "string", "controls": "License expiration date - managed via EDD API" },
+    { "key": "buddypress_contact_me_db_version", "storage": "wp_options", "type": "string", "controls": "Plugin database version for upgrade tracking" },
+    { "key": "contact_me_button", "storage": "wp_usermeta", "type": "bool", "controls": "Per-user toggle: accept contact messages on/off" },
+    { "key": "bcm_intro_dismissed", "storage": "wp_usermeta", "type": "bool", "controls": "Per-user flag: inbox intro panel dismissed" }
+  ],
+  "shortcodes": [
+    { "tag": "buddypress-contact-me", "handler": "BCM_Frontend_Shortcode::render", "attrs": ["id", "user"], "purpose": "Render the contact form for a specific member (by user ID or login)", "source": "includes/frontend/class-bcm-frontend-shortcode.php:22" }
+  ],
+  "tables": [
+    {
+      "name": "{prefix}contact_me",
+      "purpose": "Stores contact-form submissions (both logged-in and anonymous)",
+      "create_at": "includes/class-buddypress-contact-me-activator.php:31",
+      "schema_columns": [
+        "id (mediumint, AI, PK)",
+        "sender (int, sender user ID; 0 for anonymous)",
+        "reciever (int, recipient user ID) [sic: column name misspelled in schema]",
+        "subject (varchar 255)",
+        "message (TEXT)",
+        "name (varchar 255, sender name for anonymous submissions)",
+        "email (varchar 255, sender email for anonymous submissions)",
+        "datetime (varchar 255, timestamp)"
+      ]
+    }
+  ],
+  "hooks_fired": [
+    { "name": "bp_contact_me_form_save", "type": "action", "args_count": 3, "where": "includes/frontend/class-bcm-frontend-submit.php:150", "args_signature": ["int $message_id", "int $recipient_id", "int $sender_id"], "consumed_by": [{ "plugin": "self", "callback": "BCM_Frontend_Notifications::queue_notification / send_email" }] },
+    { "name": "bcm_admin_tabs", "type": "filter", "args_count": 1, "where": "includes/admin/class-bcm-admin.php:62", "consumed_by": [] },
+    { "name": "bcm_spam_check", "type": "filter", "args_count": 3, "where": "includes/frontend/class-bcm-frontend-submit.php:221,227,230", "consumed_by": [], "purpose": "Custom spam validation extensibility hook" },
+    { "name": "bcm_license_api_sslverify", "type": "filter", "args_count": 1, "where": "edd-license/edd-plugin-license.php:124", "consumed_by": [] },
+    { "name": "bp_core_template_plugin", "type": "filter", "args_count": 1, "where": "includes/frontend/class-bcm-frontend-nav.php:141,149,157", "consumed_by": [], "note": "BuddyPress core hook; fired 3 times (inbox, preferences, send screens)" },
+    { "name": "edd_bmpro_sl_api_request_verify_ssl", "type": "filter", "args_count": 2, "where": "edd-license/class-edd-bp-contact-me-plugin-updater.php:485", "consumed_by": [] }
+  ],
+  "capabilities": [
+    { "cap": "manage_options", "default_roles": ["administrator"], "registered_at": "WordPress core", "enforced_at": ["includes/admin/class-bcm-admin.php:84", "edd-license/edd-plugin-license.php (license forms)"], "meta": false, "requires_context": "none" }
+  ],
+  "cron": [],
+  "wp_cli": [],
+  "post_types": [],
+  "taxonomies": [],
+  "blocks": [],
+  "frontend_assets": {
+    "admin_js": ["assets/js/admin.js"],
+    "admin_css": ["assets/css/admin.css"],
+    "public_js": ["public/js/buddypress-contact-me-public.js", "public/js/min/buddypress-contact-me-public.min.js", "public/js/toast.js", "public/js/confirm.js"],
+    "public_css": ["public/css/buddypress-contact-me-public.css", "public/css/min/buddypress-contact-me-public.min.css", "public/css/rtl/buddypress-contact-me-public.rtl.css"]
+  },
+  "buddypress_integration": {
+    "enabled_when": "class_exists('BuddyPress')",
+    "buddyboss_compat": "Detects BBoss via isset(buddypress()->buddyboss); switches user-slug retrieval between bp_members_get_user_slug and bp_core_get_username accordingly",
+    "bp_nav": {
+      "main": { "slug": "contact", "legacy_slug": "contact-me", "position": 80 },
+      "sub": [
+        { "slug": "inbox", "visible_on": "own profile", "screen": "BCM_Frontend_Nav::screen_inbox" },
+        { "slug": "preferences", "visible_on": "own profile", "screen": "BCM_Frontend_Nav::screen_preferences" },
+        { "slug": "send", "visible_on": "other profiles", "screen": "BCM_Frontend_Nav::screen_send" }
+      ]
+    },
+    "notifications_component": "bcm_user_notifications (custom BP notifications component)",
+    "bp_email": "Uses BP email system; BCM_Email_Installer creates the BP email post on activation"
+  },
+  "security": {
+    "nonce_actions": ["bcm_form_nonce (frontend contact form)", "edd_wbcom_contact_me_nonce (license activate/deactivate)"],
+    "rest_nonce": "wp_rest",
+    "anonymous_submission_gate": "Logged-out submissions require captcha; logged-in submissions gated by BCM_Frontend_Nav::viewer_can_send() role allow-list (bcm_who_contact setting)"
+  },
+  "static_analysis": {
+    "dead_listeners": [],
+    "wppqa_baseline": "audit/wppqa-baseline-2026-05-11/SUMMARY.md",
+    "wppqa_findings_2026_05_11": "5 high-severity nonce-no-cap (2x EDD license activate/deactivate, 2x frontend submit handler — public path, intentional; the role gate is BCM_Frontend_Nav::viewer_can_send not current_user_can, 1x preferences tab — own-profile only). 1 low tap-target warning (admin.css:556). wiring-completeness skipped (no templates/ dir). rest-js-contract clean."
+  },
+  "category_sources": {
+    "rest": ["includes/rest/class-bcm-rest-messages.php"],
+    "shortcodes": ["includes/frontend/class-bcm-frontend-shortcode.php"],
+    "admin_pages": ["includes/admin/class-bcm-admin.php"],
+    "settings": ["includes/admin/class-bcm-admin.php", "edd-license/edd-plugin-license.php"],
+    "tables": ["includes/class-buddypress-contact-me-activator.php"],
+    "hooks_fired": ["includes/frontend/**/*.php", "includes/admin/**/*.php", "edd-license/**/*.php"],
+    "bp_nav": ["includes/frontend/class-bcm-frontend-nav.php"],
+    "notifications": ["includes/frontend/class-bcm-frontend-notifications.php"]
+  },
+  "generated": {
+    "at": "2026-05-11T08:30:00Z",
+    "from": "wp-plugin-onboard skill",
+    "branch": "master",
+    "head_commit": "887783c",
+    "schema_version": "v2.1",
+    "scan_scope": "fallback_defaults",
+    "php_file_count": 33
+  }
+}

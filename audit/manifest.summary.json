@@ -1,0 +1,54 @@
+{
+  "plugin": "buddypress-contact-me",
+  "version": "1.5.0",
+  "generated_at": "2026-05-11T08:30:00Z",
+  "head_commit": "887783c",
+  "schema_version": "v2.1",
+  "counts": {
+    "rest_endpoints": 3,
+    "ajax_handlers": 0,
+    "admin_pages": 2,
+    "shortcodes": 1,
+    "tables_owned": 1,
+    "hooks_fired": 6,
+    "settings_keys": 7,
+    "cron_events": 0,
+    "wp_cli_commands": 0,
+    "post_types": 0,
+    "blocks": 0,
+    "custom_capabilities": 0,
+    "php_files_in_scope": 33
+  },
+  "key_files": {
+    "main": "buddypress-contact-me.php",
+    "orchestrator": "includes/class-buddypress-contact-me.php",
+    "loader": "includes/class-buddypress-contact-me-loader.php",
+    "activator": "includes/class-buddypress-contact-me-activator.php",
+    "admin": "includes/admin/class-bcm-admin.php",
+    "frontend_submit": "includes/frontend/class-bcm-frontend-submit.php",
+    "frontend_nav": "includes/frontend/class-bcm-frontend-nav.php",
+    "frontend_shortcode": "includes/frontend/class-bcm-frontend-shortcode.php",
+    "rest_controller": "includes/rest/class-bcm-rest-messages.php",
+    "notifications": "includes/frontend/class-bcm-frontend-notifications.php",
+    "edd_license": "edd-license/edd-plugin-license.php"
+  },
+  "rest_namespace": "bcm/v1",
+  "main_option_keys": ["bcm_admin_general_setting", "edd_wbcom_bp_contact_me_license_key"],
+  "tables": ["{prefix}contact_me"],
+  "buddyboss_compat": true,
+  "buddypress_compat": true,
+  "extends": null,
+  "wppqa_status": {
+    "passed": 9,
+    "high_severity_errors": 5,
+    "low_warnings": 1,
+    "summary": "5 nonce-no-cap findings: 2 EDD license (same as auto-friends — fix applies), 2 frontend submit (PUBLIC path, role gate via BCM_Frontend_Nav::viewer_can_send), 1 preferences tab (own profile only)"
+  },
+  "detail_files": {
+    "full_manifest": "audit/manifest.json",
+    "feature_audit": "audit/FEATURE_AUDIT.md",
+    "code_flows": "audit/CODE_FLOWS.md",
+    "role_matrix": "audit/ROLE_MATRIX.md",
+    "wppqa_baseline": "audit/wppqa-baseline-2026-05-11/SUMMARY.md"
+  }
+}
