@@ -7,7 +7,7 @@
 | Field | Value |
 |-------|-------|
 | Slug | `buddypress-contact-me` |
-| Version | 1.5.0 |
+| Version | 1.5.1 |
 | Text Domain | `buddypress-contact-me` |
 | Prefix | `bcm_` / `BCM_` |
 | Option Key | `bcm_admin_general_setting` |
@@ -81,3 +81,4 @@ public/partials/                            # frontend templates
 | Date | Description |
 |---|---|
 | 2026-05-11 | Onboarded — manifest + audit reports + wppqa baseline at `audit/`, READ-FIRST pointer added |
+| 2026-05-11 | 1.5.1 — EDD license cap checks added; public REST layer refactored into `bcmApi()` wrapper with 15s timeout + shared `confirmDeleteMessage()` helper. wppqa 5 high → 3 high (all 3 remaining audited safe-by-design with inline comments). |

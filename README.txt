@@ -5,7 +5,7 @@ Tags: buddypress, contact, profile, messaging, community
 Requires at least: 6.0
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 1.5.0
+Stable tag: 1.5.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -31,6 +31,12 @@ Highlights:
 3. Go to WB Plugins → Contact Me and configure notifications, email template, and access rules.
 
 == Changelog ==
+
+= 1.5.1 =
+* Security: License activation and deactivation handlers (EDD updater) now require the `manage_options` capability in addition to the existing nonce check. Nonce alone is CSRF protection, not authorization; gating to admins prevents lower-privileged logged-in users with the nonce from writing license options.
+* Improvement: Public REST layer refactored — every `wp.apiFetch` call now goes through a centralised `bcmApi()` wrapper that attaches a 15-second AbortSignal ceiling. Previously, a hung REST server could leave the contact form's submit button or inbox delete button in a permanent loading state with no recovery. The wrapper ensures the `.catch` handler always fires within the timeout window so the UI re-enables.
+* Improvement: Consolidated the duplicated confirm-and-delete flow (previously copy-pasted between the single-message page and the inbox row) into a single `confirmDeleteMessage()` helper. Behaviour identical for site owners; future regressions in delete UX are now impossible by construction.
+* Internal: Onboarded the plugin into the Wbcom audit/manifest pattern — `audit/manifest.json`, `audit/FEATURE_AUDIT.md`, `audit/CODE_FLOWS.md`, `audit/ROLE_MATRIX.md`, and `audit/graph.html` now ship in the repo so future contributors can answer "what does this plugin do?" without grepping. `CLAUDE.md` carries a READ-FIRST pointer at the top.
 
 = 1.5.0 =
 * New: Brand-new admin UI — every screen was rewritten as a clean card-panel layout with a sidebar, proper page header, and plain-English labels. No more legacy wrapper chrome.

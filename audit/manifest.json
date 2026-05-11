@@ -3,7 +3,7 @@
   "plugin": {
     "slug": "buddypress-contact-me",
     "name": "Wbcom Designs - BuddyPress Contact Me",
-    "version": "1.5.0",
+    "version": "1.5.1",
     "namespace": null,
     "main_file": "buddypress-contact-me.php",
     "text_domain": "buddypress-contact-me",
