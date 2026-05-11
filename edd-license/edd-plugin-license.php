@@ -167,6 +167,11 @@ function edd_BCM_handle_activate() {
 	if ( ! isset( $_POST['edd_bp_contact_me_license_activate'] ) ) {
 		return;
 	}
+	// License activation writes options + calls the EDD API on this site's behalf;
+	// gate to admins. Nonce alone is CSRF protection, not authorization.
+	if ( ! current_user_can( 'manage_options' ) ) {
+		return;
+	}
 	if ( ! check_admin_referer( EDD_BCM_LICENSE_NONCE_ACTION, EDD_BCM_LICENSE_NONCE_NAME ) ) {
 		return;
 	}
@@ -266,6 +271,11 @@ function edd_BCM_format_activation_error( $code, $result ) {
 
 function edd_BCM_handle_deactivate() {
 	if ( ! isset( $_POST['edd_BCM_license_deactivate'] ) ) {
+		return;
+	}
+	// License deactivation calls the remote EDD API and deletes license options;
+	// gate to admins. Nonce alone is CSRF protection, not authorization.
+	if ( ! current_user_can( 'manage_options' ) ) {
 		return;
 	}
 	if ( ! check_admin_referer( EDD_BCM_LICENSE_NONCE_ACTION, EDD_BCM_LICENSE_NONCE_NAME ) ) {

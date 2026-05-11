@@ -36,6 +36,10 @@ class BCM_Frontend_Submit {
 		if ( ! isset( $_POST['bcm_nonce'], $_POST['bp_contact_me_form_save'] ) ) {
 			return;
 		}
+		// PUBLIC path - logged-out users submit with captcha. The capability
+		// gate is BCM_Frontend_Nav::viewer_can_send() (role allow-list) inside
+		// process_submission() below, NOT current_user_can. Adding a WP cap
+		// check here would block anonymous submissions. wppqa-audited 2026-05-11.
 		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['bcm_nonce'] ) ), self::NONCE_ACTION ) ) {
 			return;
 		}
@@ -269,6 +273,10 @@ class BCM_Frontend_Submit {
 		if ( ! bp_is_post_request() || ! isset( $_POST['submit'] ) ) {
 			return;
 		}
+		// Own-profile gate: only runs on the BP "settings/general" tab of the
+		// logged-in user. Update target below is bp_loggedin_user_id(), not
+		// $_POST['user_id'], so a current_user_can check would be redundant.
+		// wppqa-audited 2026-05-11.
 		if ( ! function_exists( 'bp_is_settings_component' ) || ! bp_is_settings_component() || ! bp_is_current_action( 'general' ) ) {
 			return;
 		}

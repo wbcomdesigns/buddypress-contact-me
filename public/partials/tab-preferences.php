@@ -13,6 +13,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 $bcm_user_id = get_current_user_id();
+// Own-profile gate: a member can only land on /members/{me}/contact/preferences/.
+// The handler below writes update_user_meta against $bcm_user_id (gated to
+// current user above), not $_POST['user_id']. A current_user_can check would
+// be redundant - the gate is "you are viewing your own profile". wppqa-audited
+// 2026-05-11.
 if ( ! $bcm_user_id || bp_displayed_user_id() !== $bcm_user_id ) {
 	return;
 }
