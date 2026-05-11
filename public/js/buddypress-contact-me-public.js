@@ -15,6 +15,82 @@
 
 	var toast = function ( m, t ) { if ( window.bcmToast ) { window.bcmToast( m, t ); } };
 
+	/* ============================================================
+	 * REST helpers — every apiFetch call goes through bcmApi()
+	 *
+	 * Two problems this layer solves:
+	 *
+	 *   1. wp.apiFetch sits on top of fetch(), which has no default
+	 *      network timeout. A hung server leaves the UI in a permanent
+	 *      loading state because the .catch handler never fires. We
+	 *      attach an AbortSignal with a ceiling so .catch always runs
+	 *      and setSubmitting(false) / button re-enable always happens.
+	 *
+	 *   2. apiFetch may be unavailable (wp-api-fetch not enqueued, or
+	 *      the IIFE ran before wp loaded). bcmApi() returns a rejected
+	 *      Promise in that case so callers don't need to null-check
+	 *      apiFetch before every call.
+	 *
+	 * Both problems were universal across Wbcom plugins; centralising
+	 * here means future apiFetch sites in this plugin can't regress.
+	 * ============================================================ */
+
+	var DEFAULT_TIMEOUT_MS = 15000;
+
+	function bcmTimeoutSignal( ms ) {
+		if ( typeof AbortSignal !== 'undefined' && AbortSignal.timeout ) {
+			return AbortSignal.timeout( ms );
+		}
+		if ( typeof AbortController === 'undefined' ) {
+			return undefined;
+		}
+		var controller = new AbortController();
+		window.setTimeout( function () { controller.abort(); }, ms );
+		return controller.signal;
+	}
+
+	/**
+	 * Make a REST call against the plugin's bcm/v1 namespace.
+	 *
+	 * @param {Object} opts
+	 * @param {string} opts.url       Full REST URL (built from cfg.restUrl).
+	 * @param {string} opts.method    HTTP method.
+	 * @param {Object} [opts.data]    Body payload (POST/PUT only).
+	 * @param {number} [opts.timeout] Override the 15s default ceiling (ms).
+	 * @return {Promise} apiFetch promise, or a rejected promise if apiFetch
+	 *                   is unavailable. Always resolves/rejects within the
+	 *                   timeout window.
+	 */
+	function bcmApi( opts ) {
+		if ( ! apiFetch ) {
+			return Promise.reject( new Error( 'apiFetch unavailable' ) );
+		}
+		var request = {
+			url:    opts.url,
+			method: opts.method || 'GET',
+			signal: bcmTimeoutSignal( opts.timeout || DEFAULT_TIMEOUT_MS ),
+		};
+		if ( opts.data ) {
+			request.data = opts.data;
+		}
+		return apiFetch( request );
+	}
+
+	/**
+	 * Build a route URL on the plugin's REST namespace.
+	 *
+	 * cfg.restUrl is localized as rest_url('bcm/v1/messages'). Other
+	 * routes are derived from it so we only need one localized base.
+	 *
+	 * @param {string} suffix  Path relative to /bcm/v1, leading slash.
+	 * @return {string} Full URL.
+	 */
+	function bcmRoute( suffix ) {
+		// cfg.restUrl ends in /messages; strip and re-append the suffix.
+		var base = ( cfg.restUrl || '' ).replace( /\/messages\/?$/, '' );
+		return base + suffix;
+	}
+
 	document.addEventListener( 'DOMContentLoaded', function () {
 		initContactForm();
 		initInbox();
@@ -44,22 +120,9 @@
 		btn.addEventListener( 'click', function () {
 			var id   = btn.getAttribute( 'data-bcm-delete-page' );
 			var back = btn.getAttribute( 'data-bcm-back' );
-			( window.bcmConfirm ? window.bcmConfirm( {
-				title:     cfg.i18n.deleteLabel,
-				message:   cfg.i18n.confirmDelete,
-				confirm:   cfg.i18n.deleteLabel,
-				cancel:    cfg.i18n.cancel,
-				dangerous: true,
-			} ) : Promise.resolve( true ) ).then( function ( ok ) {
-				if ( ! ok ) { return; }
-				apiFetch( { url: cfg.restUrl + '/' + encodeURIComponent( id ), method: 'DELETE' } )
-					.then( function () {
-						toast( cfg.i18n.sent, 'success' );
-						window.setTimeout( function () { window.location.href = back; }, 600 );
-					} )
-					.catch( function () {
-						toast( cfg.i18n.deleteError, 'error' );
-					} );
+			confirmDeleteMessage( id, function () {
+				toast( cfg.i18n.sent, 'success' );
+				window.setTimeout( function () { window.location.href = back; }, 600 );
 			} );
 		} );
 	}
@@ -73,9 +136,10 @@
 				panel.style.opacity = '0';
 				window.setTimeout( function () { panel.remove(); }, 200 );
 			}
-			apiFetch( {
-				url:    cfg.restUrl.replace( '/messages', '/preferences/intro-dismiss' ),
-				method: 'POST',
+			bcmApi( {
+				url:     bcmRoute( '/preferences/intro-dismiss' ),
+				method:  'POST',
+				timeout: 5000, // Best-effort; the panel is already removed from DOM. Shorter ceiling than the 15s default.
 			} ).catch( function () { /* silent — dismissal is best-effort */ } );
 		} );
 	}
@@ -128,7 +192,7 @@
 
 			setSubmitting( submitBtn, true );
 
-			apiFetch( {
+			bcmApi( {
 				url:    cfg.restUrl,
 				method: 'POST',
 				data:   data,
@@ -140,10 +204,15 @@
 				}
 				toast( ( response && response.message ) || cfg.i18n.sent, 'success' );
 			} ).catch( function ( err ) {
+				// AbortError from bcmApi's timeout signal also lands here, so
+				// re-enabling the submit button on .catch ensures the UI
+				// recovers from a hung server (the original hang-risk bug).
 				setSubmitting( submitBtn, false );
 				if ( err && err.errors && err.errors.length ) {
 					err.errors.forEach( function ( e ) { toast( e.message, 'error' ); } );
 				} else {
+					// Reuses deleteError as the generic "something went wrong" copy;
+					// kept for backward i18n compatibility (no new translation strings).
 					toast( ( err && err.message ) || cfg.i18n.deleteError, 'error' );
 				}
 			} );
@@ -216,24 +285,50 @@
 	}
 
 	function confirmAndDelete( id, inbox ) {
-		( window.bcmConfirm ? window.bcmConfirm( {
-			title:     cfg.i18n.deleteLabel,
-			message:   cfg.i18n.confirmDelete,
-			confirm:   cfg.i18n.deleteLabel,
-			cancel:    cfg.i18n.cancel,
-			dangerous: true,
-		} ) : Promise.resolve( true ) )
-			.then( function ( ok ) {
-				if ( ! ok ) { return; }
-				apiFetch( { url: cfg.restUrl + '/' + encodeURIComponent( id ), method: 'DELETE' } )
-					.then( function ( r ) {
-						removeRow( inbox, id );
-						toast( ( r && r.message ) || cfg.i18n.sent, 'success' );
-					} )
-					.catch( function () {
-						toast( cfg.i18n.deleteError, 'error' );
-					} );
-			} );
+		confirmDeleteMessage( id, function ( response ) {
+			removeRow( inbox, id );
+			toast( ( response && response.message ) || cfg.i18n.sent, 'success' );
+		} );
+	}
+
+	/**
+	 * Confirm + DELETE a contact message.
+	 *
+	 * Single source of truth for the delete flow shared by the single-message
+	 * page (initMessagePage) and the inbox row delete (confirmAndDelete). The
+	 * confirm modal, REST call, success/error toasts and timeout handling all
+	 * live here; callers only supply the success-side UI update.
+	 *
+	 * @param {string|number} id        Message ID.
+	 * @param {Function}      onDeleted Called on successful DELETE with the
+	 *                                  REST response object.
+	 */
+	function confirmDeleteMessage( id, onDeleted ) {
+		var confirmPromise = window.bcmConfirm
+			? window.bcmConfirm( {
+				title:     cfg.i18n.deleteLabel,
+				message:   cfg.i18n.confirmDelete,
+				confirm:   cfg.i18n.deleteLabel,
+				cancel:    cfg.i18n.cancel,
+				dangerous: true,
+			} )
+			: Promise.resolve( true );
+
+		confirmPromise.then( function ( ok ) {
+			if ( ! ok ) { return; }
+			bcmApi( {
+				url:    cfg.restUrl + '/' + encodeURIComponent( id ),
+				method: 'DELETE',
+			} )
+				.then( function ( response ) {
+					if ( typeof onDeleted === 'function' ) {
+						onDeleted( response );
+					}
+				} )
+				.catch( function () {
+					toast( cfg.i18n.deleteError, 'error' );
+				} );
+		} );
 	}
 
 	function removeRow( inbox, id ) {
