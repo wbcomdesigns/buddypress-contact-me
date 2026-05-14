@@ -122,8 +122,8 @@ $status = isset( $status_map[ $snapshot['license'] ] )
 								esc_html_e( 'Deactivate first to change the key.', 'buddypress-contact-me' );
 							} else {
 								printf(
-									/* translators: %s: link to Wbcom account. */
 									wp_kses(
+										/* translators: %s: URL to the Wbcom Designs profile page where the customer can copy their license key. */
 										__( 'Find your key in your <a href="%s" target="_blank" rel="noopener noreferrer">Wbcom Designs account</a>.', 'buddypress-contact-me' ),
 										array( 'a' => array( 'href' => array(), 'target' => array(), 'rel' => array() ) )
 									),
