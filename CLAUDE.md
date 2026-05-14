@@ -7,7 +7,7 @@
 | Field | Value |
 |-------|-------|
 | Slug | `buddypress-contact-me` |
-| Version | 1.5.1 |
+| Version | 1.5.2 |
 | Text Domain | `buddypress-contact-me` |
 | Prefix | `bcm_` / `BCM_` |
 | Option Key | `bcm_admin_general_setting` |
@@ -82,3 +82,4 @@ public/partials/                            # frontend templates
 |---|---|
 | 2026-05-11 | Onboarded — manifest + audit reports + wppqa baseline at `audit/`, READ-FIRST pointer added |
 | 2026-05-11 | 1.5.1 — EDD license cap checks added; public REST layer refactored into `bcmApi()` wrapper with 15s timeout + shared `confirmDeleteMessage()` helper. wppqa 5 high → 3 high (all 3 remaining audited safe-by-design with inline comments). |
+| 2026-05-14 | 1.5.2 — Frontend palette neutralised so the plugin no longer paints WP-admin blue over the active theme (basecamp 9890995245). New `--bcm-color-on-primary` token keeps text auto-inverted between light and dark mode without per-rule overrides. |

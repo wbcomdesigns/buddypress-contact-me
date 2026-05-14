@@ -5,7 +5,7 @@ Tags: buddypress, contact, profile, messaging, community
 Requires at least: 6.0
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 1.5.1
+Stable tag: 1.5.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -31,6 +31,11 @@ Highlights:
 3. Go to WB Plugins → Contact Me and configure notifications, email template, and access rules.
 
 == Changelog ==
+
+= 1.5.2 =
+* Fix: The frontend Contact tab no longer paints WordPress-admin blue (#2271b1) over the active theme. The default palette is now neutral (dark grey on light, light grey on dark), so themes like BuddyX, BuddyX Pro, BuddyBoss, and Reign keep their accent color in info banners, link hovers, focus rings, unread-message tints, and the inbox count pill. A theme-overlay layer that maps these tokens onto theme variables will follow in a future release. (basecamp 9890995245)
+* Fix: The inbox notification count badge ("All [N]", "Unread [N]") no longer hardcodes blue. The badge now renders in the same neutral primary as the rest of the plugin, so it sits naturally inside whatever theme is active instead of fighting the theme's notification color. (basecamp 9890995245)
+* Internal: Introduced `--bcm-color-on-primary` so every primary-background surface (submit button, badge pills, pagination, confirm dialog, message-view primary action) auto-inverts text color in dark mode without per-rule overrides.
 
 = 1.5.1 =
 * Security: License activation and deactivation handlers (EDD updater) now require the `manage_options` capability in addition to the existing nonce check. Nonce alone is CSRF protection, not authorization; gating to admins prevents lower-privileged logged-in users with the nonce from writing license options.
