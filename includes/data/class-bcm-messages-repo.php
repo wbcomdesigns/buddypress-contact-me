@@ -197,9 +197,23 @@ class BCM_Messages_Repo {
 	}
 
 	/**
+	 * Hard cap on how many unread message IDs we'll pull into PHP. Sites
+	 * with members carrying tens of thousands of stale BP notifications
+	 * would otherwise build a ten-thousand-element IN (...) clause that
+	 * trips MySQL's max_allowed_packet and balloons memory. The "Unread"
+	 * filter keeps working — it just shows the most recent N entries.
+	 *
+	 * @since 1.5.0
+	 */
+	const UNREAD_ID_HARD_CAP = 1000;
+
+	/**
 	 * IDs of messages that still have an unread BP notification for the
 	 * given recipient. Returns empty array if notifications component is
 	 * unavailable.
+	 *
+	 * @since 1.5.0  Hard-capped at UNREAD_ID_HARD_CAP rows ordered newest-first
+	 *               so the IN (...) clause downstream never explodes.
 	 *
 	 * @param int $recipient_id Recipient user ID.
 	 * @return int[]
@@ -219,6 +233,48 @@ class BCM_Messages_Repo {
 				 WHERE user_id = %d
 				   AND component_name = %s
 				   AND component_action = %s
+				   AND is_new = 1
+				 ORDER BY id DESC
+				 LIMIT %d",
+				(int) $recipient_id,
+				'bcm_user_notifications',
+				'bcm_user_notifications_action',
+				self::UNREAD_ID_HARD_CAP
+			)
+		);
+		// phpcs:enable
+
+		return array_map( 'intval', (array) $ids );
+	}
+
+	/**
+	 * Total unread BP notifications for the given recipient.
+	 *
+	 * Always counts via SELECT COUNT(*) so the displayed "Unread (N)"
+	 * number is accurate even when the unread-IDs lookup is capped at
+	 * UNREAD_ID_HARD_CAP. Returns 0 if the notifications component is
+	 * unavailable.
+	 *
+	 * @since 1.5.0
+	 *
+	 * @param int $recipient_id Recipient user ID.
+	 * @return int
+	 */
+	public static function count_unread_for_recipient( $recipient_id ) {
+		if ( ! function_exists( 'bp_is_active' ) || ! bp_is_active( 'notifications' ) ) {
+			return 0;
+		}
+		global $wpdb;
+
+		$table = buddypress()->notifications->table_name;
+
+		// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery
+		return (int) $wpdb->get_var(
+			$wpdb->prepare(
+				"SELECT COUNT(*) FROM {$table}
+				 WHERE user_id = %d
+				   AND component_name = %s
+				   AND component_action = %s
 				   AND is_new = 1",
 				(int) $recipient_id,
 				'bcm_user_notifications',
@@ -226,7 +282,5 @@ class BCM_Messages_Repo {
 			)
 		);
 		// phpcs:enable
-
-		return array_map( 'intval', (array) $ids );
 	}
 }

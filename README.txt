@@ -5,7 +5,7 @@ Tags: buddypress, contact, profile, messaging, community
 Requires at least: 6.0
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 1.5.2
+Stable tag: 1.5.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -32,18 +32,18 @@ Highlights:
 
 == Changelog ==
 
-= 1.5.2 =
+= 1.5.0 =
+* Performance: The inbox list view (`/members/{user}/contact/`) is now ready for accounts with thousands of received messages. Added a composite index `(reciever, datetime, id)` plus a single-column `(reciever)` index to the `contact_me` table via a `dbDelta` migration that runs once on upgrade — existing installs pick this up automatically on the next page load with no manual intervention. EXPLAIN before the fix showed `type: ALL` + `Using filesort` (full table scan + in-memory sort on every page load); after, the same query plans as `type: ref` with no filesort. The total-count query (`COUNT(*) WHERE reciever = %d`) is now also index-covered.
+* Performance: A user's unread-messages count on the inbox header now uses a dedicated `SELECT COUNT(*)` against `wp_bp_notifications` instead of loading every unread ID into PHP and counting the array. Sites with members carrying thousands of stale notifications no longer pay a multi-megabyte memory hit per inbox render.
+* Performance: The "Unread" filter no longer builds an unbounded `WHERE id IN (...)` clause. The notification-IDs lookup is now capped at 1,000 rows; users with more than 1,000 unread messages see the most recent 1,000 with a hint to clear notifications. Prevents `max_allowed_packet` errors on extreme accounts.
+* Performance: Inbox row rendering now batch-prefetches all sender users via `cache_users()` before the loop, eliminating the per-row `bp_core_get_user_displayname()` / `bp_members_get_user_url()` cache misses that previously fired N+1 queries on a cold cache.
 * Fix: The frontend Contact tab no longer paints WordPress-admin blue (#2271b1) over the active theme. The default palette is now neutral (dark grey on light, light grey on dark), so themes like BuddyX, BuddyX Pro, BuddyBoss, and Reign keep their accent color in info banners, link hovers, focus rings, unread-message tints, and the inbox count pill. A theme-overlay layer that maps these tokens onto theme variables will follow in a future release. (basecamp 9890995245)
 * Fix: The inbox notification count badge ("All [N]", "Unread [N]") no longer hardcodes blue. The badge now renders in the same neutral primary as the rest of the plugin, so it sits naturally inside whatever theme is active instead of fighting the theme's notification color. (basecamp 9890995245)
-* Internal: Introduced `--bcm-color-on-primary` so every primary-background surface (submit button, badge pills, pagination, confirm dialog, message-view primary action) auto-inverts text color in dark mode without per-rule overrides.
-
-= 1.5.1 =
 * Security: License activation and deactivation handlers (EDD updater) now require the `manage_options` capability in addition to the existing nonce check. Nonce alone is CSRF protection, not authorization; gating to admins prevents lower-privileged logged-in users with the nonce from writing license options.
 * Improvement: Public REST layer refactored — every `wp.apiFetch` call now goes through a centralised `bcmApi()` wrapper that attaches a 15-second AbortSignal ceiling. Previously, a hung REST server could leave the contact form's submit button or inbox delete button in a permanent loading state with no recovery. The wrapper ensures the `.catch` handler always fires within the timeout window so the UI re-enables.
 * Improvement: Consolidated the duplicated confirm-and-delete flow (previously copy-pasted between the single-message page and the inbox row) into a single `confirmDeleteMessage()` helper. Behaviour identical for site owners; future regressions in delete UX are now impossible by construction.
+* Internal: Introduced `--bcm-color-on-primary` so every primary-background surface (submit button, badge pills, pagination, confirm dialog, message-view primary action) auto-inverts text color in dark mode without per-rule overrides.
 * Internal: Onboarded the plugin into the Wbcom audit/manifest pattern — `audit/manifest.json`, `audit/FEATURE_AUDIT.md`, `audit/CODE_FLOWS.md`, `audit/ROLE_MATRIX.md`, and `audit/graph.html` now ship in the repo so future contributors can answer "what does this plugin do?" without grepping. `CLAUDE.md` carries a READ-FIRST pointer at the top.
-
-= 1.5.0 =
 * New: Brand-new admin UI — every screen was rewritten as a clean card-panel layout with a sidebar, proper page header, and plain-English labels. No more legacy wrapper chrome.
 * New: "WB Plugins" hub — all Wbcom plugins now share a single top-level menu with a card-grid dashboard, so the admin sidebar stays tidy even when a site runs the full community bundle. Legacy (un-migrated) Wbcom plugins coexist cleanly with the new hub.
 * New: Overview dashboard with live counts of total messages, unique senders, unique recipients, and members with the Contact Me button on, plus a snapshot of the current configuration at a glance.

@@ -14,8 +14,14 @@ $bcm_per_page = 10;
 $bcm_page     = isset( $_GET['cpage'] ) ? max( 1, (int) $_GET['cpage'] ) : 1; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 $bcm_filter   = isset( $_GET['filter'] ) && 'unread' === $_GET['filter'] ? 'unread' : 'all'; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 $bcm_total    = BCM_Messages_Repo::count_for_recipient( $bcm_user_id );
-$bcm_unread   = BCM_Messages_Repo::unread_message_ids( $bcm_user_id );
-$bcm_unread_n = count( $bcm_unread );
+// Count via dedicated COUNT(*) — `unread_message_ids()` is capped at
+// UNREAD_ID_HARD_CAP, so its return-array size is no longer a reliable
+// "total unread" for users with thousands of stale notifications.
+$bcm_unread_n = BCM_Messages_Repo::count_unread_for_recipient( $bcm_user_id );
+
+// Only load the unread-ID list when the Unread filter is actually active —
+// the All view never reads it, so save a query on every page load.
+$bcm_unread = ( 'unread' === $bcm_filter ) ? BCM_Messages_Repo::unread_message_ids( $bcm_user_id ) : array();
 
 if ( 'unread' === $bcm_filter ) {
 	$bcm_messages = BCM_Messages_Repo::list_for_recipient_in_ids( $bcm_user_id, $bcm_unread, $bcm_per_page, $bcm_page );
@@ -25,6 +31,23 @@ if ( 'unread' === $bcm_filter ) {
 	$bcm_shown    = $bcm_total;
 }
 $bcm_pages           = $bcm_per_page ? (int) ceil( max( 1, $bcm_shown ) / $bcm_per_page ) : 1;
+
+// Batch-prefetch every sender on this page so the foreach below doesn't
+// fire N+1 user lookups against a cold cache. cache_users() primes the
+// userdata + usermeta caches in a single query each, so subsequent
+// bp_core_get_user_displayname() / bp_members_get_user_url() calls are
+// served from object cache instead of hitting the DB per row.
+if ( ! empty( $bcm_messages ) ) {
+	$bcm_sender_ids = array_values( array_unique( array_filter( array_map(
+		static function ( $m ) {
+			return (int) $m->sender;
+		},
+		$bcm_messages
+	) ) ) );
+	if ( ! empty( $bcm_sender_ids ) && function_exists( 'cache_users' ) ) {
+		cache_users( $bcm_sender_ids );
+	}
+}
 $bcm_profile_url     = function_exists( 'bp_members_get_user_url' )
 	? bp_members_get_user_url( $bcm_user_id )
 	: bp_core_get_user_domain( $bcm_user_id );

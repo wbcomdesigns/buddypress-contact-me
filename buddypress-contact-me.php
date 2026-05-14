@@ -15,7 +15,7 @@
  * Plugin Name:       Wbcom Designs - BuddyPress Contact Me
  * Plugin URI:        https://wbcomdesigns.com/downloads/buddypress-contact-me/
  * Description:       BuddyPress Contact Me displays a contact form on members' profiles, allowing both logged-in and non-logged-in visitors to connect with community members.
- * Version:           1.5.2
+ * Version:           1.5.0
  * Requires at least: 6.0
  * Requires PHP:      7.4
  * Author:            Wbcom Designs
@@ -32,7 +32,7 @@ if ( ! defined( 'WPINC' ) ) {
 }
 
 // Define constants for the plugin.
-define( 'BUDDYPRESS_CONTACT_ME_VERSION', '1.5.2' );
+define( 'BUDDYPRESS_CONTACT_ME_VERSION', '1.5.0' );
 define( 'BUDDYPRESS_CONTACT_ME_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
 define( 'BUDDYPRESS_CONTACT_ME_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'BUDDYPRESS_CONTACT_ME_FILE', __FILE__ );
@@ -108,6 +108,24 @@ function deactivate_buddypress_contact_me() {
 
 register_activation_hook( __FILE__, 'activate_buddypress_contact_me' );
 register_deactivation_hook( __FILE__, 'deactivate_buddypress_contact_me' );
+
+/**
+ * Schema upgrade gate. Runs once per page load on `plugins_loaded` and is a
+ * no-op unless the stored `bcm_db_version` lags behind the activator's
+ * DB_VERSION constant. dbDelta is idempotent so re-running install_schema()
+ * just confirms the current shape; only sites needing the new (reciever,
+ * datetime, id) composite index pay the ALTER cost (once).
+ */
+add_action(
+	'plugins_loaded',
+	function () {
+		if ( ! class_exists( 'BuddyPress_Contact_Me_Activator' ) ) {
+			include_once plugin_dir_path( __FILE__ ) . 'includes/class-buddypress-contact-me-activator.php';
+		}
+		BuddyPress_Contact_Me_Activator::maybe_upgrade();
+	},
+	5
+);
 
 /**
  * Core plugin class that defines internationalization,
