@@ -5,25 +5,41 @@
  * BuddyBoss, and Twenty* themes.
  */
 
-.wbcom-bp-contact {
+:root {
 	--bcm-radius: 10px;
 	--bcm-radius-sm: 6px;
 	--bcm-gap: 16px;
 	--bcm-gap-sm: 8px;
 	--bcm-gap-lg: 24px;
-	--bcm-color-border: #e1e5ea;
-	--bcm-color-border-strong: #c7ced6;
-	--bcm-color-bg: #ffffff;
-	--bcm-color-bg-soft: #f6f7f9;
-	--bcm-color-text: #1e2327;
-	--bcm-color-text-muted: #5f6b77;
-	--bcm-color-primary: #2271b1;
-	--bcm-color-primary-hover: #135e96;
+
+	/* Semantic colours — adopt the host theme's own tokens first (BuddyX 5.1
+	 * --bx-color-*, then Reign --reign-*), falling back to the plugin's
+	 * literal palette so unstyled / classic themes still look right. */
+	--bcm-color-border: var(--bx-color-border, var(--reign-site-border-color, #e1e5ea ) );
+	--bcm-color-border-strong: var(--bx-color-border, var(--reign-site-border-color, #c7ced6 ) );
+	--bcm-color-bg: var(--bx-color-bg-page, var(--reign-site-body-bg-color, #ffffff ) );
+	--bcm-color-bg-soft: var(--bx-color-bg-subtle, var(--reign-site-secondary-bg-color, #f6f7f9 ) );
+	--bcm-color-surface: var(--bx-color-bg-elevated, var(--reign-site-sections-bg-color, #ffffff ) );
+	--bcm-color-text: var(--bx-color-fg, var(--reign-site-body-text-color, #1e2327 ) );
+	--bcm-color-text-muted: var(--bx-color-fg-muted, var(--reign-site-alternate-text-color, #5f6b77 ) );
+	--bcm-color-link: var(--bx-color-link, var(--reign-site-link-color, #2271b1 ) );
+	--bcm-color-primary: var(--bx-color-accent, var(--reign-colors-theme, #2271b1 ) );
+	--bcm-color-primary-hover: var(--bx-color-link-hover, var(--reign-site-link-hover-color, #135e96 ) );
+
+	/* Semantic status colours keep their own literal value — never chain these
+	 * to the theme accent, or a red-accent theme makes "success" look like an
+	 * error to non-technical users. */
 	--bcm-color-danger: #d63638;
 	--bcm-color-danger-hover: #b32d2e;
 	--bcm-color-success: #00a32a;
 	--bcm-color-warning: #dba617;
-	--bcm-color-focus: #2271b1;
+	--bcm-color-focus: var(--bx-color-accent, var(--reign-colors-theme, #2271b1 ) );
+
+	/* QA-canonical aliases (surface / page / text) used by the dark contract. */
+	--bcm-bg: var( --bcm-color-bg );
+	--bcm-card-bg: var( --bcm-color-surface );
+	--bcm-text: var( --bcm-color-text );
+
 	--bcm-shadow-sm: 0 1px 2px rgba( 16, 24, 40, 0.06 );
 	--bcm-shadow-md: 0 8px 24px rgba( 16, 24, 40, 0.12 );
 	--bcm-shadow-lg: 0 20px 50px rgba( 16, 24, 40, 0.18 );
@@ -1093,14 +1109,28 @@
  * We deliberately do NOT hook into prefers-color-scheme: site owners
  * pick the trigger, not the OS.
  */
-body.bcm-dark .wbcom-bp-contact,
-.wbcom-bp-contact.bcm-dark {
-	--bcm-color-border: #2e3640;
+html.dark-mode,
+body.dark-mode,
+body.dark-scheme,
+html.dark,
+[data-theme="dark"],
+.buddyx-dark-mode,
+.bb-dark-mode,
+body.bcm-dark {
+	/* Explicit dark values — deliberately NOT chained through --bx-* / --reign-*:
+	 * those vars stay light unless the theme itself is in dark mode, so chaining
+	 * here would resolve to the light palette on a generic dark toggle. BuddyX /
+	 * Reign native dark is already handled by the light :root chain flipping the
+	 * theme's own tokens; this block guarantees a correct dark surface for every
+	 * other dark trigger and a consistent baseline. */
+	--bcm-color-border: #3a4253;
 	--bcm-color-border-strong: #3c4654;
-	--bcm-color-bg: #1a1f26;
-	--bcm-color-bg-soft: #232a33;
-	--bcm-color-text: #e6eaf0;
-	--bcm-color-text-muted: #98a2b0;
+	--bcm-color-bg: #16191f;
+	--bcm-color-bg-soft: #262c3a;
+	--bcm-color-surface: #1f2430;
+	--bcm-color-text: #e4e4e7;
+	--bcm-color-text-muted: #b4b4b8;
+	--bcm-color-link: #72b7ea;
 	--bcm-color-primary: #4fa3e3;
 	--bcm-color-primary-hover: #72b7ea;
 	--bcm-color-danger: #f26c6e;
@@ -1108,6 +1138,13 @@ body.bcm-dark .wbcom-bp-contact,
 	--bcm-color-success: #34c759;
 	--bcm-color-warning: #f0b429;
 	--bcm-color-focus: #4fa3e3;
+
+	/* QA-canonical aliases get explicit dark values so the contract sees a real
+	 * flip (not an indirection that would still resolve light). */
+	--bcm-bg: #16191f;
+	--bcm-card-bg: #1f2430;
+	--bcm-text: #e4e4e7;
+
 	--bcm-shadow-sm: 0 1px 2px rgba( 0, 0, 0, 0.4 );
 	--bcm-shadow-md: 0 8px 24px rgba( 0, 0, 0, 0.5 );
 	--bcm-shadow-lg: 0 20px 50px rgba( 0, 0, 0, 0.6 );
@@ -1115,7 +1152,27 @@ body.bcm-dark .wbcom-bp-contact,
 
 /* Banner tints need darker panel backgrounds too — the hard-coded
    pastel fills above would wash out against the dark card. */
-body.bcm-dark .wbcom-bp-contact .bcm-alert--success { background: rgba( 52, 199, 89, 0.12 ); }
-body.bcm-dark .wbcom-bp-contact .bcm-alert--error   { background: rgba( 242, 108, 110, 0.12 ); }
-body.bcm-dark .wbcom-bp-contact .bcm-alert--warning { background: rgba( 240, 180, 41, 0.12 ); }
-body.bcm-dark .wbcom-bp-contact .bcm-alert--info    { background: rgba( 79, 163, 227, 0.12 ); }
+html.dark-mode .bcm-alert--success,
+body.dark-mode .bcm-alert--success,
+[data-theme="dark"] .bcm-alert--success,
+.buddyx-dark-mode .bcm-alert--success,
+.bb-dark-mode .bcm-alert--success,
+body.bcm-dark .bcm-alert--success { background: rgba( 52, 199, 89, 0.12 ); }
+html.dark-mode .bcm-alert--error,
+body.dark-mode .bcm-alert--error,
+[data-theme="dark"] .bcm-alert--error,
+.buddyx-dark-mode .bcm-alert--error,
+.bb-dark-mode .bcm-alert--error,
+body.bcm-dark .bcm-alert--error { background: rgba( 242, 108, 110, 0.12 ); }
+html.dark-mode .bcm-alert--warning,
+body.dark-mode .bcm-alert--warning,
+[data-theme="dark"] .bcm-alert--warning,
+.buddyx-dark-mode .bcm-alert--warning,
+.bb-dark-mode .bcm-alert--warning,
+body.bcm-dark .bcm-alert--warning { background: rgba( 240, 180, 41, 0.12 ); }
+html.dark-mode .bcm-alert--info,
+body.dark-mode .bcm-alert--info,
+[data-theme="dark"] .bcm-alert--info,
+.buddyx-dark-mode .bcm-alert--info,
+.bb-dark-mode .bcm-alert--info,
+body.bcm-dark .bcm-alert--info { background: rgba( 79, 163, 227, 0.12 ); }
