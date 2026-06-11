@@ -26,6 +26,12 @@
 	--bcm-color-primary: var(--bx-color-accent, var(--reign-colors-theme, #2271b1 ) );
 	--bcm-color-primary-hover: var(--bx-color-link-hover, var(--reign-site-link-hover-color, #135e96 ) );
 
+	/* Faint accent wash for "unread"/selected surfaces. Derived from the live
+	 * accent so it follows a customised theme instead of a baked-in blue. The
+	 * rgba line is the fallback for browsers without color-mix(). */
+	--bcm-color-primary-soft: rgba( 34, 113, 177, 0.08 );
+	--bcm-color-primary-soft: color-mix( in srgb, var( --bcm-color-primary ) 8%, transparent );
+
 	/* Semantic status colours keep their own literal value — never chain these
 	 * to the theme accent, or a red-accent theme makes "success" look like an
 	 * error to non-technical users. */
@@ -365,16 +371,24 @@
 	border-radius: var( --bcm-radius-sm );
 }
 
-/* Count pill injected into BP sub-nav Inbox link via JS. */
+/* Count pill injected into the BP sub-nav Inbox link via JS. The element also
+ * carries BuddyPress's native `count` class, so where the active theme styles
+ * `.count` with higher specificity (e.g. BuddyX `.bp-navs ul li .count`) the
+ * theme's own nav-count colour wins automatically. For themes/layouts where
+ * this rule is the winning one, we source the SAME variable the BuddyX family
+ * uses for its counts (`--color-theme-primary`, then Reign's accent) so the
+ * bubble still matches the sibling nav counts on a customised theme — rather
+ * than the plugin's own accent, which can drift from the theme's count colour.
+ * Basecamp 9890995245. */
 .bcm-subnav-count {
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
 	min-width: 20px;
 	height: 18px;
-	margin-left: 6px;
+	margin-inline-start: 6px;
 	padding: 0 6px;
-	background: var( --bcm-color-primary );
+	background: var( --color-theme-primary, var( --reign-colors-theme, var( --bcm-color-primary ) ) );
 	color: #ffffff;
 	border-radius: 999px;
 	font-size: 11px;
@@ -399,7 +413,7 @@
 .bcm-message:hover { border-color: var( --bcm-color-border-strong ); }
 
 .bcm-message--unread {
-	background: linear-gradient( to right, rgba( 34, 113, 177, 0.06 ) 0%, transparent 40% );
+	background: linear-gradient( to right, var( --bcm-color-primary-soft ) 0%, transparent 40% );
 	border-left: 3px solid var( --bcm-color-primary );
 	padding-left: 12px;
 }
