@@ -777,7 +777,7 @@
 
 .bcm-message__action--delete:hover {
 	color: var( --bcm-color-danger );
-	background: #fcecec;
+	background: #fcecec !important;
 }
 
 /* Mobile / coarse pointers: always show actions since there is no hover. */
@@ -1128,7 +1128,9 @@ body.dark-mode,
 body.dark-scheme,
 html.dark,
 [data-theme="dark"],
+html[data-bx-mode="dark"],
 .buddyx-dark-mode,
+.buddyx-dark-theme,
 .bb-dark-mode,
 body.bcm-dark {
 	/* Explicit dark values — deliberately NOT chained through --bx-* / --reign-*:
@@ -1169,24 +1171,180 @@ body.bcm-dark {
 html.dark-mode .bcm-alert--success,
 body.dark-mode .bcm-alert--success,
 [data-theme="dark"] .bcm-alert--success,
+html[data-bx-mode="dark"] .bcm-alert--success,
 .buddyx-dark-mode .bcm-alert--success,
+.buddyx-dark-theme .bcm-alert--success,
 .bb-dark-mode .bcm-alert--success,
 body.bcm-dark .bcm-alert--success { background: rgba( 52, 199, 89, 0.12 ); }
 html.dark-mode .bcm-alert--error,
 body.dark-mode .bcm-alert--error,
 [data-theme="dark"] .bcm-alert--error,
+html[data-bx-mode="dark"] .bcm-alert--error,
 .buddyx-dark-mode .bcm-alert--error,
+.buddyx-dark-theme .bcm-alert--error,
 .bb-dark-mode .bcm-alert--error,
 body.bcm-dark .bcm-alert--error { background: rgba( 242, 108, 110, 0.12 ); }
 html.dark-mode .bcm-alert--warning,
 body.dark-mode .bcm-alert--warning,
 [data-theme="dark"] .bcm-alert--warning,
+html[data-bx-mode="dark"] .bcm-alert--warning,
 .buddyx-dark-mode .bcm-alert--warning,
+.buddyx-dark-theme .bcm-alert--warning,
 .bb-dark-mode .bcm-alert--warning,
 body.bcm-dark .bcm-alert--warning { background: rgba( 240, 180, 41, 0.12 ); }
 html.dark-mode .bcm-alert--info,
 body.dark-mode .bcm-alert--info,
 [data-theme="dark"] .bcm-alert--info,
+html[data-bx-mode="dark"] .bcm-alert--info,
 .buddyx-dark-mode .bcm-alert--info,
+.buddyx-dark-theme .bcm-alert--info,
 .bb-dark-mode .bcm-alert--info,
 body.bcm-dark .bcm-alert--info { background: rgba( 79, 163, 227, 0.12 ); }
+
+/* ----------------------------------------------------------------------
+ * Dark mode — non-tokenised surfaces + theme-bleed guards
+ *
+ * The block above only flips our design tokens. Three groups of styles
+ * stay light regardless because they were authored with literal hex
+ * (the confirm popup, the intro/info card) or because the host theme's
+ * own `<button>` / `<a>` rules outrank our token-driven colours (the
+ * action buttons + confirm buttons go the theme accent in dark mode).
+ *
+ * We scope a single shared dark selector group (`.bcm-dark` covers every
+ * runtime trigger via the mirror script; the attribute/class twins keep
+ * it working before the script runs, with no FOUC).
+ * -------------------------------------------------------------------- */
+
+/* Convenience: one comma-list reused below. Kept verbose (no :is()) for
+ * maximum browser support across the supported theme matrix. */
+
+/* Confirm popup — dark surface + readable copy. */
+html.dark-mode .bcm-confirm,
+body.dark-mode .bcm-confirm,
+[data-theme="dark"] .bcm-confirm,
+html[data-bx-mode="dark"] .bcm-confirm,
+.buddyx-dark-mode .bcm-confirm,
+.buddyx-dark-theme .bcm-confirm,
+.bb-dark-mode .bcm-confirm,
+body.bcm-dark .bcm-confirm {
+	background: var( --bcm-color-surface );
+	border: 1px solid var( --bcm-color-border );
+}
+html.dark-mode .bcm-confirm__title,
+body.dark-mode .bcm-confirm__title,
+[data-theme="dark"] .bcm-confirm__title,
+html[data-bx-mode="dark"] .bcm-confirm__title,
+.buddyx-dark-mode .bcm-confirm__title,
+.buddyx-dark-theme .bcm-confirm__title,
+.bb-dark-mode .bcm-confirm__title,
+body.bcm-dark .bcm-confirm__title { color: var( --bcm-color-text ); }
+html.dark-mode .bcm-confirm__message,
+body.dark-mode .bcm-confirm__message,
+[data-theme="dark"] .bcm-confirm__message,
+html[data-bx-mode="dark"] .bcm-confirm__message,
+.buddyx-dark-mode .bcm-confirm__message,
+.buddyx-dark-theme .bcm-confirm__message,
+.bb-dark-mode .bcm-confirm__message,
+body.bcm-dark .bcm-confirm__message { color: var( --bcm-color-text-muted ); }
+
+/* Info / intro card — derive from tokens instead of the baked pastel. */
+html.dark-mode .bcm-info,
+body.dark-mode .bcm-info,
+[data-theme="dark"] .bcm-info,
+html[data-bx-mode="dark"] .bcm-info,
+.buddyx-dark-mode .bcm-info,
+.buddyx-dark-theme .bcm-info,
+.bb-dark-mode .bcm-info,
+body.bcm-dark .bcm-info {
+	background: var( --bcm-color-bg-soft );
+	border-color: var( --bcm-color-border );
+}
+
+/* Empty-state ghost link + delete-icon hover used literal light tints. */
+html.dark-mode .bcm-empty__actions .button-link:hover,
+body.dark-mode .bcm-empty__actions .button-link:hover,
+[data-theme="dark"] .bcm-empty__actions .button-link:hover,
+html[data-bx-mode="dark"] .bcm-empty__actions .button-link:hover,
+.buddyx-dark-mode .bcm-empty__actions .button-link:hover,
+.buddyx-dark-theme .bcm-empty__actions .button-link:hover,
+.bb-dark-mode .bcm-empty__actions .button-link:hover,
+body.bcm-dark .bcm-empty__actions .button-link:hover { background: rgba( 79, 163, 227, 0.16 ); }
+html.dark-mode .bcm-message__action--delete:hover,
+body.dark-mode .bcm-message__action--delete:hover,
+[data-theme="dark"] .bcm-message__action--delete:hover,
+html[data-bx-mode="dark"] .bcm-message__action--delete:hover,
+.buddyx-dark-mode .bcm-message__action--delete:hover,
+.buddyx-dark-theme .bcm-message__action--delete:hover,
+.bb-dark-mode .bcm-message__action--delete:hover,
+body.bcm-dark .bcm-message__action--delete:hover { background: rgba( 242, 108, 110, 0.18 ) !important; }
+
+/* ----------------------------------------------------------------------
+ * Button colour guards (all modes)
+ *
+ * BuddyX / BuddyX Pro / Reign all paint generic `<button>` and `<a>`
+ * elements inside profile content with their brand accent, which stomps
+ * the plugin's token-driven colours — the "Delete" / danger control comes
+ * out the theme's pink accent with near-black text, and the confirm
+ * buttons lose their intended fill. Pin our control colours at the
+ * plugin scope so the theme can't recolour them. These hold in light and
+ * dark alike (the danger/primary tokens already carry mode-correct
+ * values), so they live outside the dark block.
+ * -------------------------------------------------------------------- */
+
+.bcm-message-view__action--primary,
+.bcm-message-view__action--primary:hover,
+.bcm-message-view__action--primary:focus-visible {
+	color: #ffffff !important;
+}
+.bcm-message-view__action--danger {
+	color: var( --bcm-color-danger ) !important;
+	background: var( --bcm-color-bg ) !important;
+	border-color: var( --bcm-color-border ) !important;
+}
+.bcm-message-view__action--danger:hover,
+.bcm-message-view__action--danger:focus-visible {
+	color: #ffffff !important;
+	background: var( --bcm-color-danger ) !important;
+	border-color: var( --bcm-color-danger ) !important;
+}
+
+/* Inbox-row icon actions (Delete) are ghost buttons that reveal on hover.
+ * The host theme paints them with its accent fill + near-black text; pin
+ * them transparent with token colour so the icon stays legible. */
+.bcm-message__action {
+	background: transparent !important;
+	border: 0 !important;
+	color: var( --bcm-color-text-muted ) !important;
+}
+.bcm-message__action--delete:hover {
+	color: var( --bcm-color-danger ) !important;
+}
+
+/* Confirm dialog buttons — neutral cancel, accent confirm, red danger.
+ * `!important` is scoped to the dialog's own classes only. */
+.bcm-confirm__btn--cancel {
+	color: var( --bcm-color-text ) !important;
+	background: var( --bcm-color-surface ) !important;
+	border-color: var( --bcm-color-border-strong ) !important;
+}
+.bcm-confirm__btn--cancel:hover {
+	background: var( --bcm-color-bg-soft ) !important;
+}
+.bcm-confirm__btn--confirm {
+	color: #ffffff !important;
+	background: var( --bcm-color-primary ) !important;
+	border-color: var( --bcm-color-primary ) !important;
+}
+.bcm-confirm__btn--confirm:hover {
+	background: var( --bcm-color-primary-hover ) !important;
+	border-color: var( --bcm-color-primary-hover ) !important;
+}
+.bcm-confirm__btn--dangerous {
+	color: #ffffff !important;
+	background: var( --bcm-color-danger ) !important;
+	border-color: var( --bcm-color-danger ) !important;
+}
+.bcm-confirm__btn--dangerous:hover {
+	background: var( --bcm-color-danger-hover ) !important;
+	border-color: var( --bcm-color-danger-hover ) !important;
+}
