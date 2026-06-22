@@ -5,32 +5,47 @@
  * BuddyBoss, and Twenty* themes.
  */
 
-.wbcom-bp-contact {
+:root {
 	--bcm-radius: 10px;
 	--bcm-radius-sm: 6px;
 	--bcm-gap: 16px;
 	--bcm-gap-sm: 8px;
 	--bcm-gap-lg: 24px;
-	--bcm-color-border: #e1e5ea;
-	--bcm-color-border-strong: #c7ced6;
-	--bcm-color-bg: #ffffff;
-	--bcm-color-bg-soft: #f6f7f9;
-	--bcm-color-text: #1e2327;
-	--bcm-color-text-muted: #5f6b77;
-	/*
-	 * Default palette is neutral on purpose — the plugin must NOT impose its
-	 * own brand color on the active theme (basecamp 9890995245). Theme overlays
-	 * (BuddyX / BuddyX Pro / Reign) will be added later as a separate layer
-	 * that maps these tokens onto theme variables.
-	 */
-	--bcm-color-primary: #1e2327;
-	--bcm-color-primary-hover: #3c4858;
-	--bcm-color-on-primary: #ffffff;
+
+	/* Semantic colours — adopt the host theme's own tokens first (BuddyX 5.1
+	 * --bx-color-*, then Reign --reign-*), falling back to the plugin's
+	 * literal palette so unstyled / classic themes still look right. */
+	--bcm-color-border: var(--bx-color-border, var(--reign-site-border-color, #e1e5ea ) );
+	--bcm-color-border-strong: var(--bx-color-border, var(--reign-site-border-color, #c7ced6 ) );
+	--bcm-color-bg: var(--bx-color-bg-page, var(--reign-site-body-bg-color, #ffffff ) );
+	--bcm-color-bg-soft: var(--bx-color-bg-subtle, var(--reign-site-secondary-bg-color, #f6f7f9 ) );
+	--bcm-color-surface: var(--bx-color-bg-elevated, var(--reign-site-sections-bg-color, #ffffff ) );
+	--bcm-color-text: var(--bx-color-fg, var(--reign-site-body-text-color, #1e2327 ) );
+	--bcm-color-text-muted: var(--bx-color-fg-muted, var(--reign-site-alternate-text-color, #5f6b77 ) );
+	--bcm-color-link: var(--bx-color-link, var(--reign-site-link-color, #2271b1 ) );
+	--bcm-color-primary: var(--bx-color-accent, var(--reign-colors-theme, #2271b1 ) );
+	--bcm-color-primary-hover: var(--bx-color-link-hover, var(--reign-site-link-hover-color, #135e96 ) );
+
+	/* Faint accent wash for "unread"/selected surfaces. Derived from the live
+	 * accent so it follows a customised theme instead of a baked-in blue. The
+	 * rgba line is the fallback for browsers without color-mix(). */
+	--bcm-color-primary-soft: rgba( 34, 113, 177, 0.08 );
+	--bcm-color-primary-soft: color-mix( in srgb, var( --bcm-color-primary ) 8%, transparent );
+
+	/* Semantic status colours keep their own literal value — never chain these
+	 * to the theme accent, or a red-accent theme makes "success" look like an
+	 * error to non-technical users. */
 	--bcm-color-danger: #d63638;
 	--bcm-color-danger-hover: #b32d2e;
 	--bcm-color-success: #00a32a;
 	--bcm-color-warning: #dba617;
-	--bcm-color-focus: #3c4858;
+	--bcm-color-focus: var(--bx-color-accent, var(--reign-colors-theme, #2271b1 ) );
+
+	/* QA-canonical aliases (surface / page / text) used by the dark contract. */
+	--bcm-bg: var( --bcm-color-bg );
+	--bcm-card-bg: var( --bcm-color-surface );
+	--bcm-text: var( --bcm-color-text );
+
 	--bcm-shadow-sm: 0 1px 2px rgba( 16, 24, 40, 0.06 );
 	--bcm-shadow-md: 0 8px 24px rgba( 16, 24, 40, 0.12 );
 	--bcm-shadow-lg: 0 20px 50px rgba( 16, 24, 40, 0.18 );
@@ -52,7 +67,7 @@
 .bcm-alert--success { border-left-color: var( --bcm-color-success ); background: #edfaef; }
 .bcm-alert--error   { border-left-color: var( --bcm-color-danger );  background: #fcecec; }
 .bcm-alert--warning { border-left-color: var( --bcm-color-warning ); background: #fff8e5; }
-.bcm-alert--info    { border-left-color: var( --bcm-color-border-strong ); background: var( --bcm-color-bg-soft ); }
+.bcm-alert--info    { border-left-color: var( --bcm-color-primary ); background: #eaf2fa; }
 
 /* ---------- Toast ---------- */
 
@@ -170,7 +185,7 @@
 .bcm-field input:focus,
 .bcm-field textarea:focus {
 	border-color: var( --bcm-color-focus );
-	box-shadow: 0 0 0 3px rgba( 60, 72, 88, 0.2 );
+	box-shadow: 0 0 0 3px rgba( 34, 113, 177, 0.2 );
 }
 
 .bcm-field input:focus-visible,
@@ -240,7 +255,7 @@
 	padding: 10px 18px;
 	font-size: 15px;
 	font-weight: 600;
-	color: var( --bcm-color-on-primary );
+	color: #ffffff;
 	background: var( --bcm-color-primary );
 	border: 1px solid var( --bcm-color-primary );
 	border-radius: var( --bcm-radius-sm );
@@ -294,7 +309,7 @@
 .bcm-inbox__unread {
 	padding: 2px 10px;
 	background: var( --bcm-color-primary );
-	color: var( --bcm-color-on-primary );
+	color: #ffffff;
 	border-radius: 999px;
 	font-size: 12px;
 	font-weight: 600;
@@ -324,7 +339,7 @@
 	transition: background-color 150ms ease, color 150ms ease;
 }
 
-.bcm-inbox__filter:hover { color: var( --bcm-color-text ); background: rgba( 60, 72, 88, 0.06 ); }
+.bcm-inbox__filter:hover { color: var( --bcm-color-text ); background: rgba( 34, 113, 177, 0.06 ); }
 
 .bcm-inbox__filter.is-active {
 	background: var( --bcm-color-bg );
@@ -346,7 +361,7 @@
 	font-weight: 600;
 }
 
-.bcm-inbox__filter.is-active .bcm-inbox__filter-count { background: var( --bcm-color-primary ); color: var( --bcm-color-on-primary ); }
+.bcm-inbox__filter.is-active .bcm-inbox__filter-count { background: var( --bcm-color-primary ); color: #ffffff; }
 
 .bcm-empty--inline {
 	padding: 24px;
@@ -356,17 +371,25 @@
 	border-radius: var( --bcm-radius-sm );
 }
 
-/* Count pill injected into BP sub-nav Inbox link via JS. */
+/* Count pill injected into the BP sub-nav Inbox link via JS. The element also
+ * carries BuddyPress's native `count` class, so where the active theme styles
+ * `.count` with higher specificity (e.g. BuddyX `.bp-navs ul li .count`) the
+ * theme's own nav-count colour wins automatically. For themes/layouts where
+ * this rule is the winning one, we source the SAME variable the BuddyX family
+ * uses for its counts (`--color-theme-primary`, then Reign's accent) so the
+ * bubble still matches the sibling nav counts on a customised theme — rather
+ * than the plugin's own accent, which can drift from the theme's count colour.
+ * Basecamp 9890995245. */
 .bcm-subnav-count {
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
 	min-width: 20px;
 	height: 18px;
-	margin-left: 6px;
+	margin-inline-start: 6px;
 	padding: 0 6px;
-	background: var( --bcm-color-primary );
-	color: var( --bcm-color-on-primary );
+	background: var( --color-theme-primary, var( --reign-colors-theme, var( --bcm-color-primary ) ) );
+	color: #ffffff;
 	border-radius: 999px;
 	font-size: 11px;
 	font-weight: 600;
@@ -390,7 +413,7 @@
 .bcm-message:hover { border-color: var( --bcm-color-border-strong ); }
 
 .bcm-message--unread {
-	background: linear-gradient( to right, rgba( 60, 72, 88, 0.06 ) 0%, transparent 40% );
+	background: linear-gradient( to right, var( --bcm-color-primary-soft ) 0%, transparent 40% );
 	border-left: 3px solid var( --bcm-color-primary );
 	padding-left: 12px;
 }
@@ -419,7 +442,7 @@
 	font-weight: 700;
 	text-transform: uppercase;
 	letter-spacing: 0.06em;
-	color: var( --bcm-color-on-primary );
+	color: #ffffff;
 	background: var( --bcm-color-primary );
 	border-radius: 999px;
 }
@@ -479,7 +502,7 @@
 	line-height: 1;
 }
 
-.bcm-message__view:hover   { color: var( --bcm-color-primary ); background: var( --bcm-color-bg-soft ); }
+.bcm-message__view:hover   { color: var( --bcm-color-primary ); background: #eaf2fa; }
 .bcm-message__delete:hover { color: var( --bcm-color-danger );  background: #fcecec; }
 
 .bcm-pagination { display: flex; justify-content: center; gap: 4px; padding: 16px 0 4px; }
@@ -498,7 +521,7 @@
 .bcm-pagination .page-numbers:hover {
 	background: var( --bcm-color-primary );
 	border-color: var( --bcm-color-primary );
-	color: var( --bcm-color-on-primary );
+	color: #ffffff;
 }
 
 /* ---------- Empty state ---------- */
@@ -528,7 +551,7 @@
 	border: 1px solid transparent;
 	cursor: pointer;
 }
-.bcm-empty__actions .button-link:hover { background: var( --bcm-color-bg-soft ); }
+.bcm-empty__actions .button-link:hover { background: #eaf2fa; }
 
 /* ---------- Confirm overlay (bcmConfirm) ---------- */
 
@@ -578,8 +601,8 @@
 }
 .bcm-confirm__btn:hover { background: #f6f7f9; }
 
-.bcm-confirm__btn--confirm { background: var( --bcm-color-primary ); border-color: var( --bcm-color-primary ); color: var( --bcm-color-on-primary ); }
-.bcm-confirm__btn--confirm:hover { background: var( --bcm-color-primary-hover ); border-color: var( --bcm-color-primary-hover ); }
+.bcm-confirm__btn--confirm { background: #2271b1; border-color: #2271b1; color: #ffffff; }
+.bcm-confirm__btn--confirm:hover { background: #135e96; border-color: #135e96; }
 
 .bcm-confirm__btn--dangerous { background: #d63638; border-color: #d63638; color: #ffffff; }
 .bcm-confirm__btn--dangerous:hover { background: #b32d2e; border-color: #b32d2e; }
@@ -612,14 +635,14 @@
 	align-items: flex-start;
 	margin: 0 0 var( --bcm-gap );
 	padding: 14px 16px;
-	background: var( --bcm-color-bg-soft );
-	border: 1px solid var( --bcm-color-border );
+	background: #eaf2fa;
+	border: 1px solid #c6dbf0;
 	border-radius: var( --bcm-radius );
 	transition: opacity 200ms ease;
 }
 
 .bcm-info__icon {
-	color: var( --bcm-color-text-muted );
+	color: var( --bcm-color-primary );
 	padding-top: 2px;
 }
 
@@ -754,7 +777,7 @@
 
 .bcm-message__action--delete:hover {
 	color: var( --bcm-color-danger );
-	background: #fcecec;
+	background: #fcecec !important;
 }
 
 /* Mobile / coarse pointers: always show actions since there is no hover. */
@@ -920,7 +943,7 @@
 }
 
 .bcm-message-view__action--primary {
-	color: var( --bcm-color-on-primary );
+	color: #ffffff;
 	background: var( --bcm-color-primary );
 	border-color: var( --bcm-color-primary );
 }
@@ -929,7 +952,7 @@
 .bcm-message-view__action--primary:focus-visible {
 	background: var( --bcm-color-primary-hover );
 	border-color: var( --bcm-color-primary-hover );
-	color: var( --bcm-color-on-primary );
+	color: #ffffff;
 }
 
 .bcm-message-view__action--danger {
@@ -1100,22 +1123,44 @@
  * We deliberately do NOT hook into prefers-color-scheme: site owners
  * pick the trigger, not the OS.
  */
-body.bcm-dark .wbcom-bp-contact,
-.wbcom-bp-contact.bcm-dark {
-	--bcm-color-border: #2e3640;
+html.dark-mode,
+body.dark-mode,
+body.dark-scheme,
+html.dark,
+[data-theme="dark"],
+html[data-bx-mode="dark"],
+.buddyx-dark-mode,
+.buddyx-dark-theme,
+.bb-dark-mode,
+body.bcm-dark {
+	/* Explicit dark values — deliberately NOT chained through --bx-* / --reign-*:
+	 * those vars stay light unless the theme itself is in dark mode, so chaining
+	 * here would resolve to the light palette on a generic dark toggle. BuddyX /
+	 * Reign native dark is already handled by the light :root chain flipping the
+	 * theme's own tokens; this block guarantees a correct dark surface for every
+	 * other dark trigger and a consistent baseline. */
+	--bcm-color-border: #3a4253;
 	--bcm-color-border-strong: #3c4654;
-	--bcm-color-bg: #1a1f26;
-	--bcm-color-bg-soft: #232a33;
-	--bcm-color-text: #e6eaf0;
-	--bcm-color-text-muted: #98a2b0;
-	--bcm-color-primary: #e6eaf0;
-	--bcm-color-primary-hover: #cdd2da;
-	--bcm-color-on-primary: #1a1f26;
+	--bcm-color-bg: #16191f;
+	--bcm-color-bg-soft: #262c3a;
+	--bcm-color-surface: #1f2430;
+	--bcm-color-text: #e4e4e7;
+	--bcm-color-text-muted: #b4b4b8;
+	--bcm-color-link: #72b7ea;
+	--bcm-color-primary: #4fa3e3;
+	--bcm-color-primary-hover: #72b7ea;
 	--bcm-color-danger: #f26c6e;
 	--bcm-color-danger-hover: #f58485;
 	--bcm-color-success: #34c759;
 	--bcm-color-warning: #f0b429;
-	--bcm-color-focus: #cdd2da;
+	--bcm-color-focus: #4fa3e3;
+
+	/* QA-canonical aliases get explicit dark values so the contract sees a real
+	 * flip (not an indirection that would still resolve light). */
+	--bcm-bg: #16191f;
+	--bcm-card-bg: #1f2430;
+	--bcm-text: #e4e4e7;
+
 	--bcm-shadow-sm: 0 1px 2px rgba( 0, 0, 0, 0.4 );
 	--bcm-shadow-md: 0 8px 24px rgba( 0, 0, 0, 0.5 );
 	--bcm-shadow-lg: 0 20px 50px rgba( 0, 0, 0, 0.6 );
@@ -1123,7 +1168,183 @@ body.bcm-dark .wbcom-bp-contact,
 
 /* Banner tints need darker panel backgrounds too — the hard-coded
    pastel fills above would wash out against the dark card. */
-body.bcm-dark .wbcom-bp-contact .bcm-alert--success { background: rgba( 52, 199, 89, 0.12 ); }
-body.bcm-dark .wbcom-bp-contact .bcm-alert--error   { background: rgba( 242, 108, 110, 0.12 ); }
-body.bcm-dark .wbcom-bp-contact .bcm-alert--warning { background: rgba( 240, 180, 41, 0.12 ); }
-body.bcm-dark .wbcom-bp-contact .bcm-alert--info    { background: rgba( 79, 163, 227, 0.12 ); }
+html.dark-mode .bcm-alert--success,
+body.dark-mode .bcm-alert--success,
+[data-theme="dark"] .bcm-alert--success,
+html[data-bx-mode="dark"] .bcm-alert--success,
+.buddyx-dark-mode .bcm-alert--success,
+.buddyx-dark-theme .bcm-alert--success,
+.bb-dark-mode .bcm-alert--success,
+body.bcm-dark .bcm-alert--success { background: rgba( 52, 199, 89, 0.12 ); }
+html.dark-mode .bcm-alert--error,
+body.dark-mode .bcm-alert--error,
+[data-theme="dark"] .bcm-alert--error,
+html[data-bx-mode="dark"] .bcm-alert--error,
+.buddyx-dark-mode .bcm-alert--error,
+.buddyx-dark-theme .bcm-alert--error,
+.bb-dark-mode .bcm-alert--error,
+body.bcm-dark .bcm-alert--error { background: rgba( 242, 108, 110, 0.12 ); }
+html.dark-mode .bcm-alert--warning,
+body.dark-mode .bcm-alert--warning,
+[data-theme="dark"] .bcm-alert--warning,
+html[data-bx-mode="dark"] .bcm-alert--warning,
+.buddyx-dark-mode .bcm-alert--warning,
+.buddyx-dark-theme .bcm-alert--warning,
+.bb-dark-mode .bcm-alert--warning,
+body.bcm-dark .bcm-alert--warning { background: rgba( 240, 180, 41, 0.12 ); }
+html.dark-mode .bcm-alert--info,
+body.dark-mode .bcm-alert--info,
+[data-theme="dark"] .bcm-alert--info,
+html[data-bx-mode="dark"] .bcm-alert--info,
+.buddyx-dark-mode .bcm-alert--info,
+.buddyx-dark-theme .bcm-alert--info,
+.bb-dark-mode .bcm-alert--info,
+body.bcm-dark .bcm-alert--info { background: rgba( 79, 163, 227, 0.12 ); }
+
+/* ----------------------------------------------------------------------
+ * Dark mode — non-tokenised surfaces + theme-bleed guards
+ *
+ * The block above only flips our design tokens. Three groups of styles
+ * stay light regardless because they were authored with literal hex
+ * (the confirm popup, the intro/info card) or because the host theme's
+ * own `<button>` / `<a>` rules outrank our token-driven colours (the
+ * action buttons + confirm buttons go the theme accent in dark mode).
+ *
+ * We scope a single shared dark selector group (`.bcm-dark` covers every
+ * runtime trigger via the mirror script; the attribute/class twins keep
+ * it working before the script runs, with no FOUC).
+ * -------------------------------------------------------------------- */
+
+/* Convenience: one comma-list reused below. Kept verbose (no :is()) for
+ * maximum browser support across the supported theme matrix. */
+
+/* Confirm popup — dark surface + readable copy. */
+html.dark-mode .bcm-confirm,
+body.dark-mode .bcm-confirm,
+[data-theme="dark"] .bcm-confirm,
+html[data-bx-mode="dark"] .bcm-confirm,
+.buddyx-dark-mode .bcm-confirm,
+.buddyx-dark-theme .bcm-confirm,
+.bb-dark-mode .bcm-confirm,
+body.bcm-dark .bcm-confirm {
+	background: var( --bcm-color-surface );
+	border: 1px solid var( --bcm-color-border );
+}
+html.dark-mode .bcm-confirm__title,
+body.dark-mode .bcm-confirm__title,
+[data-theme="dark"] .bcm-confirm__title,
+html[data-bx-mode="dark"] .bcm-confirm__title,
+.buddyx-dark-mode .bcm-confirm__title,
+.buddyx-dark-theme .bcm-confirm__title,
+.bb-dark-mode .bcm-confirm__title,
+body.bcm-dark .bcm-confirm__title { color: var( --bcm-color-text ); }
+html.dark-mode .bcm-confirm__message,
+body.dark-mode .bcm-confirm__message,
+[data-theme="dark"] .bcm-confirm__message,
+html[data-bx-mode="dark"] .bcm-confirm__message,
+.buddyx-dark-mode .bcm-confirm__message,
+.buddyx-dark-theme .bcm-confirm__message,
+.bb-dark-mode .bcm-confirm__message,
+body.bcm-dark .bcm-confirm__message { color: var( --bcm-color-text-muted ); }
+
+/* Info / intro card — derive from tokens instead of the baked pastel. */
+html.dark-mode .bcm-info,
+body.dark-mode .bcm-info,
+[data-theme="dark"] .bcm-info,
+html[data-bx-mode="dark"] .bcm-info,
+.buddyx-dark-mode .bcm-info,
+.buddyx-dark-theme .bcm-info,
+.bb-dark-mode .bcm-info,
+body.bcm-dark .bcm-info {
+	background: var( --bcm-color-bg-soft );
+	border-color: var( --bcm-color-border );
+}
+
+/* Empty-state ghost link + delete-icon hover used literal light tints. */
+html.dark-mode .bcm-empty__actions .button-link:hover,
+body.dark-mode .bcm-empty__actions .button-link:hover,
+[data-theme="dark"] .bcm-empty__actions .button-link:hover,
+html[data-bx-mode="dark"] .bcm-empty__actions .button-link:hover,
+.buddyx-dark-mode .bcm-empty__actions .button-link:hover,
+.buddyx-dark-theme .bcm-empty__actions .button-link:hover,
+.bb-dark-mode .bcm-empty__actions .button-link:hover,
+body.bcm-dark .bcm-empty__actions .button-link:hover { background: rgba( 79, 163, 227, 0.16 ); }
+html.dark-mode .bcm-message__action--delete:hover,
+body.dark-mode .bcm-message__action--delete:hover,
+[data-theme="dark"] .bcm-message__action--delete:hover,
+html[data-bx-mode="dark"] .bcm-message__action--delete:hover,
+.buddyx-dark-mode .bcm-message__action--delete:hover,
+.buddyx-dark-theme .bcm-message__action--delete:hover,
+.bb-dark-mode .bcm-message__action--delete:hover,
+body.bcm-dark .bcm-message__action--delete:hover { background: rgba( 242, 108, 110, 0.18 ) !important; }
+
+/* ----------------------------------------------------------------------
+ * Button colour guards (all modes)
+ *
+ * BuddyX / BuddyX Pro / Reign all paint generic `<button>` and `<a>`
+ * elements inside profile content with their brand accent, which stomps
+ * the plugin's token-driven colours — the "Delete" / danger control comes
+ * out the theme's pink accent with near-black text, and the confirm
+ * buttons lose their intended fill. Pin our control colours at the
+ * plugin scope so the theme can't recolour them. These hold in light and
+ * dark alike (the danger/primary tokens already carry mode-correct
+ * values), so they live outside the dark block.
+ * -------------------------------------------------------------------- */
+
+.bcm-message-view__action--primary,
+.bcm-message-view__action--primary:hover,
+.bcm-message-view__action--primary:focus-visible {
+	color: #ffffff !important;
+}
+.bcm-message-view__action--danger {
+	color: var( --bcm-color-danger ) !important;
+	background: var( --bcm-color-bg ) !important;
+	border-color: var( --bcm-color-border ) !important;
+}
+.bcm-message-view__action--danger:hover,
+.bcm-message-view__action--danger:focus-visible {
+	color: #ffffff !important;
+	background: var( --bcm-color-danger ) !important;
+	border-color: var( --bcm-color-danger ) !important;
+}
+
+/* Inbox-row icon actions (Delete) are ghost buttons that reveal on hover.
+ * The host theme paints them with its accent fill + near-black text; pin
+ * them transparent with token colour so the icon stays legible. */
+.bcm-message__action {
+	background: transparent !important;
+	border: 0 !important;
+	color: var( --bcm-color-text-muted ) !important;
+}
+.bcm-message__action--delete:hover {
+	color: var( --bcm-color-danger ) !important;
+}
+
+/* Confirm dialog buttons — neutral cancel, accent confirm, red danger.
+ * `!important` is scoped to the dialog's own classes only. */
+.bcm-confirm__btn--cancel {
+	color: var( --bcm-color-text ) !important;
+	background: var( --bcm-color-surface ) !important;
+	border-color: var( --bcm-color-border-strong ) !important;
+}
+.bcm-confirm__btn--cancel:hover {
+	background: var( --bcm-color-bg-soft ) !important;
+}
+.bcm-confirm__btn--confirm {
+	color: #ffffff !important;
+	background: var( --bcm-color-primary ) !important;
+	border-color: var( --bcm-color-primary ) !important;
+}
+.bcm-confirm__btn--confirm:hover {
+	background: var( --bcm-color-primary-hover ) !important;
+	border-color: var( --bcm-color-primary-hover ) !important;
+}
+.bcm-confirm__btn--dangerous {
+	color: #ffffff !important;
+	background: var( --bcm-color-danger ) !important;
+	border-color: var( --bcm-color-danger ) !important;
+}
+.bcm-confirm__btn--dangerous:hover {
+	background: var( --bcm-color-danger-hover ) !important;
+	border-color: var( --bcm-color-danger-hover ) !important;
+}

@@ -91,17 +91,26 @@ class BCM_Frontend_Assets {
 	];
 	function sync() {
 		var isDark = false;
-		for ( var i = 0; i < darkClasses.length; i++ ) {
-			if ( html.classList.contains( darkClasses[ i ] ) || body.classList.contains( darkClasses[ i ] ) ) {
-				isDark = true;
-				break;
+		// BuddyX 5.1+, BuddyX Pro and Reign drive dark mode through the
+		// `data-bx-mode="dark"` attribute on <html> (persisted in
+		// localStorage['bx-color-mode']) — no class is added. Check that
+		// attribute first, then the legacy class list for other themes.
+		var mode = html.getAttribute( 'data-bx-mode' );
+		if ( 'dark' === mode ) {
+			isDark = true;
+		} else if ( 'light' !== mode ) {
+			for ( var i = 0; i < darkClasses.length; i++ ) {
+				if ( html.classList.contains( darkClasses[ i ] ) || body.classList.contains( darkClasses[ i ] ) ) {
+					isDark = true;
+					break;
+				}
 			}
 		}
 		body.classList.toggle( 'bcm-dark', isDark );
 	}
 	sync();
 	if ( typeof MutationObserver === 'function' ) {
-		var opts = { attributes: true, attributeFilter: [ 'class' ] };
+		var opts = { attributes: true, attributeFilter: [ 'class', 'data-bx-mode' ] };
 		new MutationObserver( sync ).observe( html, opts );
 		new MutationObserver( sync ).observe( body, opts );
 	}

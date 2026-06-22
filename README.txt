@@ -55,6 +55,10 @@ Highlights:
 * Improvement: Plain-language labels across every settings screen — "Notify the recipient", "Send a copy to…", "Who can send messages", "Who can be contacted". No jargon or internal option names.
 * Improvement: Per-recipient email delivery by default (each recipient gets their own email) with an explicit toggle for the multi-recipient "show other recipients" mode.
 * Improvement: Activation routine bookmarks the current plugin version so future upgrades have a reliable comparison point.
+* Fix: Contact tab now follows the host theme's dark mode on BuddyX, BuddyX Pro, and Reign - the inbox, message view, and intro card use a dark surface with readable text instead of staying light.
+* Fix: Delete confirmation popup renders dark in dark mode, with a clearly readable title, message, and buttons.
+* Fix: "Send private message" and "Delete" button colours are now correct and high-contrast in dark mode, including hover, so the theme can no longer wash them out.
+* Fix: "Settings saved" and other status messages keep readable contrast in dark mode.
 * Compatibility: Tested against WordPress 6.9, BuddyPress 14.x, BuddyBoss Platform, and PHP 8.4.
 
 = 1.4.0 =
