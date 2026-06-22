@@ -7,6 +7,52 @@ module.exports = function (grunt) {
 	grunt.initConfig(
 		{
 
+			pkg: grunt.file.readJSON('package.json'),
+
+			// Remove the previous build before packaging.
+			clean: {
+				dist: ['dist']
+			},
+
+			// Package the customer distribution zip (source + minified assets,
+			// no dev tooling / docs / VCS metadata).
+			compress: {
+				main: {
+					options: {
+						archive: 'dist/buddypress-contact-me-<%= pkg.version %>.zip',
+						mode: 'zip'
+					},
+					files: [{
+						expand: true,
+						cwd: '.',
+						src: [
+							'**/*',
+							'!node_modules/**',
+							'!.git/**',
+							'!.github/**',
+							'!.gitignore',
+							'!.gitattributes',
+							'!.distignore',
+							'!package*.json',
+							'!gruntfile.js',
+							'!Gruntfile.js',
+							'!CLAUDE.md',
+							'!audit/**',
+							'!docs/**',
+							'!bin/**',
+							'!tests/**',
+							'!*.md',
+							'!**/*.md',
+							'!*.map',
+							'!**/*.map',
+							'!dist/**',
+							'!**/.DS_Store'
+						],
+						dest: 'buddypress-contact-me/'
+					}]
+				}
+			},
+
 			// Check text domain
 			checktextdomain: {
 				options: {
@@ -199,7 +245,15 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks('grunt-contrib-watch');
 	grunt.loadNpmTasks('grunt-checktextdomain');
 	grunt.loadNpmTasks('grunt-shell');
+	grunt.loadNpmTasks('grunt-contrib-clean');
+	grunt.loadNpmTasks('grunt-contrib-compress');
 
 	// Register default tasks
 	grunt.registerTask('default', ['rtlcss', 'cssmin', 'uglify', 'checktextdomain', 'shell', 'watch']);
+
+	// Regenerate minified + RTL assets (no blocking watch).
+	grunt.registerTask('build', ['cssmin', 'uglify', 'rtlcss', 'checktextdomain']);
+
+	// Package the distribution zip.
+	grunt.registerTask('dist', ['clean:dist', 'compress:main']);
 };

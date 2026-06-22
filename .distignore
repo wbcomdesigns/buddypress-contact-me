@@ -1,0 +1,19 @@
+# Files and directories excluded from the distributed plugin zip.
+.git
+.github/
+.gitignore
+.gitattributes
+.distignore
+CLAUDE.md
+audit/
+docs/
+bin/
+tests/
+node_modules/
+dist/
+package.json
+package-lock.json
+gruntfile.js
+Gruntfile.js
+*.md
+*.map
