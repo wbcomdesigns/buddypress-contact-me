@@ -17,7 +17,7 @@
  * Description:       BuddyPress Contact Me displays a contact form on members' profiles, allowing both logged-in and non-logged-in visitors to connect with community members.
  * Version:           1.5.0
  * Requires at least: 6.0
- * Requires PHP:      7.4
+ * Requires PHP: 8.1
  * Author:            Wbcom Designs
  * Author URI:        https://www.wbcomdesigns.com
  * License:           GPL-2.0+
