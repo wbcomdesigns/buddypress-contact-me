@@ -154,6 +154,8 @@ class BCM_Frontend_Assets {
 					'tooShort'      => __( 'At least %d characters.', 'buddypress-contact-me' ),
 					/* translators: %d: maximum character count. */
 					'tooLong'       => __( 'No more than %d characters.', 'buddypress-contact-me' ),
+					'linkCopied'    => __( 'Link copied.', 'buddypress-contact-me' ),
+					'copyFailed'    => __( 'Copy not supported in this browser.', 'buddypress-contact-me' ),
 				),
 			)
 		);

@@ -358,7 +358,7 @@
 				if ( ! url ) { return; }
 
 				var done = function () {
-					toast( cfg.i18n.sent ? 'Link copied.' : 'Copied.', 'success' );
+					toast( cfg.i18n.linkCopied, 'success' );
 				};
 
 				if ( navigator.clipboard && navigator.clipboard.writeText ) {
@@ -375,7 +375,7 @@
 					ta.style.left     = '-9999px';
 					document.body.appendChild( ta );
 					ta.select();
-					try { document.execCommand( 'copy' ); done(); } catch ( e ) { toast( 'Copy not supported in this browser.', 'warning' ); }
+					try { document.execCommand( 'copy' ); done(); } catch ( e ) { toast( cfg.i18n.copyFailed, 'warning' ); }
 					document.body.removeChild( ta );
 				}
 			} );

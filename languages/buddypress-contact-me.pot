@@ -2,14 +2,14 @@
 # This file is distributed under the GPL-2.0+.
 msgid ""
 msgstr ""
-"Project-Id-Version: Wbcom Designs - BuddyPress Contact Me 1.5.0\n"
+"Project-Id-Version: Wbcom Designs - BuddyPress Contact Me 1.5.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/buddypress-contact-me\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-05-14T11:51:43+00:00\n"
+"POT-Creation-Date: 2026-11-13T09:33:30+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: buddypress-contact-me\n"
@@ -40,27 +40,27 @@ msgid "https://www.wbcomdesigns.com"
 msgstr ""
 
 #. Translators: %s.
-#: buddypress-contact-me.php:156
+#: buddypress-contact-me.php:136
 #, php-format
 msgid "%1$s is inactive as it requires %2$s to be installed and active."
 msgstr ""
 
-#: buddypress-contact-me.php:157
+#: buddypress-contact-me.php:137
 #: includes/admin/class-bcm-admin.php:105
-#: includes/admin/views/shell.php:30
+#: includes/admin/views/layout.php:30
 msgid "BuddyPress Contact Me"
 msgstr ""
 
-#: buddypress-contact-me.php:158
+#: buddypress-contact-me.php:138
 msgid "BuddyPress"
 msgstr ""
 
-#: buddypress-contact-me.php:214
-#: includes/admin/views/shell.php:67
+#: buddypress-contact-me.php:194
+#: includes/admin/views/layout.php:67
 msgid "Settings"
 msgstr ""
 
-#: buddypress-contact-me.php:215
+#: buddypress-contact-me.php:195
 msgid "Support"
 msgstr ""
 
@@ -160,7 +160,7 @@ msgid "WB Plugins"
 msgstr ""
 
 #: includes/admin/class-bcm-admin.php:106
-#: includes/admin/views/shell.php:59
+#: includes/admin/views/layout.php:59
 msgid "Contact Me"
 msgstr ""
 
@@ -181,8 +181,8 @@ msgid "Continue"
 msgstr ""
 
 #: includes/admin/class-bcm-admin.php:301
-#: includes/frontend/class-bcm-frontend-assets.php:167
-#: includes/frontend/class-bcm-frontend-assets.php:198
+#: includes/frontend/class-bcm-frontend-assets.php:118
+#: includes/frontend/class-bcm-frontend-assets.php:149
 msgid "Cancel"
 msgstr ""
 
@@ -218,6 +218,38 @@ msgstr ""
 msgid "Visit wbcomdesigns.com for more plugins and themes →"
 msgstr ""
 
+#: includes/admin/views/layout.php:31
+msgid "A private contact form on every member profile, with notifications, email copies, and role-based access control."
+msgstr ""
+
+#: includes/admin/views/layout.php:60
+msgid "Plugin"
+msgstr ""
+
+#: includes/admin/views/layout.php:63
+msgid "Contact Me navigation"
+msgstr ""
+
+#: includes/admin/views/layout.php:68
+msgid "Account"
+msgstr ""
+
+#: includes/admin/views/layout.php:89
+msgid "Resources"
+msgstr ""
+
+#: includes/admin/views/layout.php:92
+msgid "Documentation"
+msgstr ""
+
+#: includes/admin/views/layout.php:94
+msgid "(opens in a new tab)"
+msgstr ""
+
+#: includes/admin/views/layout.php:119
+msgid "Save Settings"
+msgstr ""
+
 #: includes/admin/views/license.php:46
 msgid "Lifetime"
 msgstr ""
@@ -236,195 +268,195 @@ msgid_plural "%d sites (unlimited)"
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/admin/views/license.php:82
+#: includes/admin/views/license.php:84
 msgid "Active"
 msgstr ""
 
-#: includes/admin/views/license.php:83
+#: includes/admin/views/license.php:88
 msgid "Expired"
 msgstr ""
 
-#: includes/admin/views/license.php:84
+#: includes/admin/views/license.php:92
 msgid "Invalid"
 msgstr ""
 
-#: includes/admin/views/license.php:85
+#: includes/admin/views/license.php:96
 msgid "Disabled"
 msgstr ""
 
-#: includes/admin/views/license.php:86
+#: includes/admin/views/license.php:100
 msgid "Site inactive"
 msgstr ""
 
-#: includes/admin/views/license.php:92
+#: includes/admin/views/license.php:107
 msgid "Saved, not activated"
 msgstr ""
 
-#: includes/admin/views/license.php:92
+#: includes/admin/views/license.php:107
 msgid "Not activated"
 msgstr ""
 
-#: includes/admin/views/license.php:97
+#: includes/admin/views/license.php:112
 msgid "Plugin License"
 msgstr ""
 
-#: includes/admin/views/license.php:98
+#: includes/admin/views/license.php:113
 msgid "Activate your license to receive automatic updates and priority support."
 msgstr ""
 
-#: includes/admin/views/license.php:107
+#: includes/admin/views/license.php:122
 msgid "License key"
 msgstr ""
 
-#: includes/admin/views/license.php:118
+#: includes/admin/views/license.php:133
 msgid "Paste your license key"
 msgstr ""
 
-#: includes/admin/views/license.php:122
+#: includes/admin/views/license.php:137
 msgid "Deactivate first to change the key."
 msgstr ""
 
 #. translators: %s: URL to the Wbcom Designs profile page where the customer can copy their license key.
-#: includes/admin/views/license.php:127
+#: includes/admin/views/license.php:142
 #, php-format
 msgid "Find your key in your <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">Wbcom Designs account</a>."
 msgstr ""
 
-#: includes/admin/views/license.php:138
+#: includes/admin/views/license.php:159
 msgid "Status"
 msgstr ""
 
-#: includes/admin/views/license.php:144
+#: includes/admin/views/license.php:165
 msgid "Expires:"
 msgstr ""
 
-#: includes/admin/views/license.php:151
+#: includes/admin/views/license.php:172
 msgid "Activations:"
 msgstr ""
 
 #. translators: %d: days remaining.
-#: includes/admin/views/license.php:160
+#: includes/admin/views/license.php:181
 #, php-format
 msgid "Renews in %d day - renew to keep receiving updates."
 msgid_plural "Renews in %d days - renew to keep receiving updates."
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/admin/views/license.php:174
+#: includes/admin/views/license.php:195
 msgid "Deactivate License"
 msgstr ""
 
-#: includes/admin/views/license.php:179
+#: includes/admin/views/license.php:200
 msgid "Activate License"
 msgstr ""
 
-#: includes/admin/views/overview.php:82
+#: includes/admin/views/overview.php:85
 msgid "Total Messages"
 msgstr ""
 
-#: includes/admin/views/overview.php:84
+#: includes/admin/views/overview.php:87
 msgid "Messages sent through Contact Me"
 msgstr ""
 
-#: includes/admin/views/overview.php:87
+#: includes/admin/views/overview.php:90
 msgid "Unique Senders"
 msgstr ""
 
-#: includes/admin/views/overview.php:89
+#: includes/admin/views/overview.php:92
 msgid "Members who have contacted someone"
 msgstr ""
 
-#: includes/admin/views/overview.php:92
+#: includes/admin/views/overview.php:95
 msgid "Unique Recipients"
 msgstr ""
 
-#: includes/admin/views/overview.php:94
+#: includes/admin/views/overview.php:97
 msgid "Members who have received messages"
 msgstr ""
 
-#: includes/admin/views/overview.php:97
+#: includes/admin/views/overview.php:100
 msgid "Active Recipients"
 msgstr ""
 
-#: includes/admin/views/overview.php:99
+#: includes/admin/views/overview.php:102
 msgid "Members with the Contact Me button on"
 msgstr ""
 
-#: includes/admin/views/overview.php:105
+#: includes/admin/views/overview.php:108
 msgid "Current Configuration"
 msgstr ""
 
-#: includes/admin/views/overview.php:106
+#: includes/admin/views/overview.php:109
 msgid "What happens right now when someone sends a message from a member profile."
 msgstr ""
 
-#: includes/admin/views/overview.php:110
+#: includes/admin/views/overview.php:113
 #: includes/admin/views/settings-access.php:73
 msgid "Profile contact tab"
 msgstr ""
 
-#: includes/admin/views/overview.php:113
+#: includes/admin/views/overview.php:116
 msgid "On: members see a \"Contact\" tab on every profile"
 msgstr ""
 
-#: includes/admin/views/overview.php:115
-#: includes/admin/views/overview.php:126
-#: includes/admin/views/overview.php:137
-#: includes/admin/views/overview.php:147
-#: includes/admin/views/overview.php:157
+#: includes/admin/views/overview.php:118
+#: includes/admin/views/overview.php:129
+#: includes/admin/views/overview.php:140
+#: includes/admin/views/overview.php:150
+#: includes/admin/views/overview.php:160
 msgid "Off"
 msgstr ""
 
-#: includes/admin/views/overview.php:116
-#: includes/admin/views/overview.php:127
+#: includes/admin/views/overview.php:119
+#: includes/admin/views/overview.php:130
 msgid "Turn on"
 msgstr ""
 
-#: includes/admin/views/overview.php:121
+#: includes/admin/views/overview.php:124
 msgid "BuddyPress notifications"
 msgstr ""
 
-#: includes/admin/views/overview.php:124
+#: includes/admin/views/overview.php:127
 msgid "On: recipients get a BuddyPress notification for every new message"
 msgstr ""
 
-#: includes/admin/views/overview.php:132
+#: includes/admin/views/overview.php:135
 msgid "Email notifications"
 msgstr ""
 
-#: includes/admin/views/overview.php:135
+#: includes/admin/views/overview.php:138
 msgid "On: recipients get an email for every new message"
 msgstr ""
 
-#: includes/admin/views/overview.php:142
+#: includes/admin/views/overview.php:145
 msgid "Admin copy"
 msgstr ""
 
-#: includes/admin/views/overview.php:145
+#: includes/admin/views/overview.php:148
 msgid "On: every message is copied to the site admin"
 msgstr ""
 
-#: includes/admin/views/overview.php:152
+#: includes/admin/views/overview.php:155
 msgid "Sender copy"
 msgstr ""
 
-#: includes/admin/views/overview.php:155
+#: includes/admin/views/overview.php:158
 msgid "On: the sender also gets a copy of their own message"
 msgstr ""
 
-#: includes/admin/views/overview.php:166
+#: includes/admin/views/overview.php:169
 msgid "Quick Actions"
 msgstr ""
 
-#: includes/admin/views/overview.php:172
+#: includes/admin/views/overview.php:175
 msgid "Configure Notifications"
 msgstr ""
 
-#: includes/admin/views/overview.php:176
+#: includes/admin/views/overview.php:179
 msgid "Edit Email Template"
 msgstr ""
 
-#: includes/admin/views/overview.php:180
+#: includes/admin/views/overview.php:183
 msgid "Access Control"
 msgstr ""
 
@@ -576,38 +608,6 @@ msgstr ""
 msgid "Also send a copy to the sender so they have a record"
 msgstr ""
 
-#: includes/admin/views/shell.php:31
-msgid "A private contact form on every member profile, with notifications, email copies, and role-based access control."
-msgstr ""
-
-#: includes/admin/views/shell.php:60
-msgid "Plugin"
-msgstr ""
-
-#: includes/admin/views/shell.php:63
-msgid "Contact Me navigation"
-msgstr ""
-
-#: includes/admin/views/shell.php:68
-msgid "Account"
-msgstr ""
-
-#: includes/admin/views/shell.php:89
-msgid "Resources"
-msgstr ""
-
-#: includes/admin/views/shell.php:92
-msgid "Documentation"
-msgstr ""
-
-#: includes/admin/views/shell.php:94
-msgid "(opens in a new tab)"
-msgstr ""
-
-#: includes/admin/views/shell.php:119
-msgid "Save Settings"
-msgstr ""
-
 #. translators: do not remove {} brackets or translate their contents.
 #: includes/email/class-bcm-email-installer.php:95
 msgid "[{{{site.name}}}] {{sender.name}} sent you a contact message"
@@ -641,54 +641,62 @@ msgstr ""
 msgid "A member (or visitor) sent a contact message from your profile."
 msgstr ""
 
-#: includes/frontend/class-bcm-frontend-assets.php:166
+#: includes/frontend/class-bcm-frontend-assets.php:117
 msgid "Confirm"
 msgstr ""
 
-#: includes/frontend/class-bcm-frontend-assets.php:194
+#: includes/frontend/class-bcm-frontend-assets.php:145
 msgid "Delete this message? This cannot be undone."
 msgstr ""
 
-#: includes/frontend/class-bcm-frontend-assets.php:195
+#: includes/frontend/class-bcm-frontend-assets.php:146
 msgid "Could not delete the message. Please try again."
 msgstr ""
 
-#: includes/frontend/class-bcm-frontend-assets.php:196
+#: includes/frontend/class-bcm-frontend-assets.php:147
 msgid "Sending…"
 msgstr ""
 
-#: includes/frontend/class-bcm-frontend-assets.php:197
+#: includes/frontend/class-bcm-frontend-assets.php:148
 #: includes/frontend/class-bcm-frontend-submit.php:58
 #: includes/rest/class-bcm-rest-messages.php:165
 #: public/partials/tab-form.php:45
 msgid "Message sent."
 msgstr ""
 
-#: includes/frontend/class-bcm-frontend-assets.php:199
-#: public/partials/tab-inbox.php:231
+#: includes/frontend/class-bcm-frontend-assets.php:150
+#: public/partials/tab-inbox.php:237
 #: public/partials/tab-message.php:169
 msgid "Delete"
 msgstr ""
 
-#: includes/frontend/class-bcm-frontend-assets.php:200
+#: includes/frontend/class-bcm-frontend-assets.php:151
 msgid "This field is required."
 msgstr ""
 
-#: includes/frontend/class-bcm-frontend-assets.php:201
+#: includes/frontend/class-bcm-frontend-assets.php:152
 #: includes/frontend/class-bcm-frontend-submit.php:115
 msgid "Enter a valid email address."
 msgstr ""
 
 #. translators: %d: minimum character count.
-#: includes/frontend/class-bcm-frontend-assets.php:203
+#: includes/frontend/class-bcm-frontend-assets.php:154
 #, php-format
 msgid "At least %d characters."
 msgstr ""
 
 #. translators: %d: maximum character count.
-#: includes/frontend/class-bcm-frontend-assets.php:205
+#: includes/frontend/class-bcm-frontend-assets.php:156
 #, php-format
 msgid "No more than %d characters."
+msgstr ""
+
+#: includes/frontend/class-bcm-frontend-assets.php:157
+msgid "Link copied."
+msgstr ""
+
+#: includes/frontend/class-bcm-frontend-assets.php:158
+msgid "Copy not supported in this browser."
 msgstr ""
 
 #: includes/frontend/class-bcm-frontend-nav.php:70
@@ -857,41 +865,41 @@ msgstr ""
 msgid "Please solve the math problem."
 msgstr ""
 
-#: public/partials/tab-inbox.php:74
+#: public/partials/tab-inbox.php:80
 msgid "How Contact works"
 msgstr ""
 
-#: public/partials/tab-inbox.php:76
+#: public/partials/tab-inbox.php:82
 msgid "Members and visitors can send you a private message from your profile — no email required. New messages land here, trigger a notification, and (optionally) send you an email."
 msgstr ""
 
-#: public/partials/tab-inbox.php:79
+#: public/partials/tab-inbox.php:85
 msgid "Manage preferences"
 msgstr ""
 
-#: public/partials/tab-inbox.php:82
-#: public/partials/tab-inbox.php:115
+#: public/partials/tab-inbox.php:88
+#: public/partials/tab-inbox.php:121
 msgid "Copy my contact link"
 msgstr ""
 
-#: public/partials/tab-inbox.php:86
+#: public/partials/tab-inbox.php:92
 msgid "Dismiss this tip"
 msgstr ""
 
-#: public/partials/tab-inbox.php:106
+#: public/partials/tab-inbox.php:112
 msgid "Your inbox is quiet — for now."
 msgstr ""
 
-#: public/partials/tab-inbox.php:108
+#: public/partials/tab-inbox.php:114
 msgid "When someone sends you a message from your profile's Contact tab, it'll show up here."
 msgstr ""
 
-#: public/partials/tab-inbox.php:112
+#: public/partials/tab-inbox.php:118
 msgid "View my profile"
 msgstr ""
 
 #. translators: %d: unread message count
-#: public/partials/tab-inbox.php:130
+#: public/partials/tab-inbox.php:136
 #, php-format
 msgid "%d unread message"
 msgid_plural "%d unread messages"
@@ -899,57 +907,57 @@ msgstr[0] ""
 msgstr[1] ""
 
 #. translators: %d: total messages
-#: public/partials/tab-inbox.php:133
+#: public/partials/tab-inbox.php:139
 #, php-format
 msgid "%d message"
 msgid_plural "%d messages"
 msgstr[0] ""
 msgstr[1] ""
 
-#: public/partials/tab-inbox.php:137
+#: public/partials/tab-inbox.php:143
 msgid "Filter messages"
 msgstr ""
 
-#: public/partials/tab-inbox.php:141
+#: public/partials/tab-inbox.php:147
 msgid "All"
 msgstr ""
 
-#: public/partials/tab-inbox.php:147
+#: public/partials/tab-inbox.php:153
 msgid "Unread"
 msgstr ""
 
-#: public/partials/tab-inbox.php:156
+#: public/partials/tab-inbox.php:162
 msgid "You have no unread messages right now. Nice — inbox zero."
 msgstr ""
 
-#: public/partials/tab-inbox.php:160
+#: public/partials/tab-inbox.php:166
 msgid "Back to all messages"
 msgstr ""
 
 #. translators: %s: time-ago string (e.g. "3 hours")
-#: public/partials/tab-inbox.php:191
+#: public/partials/tab-inbox.php:197
 #, php-format
 msgid "%s ago"
 msgstr ""
 
-#: public/partials/tab-inbox.php:214
+#: public/partials/tab-inbox.php:220
 #: public/partials/tab-message.php:115
 msgid "Guest"
 msgstr ""
 
-#: public/partials/tab-inbox.php:217
+#: public/partials/tab-inbox.php:223
 msgid "New"
 msgstr ""
 
-#: public/partials/tab-inbox.php:239
+#: public/partials/tab-inbox.php:245
 msgid "Inbox pagination"
 msgstr ""
 
-#: public/partials/tab-inbox.php:248
+#: public/partials/tab-inbox.php:254
 msgid "« Prev"
 msgstr ""
 
-#: public/partials/tab-inbox.php:249
+#: public/partials/tab-inbox.php:255
 msgid "Next »"
 msgstr ""
 
