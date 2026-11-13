@@ -56,6 +56,7 @@ function bcm_maybe_upgrade() {
 	// enabled, so migrate any empty strings to 'on' to make the meta
 	// set self-consistent going forward.
 	global $wpdb;
+	// phpcs:ignore WordPress.DB.DirectDatabaseQuery -- one-time upgrade.
 	$wpdb->query(
 		$wpdb->prepare(
 			"UPDATE {$wpdb->usermeta} SET meta_value = %s WHERE meta_key = %s AND meta_value = ''",

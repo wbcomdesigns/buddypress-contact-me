@@ -28,9 +28,9 @@ $unique_senders = (int) $wpdb->get_var( "SELECT COUNT(DISTINCT sender) FROM {$ta
 $unique_recipients = (int) $wpdb->get_var( "SELECT COUNT(DISTINCT reciever) FROM {$table_name} WHERE reciever > 0" );
 
 // Members accepting messages: everyone except those who switched it off.
-// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 $active_recipients = max(
 	0,
+	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 	(int) get_user_count() - (int) $wpdb->get_var(
 		$wpdb->prepare(
 			"SELECT COUNT(*) FROM {$wpdb->usermeta} WHERE meta_key = %s AND meta_value = %s",

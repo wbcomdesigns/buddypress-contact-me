@@ -33,10 +33,10 @@ unset( $all_roles['administrator'] );
  * so it doesn't bleed into the Who-Can-Be-Contacted grid (recipients are
  * always real users).
  */
-$sender_groups                = $all_roles;
-$sender_groups['visitors']    = __( 'Visitors (not logged in)', 'buddypress-contact-me' );
-$sender_total                 = count( $sender_groups );
-$sender_selected              = count( array_intersect( array_keys( $sender_groups ), $who_contact ) );
+$sender_groups             = $all_roles;
+$sender_groups['visitors'] = __( 'Visitors (not logged in)', 'buddypress-contact-me' );
+$sender_total              = count( $sender_groups );
+$sender_selected           = count( array_intersect( array_keys( $sender_groups ), $who_contact ) );
 
 // Sentinel inputs so the sanitizer can tell "user unchecked me" apart
 // from "this tab never rendered me". See class-bcm-admin.php::sanitize_settings()

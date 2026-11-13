@@ -43,11 +43,11 @@ $is_lifetime  = ( 'lifetime' === $expires_raw );
 $expires_text = '&mdash;';
 $days_left    = 0;
 if ( $is_lifetime ) {
-	$expires_text = esc_html__( 'Lifetime', 'buddypress-contact-me' );
+	$expires_text = __( 'Lifetime', 'buddypress-contact-me' );
 } elseif ( '' !== $expires_raw ) {
 	$ts = strtotime( $expires_raw );
 	if ( $ts ) {
-		$expires_text = esc_html( wp_date( get_option( 'date_format' ), $ts ) );
+		$expires_text = wp_date( get_option( 'date_format' ), $ts );
 		$days_left    = (int) floor( ( $ts - time() ) / DAY_IN_SECONDS );
 	}
 }
@@ -57,8 +57,8 @@ $expiring_soon = $is_active && ! $is_lifetime && $days_left > 0 && $days_left <=
 // that explicitly so customers don't see "1/0 sites" and panic.
 $activations_text = '&mdash;';
 if ( is_object( $data ) && isset( $data->site_count, $data->license_limit ) ) {
-	$site_count    = (int) $data->site_count;
-	$license_limit = (int) $data->license_limit;
+	$site_count       = (int) $data->site_count;
+	$license_limit    = (int) $data->license_limit;
 	$activations_text = $license_limit > 0
 		? esc_html(
 			sprintf(
@@ -78,14 +78,29 @@ if ( is_object( $data ) && isset( $data->site_count, $data->license_limit ) ) {
 }
 
 // Status pill spec - mirrors EDD's `license` slug.
-$status_map = array(
-	'valid'         => array( 'class' => 'is-active',   'label' => __( 'Active', 'buddypress-contact-me' ) ),
-	'expired'       => array( 'class' => 'is-expired',  'label' => __( 'Expired', 'buddypress-contact-me' ) ),
-	'invalid'       => array( 'class' => 'is-invalid',  'label' => __( 'Invalid', 'buddypress-contact-me' ) ),
-	'disabled'      => array( 'class' => 'is-invalid',  'label' => __( 'Disabled', 'buddypress-contact-me' ) ),
-	'site_inactive' => array( 'class' => 'is-inactive', 'label' => __( 'Site inactive', 'buddypress-contact-me' ) ),
+$status_map     = array(
+	'valid'         => array(
+		'class' => 'is-active',
+		'label' => __( 'Active', 'buddypress-contact-me' ),
+	),
+	'expired'       => array(
+		'class' => 'is-expired',
+		'label' => __( 'Expired', 'buddypress-contact-me' ),
+	),
+	'invalid'       => array(
+		'class' => 'is-invalid',
+		'label' => __( 'Invalid', 'buddypress-contact-me' ),
+	),
+	'disabled'      => array(
+		'class' => 'is-invalid',
+		'label' => __( 'Disabled', 'buddypress-contact-me' ),
+	),
+	'site_inactive' => array(
+		'class' => 'is-inactive',
+		'label' => __( 'Site inactive', 'buddypress-contact-me' ),
+	),
 );
-$status = isset( $status_map[ $snapshot['license'] ] )
+$license_status = isset( $status_map[ $snapshot['license'] ] )
 	? $status_map[ $snapshot['license'] ]
 	: array(
 		'class' => $has_key ? 'is-pending' : 'is-inactive',
@@ -125,7 +140,13 @@ $status = isset( $status_map[ $snapshot['license'] ] )
 									wp_kses(
 										/* translators: %s: URL to the Wbcom Designs profile page where the customer can copy their license key. */
 										__( 'Find your key in your <a href="%s" target="_blank" rel="noopener noreferrer">Wbcom Designs account</a>.', 'buddypress-contact-me' ),
-										array( 'a' => array( 'href' => array(), 'target' => array(), 'rel' => array() ) )
+										array(
+											'a' => array(
+												'href'   => array(),
+												'target' => array(),
+												'rel'    => array(),
+											),
+										)
 									),
 									esc_url( 'https://wbcomdesigns.com/profile/' )
 								);
@@ -137,19 +158,19 @@ $status = isset( $status_map[ $snapshot['license'] ] )
 				<tr>
 					<th scope="row"><?php esc_html_e( 'Status', 'buddypress-contact-me' ); ?></th>
 					<td>
-						<span class="bcm-license-status <?php echo esc_attr( $status['class'] ); ?>"><?php echo esc_html( $status['label'] ); ?></span>
+						<span class="bcm-license-status <?php echo esc_attr( $license_status['class'] ); ?>"><?php echo esc_html( $license_status['label'] ); ?></span>
 						<?php if ( $is_active || ( is_object( $data ) && isset( $data->expires ) ) ) : ?>
 							<span class="bcm-license-meta-sep" aria-hidden="true">&middot;</span>
 							<span class="bcm-license-meta">
 								<strong><?php esc_html_e( 'Expires:', 'buddypress-contact-me' ); ?></strong>
-								<?php echo $expires_text; // already escaped above. ?>
+								<?php echo esc_html( $expires_text ); ?>
 							</span>
 						<?php endif; ?>
 						<?php if ( $is_active || ( is_object( $data ) && isset( $data->site_count, $data->license_limit ) ) ) : ?>
 							<span class="bcm-license-meta-sep" aria-hidden="true">&middot;</span>
 							<span class="bcm-license-meta">
 								<strong><?php esc_html_e( 'Activations:', 'buddypress-contact-me' ); ?></strong>
-								<?php echo $activations_text; // already escaped above. ?>
+								<?php echo esc_html( $activations_text ); ?>
 							</span>
 						<?php endif; ?>
 						<?php if ( $expiring_soon ) : ?>

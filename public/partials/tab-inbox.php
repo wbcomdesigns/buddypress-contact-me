@@ -30,7 +30,7 @@ if ( 'unread' === $bcm_filter ) {
 	$bcm_messages = BCM_Messages_Repo::list_for_recipient( $bcm_user_id, $bcm_per_page, $bcm_page );
 	$bcm_shown    = $bcm_total;
 }
-$bcm_pages           = $bcm_per_page ? (int) ceil( max( 1, $bcm_shown ) / $bcm_per_page ) : 1;
+$bcm_pages = $bcm_per_page ? (int) ceil( max( 1, $bcm_shown ) / $bcm_per_page ) : 1;
 
 // Batch-prefetch every sender on this page so the foreach below doesn't
 // fire N+1 user lookups against a cold cache. cache_users() primes the
@@ -38,12 +38,18 @@ $bcm_pages           = $bcm_per_page ? (int) ceil( max( 1, $bcm_shown ) / $bcm_p
 // bp_core_get_user_displayname() / bp_members_get_user_url() calls are
 // served from object cache instead of hitting the DB per row.
 if ( ! empty( $bcm_messages ) ) {
-	$bcm_sender_ids = array_values( array_unique( array_filter( array_map(
-		static function ( $m ) {
-			return (int) $m->sender;
-		},
-		$bcm_messages
-	) ) ) );
+	$bcm_sender_ids = array_values(
+		array_unique(
+			array_filter(
+				array_map(
+					static function ( $m ) {
+						return (int) $m->sender;
+					},
+					$bcm_messages
+				)
+			)
+		)
+	);
 	if ( ! empty( $bcm_sender_ids ) && function_exists( 'cache_users' ) ) {
 		cache_users( $bcm_sender_ids );
 	}

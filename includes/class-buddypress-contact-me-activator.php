@@ -78,7 +78,7 @@ class BuddyPress_Contact_Me_Activator {
 	/**
 	 * Idempotent schema install — safe to call on activation OR upgrade.
 	 *
-	 * dbDelta is the right tool: it CREATEs missing tables AND ADDs missing
+	 * The dbDelta() call is the right tool: it CREATEs missing tables AND ADDs missing
 	 * keys to existing tables without dropping data. We rely on that here
 	 * so existing installs get the (reciever, datetime DESC, id DESC)
 	 * composite index without a manual ALTER TABLE script.
@@ -96,9 +96,9 @@ class BuddyPress_Contact_Me_Activator {
 		$table           = $wpdb->prefix . 'contact_me';
 
 		// Indexes added in 1.5.0 for big-site readiness:
-		//   bcm_recipient_recent — covers the inbox list query
-		//                          WHERE reciever = %d ORDER BY datetime DESC, id DESC
-		//   bcm_recipient        — covers count_for_recipient COUNT(*) WHERE reciever = %d
+		// bcm_recipient_recent — covers the inbox list query
+		// WHERE reciever = %d ORDER BY datetime DESC, id DESC
+		// bcm_recipient        — covers count_for_recipient COUNT(*) WHERE reciever = %d
 		// dbDelta uses key NAMES to detect existing keys, so renaming an
 		// existing key would orphan the old one. These names are stable;
 		// never rename them in a future release.
@@ -125,22 +125,25 @@ class BuddyPress_Contact_Me_Activator {
 		// perf fix would never land while looking like it had. SHOW INDEX
 		// is the canonical post-condition check; runs in microseconds.
 		foreach ( self::REQUIRED_INDEXES as $key_name ) {
-			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery
 			$found = $wpdb->get_var(
 				$wpdb->prepare(
-					"SHOW INDEX FROM {$table} WHERE Key_name = %s",
+					'SHOW INDEX FROM %i WHERE Key_name = %s',
+					$table,
 					$key_name
 				)
 			);
 			if ( ! $found ) {
 				if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
 					// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
-					error_log( sprintf(
-						'[buddypress-contact-me] Schema migration to %s failed: index "%s" missing on %s after dbDelta. The DB user may lack ALTER TABLE privilege on this host. db_version NOT bumped — next page load will retry.',
-						self::DB_VERSION,
-						$key_name,
-						$table
-					) );
+					error_log(
+						sprintf(
+							'[buddypress-contact-me] Schema migration to %s failed: index "%s" missing on %s after dbDelta. The DB user may lack ALTER TABLE privilege on this host. db_version NOT bumped — next page load will retry.',
+							self::DB_VERSION,
+							$key_name,
+							$table
+						)
+					);
 				}
 				return false;
 			}
@@ -161,7 +164,7 @@ class BuddyPress_Contact_Me_Activator {
 	/**
 	 * Convert message times stored in site local time to UTC.
 	 *
-	 * ponytail: uses today's UTC offset for every row, so rows from the other
+	 * Ponytail: uses today's UTC offset for every row, so rows from the other
 	 * side of a DST change are an hour off. Per-row conversion would need PHP
 	 * over the whole table; one UPDATE stays safe on big sites.
 	 *
@@ -174,10 +177,11 @@ class BuddyPress_Contact_Me_Activator {
 			return;
 		}
 		$table = $wpdb->prefix . 'contact_me';
-		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery
 		$wpdb->query(
 			$wpdb->prepare(
-				"UPDATE {$table} SET datetime = DATE_FORMAT( DATE_SUB( datetime, INTERVAL %d SECOND ), '%%Y-%%m-%%d %%H:%%i:%%s' ) WHERE datetime LIKE %s",
+				"UPDATE %i SET datetime = DATE_FORMAT( DATE_SUB( datetime, INTERVAL %d SECOND ), '%%Y-%%m-%%d %%H:%%i:%%s' ) WHERE datetime LIKE %s",
+				$table,
 				$offset,
 				'____-__-__ __:__:__'
 			)

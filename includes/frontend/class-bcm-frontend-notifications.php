@@ -150,17 +150,17 @@ class BCM_Frontend_Notifications {
 		// Output buffer the BP send. Two reasons:
 		//
 		// 1. send_email() runs inside the bp_contact_me_form_save action,
-		//    which fires from the REST callback (and the classic-POST
-		//    handler). bp_send_email() walks third-party hooks and BP
-		//    internals — any of them emitting a PHP notice/warning with
-		//    WP_DEBUG_DISPLAY on would echo HTML into the response stream
-		//    BEFORE wp_send_json fires, breaking apiFetch with the
-		//    "response is not a valid JSON response" error visitors saw
-		//    in card 9828092913.
+		// which fires from the REST callback (and the classic-POST
+		// handler). bp_send_email() walks third-party hooks and BP
+		// internals — any of them emitting a PHP notice/warning with
+		// WP_DEBUG_DISPLAY on would echo HTML into the response stream
+		// BEFORE wp_send_json fires, breaking apiFetch with the
+		// "response is not a valid JSON response" error visitors saw
+		// in card 9828092913.
 		// 2. The notices themselves (e.g. BP_Email_Recipient property
-		//    reads against missing user lookups for guest emails) are
-		//    bp-core internals we can't fix from here — silencing display
-		//    while still preserving error_log() is the right boundary.
+		// reads against missing user lookups for guest emails) are
+		// bp-core internals we can't fix from here — silencing display
+		// while still preserving error_log() is the right boundary.
 		$ob_started = ob_start();
 		try {
 			bp_send_email( BCM_Email_Installer::TYPE, $recipients, array( 'tokens' => $tokens ) );
