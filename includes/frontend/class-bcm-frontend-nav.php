@@ -43,8 +43,8 @@ class BCM_Frontend_Nav {
 	}
 
 	/**
-	 * Register the Contact tab + its sub-tabs on every member profile
-	 * that accepts contact.
+	 * Register the Contact tab + its sub-tabs: always on the member's own
+	 * profile, on other profiles only when they accept contact.
 	 */
 	public function setup_nav() {
 		if ( ! function_exists( 'bp_displayed_user_id' ) ) {
@@ -56,11 +56,15 @@ class BCM_Frontend_Nav {
 			return;
 		}
 
-		if ( ! self::contact_tab_enabled() || ! self::user_accepts_contact( $displayed_user_id ) ) {
+		$is_own = ( bp_loggedin_user_id() === $displayed_user_id );
+
+		// Members always keep their own Inbox + Preferences (even after opting
+		// out, or with the profile tab off) so old messages and notification
+		// links stay reachable. Only the visitor-facing Send tab is gated.
+		if ( ! $is_own && ( ! self::contact_tab_enabled() || ! self::user_accepts_contact( $displayed_user_id ) ) ) {
 			return;
 		}
 
-		$is_own      = ( bp_loggedin_user_id() === $displayed_user_id );
 		$user_domain = function_exists( 'bp_members_get_user_url' )
 			? bp_members_get_user_url( $displayed_user_id )
 			: bp_core_get_user_domain( $displayed_user_id );
@@ -331,7 +335,7 @@ class BCM_Frontend_Nav {
 	}
 
 	/**
-	 * Add a "Contact" shortcut under the BP admin bar entry.
+	 * Add a "Contact" shortcut (the member's own inbox) under the BP admin bar entry.
 	 */
 	public function admin_bar() {
 		if ( ! is_user_logged_in() ) {
@@ -343,9 +347,6 @@ class BCM_Frontend_Nav {
 		}
 
 		$user_id = get_current_user_id();
-		if ( ! self::contact_tab_enabled() || ! self::user_accepts_contact( $user_id ) ) {
-			return;
-		}
 
 		$user_domain = function_exists( 'bp_members_get_user_url' )
 			? bp_members_get_user_url( $user_id )
