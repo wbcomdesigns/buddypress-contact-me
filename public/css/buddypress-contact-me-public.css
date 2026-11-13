@@ -1,8 +1,9 @@
 /**
  * BuddyPress Contact Me — public styles.
  *
- * Token-based, BEM-ish. Loads only on the Contact tab. Works on BuddyX,
- * BuddyBoss, and Twenty* themes.
+ * Token-based, BEM-ish. Loads on the Contact tab, BP Settings and pages
+ * with the [buddypress-contact-me] shortcode. Colours chain to the BuddyX /
+ * Reign tokens with literal fallbacks for any other theme.
  */
 
 :root {
@@ -23,8 +24,14 @@
 	--bcm-color-text: var(--bx-color-fg, var(--reign-site-body-text-color, #1e2327 ) );
 	--bcm-color-text-muted: var(--bx-color-fg-muted, var(--reign-site-alternate-text-color, #5f6b77 ) );
 	--bcm-color-link: var(--bx-color-link, var(--reign-site-link-color, #2271b1 ) );
-	--bcm-color-primary: var(--bx-color-accent, var(--reign-colors-theme, #2271b1 ) );
-	--bcm-color-primary-hover: var(--bx-color-link-hover, var(--reign-site-link-hover-color, #135e96 ) );
+	/* Primary fills use the theme's button pair so the label colour always
+	 * matches the fill (BuddyX dark: light-coral fill, near-black text). */
+	--bcm-color-primary: var(--bx-color-button-bg, var(--bx-color-accent, var(--reign-colors-theme, #2271b1 ) ) );
+	--bcm-color-primary-hover: var(--bx-color-button-bg-hover, var(--bx-color-link-hover, var(--reign-site-link-hover-color, #135e96 ) ) );
+	--bcm-color-on-primary: var(--bx-color-button-fg, #ffffff );
+	/* Inverted chip (toast, tooltip): page text colour as the fill. */
+	--bcm-color-inverse-bg: var(--bx-color-fg, var(--reign-site-body-text-color, #1e2327 ) );
+	--bcm-color-inverse-fg: var(--bx-color-fg-inverse, #ffffff );
 
 	/* Faint accent wash for "unread"/selected surfaces. Derived from the live
 	 * accent so it follows a customised theme instead of a baked-in blue. The
@@ -40,6 +47,18 @@
 	--bcm-color-success: #00a32a;
 	--bcm-color-warning: #dba617;
 	--bcm-color-focus: var(--bx-color-accent, var(--reign-colors-theme, #2271b1 ) );
+	--bcm-color-on-danger: #ffffff;
+
+	/* Status tints for banners and hover washes, derived from the status
+	 * colour so they flip with it. rgba lines are the no-color-mix fallback. */
+	--bcm-color-success-soft: rgba( 0, 163, 42, 0.1 );
+	--bcm-color-success-soft: color-mix( in srgb, var( --bcm-color-success ) 12%, transparent );
+	--bcm-color-danger-soft: rgba( 214, 54, 56, 0.1 );
+	--bcm-color-danger-soft: color-mix( in srgb, var( --bcm-color-danger ) 12%, transparent );
+	--bcm-color-warning-soft: rgba( 219, 166, 23, 0.12 );
+	--bcm-color-warning-soft: color-mix( in srgb, var( --bcm-color-warning ) 14%, transparent );
+	--bcm-color-info-soft: rgba( 34, 113, 177, 0.1 );
+	--bcm-color-info-soft: color-mix( in srgb, var( --bcm-color-primary ) 12%, transparent );
 
 	/* QA-canonical aliases (surface / page / text) used by the dark contract. */
 	--bcm-bg: var( --bcm-color-bg );
@@ -64,10 +83,10 @@
 	line-height: 1.5;
 }
 
-.bcm-alert--success { border-left-color: var( --bcm-color-success ); background: #edfaef; }
-.bcm-alert--error   { border-left-color: var( --bcm-color-danger );  background: #fcecec; }
-.bcm-alert--warning { border-left-color: var( --bcm-color-warning ); background: #fff8e5; }
-.bcm-alert--info    { border-left-color: var( --bcm-color-primary ); background: #eaf2fa; }
+.bcm-alert--success { border-left-color: var( --bcm-color-success ); background: var( --bcm-color-success-soft ); }
+.bcm-alert--error   { border-left-color: var( --bcm-color-danger );  background: var( --bcm-color-danger-soft ); }
+.bcm-alert--warning { border-left-color: var( --bcm-color-warning ); background: var( --bcm-color-warning-soft ); }
+.bcm-alert--info    { border-left-color: var( --bcm-color-primary ); background: var( --bcm-color-info-soft ); }
 
 /* ---------- Toast ---------- */
 
@@ -88,8 +107,8 @@
 	max-width: 360px;
 	padding: 12px 16px;
 	border-radius: var( --bcm-radius );
-	background: #1e2327;
-	color: #ffffff;
+	background: var( --bcm-color-inverse-bg );
+	color: var( --bcm-color-inverse-fg );
 	font-size: 14px;
 	line-height: 1.45;
 	box-shadow: var( --bcm-shadow-lg );
@@ -255,7 +274,7 @@
 	padding: 10px 18px;
 	font-size: 15px;
 	font-weight: 600;
-	color: #ffffff;
+	color: var( --bcm-color-on-primary );
 	background: var( --bcm-color-primary );
 	border: 1px solid var( --bcm-color-primary );
 	border-radius: var( --bcm-radius-sm );
@@ -272,8 +291,8 @@
 	width: 14px;
 	height: 14px;
 	border-radius: 50%;
-	border: 2px solid rgba( 255, 255, 255, 0.5 );
-	border-top-color: #ffffff;
+	border: 2px solid currentColor;
+	border-top-color: transparent;
 	animation: bcm-spin 720ms linear infinite;
 }
 .bcm-submit__spinner { display: none; }
@@ -309,7 +328,7 @@
 .bcm-inbox__unread {
 	padding: 2px 10px;
 	background: var( --bcm-color-primary );
-	color: #ffffff;
+	color: var( --bcm-color-on-primary );
 	border-radius: 999px;
 	font-size: 12px;
 	font-weight: 600;
@@ -361,7 +380,7 @@
 	font-weight: 600;
 }
 
-.bcm-inbox__filter.is-active .bcm-inbox__filter-count { background: var( --bcm-color-primary ); color: #ffffff; }
+.bcm-inbox__filter.is-active .bcm-inbox__filter-count { background: var( --bcm-color-primary ); color: var( --bcm-color-on-primary ); }
 
 .bcm-empty--inline {
 	padding: 24px;
@@ -388,8 +407,8 @@
 	height: 18px;
 	margin-inline-start: 6px;
 	padding: 0 6px;
-	background: var( --color-theme-primary, var( --reign-colors-theme, var( --bcm-color-primary ) ) );
-	color: #ffffff;
+	background: var( --bcm-color-primary );
+	color: var( --bcm-color-on-primary );
 	border-radius: 999px;
 	font-size: 11px;
 	font-weight: 600;
@@ -442,7 +461,7 @@
 	font-weight: 700;
 	text-transform: uppercase;
 	letter-spacing: 0.06em;
-	color: #ffffff;
+	color: var( --bcm-color-on-primary );
 	background: var( --bcm-color-primary );
 	border-radius: 999px;
 }
@@ -502,8 +521,8 @@
 	line-height: 1;
 }
 
-.bcm-message__view:hover   { color: var( --bcm-color-primary ); background: #eaf2fa; }
-.bcm-message__delete:hover { color: var( --bcm-color-danger );  background: #fcecec; }
+.bcm-message__view:hover   { color: var( --bcm-color-primary ); background: var( --bcm-color-info-soft ); }
+.bcm-message__delete:hover { color: var( --bcm-color-danger );  background: var( --bcm-color-danger-soft ); }
 
 .bcm-pagination { display: flex; justify-content: center; gap: 4px; padding: 16px 0 4px; }
 
@@ -521,7 +540,7 @@
 .bcm-pagination .page-numbers:hover {
 	background: var( --bcm-color-primary );
 	border-color: var( --bcm-color-primary );
-	color: #ffffff;
+	color: var( --bcm-color-on-primary );
 }
 
 /* ---------- Empty state ---------- */
@@ -551,7 +570,7 @@
 	border: 1px solid transparent;
 	cursor: pointer;
 }
-.bcm-empty__actions .button-link:hover { background: #eaf2fa; }
+.bcm-empty__actions .button-link:hover { background: var( --bcm-color-info-soft ); }
 
 /* ---------- Confirm overlay (bcmConfirm) ---------- */
 
@@ -575,7 +594,8 @@
 	width: 100%;
 	max-width: 420px;
 	padding: 20px;
-	background: #ffffff;
+	background: var( --bcm-color-surface );
+	border: 1px solid var( --bcm-color-border );
 	border-radius: var( --bcm-radius );
 	box-shadow: var( --bcm-shadow-lg );
 	transform: translateY( -6px );
@@ -584,8 +604,8 @@
 
 .bcm-confirm-overlay--visible .bcm-confirm { transform: translateY( 0 ); }
 
-.bcm-confirm__title   { margin: 0 0 6px;  font-size: 16px; font-weight: 600; color: #1e2327; }
-.bcm-confirm__message { margin: 0 0 16px; font-size: 14px; line-height: 1.5; color: #5f6b77; }
+.bcm-confirm__title   { margin: 0 0 6px;  font-size: 16px; font-weight: 600; color: var( --bcm-color-text ); }
+.bcm-confirm__message { margin: 0 0 16px; font-size: 14px; line-height: 1.5; color: var( --bcm-color-text-muted ); }
 
 .bcm-confirm__actions { display: flex; justify-content: flex-end; gap: 8px; }
 
@@ -595,17 +615,11 @@
 	font-weight: 600;
 	border-radius: 6px;
 	cursor: pointer;
-	border: 1px solid #c7ced6;
-	background: #ffffff;
-	color: #1e2327;
+	border: 1px solid var( --bcm-color-border-strong );
+	background: var( --bcm-color-surface );
+	color: var( --bcm-color-text );
 }
-.bcm-confirm__btn:hover { background: #f6f7f9; }
-
-.bcm-confirm__btn--confirm { background: #2271b1; border-color: #2271b1; color: #ffffff; }
-.bcm-confirm__btn--confirm:hover { background: #135e96; border-color: #135e96; }
-
-.bcm-confirm__btn--dangerous { background: #d63638; border-color: #d63638; color: #ffffff; }
-.bcm-confirm__btn--dangerous:hover { background: #b32d2e; border-color: #b32d2e; }
+.bcm-confirm__btn:hover { background: var( --bcm-color-bg-soft ); }
 
 /* ---------- Per-user BP settings toggle ---------- */
 
@@ -635,8 +649,8 @@
 	align-items: flex-start;
 	margin: 0 0 var( --bcm-gap );
 	padding: 14px 16px;
-	background: #eaf2fa;
-	border: 1px solid #c6dbf0;
+	background: var( --bcm-color-info-soft );
+	border: 1px solid var( --bcm-color-border );
 	border-radius: var( --bcm-radius );
 	transition: opacity 200ms ease;
 }
@@ -674,8 +688,8 @@
 	color: var( --bcm-color-text-muted );
 }
 
-.bcm-info__links a,
-.bcm-info__links .button-link {
+.bcm-info[data-bcm-info] .bcm-info__links a,
+.bcm-info[data-bcm-info] .bcm-info__links button.button-link {
 	color: var( --bcm-color-primary );
 	text-decoration: none;
 	background: none;
@@ -685,12 +699,12 @@
 	font-size: inherit;
 }
 
-.bcm-info__links a:hover,
-.bcm-info__links .button-link:hover {
+.bcm-info[data-bcm-info] .bcm-info__links a:hover,
+.bcm-info[data-bcm-info] .bcm-info__links button.button-link:hover {
 	text-decoration: underline;
 }
 
-.bcm-info__close {
+.bcm-info[data-bcm-info] button.bcm-info__close {
 	background: transparent;
 	border: 0;
 	padding: 2px;
@@ -700,8 +714,8 @@
 	align-self: flex-start;
 }
 
-.bcm-info__close:hover {
-	background: rgba( 0, 0, 0, 0.06 );
+.bcm-info[data-bcm-info] button.bcm-info__close:hover {
+	background: var( --bcm-color-bg-soft );
 	color: var( --bcm-color-text );
 }
 
@@ -760,8 +774,8 @@
 	padding: 4px 8px;
 	font-size: 11px;
 	font-weight: 500;
-	color: #ffffff;
-	background: #1e2327;
+	color: var( --bcm-color-inverse-fg );
+	background: var( --bcm-color-inverse-bg );
 	border-radius: 4px;
 	white-space: nowrap;
 	pointer-events: none;
@@ -943,7 +957,7 @@
 }
 
 .bcm-message-view__action--primary {
-	color: #ffffff;
+	color: var( --bcm-color-on-primary );
 	background: var( --bcm-color-primary );
 	border-color: var( --bcm-color-primary );
 }
@@ -952,7 +966,7 @@
 .bcm-message-view__action--primary:focus-visible {
 	background: var( --bcm-color-primary-hover );
 	border-color: var( --bcm-color-primary-hover );
-	color: #ffffff;
+	color: var( --bcm-color-on-primary );
 }
 
 .bcm-message-view__action--danger {
@@ -964,7 +978,7 @@
 
 .bcm-message-view__action--danger:hover,
 .bcm-message-view__action--danger:focus-visible {
-	color: #ffffff;
+	color: var( --bcm-color-on-danger );
 	background: var( --bcm-color-danger );
 	border-color: var( --bcm-color-danger );
 }
@@ -1107,176 +1121,50 @@
 
 /* ---------- Dark mode (theme-driven) ---------- *
  *
- * All colours hang on CSS custom properties, so themes that ship dark
- * mode get our palette automatically once the sentinel class is on the
- * body.
+ * Keyed only on the theme's own dark switch: `html[data-bx-mode="dark"]`
+ * (BuddyX 5.1+, BuddyX Pro, Reign 8) and `body.buddyx-dark-theme` (older
+ * BuddyX). Never prefers-color-scheme: the site's toggle decides, not the OS.
  *
- * The sentinel `body.bcm-dark` is set by an inline observer in
- * BCM_Frontend_Assets::output_dark_mode_mirror() that watches both
- * <html> and <body> for the dark-mode classes BuddyX
- * (`buddyx-dark-theme`), Reign (`dark-mode` on <html>), BuddyBoss
- * (`bb-dark-mode` / `bb-dark-mode-on`), and the wp-dark-mode plugin
- * (`wp-dark-mode-active`) emit. Centralising detection in one script
- * means future themes only need their own dark class added to that
- * list — every dark rule below stays untouched.
- *
- * We deliberately do NOT hook into prefers-color-scheme: site owners
- * pick the trigger, not the OS.
+ * The themes flip their --bx-color-* tokens in dark mode, so every chain is
+ * re-declared here (it must resolve where the dark switch sits) with dark
+ * fallbacks for a theme that only sets the switch. Status colours keep their
+ * own dark values so "error" never borrows the accent.
  */
-html.dark-mode,
-body.dark-mode,
-body.dark-scheme,
-html.dark,
-[data-theme="dark"],
 html[data-bx-mode="dark"],
-.buddyx-dark-mode,
-.buddyx-dark-theme,
-.bb-dark-mode,
-body.bcm-dark {
-	/* Explicit dark values — deliberately NOT chained through --bx-* / --reign-*:
-	 * those vars stay light unless the theme itself is in dark mode, so chaining
-	 * here would resolve to the light palette on a generic dark toggle. BuddyX /
-	 * Reign native dark is already handled by the light :root chain flipping the
-	 * theme's own tokens; this block guarantees a correct dark surface for every
-	 * other dark trigger and a consistent baseline. */
-	--bcm-color-border: #3a4253;
-	--bcm-color-border-strong: #3c4654;
-	--bcm-color-bg: #16191f;
-	--bcm-color-bg-soft: #262c3a;
-	--bcm-color-surface: #1f2430;
-	--bcm-color-text: #e4e4e7;
-	--bcm-color-text-muted: #b4b4b8;
-	--bcm-color-link: #72b7ea;
-	--bcm-color-primary: #4fa3e3;
-	--bcm-color-primary-hover: #72b7ea;
+body.buddyx-dark-theme {
+	--bcm-color-border: var(--bx-color-border, var(--reign-site-border-color, #3a4253 ) );
+	--bcm-color-border-strong: var(--bx-color-border-strong, var(--bx-color-border, #3c4654 ) );
+	--bcm-color-bg: var(--bx-color-bg-page, var(--reign-site-body-bg-color, #16191f ) );
+	--bcm-color-bg-soft: var(--bx-color-bg-subtle, var(--reign-site-secondary-bg-color, #262c3a ) );
+	--bcm-color-surface: var(--bx-color-bg-elevated, var(--reign-site-sections-bg-color, #1f2430 ) );
+	--bcm-color-text: var(--bx-color-fg, var(--reign-site-body-text-color, #e4e4e7 ) );
+	--bcm-color-text-muted: var(--bx-color-fg-muted, var(--reign-site-alternate-text-color, #b4b4b8 ) );
+	--bcm-color-link: var(--bx-color-link, var(--reign-site-link-color, #72b7ea ) );
+	--bcm-color-primary: var(--bx-color-button-bg, var(--bx-color-accent, #4fa3e3 ) );
+	--bcm-color-primary-hover: var(--bx-color-button-bg-hover, var(--bx-color-link-hover, #72b7ea ) );
+	--bcm-color-on-primary: var(--bx-color-button-fg, #16191f );
+	--bcm-color-inverse-bg: var(--bx-color-fg, #e4e4e7 );
+	--bcm-color-inverse-fg: var(--bx-color-fg-inverse, #16191f );
+	--bcm-color-focus: var(--bx-color-accent, #4fa3e3 );
 	--bcm-color-danger: #f26c6e;
 	--bcm-color-danger-hover: #f58485;
+	--bcm-color-on-danger: #16191f;
 	--bcm-color-success: #34c759;
 	--bcm-color-warning: #f0b429;
-	--bcm-color-focus: #4fa3e3;
+	--bcm-color-primary-soft: color-mix( in srgb, var( --bcm-color-primary ) 12%, transparent );
+	--bcm-color-success-soft: color-mix( in srgb, var( --bcm-color-success ) 14%, transparent );
+	--bcm-color-danger-soft: color-mix( in srgb, var( --bcm-color-danger ) 16%, transparent );
+	--bcm-color-warning-soft: color-mix( in srgb, var( --bcm-color-warning ) 14%, transparent );
+	--bcm-color-info-soft: color-mix( in srgb, var( --bcm-color-primary ) 16%, transparent );
 
-	/* QA-canonical aliases get explicit dark values so the contract sees a real
-	 * flip (not an indirection that would still resolve light). */
-	--bcm-bg: #16191f;
-	--bcm-card-bg: #1f2430;
-	--bcm-text: #e4e4e7;
+	--bcm-bg: var( --bcm-color-bg );
+	--bcm-card-bg: var( --bcm-color-surface );
+	--bcm-text: var( --bcm-color-text );
 
 	--bcm-shadow-sm: 0 1px 2px rgba( 0, 0, 0, 0.4 );
 	--bcm-shadow-md: 0 8px 24px rgba( 0, 0, 0, 0.5 );
 	--bcm-shadow-lg: 0 20px 50px rgba( 0, 0, 0, 0.6 );
 }
-
-/* Banner tints need darker panel backgrounds too — the hard-coded
-   pastel fills above would wash out against the dark card. */
-html.dark-mode .bcm-alert--success,
-body.dark-mode .bcm-alert--success,
-[data-theme="dark"] .bcm-alert--success,
-html[data-bx-mode="dark"] .bcm-alert--success,
-.buddyx-dark-mode .bcm-alert--success,
-.buddyx-dark-theme .bcm-alert--success,
-.bb-dark-mode .bcm-alert--success,
-body.bcm-dark .bcm-alert--success { background: rgba( 52, 199, 89, 0.12 ); }
-html.dark-mode .bcm-alert--error,
-body.dark-mode .bcm-alert--error,
-[data-theme="dark"] .bcm-alert--error,
-html[data-bx-mode="dark"] .bcm-alert--error,
-.buddyx-dark-mode .bcm-alert--error,
-.buddyx-dark-theme .bcm-alert--error,
-.bb-dark-mode .bcm-alert--error,
-body.bcm-dark .bcm-alert--error { background: rgba( 242, 108, 110, 0.12 ); }
-html.dark-mode .bcm-alert--warning,
-body.dark-mode .bcm-alert--warning,
-[data-theme="dark"] .bcm-alert--warning,
-html[data-bx-mode="dark"] .bcm-alert--warning,
-.buddyx-dark-mode .bcm-alert--warning,
-.buddyx-dark-theme .bcm-alert--warning,
-.bb-dark-mode .bcm-alert--warning,
-body.bcm-dark .bcm-alert--warning { background: rgba( 240, 180, 41, 0.12 ); }
-html.dark-mode .bcm-alert--info,
-body.dark-mode .bcm-alert--info,
-[data-theme="dark"] .bcm-alert--info,
-html[data-bx-mode="dark"] .bcm-alert--info,
-.buddyx-dark-mode .bcm-alert--info,
-.buddyx-dark-theme .bcm-alert--info,
-.bb-dark-mode .bcm-alert--info,
-body.bcm-dark .bcm-alert--info { background: rgba( 79, 163, 227, 0.12 ); }
-
-/* ----------------------------------------------------------------------
- * Dark mode — non-tokenised surfaces + theme-bleed guards
- *
- * The block above only flips our design tokens. Three groups of styles
- * stay light regardless because they were authored with literal hex
- * (the confirm popup, the intro/info card) or because the host theme's
- * own `<button>` / `<a>` rules outrank our token-driven colours (the
- * action buttons + confirm buttons go the theme accent in dark mode).
- *
- * We scope a single shared dark selector group (`.bcm-dark` covers every
- * runtime trigger via the mirror script; the attribute/class twins keep
- * it working before the script runs, with no FOUC).
- * -------------------------------------------------------------------- */
-
-/* Convenience: one comma-list reused below. Kept verbose (no :is()) for
- * maximum browser support across the supported theme matrix. */
-
-/* Confirm popup — dark surface + readable copy. */
-html.dark-mode .bcm-confirm,
-body.dark-mode .bcm-confirm,
-[data-theme="dark"] .bcm-confirm,
-html[data-bx-mode="dark"] .bcm-confirm,
-.buddyx-dark-mode .bcm-confirm,
-.buddyx-dark-theme .bcm-confirm,
-.bb-dark-mode .bcm-confirm,
-body.bcm-dark .bcm-confirm {
-	background: var( --bcm-color-surface );
-	border: 1px solid var( --bcm-color-border );
-}
-html.dark-mode .bcm-confirm__title,
-body.dark-mode .bcm-confirm__title,
-[data-theme="dark"] .bcm-confirm__title,
-html[data-bx-mode="dark"] .bcm-confirm__title,
-.buddyx-dark-mode .bcm-confirm__title,
-.buddyx-dark-theme .bcm-confirm__title,
-.bb-dark-mode .bcm-confirm__title,
-body.bcm-dark .bcm-confirm__title { color: var( --bcm-color-text ); }
-html.dark-mode .bcm-confirm__message,
-body.dark-mode .bcm-confirm__message,
-[data-theme="dark"] .bcm-confirm__message,
-html[data-bx-mode="dark"] .bcm-confirm__message,
-.buddyx-dark-mode .bcm-confirm__message,
-.buddyx-dark-theme .bcm-confirm__message,
-.bb-dark-mode .bcm-confirm__message,
-body.bcm-dark .bcm-confirm__message { color: var( --bcm-color-text-muted ); }
-
-/* Info / intro card — derive from tokens instead of the baked pastel. */
-html.dark-mode .bcm-info,
-body.dark-mode .bcm-info,
-[data-theme="dark"] .bcm-info,
-html[data-bx-mode="dark"] .bcm-info,
-.buddyx-dark-mode .bcm-info,
-.buddyx-dark-theme .bcm-info,
-.bb-dark-mode .bcm-info,
-body.bcm-dark .bcm-info {
-	background: var( --bcm-color-bg-soft );
-	border-color: var( --bcm-color-border );
-}
-
-/* Empty-state ghost link + delete-icon hover used literal light tints. */
-html.dark-mode .bcm-empty__actions .button-link:hover,
-body.dark-mode .bcm-empty__actions .button-link:hover,
-[data-theme="dark"] .bcm-empty__actions .button-link:hover,
-html[data-bx-mode="dark"] .bcm-empty__actions .button-link:hover,
-.buddyx-dark-mode .bcm-empty__actions .button-link:hover,
-.buddyx-dark-theme .bcm-empty__actions .button-link:hover,
-.bb-dark-mode .bcm-empty__actions .button-link:hover,
-body.bcm-dark .bcm-empty__actions .button-link:hover { background: rgba( 79, 163, 227, 0.16 ); }
-html.dark-mode .bcm-message__action--delete:hover,
-body.dark-mode .bcm-message__action--delete:hover,
-[data-theme="dark"] .bcm-message__action--delete:hover,
-html[data-bx-mode="dark"] .bcm-message__action--delete:hover,
-.buddyx-dark-mode .bcm-message__action--delete:hover,
-.buddyx-dark-theme .bcm-message__action--delete:hover,
-.bb-dark-mode .bcm-message__action--delete:hover,
-body.bcm-dark .bcm-message__action--delete:hover { background: rgba( 242, 108, 110, 0.18 ) !important; }
 
 /* ----------------------------------------------------------------------
  * Button colour guards (all modes)
@@ -1294,7 +1182,7 @@ body.bcm-dark .bcm-message__action--delete:hover { background: rgba( 242, 108, 1
 .bcm-message-view__action--primary,
 .bcm-message-view__action--primary:hover,
 .bcm-message-view__action--primary:focus-visible {
-	color: #ffffff !important;
+	color: var( --bcm-color-on-primary ) !important;
 }
 .bcm-message-view__action--danger {
 	color: var( --bcm-color-danger ) !important;
@@ -1303,7 +1191,7 @@ body.bcm-dark .bcm-message__action--delete:hover { background: rgba( 242, 108, 1
 }
 .bcm-message-view__action--danger:hover,
 .bcm-message-view__action--danger:focus-visible {
-	color: #ffffff !important;
+	color: var( --bcm-color-on-danger ) !important;
 	background: var( --bcm-color-danger ) !important;
 	border-color: var( --bcm-color-danger ) !important;
 }
@@ -1331,7 +1219,7 @@ body.bcm-dark .bcm-message__action--delete:hover { background: rgba( 242, 108, 1
 	background: var( --bcm-color-bg-soft ) !important;
 }
 .bcm-confirm__btn--confirm {
-	color: #ffffff !important;
+	color: var( --bcm-color-on-primary ) !important;
 	background: var( --bcm-color-primary ) !important;
 	border-color: var( --bcm-color-primary ) !important;
 }
@@ -1340,7 +1228,7 @@ body.bcm-dark .bcm-message__action--delete:hover { background: rgba( 242, 108, 1
 	border-color: var( --bcm-color-primary-hover ) !important;
 }
 .bcm-confirm__btn--dangerous {
-	color: #ffffff !important;
+	color: var( --bcm-color-on-danger ) !important;
 	background: var( --bcm-color-danger ) !important;
 	border-color: var( --bcm-color-danger ) !important;
 }
