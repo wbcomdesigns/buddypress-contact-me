@@ -34,6 +34,8 @@ Highlights:
 
 = 1.5.1 - November 2026 =
 
+* Improve  - Activating the plugin no longer updates every member account, so it stays fast on large sites.
+* Improve  - Uninstall removes all of the plugin's stored settings.
 * Fix      - Contact form styles and scripts load on any page that uses the contact shortcode, including for logged-out visitors.
 * Fix      - Message times show correctly on sites outside UTC; existing messages are converted once on update.
 * Fix      - Buttons follow the theme's dark mode toggle and keep readable label colours on BuddyX, BuddyX Pro and Reign.
@@ -45,8 +47,7 @@ Highlights:
 * Fix      - Visitors can no longer send messages when no sender group is picked; they must be ticked under Who can send.
 * Fix      - Members can no longer send a contact message to themselves through the shortcode form.
 * Fix      - Deleting a message also removes its notification, and older leftover notifications show readable text.
-* Improve  - Activating the plugin no longer updates every member account, so it stays fast on large sites.
-* Improve  - Uninstall removes all of the plugin's stored settings.
+* Security - The visitor math question now works once per message, so a solved answer cannot be replayed to send repeat messages.
 * Compat   - Requires WordPress 6.5 and PHP 8.1, tested up to WordPress 7.1.
 
 = 1.5.0 - June 2026 =
