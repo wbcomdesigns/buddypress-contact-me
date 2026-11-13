@@ -75,18 +75,6 @@ function bcm_maybe_upgrade() {
 add_action( 'bp_init', 'bcm_maybe_upgrade', 20 );
 
 /**
- * New users default to accepting contact messages — the plugin is
- * valuable because it "just works" out of the box.
- */
-add_action(
-	'user_register',
-	function ( $user_id ) {
-		update_user_meta( $user_id, 'contact_me_button', 'on' );
-	}
-);
-
-
-/**
  * Plugin activation callback function.
  */
 function activate_buddypress_contact_me() {

@@ -21,23 +21,16 @@ class BuddyPress_Contact_Me_Activator {
 	const DB_VERSION = '1.5.0';
 
 	/**
-	 * Short Description. (use period)
+	 * Activation: create the table and seed default settings.
 	 *
-	 * Long Description.
+	 * Members need no per-user meta: anything except 'off' means they accept
+	 * messages, so activation never loops over every user.
 	 *
 	 * @since 1.0.0
 	 */
 	public static function activate() {
 		self::install_schema();
 
-		$contact_me_option_setting = get_user_meta( get_current_user_id(), 'contact_me_button', true );
-		if ( false === $contact_me_option_setting || '' === $contact_me_option_setting ) {
-			$all_users = get_users();
-			foreach ( $all_users as $all_userdata ) {
-				$all_users_id = $all_userdata->ID;
-				update_user_meta( $all_users_id, 'contact_me_button', 'on' );
-			}
-		}
 		$bp_contact_me_admin_settings = get_option( 'bcm_admin_general_setting' );
 		if ( false === $bp_contact_me_admin_settings ) {
 
