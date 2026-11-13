@@ -15,9 +15,9 @@
  * Plugin Name:       Wbcom Designs - BuddyPress Contact Me
  * Plugin URI:        https://wbcomdesigns.com/downloads/buddypress-contact-me/
  * Description:       BuddyPress Contact Me displays a contact form on members' profiles, allowing both logged-in and non-logged-in visitors to connect with community members.
- * Version:           1.5.0
- * Requires at least: 6.0
- * Requires PHP:      7.4
+ * Version:           1.5.1
+ * Requires at least: 6.5
+ * Requires PHP:      8.1
  * Author:            Wbcom Designs
  * Author URI:        https://www.wbcomdesigns.com
  * License:           GPL-2.0+
@@ -32,7 +32,7 @@ if ( ! defined( 'WPINC' ) ) {
 }
 
 // Define constants for the plugin.
-define( 'BUDDYPRESS_CONTACT_ME_VERSION', '1.5.0' );
+define( 'BUDDYPRESS_CONTACT_ME_VERSION', '1.5.1' );
 define( 'BUDDYPRESS_CONTACT_ME_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
 define( 'BUDDYPRESS_CONTACT_ME_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'BUDDYPRESS_CONTACT_ME_FILE', __FILE__ );
