@@ -57,12 +57,8 @@ if ( isset( $_GET['bcm'] ) && 'sent' === $_GET['bcm'] ) : // phpcs:ignore WordPr
 	<?php
 endif;
 
-$bcm_min         = 1;
-$bcm_max         = 20;
-$bcm_num1        = wp_rand( $bcm_min, $bcm_max );
-$bcm_num2        = wp_rand( $bcm_min, $bcm_max );
-$bcm_captcha     = $bcm_num1 + $bcm_num2;
 $bcm_logged_in   = is_user_logged_in();
+$bcm_captcha     = $bcm_logged_in ? null : BCM_Frontend_Submit::new_captcha();
 $bcm_user_name   = $bcm_logged_in ? bp_core_get_user_displayname( bp_loggedin_user_id() ) : '';
 $bcm_target      = get_userdata( $bcm_target_id );
 $bcm_target_name = $bcm_target ? bp_core_get_user_displayname( $bcm_target_id ) : '';
@@ -166,7 +162,7 @@ $bcm_target_name = $bcm_target ? bp_core_get_user_displayname( $bcm_target_id ) 
 					<span aria-hidden="true" class="bcm-field__required">*</span>
 				</label>
 				<div class="bcm-captcha">
-					<span class="bcm-captcha__sum" aria-hidden="true"><?php echo esc_html( $bcm_num1 . ' + ' . $bcm_num2 . ' = ?' ); ?></span>
+					<span class="bcm-captcha__sum" aria-hidden="true"><?php echo esc_html( $bcm_captcha['a'] . ' + ' . $bcm_captcha['b'] . ' = ?' ); ?></span>
 					<input
 						type="number"
 						inputmode="numeric"
@@ -176,20 +172,15 @@ $bcm_target_name = $bcm_target ? bp_core_get_user_displayname( $bcm_target_id ) 
 						min="2"
 						max="40"
 						aria-describedby="bcm-captcha-hint bcm-captcha-error"
-						aria-label="
-						<?php
-							/* translators: %1$d, %2$d: numbers in the math question */
-							echo esc_attr( sprintf( __( 'What is %1$d plus %2$d?', 'buddypress-contact-me' ), $bcm_num1, $bcm_num2 ) );
-						?>
-						"
+						aria-label="<?php echo esc_attr( $bcm_captcha['label'] ); ?>"
 					/>
 				</div>
 				<span class="bcm-field__hint" id="bcm-captcha-hint"><?php esc_html_e( 'Please solve the math problem.', 'buddypress-contact-me' ); ?></span>
 				<span class="bcm-field__error" id="bcm-captcha-error" role="alert"></span>
 			</div>
+			<input type="hidden" name="bcm_captcha_hash" value="<?php echo esc_attr( $bcm_captcha['token'] ); ?>" />
 		<?php endif; ?>
 
-		<input type="hidden" name="bcm_captcha_hash" value="<?php echo esc_attr( wp_hash( (string) $bcm_captcha ) ); ?>" />
 		<input type="hidden" name="bcm_shortcode_user_id" value="<?php echo (int) $bcm_target_id; ?>" />
 		<input type="hidden" name="bcm_shortcode_username" value="<?php echo esc_attr( $bcm_atts['user'] ?? '' ); ?>" />
 		<input type="hidden" name="bcm_nonce" value="<?php echo esc_attr( wp_create_nonce( BCM_Frontend_Submit::NONCE_ACTION ) ); ?>" />

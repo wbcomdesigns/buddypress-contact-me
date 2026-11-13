@@ -202,6 +202,15 @@
 				if ( counter && textarea ) {
 					counter.textContent = '0 / ' + textarea.maxLength;
 				}
+				// Guests get a new one-time question; the one just used is spent.
+				if ( response && response.captcha ) {
+					var sum   = form.querySelector( '.bcm-captcha__sum' );
+					var input = form.querySelector( '[name="bcm_captcha_answer"]' );
+					var token = form.querySelector( '[name="bcm_captcha_hash"]' );
+					if ( sum ) { sum.textContent = response.captcha.sum; }
+					if ( input ) { input.setAttribute( 'aria-label', response.captcha.label ); }
+					if ( token ) { token.value = response.captcha.token; }
+				}
 				toast( ( response && response.message ) || cfg.i18n.sent, 'success' );
 			} ).catch( function ( err ) {
 				// AbortError from bcmApi's timeout signal also lands here, so

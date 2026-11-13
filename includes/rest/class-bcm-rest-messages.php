@@ -163,6 +163,12 @@ class BCM_Rest_Messages {
 				'ok'      => true,
 				'id'      => (int) $result['id'],
 				'message' => __( 'Message sent.', 'buddypress-contact-me' ),
+				// Fresh one-time question so a guest can send another message without reloading.
+				'captcha' => $result['captcha'] ? array(
+					'sum'   => $result['captcha']['a'] . ' + ' . $result['captcha']['b'] . ' = ?',
+					'label' => $result['captcha']['label'],
+					'token' => $result['captcha']['token'],
+				) : null,
 			),
 			201
 		);

@@ -110,13 +110,15 @@ if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $bcm_notifications_t
 }
 // phpcs:enable
 
-// 7. Flash-notice transients written by BCM_Frontend_Flash for logged-out
+// 7. Flash-notice and guest captcha transients written for logged-out
 // senders that never got consumed.
 // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 $wpdb->query(
 	$wpdb->prepare(
-		"DELETE FROM {$wpdb->options} WHERE option_name LIKE %s OR option_name LIKE %s",
+		"DELETE FROM {$wpdb->options} WHERE option_name LIKE %s OR option_name LIKE %s OR option_name LIKE %s OR option_name LIKE %s",
 		$wpdb->esc_like( '_transient_bcm_flash_' ) . '%',
-		$wpdb->esc_like( '_transient_timeout_bcm_flash_' ) . '%'
+		$wpdb->esc_like( '_transient_timeout_bcm_flash_' ) . '%',
+		$wpdb->esc_like( '_transient_bcm_captcha_' ) . '%',
+		$wpdb->esc_like( '_transient_timeout_bcm_captcha_' ) . '%'
 	)
 );

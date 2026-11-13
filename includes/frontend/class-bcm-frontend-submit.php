@@ -21,6 +21,45 @@ class BCM_Frontend_Submit {
 	const NONCE_ACTION = 'bcm_form_nonce';
 
 	/**
+	 * Transient prefix for one-time guest captcha tokens.
+	 */
+	const CAPTCHA_PREFIX = 'bcm_captcha_';
+
+	/**
+	 * Create a one-time math question for a guest form.
+	 *
+	 * The answer is stored server side under a random token, so a solved
+	 * question cannot be replayed once a message has been saved with it.
+	 *
+	 * @return array{a:int,b:int,token:string,label:string}
+	 */
+	public static function new_captcha() {
+		$a     = wp_rand( 1, 20 );
+		$b     = wp_rand( 1, 20 );
+		$token = wp_generate_password( 20, false );
+		set_transient( self::CAPTCHA_PREFIX . $token, $a + $b, 30 * MINUTE_IN_SECONDS );
+
+		return array(
+			'a'     => $a,
+			'b'     => $b,
+			'token' => $token,
+			/* translators: %1$d, %2$d: numbers in the math question */
+			'label' => sprintf( __( 'What is %1$d plus %2$d?', 'buddypress-contact-me' ), $a, $b ),
+		);
+	}
+
+	/**
+	 * Read the guest captcha token from the submitted form.
+	 *
+	 * @param array $input Raw form input.
+	 * @return string Token, or '' when absent or malformed.
+	 */
+	private static function captcha_token( array $input ) {
+		$token = isset( $input['bcm_captcha_hash'] ) ? (string) wp_unslash( $input['bcm_captcha_hash'] ) : '';
+		return ( 20 === strlen( $token ) && ctype_alnum( $token ) ) ? $token : '';
+	}
+
+	/**
 	 * Hook the submit handlers into BP's action lifecycle.
 	 */
 	public function register() {
@@ -147,6 +186,12 @@ class BCM_Frontend_Submit {
 			return new WP_Error( 'bcm_insert_failed', __( 'Could not save your message. Please try again.', 'buddypress-contact-me' ) );
 		}
 
+		// Spend the guest's question only once a message is saved, so a typo in another field does not burn it.
+		// ponytail: two requests racing with one token can both pass; a lock is overkill for a math captcha.
+		if ( ! $sender_id ) {
+			delete_transient( self::CAPTCHA_PREFIX . self::captcha_token( $input ) );
+		}
+
 		/**
 		 * Fires after a contact message is stored.
 		 *
@@ -159,6 +204,7 @@ class BCM_Frontend_Submit {
 		return array(
 			'id'        => $id,
 			'recipient' => $recipient_id,
+			'captcha'   => $sender_id ? null : self::new_captcha(),
 		);
 	}
 
@@ -198,11 +244,15 @@ class BCM_Frontend_Submit {
 			return true;
 		}
 		$answer = isset( $input['bcm_captcha_answer'] ) ? (int) $input['bcm_captcha_answer'] : 0;
-		$hash   = isset( $input['bcm_captcha_hash'] ) ? sanitize_text_field( wp_unslash( $input['bcm_captcha_hash'] ) ) : '';
-		if ( $answer <= 0 || '' === $hash ) {
+		$token  = self::captcha_token( $input );
+		if ( $answer <= 0 || '' === $token ) {
 			return new WP_Error( 'bcm_captcha_missing', __( 'Please solve the security question.', 'buddypress-contact-me' ) );
 		}
-		if ( ! hash_equals( wp_hash( (string) $answer ), $hash ) ) {
+		$expected = get_transient( self::CAPTCHA_PREFIX . $token );
+		if ( false === $expected ) {
+			return new WP_Error( 'bcm_captcha_expired', __( 'The security question has expired. Please reload the page and try again.', 'buddypress-contact-me' ) );
+		}
+		if ( (int) $expected !== $answer ) {
 			return new WP_Error( 'bcm_captcha_wrong', __( 'The security answer is incorrect.', 'buddypress-contact-me' ) );
 		}
 		return true;
