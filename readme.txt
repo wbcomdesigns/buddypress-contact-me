@@ -42,6 +42,9 @@ Highlights:
 * Fix      - Settings screen fits phones without sideways scrolling or clipped text.
 * Fix      - Copy-link messages are now translatable.
 * Fix      - Plugin zip installs on hosts that block files named shell.php.
+* Fix      - Visitors can no longer send messages when no sender group is picked; they must be ticked under Who can send.
+* Fix      - Members can no longer send a contact message to themselves through the shortcode form.
+* Fix      - Deleting a message also removes its notification, and older leftover notifications show readable text.
 * Improve  - Activating the plugin no longer updates every member account, so it stays fast on large sites.
 * Improve  - Uninstall removes all of the plugin's stored settings.
 * Compat   - Requires WordPress 6.5 and PHP 8.1, tested up to WordPress 7.1.
