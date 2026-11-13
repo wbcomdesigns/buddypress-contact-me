@@ -80,6 +80,9 @@ class BCM_Frontend_Assets {
 		$css_url    = file_exists( $css_min_fs )
 			? BUDDYPRESS_CONTACT_ME_PLUGIN_URL . 'public/css/min/buddypress-contact-me-public.min.css'
 			: BUDDYPRESS_CONTACT_ME_PLUGIN_URL . 'public/css/buddypress-contact-me-public.css';
+		if ( is_rtl() ) {
+			$css_url = BUDDYPRESS_CONTACT_ME_PLUGIN_URL . 'public/css/rtl/buddypress-contact-me-public.rtl.css';
+		}
 		$js_url     = file_exists( $js_min_fs )
 			? BUDDYPRESS_CONTACT_ME_PLUGIN_URL . 'public/js/min/buddypress-contact-me-public.min.js'
 			: BUDDYPRESS_CONTACT_ME_PLUGIN_URL . 'public/js/buddypress-contact-me-public.js';
