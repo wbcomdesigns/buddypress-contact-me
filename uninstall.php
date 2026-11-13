@@ -36,6 +36,7 @@ $options = array(
 	'bcm_admin_general_setting',
 	// Upgrade / bookkeeping.
 	'buddypress_contact_me_db_version',
+	'bcm_db_version',
 	// EDD Software Licensing.
 	'edd_wbcom_bp_contact_me_license_key',
 	'edd_wbcom_bp_contact_me_license_status',
