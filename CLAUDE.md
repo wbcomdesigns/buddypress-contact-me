@@ -7,7 +7,7 @@
 | Field | Value |
 |-------|-------|
 | Slug | `buddypress-contact-me` |
-| Version | 1.5.0 (in-flight on `master`; last released tag is `v1.4.0`) |
+| Version | 1.5.1 (dev branch `1.5.1`; last released tag is `v1.5.0`) |
 | Text Domain | `buddypress-contact-me` |
 | Prefix | `bcm_` / `BCM_` |
 | Option Key | `bcm_admin_general_setting` |
@@ -64,24 +64,14 @@ public/partials/                            # frontend templates
 
 - **Prefix:** `bcm_` for snake_case (option keys, hook names), `BCM_` for class names.
 - **Column name `reciever` is intentionally misspelled in the schema.** Every query reads/writes that literal string. Renaming would break installs in the field.
-- **No raw `$wpdb` outside `includes/rest/` and `includes/frontend/class-bcm-frontend-submit.php`.** Other modules go through the activator/REST controller.
+- **Message SQL lives in `includes/data/class-bcm-messages-repo.php`.** Schema SQL lives in the activator; admin stat counts in `includes/admin/views/overview.php`.
 
-## Known issues (from wppqa baseline 2026-05-11)
+## Frontend and data conventions
 
-| File | Severity | Note |
-|---|---|---|
-| `edd-license/edd-plugin-license.php:170` | high | nonce-no-cap on license activate — fix with `current_user_can('manage_options')` (same pattern as buddypress-auto-friends commit 9c5f15f) |
-| `edd-license/edd-plugin-license.php:271` | high | nonce-no-cap on license deactivate — same fix |
-| `includes/frontend/class-bcm-frontend-submit.php:39+275` | high (intentional public path) | role gate is `viewer_can_send`, not `current_user_can`. Audit but likely safe-by-design. |
-| `public/partials/tab-preferences.php:23` | high (own-profile path) | Verify `get_current_user_id()` is the update target, not `$_POST[user_id]` |
-| `assets/css/admin.css:556` | low | button 36px tap target (a11y nit) |
-
-## Recent changes
-
-| Date | Description |
-|---|---|
-| 2026-05-11 | Onboarded — manifest + audit reports + wppqa baseline at `audit/`, READ-FIRST pointer added |
-| 2026-05-11 | 1.5.0 (in-flight) — EDD license cap checks added; public REST layer refactored into `bcmApi()` wrapper with 15s timeout + shared `confirmDeleteMessage()` helper. wppqa 5 high → 3 high (all 3 remaining audited safe-by-design with inline comments). |
-| 2026-05-14 | 1.5.0 (in-flight) — Frontend palette neutralised so the plugin no longer paints WP-admin blue over the active theme (basecamp 9890995245). New `--bcm-color-on-primary` token keeps text auto-inverted between light and dark mode without per-rule overrides. |
-| 2026-05-14 | 1.5.0 (in-flight) — **Migration hardening for 500-site rollout**. The `dbDelta` index migration shipped earlier today is now production-safe: skips on AJAX / REST / cron / WP-CLI; concurrency-locked via `wp_cache_add( 'bcm_db_upgrade_lock', ..., 60 )` so simultaneous requests don't double-ALTER; post-condition `SHOW INDEX` check on every required key (`REQUIRED_INDEXES` const) before bumping `bcm_db_version`; `error_log()` under `WP_DEBUG` when the verify fails (typical case: managed host with DB user lacking `ALTER` privilege). Verified by deleting `bcm_db_version`, hitting a frontend page, confirming both indexes still present + version bumped. |
-| 2026-05-14 | 1.5.0 (in-flight) — **Big-site readiness for the inbox**. Added `(reciever, datetime, id)` composite + `(reciever)` single-column indexes via a `dbDelta` migration that runs once per install on `plugins_loaded` (gated by `bcm_db_version` option). `BCM_Messages_Repo::unread_message_ids()` is now hard-capped at 1,000 rows ordered newest-first so the `IN (...)` clause downstream can't blow `max_allowed_packet`. New `BCM_Messages_Repo::count_unread_for_recipient()` returns the true unread COUNT(*) so the "Unread (N)" badge stays accurate above the cap. Inbox template batch-prefetches every sender via `cache_users()` before the render loop, killing N+1 user lookups on cold cache. EXPLAIN confirms: was `type: ALL` + `Using filesort`, now `type: ref` + `bcm_recipient_recent` + no filesort. |
+- **Times are UTC.** `BCM_Messages_Repo::insert()` stores `current_time( 'mysql', true )`; templates read times through `BCM_Messages_Repo::timestamp()` and format with `wp_date()`. Never `date_i18n()`, `mysql2date()` or a bare `strtotime()` on a stored value. Rows from before 1.5.1 are converted once in `install_schema()` (DB_VERSION 1.5.1).
+- **Schema changes** bump `BuddyPress_Contact_Me_Activator::DB_VERSION`; `maybe_upgrade()` re-runs `install_schema()` behind a cache lock and only bumps `bcm_db_version` after the `REQUIRED_INDEXES` check passes. One-time data fixes go just before that bump.
+- **Contact preference:** no per-user meta is seeded. Anything except `contact_me_button = off` means the member accepts messages; counts are "all users minus off".
+- **Dark mode** keys only on `html[data-bx-mode="dark"]` and `body.buddyx-dark-theme`, token chains through `--bx-color-*`; never `prefers-color-scheme` on the frontend. Primary buttons use the paired `--bx-color-button-bg` / `--bx-color-button-fg`.
+- **Assets** load on the member Contact screens and on any singular post that contains the `[buddypress-contact-me]` shortcode; the shortcode also enqueues on render. RTL sites get `public/css/rtl/`.
+- **Admin shell view** is `includes/admin/views/layout.php` (hardened hosts reject zips containing `shell.php`).
+- **Build:** `npx grunt build` (cssmin, uglify, rtlcss, checktextdomain). POT: `wp i18n make-pot . languages/buddypress-contact-me.pot --exclude=node_modules,vendor,docs,audit,bin,public/js/min`.

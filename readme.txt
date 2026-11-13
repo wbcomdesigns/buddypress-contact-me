@@ -21,7 +21,7 @@ Highlights:
 * BuddyPress notifications + email notifications, with optional admin and sender copies.
 * Editable email template with placeholders for sender, subject, message, and site name.
 * Role-based access control: choose who can send messages and whose profiles show the form.
-* Per-member opt-out — members can hide their own form even when their role allows it.
+* Per-member opt-out - members can hide their own form even when their role allows it.
 * Clean, modern admin UI shared across every Wbcom plugin via the "WB Plugins" hub.
 
 == Installation ==
@@ -31,6 +31,20 @@ Highlights:
 3. Go to WB Plugins → Contact Me and configure notifications, email template, and access rules.
 
 == Changelog ==
+
+= 1.5.1 - November 2026 =
+
+* Fix      - Contact form styles and scripts load on any page that uses the contact shortcode, including for logged-out visitors.
+* Fix      - Message times show correctly on sites outside UTC; existing messages are converted once on update.
+* Fix      - Buttons follow the theme's dark mode toggle and keep readable label colours on BuddyX, BuddyX Pro and Reign.
+* Fix      - Delete button stacks full width with the other message actions on phones.
+* Fix      - Right-to-left sites load the mirrored stylesheet.
+* Fix      - Settings screen fits phones without sideways scrolling or clipped text.
+* Fix      - Copy-link messages are now translatable.
+* Fix      - Plugin zip installs on hosts that block files named shell.php.
+* Improve  - Activating the plugin no longer updates every member account, so it stays fast on large sites.
+* Improve  - Uninstall removes all of the plugin's stored settings.
+* Compat   - Requires WordPress 6.5 and PHP 8.1, tested up to WordPress 7.1.
 
 = 1.5.0 - June 2026 =
 
