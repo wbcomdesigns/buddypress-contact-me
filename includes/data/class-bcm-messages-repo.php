@@ -204,6 +204,11 @@ class BCM_Messages_Repo {
 			array( '%d', '%d' )
 		);
 
+		// Drop the recipient's BuddyPress notification for this message so no orphan row is left behind.
+		if ( $deleted && function_exists( 'bp_notifications_delete_notifications_by_item_id' ) ) {
+			bp_notifications_delete_notifications_by_item_id( $recipient_id, $id, BCM_Frontend_Notifications::COMPONENT, BCM_Frontend_Notifications::ACTION );
+		}
+
 		return (bool) $deleted;
 	}
 

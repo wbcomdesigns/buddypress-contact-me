@@ -61,7 +61,12 @@ class BCM_Frontend_Notifications {
 
 		$message = BCM_Messages_Repo::find( $item_id );
 		if ( ! $message ) {
-			return $action;
+			// Message deleted before this notification was (rows from older versions): show readable text, not the raw action slug.
+			$text = __( 'A contact message that has since been deleted.', 'buddypress-contact-me' );
+			return 'string' === $format ? esc_html( $text ) : array(
+				'text' => $text,
+				'link' => '',
+			);
 		}
 
 		$sender_name = $message->sender
