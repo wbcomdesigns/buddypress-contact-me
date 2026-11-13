@@ -81,6 +81,9 @@ class BCM_Frontend_Submit {
 		if ( ! $recipient_id ) {
 			return new WP_Error( 'bcm_recipient_missing', __( 'Recipient not found.', 'buddypress-contact-me' ) );
 		}
+		if ( get_current_user_id() === $recipient_id ) {
+			return new WP_Error( 'bcm_self_contact', __( 'You cannot send a contact message to yourself.', 'buddypress-contact-me' ) );
+		}
 		if ( ! BCM_Frontend_Nav::user_accepts_contact( $recipient_id ) ) {
 			return new WP_Error( 'bcm_recipient_closed', __( 'This member is not accepting contact messages right now.', 'buddypress-contact-me' ) );
 		}

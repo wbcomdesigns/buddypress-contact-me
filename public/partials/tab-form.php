@@ -29,6 +29,16 @@ if ( ! BCM_Frontend_Nav::viewer_can_send() ) {
 	return;
 }
 
+if ( is_user_logged_in() && get_current_user_id() === $bcm_target_id ) {
+	?>
+	<div class="bcm-card bcm-card--closed" role="status">
+		<p class="bcm-card__title"><?php esc_html_e( 'This is your own contact form', 'buddypress-contact-me' ); ?></p>
+		<p class="bcm-card__body"><?php esc_html_e( 'Other members use this form to message you. You cannot send a contact message to yourself.', 'buddypress-contact-me' ); ?></p>
+	</div>
+	<?php
+	return;
+}
+
 $bcm_flash = BCM_Frontend_Flash::consume();
 if ( $bcm_flash ) :
 	?>
