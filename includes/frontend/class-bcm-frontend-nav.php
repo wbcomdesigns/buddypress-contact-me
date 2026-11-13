@@ -266,12 +266,13 @@ class BCM_Frontend_Nav {
 			? $settings['bcm_who_contact']
 			: array();
 
-		if ( empty( $allowed ) ) {
-			return true;
-		}
-
+		// Visitors must be ticked explicitly: an empty list means every logged-in member, never guests.
 		if ( ! is_user_logged_in() ) {
 			return in_array( 'visitors', $allowed, true );
+		}
+
+		if ( empty( $allowed ) ) {
+			return true;
 		}
 
 		$user  = wp_get_current_user();
