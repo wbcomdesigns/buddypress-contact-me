@@ -53,7 +53,7 @@ class BCM_Email_Installer {
 			)
 		);
 
-		if ( ! $post_id || is_wp_error( $post_id ) ) {
+		if ( ! $post_id ) {
 			return;
 		}
 

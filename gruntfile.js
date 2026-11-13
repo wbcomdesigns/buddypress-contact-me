@@ -33,6 +33,8 @@ module.exports = function (grunt) {
 							'!.gitignore',
 							'!.gitattributes',
 							'!.distignore',
+							'!.phpcs.xml.dist',
+							'!phpstan.neon.dist',
 							'!package*.json',
 							'!gruntfile.js',
 							'!Gruntfile.js',

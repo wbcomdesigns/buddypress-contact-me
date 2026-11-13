@@ -1,0 +1,17 @@
+# Run: phpstan analyse -c phpstan.neon.dist (needs szepeviktor/phpstan-wordpress
+# and a BuddyPress checkout next to this plugin, as on a normal WP install).
+includes:
+    - %env.HOME%/.composer/vendor/szepeviktor/phpstan-wordpress/extension.neon
+parameters:
+    level: 5
+    paths:
+        - buddypress-contact-me.php
+        - uninstall.php
+        - includes
+        - public
+    scanDirectories:
+        - ../buddypress
+    bootstrapFiles:
+        - bin/phpstan-bootstrap.php
+    excludePaths:
+        - edd-license

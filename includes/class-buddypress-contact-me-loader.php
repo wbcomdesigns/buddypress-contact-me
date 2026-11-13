@@ -138,6 +138,6 @@ class BuddyPress_Contact_Me_Loader {
 	 * @param    string $callback         The name of the function definition on the $component.
 	 */
 	public function add_shortcode( $hook, $component, $callback ) {
-		$this->shortcode = $this->add( $this->shortcode, $hook, $component, $callback, '', '' );
+		$this->shortcode = $this->add( $this->shortcode, $hook, $component, $callback, 10, 1 );
 	}
 }

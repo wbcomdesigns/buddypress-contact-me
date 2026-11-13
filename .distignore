@@ -17,3 +17,5 @@ gruntfile.js
 Gruntfile.js
 *.md
 *.map
+.phpcs.xml.dist
+phpstan.neon.dist
