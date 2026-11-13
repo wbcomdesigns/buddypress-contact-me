@@ -216,8 +216,8 @@ class BuddyPress_Contact_Me_Activator {
 		// requests are time-sensitive and have nowhere useful to surface
 		// debug output. A frontend or admin page load will pick it up.
 		if (
-			( defined( 'DOING_AJAX' ) && DOING_AJAX ) ||
-			( defined( 'DOING_CRON' ) && DOING_CRON ) ||
+			wp_doing_ajax() ||
+			wp_doing_cron() ||
 			( defined( 'WP_CLI' ) && WP_CLI ) ||
 			( defined( 'REST_REQUEST' ) && REST_REQUEST )
 		) {

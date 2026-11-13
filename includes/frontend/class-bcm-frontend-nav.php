@@ -38,7 +38,7 @@ class BCM_Frontend_Nav {
 	public function register() {
 		add_action( 'bp_setup_nav', array( $this, 'setup_nav' ), 20 );
 		add_action( 'template_redirect', array( $this, 'redirect_legacy_slug' ), 1 );
-		add_action( 'body_class', array( $this, 'body_class' ) );
+		add_filter( 'body_class', array( $this, 'body_class' ) );
 		add_action( 'bp_setup_admin_bar', array( $this, 'admin_bar' ), 90 );
 	}
 

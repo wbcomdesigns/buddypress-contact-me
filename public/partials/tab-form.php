@@ -180,7 +180,7 @@ $bcm_target_name = $bcm_target ? bp_core_get_user_displayname( $bcm_target_id ) 
 		<?php endif; ?>
 
 		<input type="hidden" name="bcm_captcha_hash" value="<?php echo esc_attr( wp_hash( (string) $bcm_captcha ) ); ?>" />
-		<input type="hidden" name="bcm_shortcode_user_id" value="<?php echo esc_attr( (int) $bcm_target_id ); ?>" />
+		<input type="hidden" name="bcm_shortcode_user_id" value="<?php echo (int) $bcm_target_id; ?>" />
 		<input type="hidden" name="bcm_shortcode_username" value="<?php echo esc_attr( $bcm_atts['user'] ?? '' ); ?>" />
 		<input type="hidden" name="bcm_nonce" value="<?php echo esc_attr( wp_create_nonce( BCM_Frontend_Submit::NONCE_ACTION ) ); ?>" />
 		<input type="hidden" name="bp_contact_me_form_save" value="1" />

@@ -23,7 +23,7 @@
 Classic WordPress Plugin Boilerplate (Loader pattern). Bootstrap → core orchestrator → Loader registers hooks. Source layout:
 
 ```
-buddypress-contact-me.php          # bootstrap, activator/deactivator
+buddypress-contact-me.php          # bootstrap, activator
 includes/
   class-buddypress-contact-me.php           # orchestrator
   class-buddypress-contact-me-loader.php    # hook registry

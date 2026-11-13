@@ -87,16 +87,7 @@ function activate_buddypress_contact_me() {
 	}
 }
 
-/**
- * Plugin deactivation callback function.
- */
-function deactivate_buddypress_contact_me() {
-	include_once plugin_dir_path( __FILE__ ) . 'includes/class-buddypress-contact-me-deactivator.php';
-	BuddyPress_Contact_Me_Deactivator::deactivate();
-}
-
 register_activation_hook( __FILE__, 'activate_buddypress_contact_me' );
-register_deactivation_hook( __FILE__, 'deactivate_buddypress_contact_me' );
 
 /**
  * Schema upgrade gate. Runs once per page load on `plugins_loaded` and is a
