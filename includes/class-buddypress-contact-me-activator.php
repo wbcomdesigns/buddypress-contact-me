@@ -18,7 +18,7 @@ class BuddyPress_Contact_Me_Activator {
 	 * Schema version. Bump when CREATE TABLE shape changes so maybe_upgrade()
 	 * can re-run dbDelta on existing installs.
 	 */
-	const DB_VERSION = '1.5.0';
+	const DB_VERSION = '1.5.1';
 
 	/**
 	 * Activation: create the table and seed default settings.
@@ -146,9 +146,42 @@ class BuddyPress_Contact_Me_Activator {
 			}
 		}
 
+		// 1.5.1 stores message times in UTC. Shift rows written by older
+		// versions (site local time) once, right before the version bump so
+		// a failed index check above never shifts them twice.
+		if ( version_compare( (string) get_option( 'bcm_db_version', '0' ), '1.5.1', '<' ) ) {
+			self::convert_local_dates_to_utc();
+		}
+
 		// All required indexes present — safe to bump the stored version.
 		update_option( 'bcm_db_version', self::DB_VERSION, false );
 		return true;
+	}
+
+	/**
+	 * Convert message times stored in site local time to UTC.
+	 *
+	 * ponytail: uses today's UTC offset for every row, so rows from the other
+	 * side of a DST change are an hour off. Per-row conversion would need PHP
+	 * over the whole table; one UPDATE stays safe on big sites.
+	 *
+	 * @since 1.5.1
+	 */
+	private static function convert_local_dates_to_utc() {
+		global $wpdb;
+		$offset = (int) wp_timezone()->getOffset( new DateTimeImmutable( 'now', new DateTimeZone( 'UTC' ) ) );
+		if ( 0 === $offset ) {
+			return;
+		}
+		$table = $wpdb->prefix . 'contact_me';
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery
+		$wpdb->query(
+			$wpdb->prepare(
+				"UPDATE {$table} SET datetime = DATE_FORMAT( DATE_SUB( datetime, INTERVAL %d SECOND ), '%%Y-%%m-%%d %%H:%%i:%%s' ) WHERE datetime LIKE %s",
+				$offset,
+				'____-__-__ __:__:__'
+			)
+		);
 	}
 
 	/**

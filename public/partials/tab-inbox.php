@@ -184,14 +184,14 @@ endif;
 				$sender_url   = $msg->sender
 					? ( function_exists( 'bp_members_get_user_url' ) ? bp_members_get_user_url( $msg->sender ) : bp_core_get_user_domain( $msg->sender ) )
 					: '';
-				$stamp        = strtotime( $msg->datetime ) ? strtotime( $msg->datetime ) : time();
+				$stamp        = BCM_Messages_Repo::timestamp( $msg->datetime );
 				$time_display = ( time() - $stamp < DAY_IN_SECONDS )
 					? sprintf(
 						/* translators: %s: time-ago string (e.g. "3 hours") */
 						__( '%s ago', 'buddypress-contact-me' ),
 						human_time_diff( $stamp )
 					)
-					: date_i18n( get_option( 'date_format' ), $stamp );
+					: wp_date( get_option( 'date_format' ), $stamp );
 
 				$delete_nonce = wp_create_nonce( 'wp_rest' );
 				?>

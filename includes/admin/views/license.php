@@ -45,9 +45,9 @@ $days_left    = 0;
 if ( $is_lifetime ) {
 	$expires_text = esc_html__( 'Lifetime', 'buddypress-contact-me' );
 } elseif ( '' !== $expires_raw ) {
-	$ts = strtotime( $expires_raw, current_time( 'timestamp' ) );
+	$ts = strtotime( $expires_raw );
 	if ( $ts ) {
-		$expires_text = esc_html( date_i18n( get_option( 'date_format' ), $ts ) );
+		$expires_text = esc_html( wp_date( get_option( 'date_format' ), $ts ) );
 		$days_left    = (int) floor( ( $ts - time() ) / DAY_IN_SECONDS );
 	}
 }

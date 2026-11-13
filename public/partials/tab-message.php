@@ -81,8 +81,8 @@ $bcm_mailto = $bcm_sender_email
 	? 'mailto:' . rawurlencode( $bcm_sender_email ) . '?subject=' . rawurlencode( 'Re: ' . $bcm_msg->subject )
 	: '';
 
-$bcm_stamp        = strtotime( $bcm_msg->datetime ) ? strtotime( $bcm_msg->datetime ) : time();
-$bcm_time_display = date_i18n( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ), $bcm_stamp );
+$bcm_stamp        = BCM_Messages_Repo::timestamp( $bcm_msg->datetime );
+$bcm_time_display = wp_date( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ), $bcm_stamp );
 ?>
 
 <div class="bcm-message-view">

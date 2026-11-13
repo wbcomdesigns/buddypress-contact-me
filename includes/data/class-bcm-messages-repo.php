@@ -18,6 +18,17 @@ if ( ! defined( 'ABSPATH' ) ) {
 class BCM_Messages_Repo {
 
 	/**
+	 * Unix timestamp of a stored message time (stored in UTC since 1.5.1).
+	 *
+	 * @param string $datetime Stored `Y-m-d H:i:s` value.
+	 * @return int
+	 */
+	public static function timestamp( $datetime ) {
+		$ts = strtotime( (string) $datetime . ' UTC' );
+		return $ts ? $ts : time();
+	}
+
+	/**
 	 * Return the fully-prefixed table name.
 	 *
 	 * @return string
@@ -154,7 +165,7 @@ class BCM_Messages_Repo {
 			'message'  => (string) ( $data['message'] ?? '' ),
 			'name'     => (string) ( $data['name'] ?? '' ),
 			'email'    => (string) ( $data['email'] ?? '' ),
-			'datetime' => current_datetime()->format( 'Y-m-d H:i:s' ),
+			'datetime' => current_time( 'mysql', true ),
 		);
 
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery
