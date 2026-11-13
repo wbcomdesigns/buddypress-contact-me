@@ -2,8 +2,8 @@
 /**
  * Enqueue public-facing assets for the Contact tab.
  *
- * Loads only on the Contact tab and BP Settings screen — zero footprint
- * elsewhere on the site.
+ * Loads on the Contact tab, the BP Settings screen and any page that shows
+ * the [buddypress-contact-me] shortcode - zero footprint elsewhere.
  *
  * @package BuddyPress_Contact_Me
  */
@@ -70,7 +70,7 @@ class BCM_Frontend_Assets {
 	 * @return void
 	 */
 	public function output_dark_mode_mirror() {
-		if ( ! $this->should_load() ) {
+		if ( ! wp_script_is( $this->plugin_name, 'enqueued' ) ) {
 			return;
 		}
 
@@ -125,10 +125,24 @@ JS;
 	}
 
 	/**
-	 * Enqueue styles + scripts when the Contact tab (or BP Settings) is loaded.
+	 * Enqueue styles + scripts when the current page needs them.
 	 */
 	public function enqueue() {
-		if ( ! $this->should_load() ) {
+		if ( $this->should_load() ) {
+			$this->enqueue_assets();
+		}
+	}
+
+	/**
+	 * Enqueue the form/inbox assets. Safe to call more than once; the
+	 * shortcode calls it at render time for widgets and templates that
+	 * should_load() cannot see in advance (the stylesheet then prints in
+	 * the footer).
+	 *
+	 * @return void
+	 */
+	public function enqueue_assets() {
+		if ( wp_script_is( $this->plugin_name, 'enqueued' ) ) {
 			return;
 		}
 
@@ -223,6 +237,9 @@ JS;
 	 * @return bool
 	 */
 	private function should_load() {
+		if ( is_singular() && has_shortcode( (string) get_post_field( 'post_content', get_queried_object_id() ), 'buddypress-contact-me' ) ) {
+			return true;
+		}
 		if ( ! function_exists( 'bp_is_user' ) || ! bp_is_user() ) {
 			return false;
 		}

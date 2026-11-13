@@ -173,10 +173,11 @@ class BuddyPress_Contact_Me {
 		// Each class self-registers its hooks. The loader is reserved for
 		// the few cross-cutting wires we still need (currently none).
 		( new BCM_Frontend_Nav() )->register();
-		( new BCM_Frontend_Assets( $this->get_plugin_name(), $this->get_version() ) )->register();
+		$assets = new BCM_Frontend_Assets( $this->get_plugin_name(), $this->get_version() );
+		$assets->register();
 		( new BCM_Frontend_Submit() )->register();
 		( new BCM_Frontend_Notifications() )->register();
-		( new BCM_Frontend_Shortcode() )->register();
+		( new BCM_Frontend_Shortcode( $assets ) )->register();
 		( new BCM_Rest_Messages() )->register();
 	}
 

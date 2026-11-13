@@ -16,6 +16,22 @@ if ( ! defined( 'ABSPATH' ) ) {
 class BCM_Frontend_Shortcode {
 
 	/**
+	 * Asset loader, so the form gets its CSS + JS wherever it is embedded.
+	 *
+	 * @var BCM_Frontend_Assets
+	 */
+	private $assets;
+
+	/**
+	 * Store the asset loader.
+	 *
+	 * @param BCM_Frontend_Assets $assets Asset loader.
+	 */
+	public function __construct( BCM_Frontend_Assets $assets ) {
+		$this->assets = $assets;
+	}
+
+	/**
 	 * Attach the shortcode handler.
 	 */
 	public function register() {
@@ -50,6 +66,8 @@ class BCM_Frontend_Shortcode {
 		if ( ! $recipient_id || ! BCM_Frontend_Nav::user_accepts_contact( $recipient_id ) ) {
 			return '';
 		}
+
+		$this->assets->enqueue_assets();
 
 		ob_start();
 		$shortcode_atts         = $atts;
