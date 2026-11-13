@@ -20,6 +20,8 @@ When a member opts out, two things happen:
 - The "Contact" tab disappears from their public profile.
 - Submissions targeted at them via `[buddypress-contact-me id=...]` shortcode return an empty render.
 
+The member's own Contact tab stays: they can still read their Inbox, open older messages from notification and email links, and turn contact back on under Preferences.
+
 The user's `contact_me_button` user-meta is set to `'off'`. Every check (`BCM_Frontend_Nav::user_accepts_contact()`) short-circuits to `false` when this meta is `'off'`.
 
 ## Default behaviour

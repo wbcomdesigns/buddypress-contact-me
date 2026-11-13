@@ -8,7 +8,7 @@ The Access tab controls every gate around the contact form: where it appears, wh
 
 A single toggle at the top:
 
-- **Show a "Contact" tab on every member profile** — when off, the profile-tab integration is hidden entirely. Members can still be contacted via the `[buddypress-contact-me]` shortcode if you want to drive contact through specific landing pages.
+- **Show a "Contact" tab on every member profile** — when off, the profile-tab integration is hidden entirely. Members can still be contacted via the `[buddypress-contact-me]` shortcode if you want to drive contact through specific landing pages, and each member still reads their messages in the Inbox on their own profile.
 
 Recommended ON. Each member can still individually opt out from their own profile settings — see [Per-member opt-out](../features/opt-out.md).
 
