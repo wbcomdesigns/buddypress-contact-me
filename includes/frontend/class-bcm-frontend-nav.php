@@ -56,7 +56,7 @@ class BCM_Frontend_Nav {
 			return;
 		}
 
-		if ( ! self::user_accepts_contact( $displayed_user_id ) ) {
+		if ( ! self::contact_tab_enabled() || ! self::user_accepts_contact( $displayed_user_id ) ) {
 			return;
 		}
 
@@ -236,14 +236,10 @@ class BCM_Frontend_Nav {
 			return false;
 		}
 
-		$settings    = get_option( 'bcm_admin_general_setting', array() );
-		$allowed     = isset( $settings['bcm_who_contacted'] ) && is_array( $settings['bcm_who_contacted'] )
+		$settings = get_option( 'bcm_admin_general_setting', array() );
+		$allowed  = isset( $settings['bcm_who_contacted'] ) && is_array( $settings['bcm_who_contacted'] )
 			? $settings['bcm_who_contacted']
 			: array();
-		$tab_enabled = ! empty( $settings['bcm_allow_contact_tab'] ) && 'yes' === $settings['bcm_allow_contact_tab'];
-		if ( ! $tab_enabled ) {
-			return false;
-		}
 		if ( empty( $allowed ) ) {
 			return true;
 		}
@@ -255,6 +251,19 @@ class BCM_Frontend_Nav {
 		}
 
 		return (bool) array_intersect( $roles, $allowed );
+	}
+
+	/**
+	 * Whether the site shows the Contact tab on member profiles.
+	 *
+	 * Only controls the profile tab. The shortcode and REST sending work
+	 * either way, so the tab can be turned off for shortcode-only sites.
+	 *
+	 * @return bool
+	 */
+	public static function contact_tab_enabled() {
+		$settings = get_option( 'bcm_admin_general_setting', array() );
+		return ! empty( $settings['bcm_allow_contact_tab'] ) && 'yes' === $settings['bcm_allow_contact_tab'];
 	}
 
 	/**
@@ -334,7 +343,7 @@ class BCM_Frontend_Nav {
 		}
 
 		$user_id = get_current_user_id();
-		if ( ! self::user_accepts_contact( $user_id ) ) {
+		if ( ! self::contact_tab_enabled() || ! self::user_accepts_contact( $user_id ) ) {
 			return;
 		}
 
