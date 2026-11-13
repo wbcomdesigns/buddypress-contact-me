@@ -1,6 +1,6 @@
 <?php
 /**
- * Admin page shell: page header, sidebar nav, body slot.
+ * Admin page layout: page header, sidebar nav, body slot.
  *
  * Receives from BCM_Admin::render_page():
  *

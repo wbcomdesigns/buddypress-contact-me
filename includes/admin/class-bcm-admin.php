@@ -366,8 +366,8 @@ class BCM_Admin {
 		$settings_form_group = self::OPTION_GROUP;
 
 		$view_path = plugin_dir_path( BUDDYPRESS_CONTACT_ME_FILE ) . 'includes/admin/views/' . $view . '.php';
-		$shell     = plugin_dir_path( BUDDYPRESS_CONTACT_ME_FILE ) . 'includes/admin/views/shell.php';
+		$layout    = plugin_dir_path( BUDDYPRESS_CONTACT_ME_FILE ) . 'includes/admin/views/layout.php';
 
-		include $shell;
+		include $layout;
 	}
 }

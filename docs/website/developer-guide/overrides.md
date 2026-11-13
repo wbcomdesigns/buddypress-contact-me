@@ -57,7 +57,7 @@ add_filter( 'bcm_admin_tabs', function ( $tabs ) {
 } );
 ```
 
-The plugin's renderer maps tab slugs through a hard-coded `$view_map` array, so a brand-new slug will fall back to rendering the Overview view. To actually render your custom tab content, render it from your own plugin's hook (e.g., on `admin_init` check `$_GET['page']` and `$_GET['tab']`) and either echo before the shell or use a sister-plugin admin shell.
+The plugin's renderer maps tab slugs through a hard-coded `$view_map` array, so a brand-new slug will fall back to rendering the Overview view. To actually render your custom tab content, render it from your own plugin's hook (e.g., on `admin_init` check `$_GET['page']` and `$_GET['tab']`) and either echo before the layout or use a sister-plugin admin layout.
 
 ## Override a template partial
 
