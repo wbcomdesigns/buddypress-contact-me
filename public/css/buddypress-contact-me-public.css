@@ -956,7 +956,7 @@
 }
 
 .bcm-message-view__action--danger {
-	margin-left: auto;
+	margin-inline-start: auto;
 	color: var( --bcm-color-danger );
 	background: var( --bcm-color-bg );
 	border-color: var( --bcm-color-border );
@@ -971,8 +971,8 @@
 
 @media ( max-width: 600px ) {
 	.bcm-message-view__actions { flex-direction: column; align-items: stretch; }
-	.bcm-message-view__action.button { justify-content: center; }
-	.bcm-message-view__action--danger.button { margin-left: 0; }
+	.bcm-message-view__action { justify-content: center; }
+	.bcm-message-view__action--danger { margin-inline-start: 0; }
 }
 
 /* ---------- Preferences screen ---------- */
