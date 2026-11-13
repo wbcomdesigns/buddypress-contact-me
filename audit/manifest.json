@@ -267,7 +267,7 @@
       ]
     },
     "notifications_component": "bcm_user_notifications (custom BP notifications component)",
-    "bp_email": "Uses BP email system; BCM_Email_Installer creates the BP email post on activation"
+    "bp_email": "Uses BP email system; BCM_Email_Installer creates three BP email posts on activation/upgrade: bcm-contact-message (recipient), bcm-contact-message-sender-copy, bcm-contact-message-admin-copy. One bp_send_email() call per reader."
   },
   "security": {
     "nonce_actions": [

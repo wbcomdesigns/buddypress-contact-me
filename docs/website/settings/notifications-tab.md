@@ -17,19 +17,22 @@ If both are off, the message is still saved to the database — it just sits in 
 
 Two extra recipient toggles:
 
-- **Site admin** — BCC every message to every user with the `administrator` role. Useful for community moderation: admins keep their inbox visible without logging in as each member.
+- **Site admin** — send every user with the `administrator` role their own copy of each message ("Sender sent Member a contact message"). Useful for community moderation: admins keep their inbox visible without logging in as each member.
 - **Sender** — send the sender a copy of what they submitted. Acts as a "we got your message" receipt, reduces "did my message go through?" support tickets, and gives the sender a paper trail.
 
-The sender-copy applies to both members (delivered to their account email) and guests (delivered to the email address they typed into the form).
+The sender-copy applies to both members (delivered to their account email) and guests (delivered to the email address they typed into the form). It reads "Copy of your message to Member".
+
+Every copy goes out as its own email, so nobody sees another person's email address. The two copies have their own templates in **Dashboard → Emails**: "A copy of a contact message, sent to the member or visitor who wrote it" and "A copy of a contact message, sent to site administrators".
 
 ## Edit the email template
 
 Above the **Email notification** toggle there is an inline link: **Edit the contact-message email →**. Clicking it opens **Dashboard → Emails** filtered to the email post type term `bcm-contact-message`, so you can tweak subject and body without hunting through every BP email.
 
-The five tokens you can use in the template are:
+The tokens you can use in these templates are:
 
 - `{{sender.name}}` — display name of the sender (or guest name).
-- `{{recipient.name}}` — recipient's display name.
+- `{{contact.recipient}}` — display name of the member the message was sent to (use this in the copy emails).
+- `{{recipient.name}}` — display name of whoever is reading this email.
 - `{{contact.subject}}` — the message subject.
 - `{{{contact.message}}}` — the message body (auto-paragraphed; triple braces because it contains HTML).
 - `{{{inbox.url}}}` — deep link to the message in the recipient's inbox.

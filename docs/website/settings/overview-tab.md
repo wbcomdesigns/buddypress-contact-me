@@ -20,7 +20,7 @@ The middle card lists the five most-asked-about settings with a green / grey bad
 - **Profile contact tab** — whether the Contact tab is rendered at all.
 - **BuddyPress notifications** — whether recipients get a notification bell entry.
 - **Email notifications** — whether recipients get a templated email.
-- **Admin copy** — whether site admins get BCC'd on every message.
+- **Admin copy** — whether site admins get their own copy of every message.
 - **Sender copy** — whether the sender gets a receipt.
 
 You can change any of these from the Notifications and Access tabs — the snapshot is a quick-confirm view, not editable inline.

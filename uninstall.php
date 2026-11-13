@@ -66,13 +66,16 @@ foreach ( $user_meta_keys as $meta_key ) {
 	$wpdb->delete( $wpdb->usermeta, array( 'meta_key' => $meta_key ), array( '%s' ) );
 }
 
-// 5. Delete the BP email post + term installed in 1.5.0 so the template
+// 5. Delete the BP email posts + terms (1.5.0; copies 1.5.1) so the template
 // does not linger in Dashboard → Emails after uninstall. Best-effort:
 // if BuddyPress is gone, skip silently.
 if ( function_exists( 'bp_get_email_tax_type' ) && function_exists( 'bp_get_email_post_type' ) ) {
 	$bcm_tax_type = bp_get_email_tax_type();
-	$bcm_term     = get_term_by( 'slug', 'bcm-contact-message', $bcm_tax_type );
-	if ( $bcm_term ) {
+	foreach ( array( 'bcm-contact-message', 'bcm-contact-message-sender-copy', 'bcm-contact-message-admin-copy' ) as $bcm_email_type ) {
+		$bcm_term = get_term_by( 'slug', $bcm_email_type, $bcm_tax_type );
+		if ( ! $bcm_term ) {
+			continue;
+		}
 		// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query -- Uninstall-only, runs once.
 		$bcm_email_ids = get_posts(
 			array(

@@ -125,7 +125,8 @@ class BCM_Frontend_Notifications {
 	}
 
 	/**
-	 * Send the BP-templated email to the recipient (+ copies).
+	 * Send the BP-templated email to the recipient, then each enabled copy
+	 * (sender, administrators) as its own email.
 	 *
 	 * @param int $message_id   Message ID.
 	 * @param int $recipient_id Recipient user ID.
@@ -145,13 +146,47 @@ class BCM_Frontend_Notifications {
 			return;
 		}
 
-		$recipients = $this->collect_recipients( $settings, $message, $recipient_id, $sender_id );
-		if ( empty( $recipients ) ) {
-			return;
-		}
-
 		$tokens = $this->build_tokens( $message, $recipient_id, $sender_id );
 
+		// One email per reader, so no address is exposed to anyone else and
+		// each copy is worded for the person reading it.
+		$this->deliver( BCM_Email_Installer::TYPE, (int) $recipient_id, $tokens );
+
+		$skip_ids = array( (int) $recipient_id );
+
+		if ( ! empty( $settings['bcm_allow_sender_copy_email'] ) && 'yes' === $settings['bcm_allow_sender_copy_email'] ) {
+			if ( $sender_id ) {
+				$skip_ids[] = (int) $sender_id;
+				$this->deliver( BCM_Email_Installer::TYPE_SENDER_COPY, (int) $sender_id, $tokens );
+			} elseif ( is_email( $message->email ) ) {
+				// Guest: BP_Email::set_to() turns each array entry into a
+				// recipient, so wrap address => name in an outer array.
+				$this->deliver( BCM_Email_Installer::TYPE_SENDER_COPY, array( array( $message->email => (string) $message->name ) ), $tokens );
+			}
+		}
+
+		if ( ! empty( $settings['bcm_allow_admin_copy_email'] ) && 'yes' === $settings['bcm_allow_admin_copy_email'] ) {
+			$admin_ids = get_users(
+				array(
+					'role'    => 'administrator',
+					'fields'  => 'ID',
+					'exclude' => $skip_ids,
+				)
+			);
+			foreach ( $admin_ids as $admin_id ) {
+				$this->deliver( BCM_Email_Installer::TYPE_ADMIN_COPY, (int) $admin_id, $tokens );
+			}
+		}
+	}
+
+	/**
+	 * Send one BP email to one reader.
+	 *
+	 * @param string    $type   BP email type.
+	 * @param int|array $to     User ID, or array( array( email => name ) ) for a guest.
+	 * @param array     $tokens Email tokens.
+	 */
+	private function deliver( $type, $to, $tokens ) {
 		// Output buffer the BP send. Two reasons:
 		//
 		// 1. send_email() runs inside the bp_contact_me_form_save action,
@@ -162,13 +197,12 @@ class BCM_Frontend_Notifications {
 		// BEFORE wp_send_json fires, breaking apiFetch with the
 		// "response is not a valid JSON response" error visitors saw
 		// in card 9828092913.
-		// 2. The notices themselves (e.g. BP_Email_Recipient property
-		// reads against missing user lookups for guest emails) are
-		// bp-core internals we can't fix from here — silencing display
-		// while still preserving error_log() is the right boundary.
+		// 2. Notices from bp-core internals we can't fix from here —
+		// silencing display while still preserving error_log() is the
+		// right boundary.
 		$ob_started = ob_start();
 		try {
-			bp_send_email( BCM_Email_Installer::TYPE, $recipients, array( 'tokens' => $tokens ) );
+			bp_send_email( $type, $to, array( 'tokens' => $tokens ) );
 		} finally {
 			if ( $ob_started ) {
 				$leaked = ob_get_clean();
@@ -179,81 +213,6 @@ class BCM_Frontend_Notifications {
 				}
 			}
 		}
-	}
-
-	/**
-	 * Build the recipient list: the recipient of the message, plus any
-	 * copy addresses (sender copy, admin copy, multi-user copy) the admin
-	 * has enabled. Each entry is either a user ID (for members) or a
-	 * BP_Email_Recipient (for guests / raw emails).
-	 *
-	 * @param array  $settings     Plugin settings array.
-	 * @param object $message      Message row from the repo.
-	 * @param int    $recipient_id Recipient user ID.
-	 * @param int    $sender_id    Sender user ID (0 for visitor).
-	 * @return array<int|BP_Email_Recipient>
-	 */
-	private function collect_recipients( $settings, $message, $recipient_id, $sender_id ) {
-		$recipients  = array();
-		$seen_ids    = array();
-		$seen_emails = array();
-
-		$add_user = static function ( $uid ) use ( &$recipients, &$seen_ids ) {
-			$uid = (int) $uid;
-			if ( $uid <= 0 || in_array( $uid, $seen_ids, true ) ) {
-				return;
-			}
-			$seen_ids[]   = $uid;
-			$recipients[] = $uid;
-		};
-
-		/*
-		 * Construct BP_Email_Recipient with (address, name) so BP can skip
-		 * its search-email fallback. When we pass just an email, BP tries
-		 * get_user_by('email', $address) and accesses user_object->ID /
-		 * user_object->user_email — which raises undefined-property warnings
-		 * on guest emails (no matching WP user) under PHP 8.2+.
-		 *
-		 * Using the sender's saved name here also means the "Copy of your
-		 * message" email the guest receives is addressed to them by name.
-		 *
-		 * Basecamp card 9823362550.
-		 */
-		$add_email = static function ( $email, $name = '' ) use ( &$recipients, &$seen_emails ) {
-			$email = sanitize_email( $email );
-			if ( ! $email || in_array( strtolower( $email ), $seen_emails, true ) ) {
-				return;
-			}
-			$seen_emails[] = strtolower( $email );
-			$name          = (string) $name;
-			$recipients[]  = class_exists( 'BP_Email_Recipient' )
-				? new BP_Email_Recipient( $email, $name )
-				: $email;
-		};
-
-		$add_user( $recipient_id );
-
-		if ( ! empty( $settings['bcm_allow_sender_copy_email'] ) && 'yes' === $settings['bcm_allow_sender_copy_email'] ) {
-			if ( $sender_id ) {
-				$add_user( $sender_id );
-			} elseif ( ! empty( $message->email ) ) {
-				$guest_name = isset( $message->name ) ? (string) $message->name : '';
-				$add_email( $message->email, $guest_name );
-			}
-		}
-
-		if ( ! empty( $settings['bcm_allow_admin_copy_email'] ) && 'yes' === $settings['bcm_allow_admin_copy_email'] ) {
-			foreach ( get_users(
-				array(
-					'role'   => 'administrator',
-					'fields' => array( 'ID' ),
-				)
-			) as $admin ) {
-				$add_user( $admin->ID );
-			}
-		}
-
-		return $recipients;
 	}
 
 	/**
@@ -276,11 +235,11 @@ class BCM_Frontend_Notifications {
 		$inbox_url   = trailingslashit( $user_domain ) . BCM_Frontend_Nav::SLUG . '/' . BCM_Frontend_Nav::SUB_INBOX . '/' . (int) $message->id . '/';
 
 		return array(
-			'sender.name'     => $sender_name,
-			'recipient.name'  => $recipient ? $recipient->display_name : '',
-			'contact.subject' => wp_strip_all_tags( stripslashes( (string) $message->subject ) ),
-			'contact.message' => wpautop( wp_strip_all_tags( stripslashes( (string) $message->message ) ) ),
-			'inbox.url'       => esc_url( $inbox_url ),
+			'sender.name'       => $sender_name,
+			'contact.recipient' => $recipient ? $recipient->display_name : '',
+			'contact.subject'   => wp_strip_all_tags( stripslashes( (string) $message->subject ) ),
+			'contact.message'   => wpautop( wp_strip_all_tags( stripslashes( (string) $message->message ) ) ),
+			'inbox.url'         => esc_url( $inbox_url ),
 		);
 	}
 }

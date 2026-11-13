@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-11-13T13:49:45+00:00\n"
+"POT-Creation-Date: 2026-11-13T14:25:26+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: buddypress-contact-me\n"
@@ -609,12 +609,12 @@ msgid "Also send a copy to the sender so they have a record"
 msgstr ""
 
 #. translators: do not remove {} brackets or translate their contents.
-#: includes/email/class-bcm-email-installer.php:95
+#: includes/email/class-bcm-email-installer.php:111
 msgid "[{{{site.name}}}] {{sender.name}} sent you a contact message"
 msgstr ""
 
 #. translators: do not remove {} brackets or translate their contents.
-#: includes/email/class-bcm-email-installer.php:97
+#: includes/email/class-bcm-email-installer.php:113
 msgid ""
 "<a href=\"{{{inbox.url}}}\">{{sender.name}}</a> sent you a contact message:\n"
 "\n"
@@ -626,7 +626,7 @@ msgid ""
 msgstr ""
 
 #. translators: do not remove {} brackets or translate their contents.
-#: includes/email/class-bcm-email-installer.php:102
+#: includes/email/class-bcm-email-installer.php:118
 msgid ""
 "{{sender.name}} sent you a contact message:\n"
 "\n"
@@ -637,8 +637,66 @@ msgid ""
 "Open the message in your inbox to reply or delete it: {{{inbox.url}}}"
 msgstr ""
 
-#: includes/email/class-bcm-email-installer.php:116
+#: includes/email/class-bcm-email-installer.php:122
 msgid "A member (or visitor) sent a contact message from your profile."
+msgstr ""
+
+#. translators: do not remove {} brackets or translate their contents.
+#: includes/email/class-bcm-email-installer.php:126
+msgid "[{{{site.name}}}] Copy of your message to {{contact.recipient}}"
+msgstr ""
+
+#. translators: do not remove {} brackets or translate their contents.
+#: includes/email/class-bcm-email-installer.php:128
+msgid ""
+"Here is a copy of the contact message you sent to {{contact.recipient}}:\n"
+"\n"
+"<strong>{{contact.subject}}</strong>\n"
+"\n"
+"<blockquote>{{{contact.message}}}</blockquote>"
+msgstr ""
+
+#. translators: do not remove {} brackets or translate their contents.
+#: includes/email/class-bcm-email-installer.php:133
+msgid ""
+"Here is a copy of the contact message you sent to {{contact.recipient}}:\n"
+"\n"
+"{{contact.subject}}\n"
+"\n"
+"\"{{contact.message}}\""
+msgstr ""
+
+#: includes/email/class-bcm-email-installer.php:137
+msgid "A copy of a contact message, sent to the member or visitor who wrote it."
+msgstr ""
+
+#. translators: do not remove {} brackets or translate their contents.
+#: includes/email/class-bcm-email-installer.php:141
+msgid "[{{{site.name}}}] {{sender.name}} sent {{contact.recipient}} a contact message"
+msgstr ""
+
+#. translators: do not remove {} brackets or translate their contents.
+#: includes/email/class-bcm-email-installer.php:143
+msgid ""
+"{{sender.name}} sent {{contact.recipient}} a contact message:\n"
+"\n"
+"<strong>{{contact.subject}}</strong>\n"
+"\n"
+"<blockquote>{{{contact.message}}}</blockquote>"
+msgstr ""
+
+#. translators: do not remove {} brackets or translate their contents.
+#: includes/email/class-bcm-email-installer.php:148
+msgid ""
+"{{sender.name}} sent {{contact.recipient}} a contact message:\n"
+"\n"
+"{{contact.subject}}\n"
+"\n"
+"\"{{contact.message}}\""
+msgstr ""
+
+#: includes/email/class-bcm-email-installer.php:152
+msgid "A copy of a contact message, sent to site administrators."
 msgstr ""
 
 #: includes/frontend/class-bcm-frontend-assets.php:117
@@ -699,20 +757,20 @@ msgstr ""
 msgid "Copy not supported in this browser."
 msgstr ""
 
-#: includes/frontend/class-bcm-frontend-nav.php:70
-#: includes/frontend/class-bcm-frontend-nav.php:349
+#: includes/frontend/class-bcm-frontend-nav.php:74
+#: includes/frontend/class-bcm-frontend-nav.php:359
 msgid "Contact"
 msgstr ""
 
-#: includes/frontend/class-bcm-frontend-nav.php:92
+#: includes/frontend/class-bcm-frontend-nav.php:96
 msgid "Inbox"
 msgstr ""
 
-#: includes/frontend/class-bcm-frontend-nav.php:103
+#: includes/frontend/class-bcm-frontend-nav.php:107
 msgid "Preferences"
 msgstr ""
 
-#: includes/frontend/class-bcm-frontend-nav.php:115
+#: includes/frontend/class-bcm-frontend-nav.php:119
 #: public/partials/tab-form.php:191
 msgid "Send message"
 msgstr ""
