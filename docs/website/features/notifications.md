@@ -30,7 +30,7 @@ See the [Email pipeline](../developer-guide/email-pipeline.md) developer doc for
 
 Two extra recipient toggles on the Notifications tab:
 
-- **Site admin copy** — BCC every message to every user with the `administrator` role. Useful for community moderation.
+- **Site admin copy** — every user with the `administrator` role gets their own copy of each message, as a separate email. Useful for community moderation.
 - **Sender copy** — send the sender a copy of what they submitted. Useful as a "we got your message" receipt and reduces support tickets like "did my message go through?".
 
 ## Per-recipient delivery

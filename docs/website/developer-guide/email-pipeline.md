@@ -58,7 +58,7 @@ Recipients are de-duplicated by user ID and lowercase email address — you can 
 
 ## Per-recipient delivery
 
-`bp_send_email()` is called once with the full recipient list. BuddyPress sends one email per recipient internally, so recipients never see each other's email addresses in any header — there is no BCC fan-out from this plugin's code, BuddyPress handles each address as a private send.
+`bp_send_email()` is called once per reader: the member, then the sender copy, then one call per site admin. Each email has only its reader's address in To, so no one sees another person's address. There is no CC or BCC.
 
 ## Output buffering
 

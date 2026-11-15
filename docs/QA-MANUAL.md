@@ -119,7 +119,7 @@ Before testing, review the complete documentation suite:
 
 1. Enable **Send admin a copy** (`bcm_allow_admin_copy_email`). Save.
 2. Send a message.
-3. **Expected:** The site admin email receives a CC/BCC copy. Subject is prefixed or clearly marked as an admin copy.
+3. **Expected:** Each site admin receives their own separate copy (only their address in To). Subject is prefixed or clearly marked as an admin copy.
 
 ### 4.4 Sender copy
 

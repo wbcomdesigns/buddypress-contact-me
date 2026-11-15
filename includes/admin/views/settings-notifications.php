@@ -127,7 +127,7 @@ foreach ( $tab_rendered_keys as $tab_rendered_key ) :
 						name="bcm_admin_general_setting[bcm_allow_admin_copy_email]"
 						value="yes"
 						<?php checked( $admin_copy ); ?>>
-					<?php esc_html_e( 'BCC the site admin on every message', 'buddypress-contact-me' ); ?>
+					<?php esc_html_e( 'Send every site admin their own copy of each message', 'buddypress-contact-me' ); ?>
 				</label>
 				<p class="description"><?php esc_html_e( 'Helpful for moderation — you can see what members are sending each other without opening every conversation.', 'buddypress-contact-me' ); ?></p>
 			</td>
