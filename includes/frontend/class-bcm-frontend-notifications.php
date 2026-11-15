@@ -25,6 +25,7 @@ class BCM_Frontend_Notifications {
 		add_filter( 'bp_notifications_get_notifications_for_user', array( $this, 'format_notification' ), 10, 7 );
 		add_action( 'bp_contact_me_form_save', array( $this, 'queue_notification' ), 10, 3 );
 		add_action( 'bp_contact_me_form_save', array( $this, 'send_email' ), 20, 3 );
+		add_filter( 'bp_email_get_content_plaintext', array( $this, 'plaintext_message_token' ), 10, 4 );
 	}
 
 	/**
@@ -216,6 +217,26 @@ class BCM_Frontend_Notifications {
 	}
 
 	/**
+	 * Use the tag-free message in the plain-text part of our emails.
+	 *
+	 * Applied when the template is read, so templates installed by earlier
+	 * versions are covered without reinstalling them.
+	 *
+	 * @param string   $content       Plain-text template, before tokens are replaced.
+	 * @param string   $property_name Property name.
+	 * @param string   $transform     Transform.
+	 * @param BP_Email $email         Email being built.
+	 * @return string
+	 */
+	public function plaintext_message_token( $content, $property_name, $transform, $email ) {
+		$types = array( BCM_Email_Installer::TYPE, BCM_Email_Installer::TYPE_SENDER_COPY, BCM_Email_Installer::TYPE_ADMIN_COPY );
+		if ( ! in_array( $email->get( 'type' ), $types, true ) ) {
+			return $content;
+		}
+		return str_replace( '{{contact.message}}', '{{contact.message.text}}', (string) $content );
+	}
+
+	/**
 	 * Build the token array for the BP email template.
 	 *
 	 * @param object $message      Message row from the repo.
@@ -228,6 +249,7 @@ class BCM_Frontend_Notifications {
 			? bp_core_get_user_displayname( $sender_id )
 			: $message->name;
 		$recipient   = get_userdata( $recipient_id );
+		$text        = wp_strip_all_tags( stripslashes( (string) $message->message ) );
 
 		$user_domain = function_exists( 'bp_members_get_user_url' )
 			? bp_members_get_user_url( $recipient_id )
@@ -235,11 +257,12 @@ class BCM_Frontend_Notifications {
 		$inbox_url   = trailingslashit( $user_domain ) . BCM_Frontend_Nav::SLUG . '/' . BCM_Frontend_Nav::SUB_INBOX . '/' . (int) $message->id . '/';
 
 		return array(
-			'sender.name'       => $sender_name,
-			'contact.recipient' => $recipient ? $recipient->display_name : '',
-			'contact.subject'   => wp_strip_all_tags( stripslashes( (string) $message->subject ) ),
-			'contact.message'   => wpautop( wp_strip_all_tags( stripslashes( (string) $message->message ) ) ),
-			'inbox.url'         => esc_url( $inbox_url ),
+			'sender.name'          => $sender_name,
+			'contact.recipient'    => $recipient ? $recipient->display_name : '',
+			'contact.subject'      => wp_strip_all_tags( stripslashes( (string) $message->subject ) ),
+			'contact.message'      => wpautop( $text ),
+			'contact.message.text' => $text,
+			'inbox.url'            => esc_url( $inbox_url ),
 		);
 	}
 }
