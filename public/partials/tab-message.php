@@ -87,7 +87,7 @@ $bcm_time_display = wp_date( get_option( 'date_format' ) . ' ' . get_option( 'ti
 <div class="bcm-message-view">
 	<p class="bcm-message-view__back">
 		<a href="<?php echo esc_url( $bcm_inbox_url ); ?>">
-			<span class="dashicons dashicons-arrow-left-alt" aria-hidden="true"></span>
+			<span class="dashicons <?php echo is_rtl() ? 'dashicons-arrow-right-alt' : 'dashicons-arrow-left-alt'; ?>" aria-hidden="true"></span>
 			<?php esc_html_e( 'Back to inbox', 'buddypress-contact-me' ); ?>
 		</a>
 	</p>
