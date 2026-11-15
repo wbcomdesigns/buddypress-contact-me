@@ -50,7 +50,11 @@ Highlights:
 * Fix      - Turning off the profile Contact tab no longer stops the contact shortcode from showing or sending.
 * Fix      - Members who stop accepting messages keep their own Contact inbox and preferences, and older message links open again.
 * Fix      - Visitors who send a message now receive their copy by email.
-* Security - The visitor math question now works once per message, so a solved answer cannot be replayed to send repeat messages.
+* Fix      - Signed-in members whose role may not send now see why, instead of a sign-in prompt.
+* Fix      - The plain-text version of contact emails no longer shows HTML tags.
+* Fix      - The Back to inbox arrow points the right way on right-to-left sites.
+* Fix      - The site admin copy setting now says each admin gets their own email.
+* Security - The visitor math question now works once per message, so a solved answer cannot be replayed, even by requests sent at the same moment.
 * Security - The sender copy and admin copies go out as separate emails, so the recipient's email address is no longer shared, and each copy is worded for its reader.
 * Compat   - Requires WordPress 6.5 and PHP 8.1, tested up to WordPress 7.1.
 
