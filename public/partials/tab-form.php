@@ -14,6 +14,16 @@ $bcm_atts      = isset( $GLOBALS['bcm_shortcode_atts'] ) && is_array( $GLOBALS['
 	: array();
 $bcm_target_id = (int) ( $bcm_atts['id'] ?? bp_displayed_user_id() );
 
+if ( ! BCM_Frontend_Nav::viewer_can_send() && is_user_logged_in() ) {
+	?>
+	<div class="bcm-card bcm-card--closed" role="status">
+		<p class="bcm-card__title"><?php esc_html_e( 'You cannot send contact messages', 'buddypress-contact-me' ); ?></p>
+		<p class="bcm-card__body"><?php esc_html_e( 'Your account type is not allowed to send contact messages on this site.', 'buddypress-contact-me' ); ?></p>
+	</div>
+	<?php
+	return;
+}
+
 if ( ! BCM_Frontend_Nav::viewer_can_send() ) {
 	?>
 	<div class="bcm-card bcm-card--closed" role="status">
