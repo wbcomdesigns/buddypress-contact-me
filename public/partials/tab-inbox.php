@@ -30,7 +30,7 @@ if ( 'unread' === $bcm_filter ) {
 	$bcm_messages = BCM_Messages_Repo::list_for_recipient( $bcm_user_id, $bcm_per_page, $bcm_page );
 	$bcm_shown    = $bcm_total;
 }
-$bcm_pages = $bcm_per_page ? (int) ceil( max( 1, $bcm_shown ) / $bcm_per_page ) : 1;
+$bcm_pages = (int) ceil( max( 1, $bcm_shown ) / $bcm_per_page );
 
 // Batch-prefetch every sender on this page so the foreach below doesn't
 // fire N+1 user lookups against a cold cache. cache_users() primes the
@@ -156,7 +156,7 @@ endif;
 		</nav>
 	</header>
 
-	<?php if ( empty( $bcm_messages ) && 'unread' === $bcm_filter ) : ?>
+	<?php if ( empty( $bcm_messages ) ) : // Only the Unread filter gets here empty. ?>
 		<div class="bcm-empty bcm-empty--inline" role="status">
 			<p class="bcm-empty__body">
 				<?php esc_html_e( 'You have no unread messages right now. Nice — inbox zero.', 'buddypress-contact-me' ); ?>

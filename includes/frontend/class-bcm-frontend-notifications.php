@@ -30,7 +30,7 @@ class BCM_Frontend_Notifications {
 	/**
 	 * Register our custom BP notifications component.
 	 *
-	 * @param array $components Registered components.
+	 * @param mixed $components Registered components (filter value, may come back malformed from another plugin).
 	 * @return array
 	 */
 	public function register_component( $components = array() ) {

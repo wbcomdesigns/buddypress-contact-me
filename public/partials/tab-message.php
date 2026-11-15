@@ -67,13 +67,12 @@ if ( $bcm_sender_id ) {
 		: bp_core_get_user_domain( $bcm_sender_id );
 
 	if ( function_exists( 'bp_is_active' ) && bp_is_active( 'messages' ) && function_exists( 'bp_loggedin_user_domain' ) ) {
-		$slug_fn = ( function_exists( 'buddypress' ) && isset( buddypress()->buddyboss ) )
-			? 'bp_core_get_username'
-			: 'bp_members_get_user_slug';
-		if ( function_exists( $slug_fn ) ) {
-			$compose    = trailingslashit( bp_loggedin_user_domain() ) . bp_get_messages_slug() . '/compose/';
-			$bcm_pm_url = wp_nonce_url( add_query_arg( 'r', $slug_fn( $bcm_sender_id ), $compose ) );
-		}
+		// BuddyBoss and BuddyPress before 12.0 only have bp_core_get_username().
+		$bcm_slug   = function_exists( 'bp_members_get_user_slug' ) && ! isset( buddypress()->buddyboss )
+			? bp_members_get_user_slug( $bcm_sender_id )
+			: bp_core_get_username( $bcm_sender_id );
+		$compose    = trailingslashit( bp_loggedin_user_domain() ) . bp_get_messages_slug() . '/compose/';
+		$bcm_pm_url = wp_nonce_url( add_query_arg( 'r', $bcm_slug, $compose ) );
 	}
 }
 

@@ -13,5 +13,7 @@ parameters:
         - ../buddypress
     bootstrapFiles:
         - bin/phpstan-bootstrap.php
+    dynamicConstantNames:
+        - COOKIEPATH
     excludePaths:
         - edd-license

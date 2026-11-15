@@ -8,13 +8,9 @@
 
 defined( 'ABSPATH' ) || exit;
 
-/**
- * Parent view provides $settings.
- *
- * @var array $settings bcm_admin_general_setting already loaded by parent view.
- */
-
 global $wpdb;
+
+$settings = (array) get_option( 'bcm_admin_general_setting', array() );
 
 // Contact messages table name (defined in the activator).
 $table_name = $wpdb->prefix . 'contact_me';

@@ -108,7 +108,7 @@ class BCM_Frontend_Submit {
 	 * paths enforce identical rules.
 	 *
 	 * @param array $input Raw input (sanitized inside).
-	 * @return array{id:int,recipient:int}|WP_Error
+	 * @return array{id:int,recipient:int,captcha:array{a:int,b:int,token:string,label:string}|null}|WP_Error
 	 */
 	public static function process_submission( array $input ) {
 		if ( ! BCM_Frontend_Nav::viewer_can_send() ) {
