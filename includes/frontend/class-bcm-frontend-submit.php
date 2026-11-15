@@ -171,6 +171,12 @@ class BCM_Frontend_Submit {
 			return $errors;
 		}
 
+		// Spend the guest's question once every field is valid, so a typo elsewhere does not burn it.
+		// The delete is one DELETE query: when two requests race with one token, only one removes the row.
+		if ( ! $sender_id && ! delete_transient( self::CAPTCHA_PREFIX . self::captcha_token( $input ) ) ) {
+			return new WP_Error( 'bcm_captcha_expired', __( 'The security question has expired. Please reload the page and try again.', 'buddypress-contact-me' ) );
+		}
+
 		$id = BCM_Messages_Repo::insert(
 			array(
 				'sender'    => $sender_id,
@@ -184,12 +190,6 @@ class BCM_Frontend_Submit {
 
 		if ( ! $id ) {
 			return new WP_Error( 'bcm_insert_failed', __( 'Could not save your message. Please try again.', 'buddypress-contact-me' ) );
-		}
-
-		// Spend the guest's question only once a message is saved, so a typo in another field does not burn it.
-		// ponytail: two requests racing with one token can both pass; a lock is overkill for a math captcha.
-		if ( ! $sender_id ) {
-			delete_transient( self::CAPTCHA_PREFIX . self::captcha_token( $input ) );
 		}
 
 		/**
