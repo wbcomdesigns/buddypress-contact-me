@@ -89,6 +89,36 @@ class BCM_Email_Installer {
 	}
 
 	/**
+	 * ID of the BuddyPress email post for one of our email types, or 0.
+	 *
+	 * @since 1.5.1
+	 * @param string $type Email type slug, default the contact message.
+	 * @return int
+	 */
+	public static function post_id( $type = self::TYPE ) {
+		$term = get_term_by( 'slug', $type, 'bp-email-type' );
+		if ( ! $term ) {
+			return 0;
+		}
+		// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query -- Admin-only, one row.
+		$ids = get_posts(
+			array(
+				'post_type'   => 'bp-email',
+				'tax_query'   => array(
+					array(
+						'taxonomy' => 'bp-email-type',
+						'field'    => 'term_id',
+						'terms'    => (int) $term->term_id,
+					),
+				),
+				'numberposts' => 1,
+				'fields'      => 'ids',
+			)
+		);
+		return $ids ? (int) $ids[0] : 0;
+	}
+
+	/**
 	 * Title / content / excerpt / description per email type, using BP
 	 * token syntax.
 	 *

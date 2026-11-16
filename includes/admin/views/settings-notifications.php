@@ -74,26 +74,7 @@ foreach ( $tab_rendered_keys as $tab_rendered_key ) :
 					<?php esc_html_e( 'Email the recipient when a new message arrives', 'buddypress-contact-me' ); ?>
 				</label>
 				<?php
-				$bcm_email_term = function_exists( 'get_term_by' ) ? get_term_by( 'slug', 'bcm-contact-message', 'bp-email-type' ) : false;
-				$bcm_email_id   = 0;
-				if ( $bcm_email_term ) {
-					// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query -- Admin-only, runs once per settings render.
-					$bcm_email_posts = get_posts(
-						array(
-							'post_type'   => 'bp-email',
-							'tax_query'   => array(
-								array(
-									'taxonomy' => 'bp-email-type',
-									'field'    => 'term_id',
-									'terms'    => (int) $bcm_email_term->term_id,
-								),
-							),
-							'numberposts' => 1,
-							'fields'      => 'ids',
-						)
-					);
-					$bcm_email_id    = ! empty( $bcm_email_posts ) ? (int) $bcm_email_posts[0] : 0;
-				}
+				$bcm_email_id = BCM_Email_Installer::post_id();
 				?>
 				<p class="description">
 					<?php
