@@ -41,6 +41,7 @@ Highlights:
 * Fix      - Message times show correctly on sites outside UTC; existing messages are converted once on update.
 * Fix      - Buttons follow the theme's dark mode toggle and keep readable label colours on BuddyX, BuddyX Pro and Reign.
 * Fix      - Delete button stacks full width with the other message actions on phones.
+* Fix      - Several unread contact messages now show as one "You have N new contact messages" notification that opens your inbox, instead of naming only the first sender.
 * Fix      - Right-to-left sites load the mirrored stylesheet.
 * Fix      - Settings screen fits phones without sideways scrolling or clipped text.
 * Fix      - Copy-link messages are now translatable.

@@ -55,9 +55,24 @@ class BCM_Frontend_Notifications {
 	 * @return string|array
 	 */
 	public function format_notification( $action, $item_id, $secondary_item_id, $total_items, $format, $component_action_name, $component_name ) {
-		unset( $secondary_item_id, $total_items, $component_name );
+		unset( $secondary_item_id, $component_name );
 		if ( self::ACTION !== $component_action_name ) {
 			return $action;
+		}
+
+		// BuddyPress groups several unread messages into one row (admin-bar bubble): count them, link to the inbox.
+		$total_items = (int) $total_items;
+		if ( $total_items > 1 ) {
+			$text = sprintf(
+				/* translators: %d: number of unread contact messages. */
+				_n( 'You have %d new contact message.', 'You have %d new contact messages.', $total_items, 'buddypress-contact-me' ),
+				$total_items
+			);
+			$link = trailingslashit( self::inbox_url( get_current_user_id() ) );
+			return 'string' === $format ? '<a href="' . esc_url( $link ) . '">' . esc_html( $text ) . '</a>' : array(
+				'text' => $text,
+				'link' => $link,
+			);
 		}
 
 		$message = BCM_Messages_Repo::find( $item_id );
@@ -77,11 +92,7 @@ class BCM_Frontend_Notifications {
 		// Deep-link: the notification is shown to the recipient, so take them to their own inbox.
 		$recipient_id = get_current_user_id();
 		$recipient    = $recipient_id ? $recipient_id : (int) $message->recipient;
-		$user_domain  = function_exists( 'bp_members_get_user_url' )
-			? bp_members_get_user_url( $recipient )
-			: bp_core_get_user_domain( $recipient );
-
-		$link = trailingslashit( $user_domain ) . BCM_Frontend_Nav::SLUG . '/' . BCM_Frontend_Nav::SUB_INBOX . '/' . (int) $message->id . '/';
+		$link         = trailingslashit( self::inbox_url( $recipient ) ) . (int) $message->id . '/';
 
 		/* translators: %s: sender display name. */
 		$text = sprintf( __( '%s sent you a contact message.', 'buddypress-contact-me' ), $sender_name );
@@ -94,6 +105,19 @@ class BCM_Frontend_Notifications {
 			'text' => $text,
 			'link' => $link,
 		);
+	}
+
+	/**
+	 * A member's Contact Me inbox URL.
+	 *
+	 * @param int $user_id Member ID.
+	 * @return string
+	 */
+	private static function inbox_url( $user_id ) {
+		$user_domain = function_exists( 'bp_members_get_user_url' )
+			? bp_members_get_user_url( $user_id )
+			: bp_core_get_user_domain( $user_id );
+		return trailingslashit( $user_domain ) . BCM_Frontend_Nav::SLUG . '/' . BCM_Frontend_Nav::SUB_INBOX;
 	}
 
 	/**

@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-11-16T07:12:03+00:00\n"
+"POT-Creation-Date: 2026-11-16T08:13:37+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: buddypress-contact-me\n"
@@ -775,12 +775,20 @@ msgstr ""
 msgid "Send message"
 msgstr ""
 
-#: includes/frontend/class-bcm-frontend-notifications.php:66
+#. translators: %d: number of unread contact messages.
+#: includes/frontend/class-bcm-frontend-notifications.php:68
+#, php-format
+msgid "You have %d new contact message."
+msgid_plural "You have %d new contact messages."
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/frontend/class-bcm-frontend-notifications.php:81
 msgid "A contact message that has since been deleted."
 msgstr ""
 
 #. translators: %s: sender display name.
-#: includes/frontend/class-bcm-frontend-notifications.php:87
+#: includes/frontend/class-bcm-frontend-notifications.php:98
 #, php-format
 msgid "%s sent you a contact message."
 msgstr ""
