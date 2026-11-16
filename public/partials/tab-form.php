@@ -68,7 +68,8 @@ if ( isset( $_GET['bcm'] ) && 'sent' === $_GET['bcm'] ) : // phpcs:ignore WordPr
 endif;
 
 $bcm_logged_in   = is_user_logged_in();
-$bcm_captcha     = $bcm_logged_in ? null : BCM_Frontend_Submit::new_captcha();
+$bcm_site_captcha = ! $bcm_logged_in && BCM_Frontend_Submit::uses_site_captcha();
+$bcm_captcha     = ( $bcm_logged_in || $bcm_site_captcha ) ? null : BCM_Frontend_Submit::new_captcha();
 $bcm_user_name   = $bcm_logged_in ? bp_core_get_user_displayname( bp_loggedin_user_id() ) : '';
 $bcm_target      = get_userdata( $bcm_target_id );
 $bcm_target_name = $bcm_target ? bp_core_get_user_displayname( $bcm_target_id ) : '';
@@ -165,7 +166,11 @@ $bcm_target_name = $bcm_target ? bp_core_get_user_displayname( $bcm_target_id ) 
 			<span class="bcm-field__error" id="bcm-message-error" role="alert"></span>
 		</div>
 
-		<?php if ( ! $bcm_logged_in ) : ?>
+		<?php if ( $bcm_site_captcha ) : ?>
+			<div class="bcm-field bcm-field--captcha bcm-field--site-captcha">
+				<?php wbc_captcha_service_manager()->render( 'contact_me' ); ?>
+			</div>
+		<?php elseif ( ! $bcm_logged_in ) : ?>
 			<div class="bcm-field bcm-field--captcha">
 				<label for="bcm-captcha">
 					<?php esc_html_e( 'Security check', 'buddypress-contact-me' ); ?>

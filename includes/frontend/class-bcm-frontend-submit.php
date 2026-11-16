@@ -49,6 +49,22 @@ class BCM_Frontend_Submit {
 	}
 
 	/**
+	 * Whether guests get the site's CAPTCHA (Wbcom CAPTCHA Manager) instead of the math question.
+	 *
+	 * True when CAPTCHA Manager is active, has a provider set up, and its
+	 * "Contact Me Form" switch is on. Otherwise the math question is used.
+	 *
+	 * @return bool
+	 */
+	public static function uses_site_captcha() {
+		if ( ! function_exists( 'wbc_captcha_service_manager' ) ) {
+			return false;
+		}
+		$manager = wbc_captcha_service_manager();
+		return $manager && $manager->is_configured() && $manager->is_enabled_for_context( 'contact_me' );
+	}
+
+	/**
 	 * Read the guest captcha token from the submitted form.
 	 *
 	 * @param array $input Raw form input.
@@ -173,7 +189,7 @@ class BCM_Frontend_Submit {
 
 		// Spend the guest's question once every field is valid, so a typo elsewhere does not burn it.
 		// The delete is one DELETE query: when two requests race with one token, only one removes the row.
-		if ( ! $sender_id && ! delete_transient( self::CAPTCHA_PREFIX . self::captcha_token( $input ) ) ) {
+		if ( ! $sender_id && ! self::uses_site_captcha() && ! delete_transient( self::CAPTCHA_PREFIX . self::captcha_token( $input ) ) ) {
 			return new WP_Error( 'bcm_captcha_expired', __( 'The security question has expired. Please reload the page and try again.', 'buddypress-contact-me' ) );
 		}
 
@@ -204,7 +220,7 @@ class BCM_Frontend_Submit {
 		return array(
 			'id'        => $id,
 			'recipient' => $recipient_id,
-			'captcha'   => $sender_id ? null : self::new_captcha(),
+			'captcha'   => ( $sender_id || self::uses_site_captcha() ) ? null : self::new_captcha(),
 		);
 	}
 
@@ -242,6 +258,12 @@ class BCM_Frontend_Submit {
 	private static function validate_captcha( array $input ) {
 		if ( is_user_logged_in() ) {
 			return true;
+		}
+		if ( self::uses_site_captcha() ) {
+			// CAPTCHA Manager reads the provider's token from the posted form and checks it once.
+			return wbc_captcha_service_manager()->verify( 'contact_me' )
+				? true
+				: new WP_Error( 'bcm_captcha_wrong', __( 'Please complete the security check and try again.', 'buddypress-contact-me' ) );
 		}
 		$answer = isset( $input['bcm_captcha_answer'] ) ? (int) $input['bcm_captcha_answer'] : 0;
 		$token  = self::captcha_token( $input );

@@ -70,7 +70,9 @@
 			method: opts.method || 'GET',
 			signal: bcmTimeoutSignal( opts.timeout || DEFAULT_TIMEOUT_MS ),
 		};
-		if ( opts.data ) {
+		if ( opts.body ) {
+			request.body = opts.body; // FormData: posted as a normal form, so CAPTCHA tokens arrive in $_POST.
+		} else if ( opts.data ) {
 			request.data = opts.data;
 		}
 		return apiFetch( request );
@@ -186,16 +188,12 @@
 			} );
 			if ( ! ok ) { return; }
 
-			var fd   = new FormData( form );
-			var data = {};
-			fd.forEach( function ( v, k ) { data[ k ] = v; } );
-
 			setSubmitting( submitBtn, true );
 
 			bcmApi( {
 				url:    cfg.restUrl,
 				method: 'POST',
-				data:   data,
+				body:   new FormData( form ),
 			} ).then( function ( response ) {
 				setSubmitting( submitBtn, false );
 				form.reset();
@@ -211,12 +209,14 @@
 					if ( input ) { input.setAttribute( 'aria-label', response.captcha.label ); }
 					if ( token ) { token.value = response.captcha.token; }
 				}
+				refreshSiteCaptcha( form );
 				toast( ( response && response.message ) || cfg.i18n.sent, 'success' );
 			} ).catch( function ( err ) {
 				// AbortError from bcmApi's timeout signal also lands here, so
 				// re-enabling the submit button on .catch ensures the UI
 				// recovers from a hung server (the original hang-risk bug).
 				setSubmitting( submitBtn, false );
+				refreshSiteCaptcha( form );
 				if ( err && err.errors && err.errors.length ) {
 					err.errors.forEach( function ( e ) { toast( e.message, 'error' ); } );
 				} else {
@@ -226,6 +226,13 @@
 				}
 			} );
 		} );
+	}
+
+	// CAPTCHA Manager tokens are single-use: reset the widget after every send attempt.
+	function refreshSiteCaptcha( form ) {
+		if ( window.wbcCaptcha && typeof window.wbcCaptcha.refresh === 'function' ) {
+			window.wbcCaptcha.refresh( form );
+		}
 	}
 
 	function validateField( el ) {

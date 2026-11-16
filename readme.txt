@@ -34,6 +34,7 @@ Highlights:
 
 = 1.5.1 - November 2026 =
 
+* New      - When Wbcom CAPTCHA Manager is active and its Contact Me Form switch is on, logged-out visitors solve your site's CAPTCHA instead of the math question.
 * Improve  - Activating the plugin no longer updates every member account, so it stays fast on large sites.
 * Improve  - Uninstall removes all of the plugin's stored settings.
 * Fix      - Contact form styles and scripts load on any page that uses the contact shortcode, including for logged-out visitors.
