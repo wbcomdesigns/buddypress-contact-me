@@ -26,6 +26,8 @@ Highlights:
 
 == Installation ==
 
+Requires BuddyPress 12.0 or higher (or BuddyBoss Platform).
+
 1. Upload the `buddypress-contact-me` folder to `/wp-content/plugins/`.
 2. Activate the plugin through the Plugins menu in WordPress.
 3. Go to WB Plugins → Contact Me and configure notifications, email template, and access rules.
