@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-11-16T08:13:37+00:00\n"
+"POT-Creation-Date: 2026-11-18T11:33:52+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: buddypress-contact-me\n"
@@ -40,27 +40,27 @@ msgid "https://www.wbcomdesigns.com"
 msgstr ""
 
 #. Translators: %s.
-#: buddypress-contact-me.php:136
+#: buddypress-contact-me.php:75
 #, php-format
 msgid "%1$s is inactive as it requires %2$s to be installed and active."
 msgstr ""
 
-#: buddypress-contact-me.php:137
+#: buddypress-contact-me.php:76
 #: includes/admin/class-bcm-admin.php:105
 #: includes/admin/views/layout.php:30
 msgid "BuddyPress Contact Me"
 msgstr ""
 
-#: buddypress-contact-me.php:138
+#: buddypress-contact-me.php:77
 msgid "BuddyPress"
 msgstr ""
 
-#: buddypress-contact-me.php:194
+#: buddypress-contact-me.php:149
 #: includes/admin/views/layout.php:67
 msgid "Settings"
 msgstr ""
 
-#: buddypress-contact-me.php:195
+#: buddypress-contact-me.php:150
 msgid "Support"
 msgstr ""
 
@@ -85,7 +85,7 @@ msgid "Error"
 msgstr ""
 
 #: edd-license/edd-plugin-license.php:145
-#: edd-license/edd-plugin-license.php:264
+#: edd-license/edd-plugin-license.php:262
 msgid "An error occurred, please try again."
 msgstr ""
 
@@ -98,42 +98,42 @@ msgid "Please enter a license key."
 msgstr ""
 
 #. translators: %s: expiration date
-#: edd-license/edd-plugin-license.php:238
+#: edd-license/edd-plugin-license.php:236
 #, php-format
 msgid "Your license key expired on %s."
 msgstr ""
 
-#: edd-license/edd-plugin-license.php:241
+#: edd-license/edd-plugin-license.php:239
 msgid "Your license key has expired."
 msgstr ""
 
-#: edd-license/edd-plugin-license.php:244
+#: edd-license/edd-plugin-license.php:242
 msgid "Your license key has been disabled."
 msgstr ""
 
-#: edd-license/edd-plugin-license.php:247
+#: edd-license/edd-plugin-license.php:245
 msgid "Invalid license."
 msgstr ""
 
-#: edd-license/edd-plugin-license.php:251
+#: edd-license/edd-plugin-license.php:249
 msgid "Your license is not active for this URL."
 msgstr ""
 
 #. translators: %s: product name
-#: edd-license/edd-plugin-license.php:256
+#: edd-license/edd-plugin-license.php:254
 #, php-format
 msgid "This appears to be an invalid license key for %s."
 msgstr ""
 
-#: edd-license/edd-plugin-license.php:261
+#: edd-license/edd-plugin-license.php:259
 msgid "Your license key has reached its activation limit."
 msgstr ""
 
-#: edd-license/edd-plugin-license.php:387
+#: edd-license/edd-plugin-license.php:385
 msgid "License activated successfully."
 msgstr ""
 
-#: edd-license/edd-plugin-license.php:393
+#: edd-license/edd-plugin-license.php:391
 msgid "License deactivated successfully."
 msgstr ""
 
@@ -181,8 +181,8 @@ msgid "Continue"
 msgstr ""
 
 #: includes/admin/class-bcm-admin.php:301
-#: includes/frontend/class-bcm-frontend-assets.php:118
-#: includes/frontend/class-bcm-frontend-assets.php:149
+#: includes/frontend/class-bcm-frontend-assets.php:95
+#: includes/frontend/class-bcm-frontend-assets.php:125
 msgid "Cancel"
 msgstr ""
 
@@ -350,113 +350,113 @@ msgstr ""
 msgid "Activate License"
 msgstr ""
 
-#: includes/admin/views/overview.php:81
+#: includes/admin/views/overview.php:42
 msgid "Total Messages"
 msgstr ""
 
-#: includes/admin/views/overview.php:83
+#: includes/admin/views/overview.php:44
 msgid "Messages sent through Contact Me"
 msgstr ""
 
-#: includes/admin/views/overview.php:86
+#: includes/admin/views/overview.php:47
 msgid "Unique Senders"
 msgstr ""
 
-#: includes/admin/views/overview.php:88
+#: includes/admin/views/overview.php:49
 msgid "Members who have contacted someone"
 msgstr ""
 
-#: includes/admin/views/overview.php:91
+#: includes/admin/views/overview.php:52
 msgid "Unique Recipients"
 msgstr ""
 
-#: includes/admin/views/overview.php:93
+#: includes/admin/views/overview.php:54
 msgid "Members who have received messages"
 msgstr ""
 
-#: includes/admin/views/overview.php:96
+#: includes/admin/views/overview.php:57
 msgid "Active Recipients"
 msgstr ""
 
-#: includes/admin/views/overview.php:98
+#: includes/admin/views/overview.php:59
 msgid "Members with the Contact Me button on"
 msgstr ""
 
-#: includes/admin/views/overview.php:104
+#: includes/admin/views/overview.php:65
 msgid "Current Configuration"
 msgstr ""
 
-#: includes/admin/views/overview.php:105
+#: includes/admin/views/overview.php:66
 msgid "What happens right now when someone sends a message from a member profile."
 msgstr ""
 
-#: includes/admin/views/overview.php:109
+#: includes/admin/views/overview.php:70
 #: includes/admin/views/settings-access.php:73
 msgid "Profile contact tab"
 msgstr ""
 
-#: includes/admin/views/overview.php:112
+#: includes/admin/views/overview.php:73
 msgid "On: members see a \"Contact\" tab on every profile"
 msgstr ""
 
-#: includes/admin/views/overview.php:114
-#: includes/admin/views/overview.php:125
-#: includes/admin/views/overview.php:136
-#: includes/admin/views/overview.php:146
-#: includes/admin/views/overview.php:156
+#: includes/admin/views/overview.php:75
+#: includes/admin/views/overview.php:86
+#: includes/admin/views/overview.php:97
+#: includes/admin/views/overview.php:107
+#: includes/admin/views/overview.php:117
 msgid "Off"
 msgstr ""
 
-#: includes/admin/views/overview.php:115
-#: includes/admin/views/overview.php:126
+#: includes/admin/views/overview.php:76
+#: includes/admin/views/overview.php:87
 msgid "Turn on"
 msgstr ""
 
-#: includes/admin/views/overview.php:120
+#: includes/admin/views/overview.php:81
 msgid "BuddyPress notifications"
 msgstr ""
 
-#: includes/admin/views/overview.php:123
+#: includes/admin/views/overview.php:84
 msgid "On: recipients get a BuddyPress notification for every new message"
 msgstr ""
 
-#: includes/admin/views/overview.php:131
+#: includes/admin/views/overview.php:92
 msgid "Email notifications"
 msgstr ""
 
-#: includes/admin/views/overview.php:134
+#: includes/admin/views/overview.php:95
 msgid "On: recipients get an email for every new message"
 msgstr ""
 
-#: includes/admin/views/overview.php:141
+#: includes/admin/views/overview.php:102
 msgid "Admin copy"
 msgstr ""
 
-#: includes/admin/views/overview.php:144
+#: includes/admin/views/overview.php:105
 msgid "On: every message is copied to the site admin"
 msgstr ""
 
-#: includes/admin/views/overview.php:151
+#: includes/admin/views/overview.php:112
 msgid "Sender copy"
 msgstr ""
 
-#: includes/admin/views/overview.php:154
+#: includes/admin/views/overview.php:115
 msgid "On: the sender also gets a copy of their own message"
 msgstr ""
 
-#: includes/admin/views/overview.php:165
+#: includes/admin/views/overview.php:126
 msgid "Quick Actions"
 msgstr ""
 
-#: includes/admin/views/overview.php:171
+#: includes/admin/views/overview.php:132
 msgid "Configure Notifications"
 msgstr ""
 
-#: includes/admin/views/overview.php:175
+#: includes/admin/views/overview.php:136
 msgid "Edit Email Template"
 msgstr ""
 
-#: includes/admin/views/overview.php:179
+#: includes/admin/views/overview.php:140
 msgid "Access Control"
 msgstr ""
 
@@ -477,7 +477,7 @@ msgid "Show a \"Contact\" tab on every member profile"
 msgstr ""
 
 #: includes/admin/views/settings-access.php:82
-msgid "Recommended ON. Each member can still individually opt out from their own profile settings."
+msgid "Recommended ON. Each member can still opt out from Contact > Preferences on their profile."
 msgstr ""
 
 #: includes/admin/views/settings-access.php:90
@@ -485,17 +485,18 @@ msgid "Who Can Send Messages"
 msgstr ""
 
 #: includes/admin/views/settings-access.php:91
-msgid "Only members in the groups you pick can see the Contact Me form. Leave everything unchecked to allow every logged-in member."
+msgid "Only members with the roles you pick can see the Contact Me form. Leave everything unchecked to allow every logged-in member."
 msgstr ""
 
 #: includes/admin/views/settings-access.php:95
-msgid "Groups allowed to send messages"
+msgid "Roles allowed to send messages"
 msgstr ""
 
 #. translators: 1: selected, 2: total
 #: includes/admin/views/settings-access.php:102
+#: includes/admin/views/settings-access.php:154
 #, php-format
-msgid "%1$d of %2$d groups selected"
+msgid "%1$d of %2$d roles selected"
 msgstr ""
 
 #: includes/admin/views/settings-access.php:110
@@ -517,17 +518,11 @@ msgid "Who Can Be Contacted"
 msgstr ""
 
 #: includes/admin/views/settings-access.php:143
-msgid "Only members in the roles you pick here will have a Contact Me form on their profile. Useful to restrict inbound messages to mentors, support staff, or paid members."
+msgid "Only members with the roles you pick here will have a Contact Me form on their profile. Leave everything unchecked to allow every member. Useful to restrict inbound messages to mentors, support staff, or paid members."
 msgstr ""
 
 #: includes/admin/views/settings-access.php:147
 msgid "Roles whose profiles show the Contact Me form"
-msgstr ""
-
-#. translators: 1: selected, 2: total
-#: includes/admin/views/settings-access.php:154
-#, php-format
-msgid "%1$d of %2$d roles selected"
 msgstr ""
 
 #: includes/admin/views/settings-access.php:189
@@ -535,7 +530,7 @@ msgid "Members always have the final say."
 msgstr ""
 
 #: includes/admin/views/settings-access.php:190
-msgid "Even if their role is allowed here, each member can hide their own Contact Me form from their profile settings."
+msgid "Even if their role is allowed here, each member can hide their own Contact Me form from Contact > Preferences."
 msgstr ""
 
 #: includes/admin/views/settings-notifications.php:42
@@ -571,50 +566,54 @@ msgid "Email the recipient when a new message arrives"
 msgstr ""
 
 #. translators: %s: edit-email URL
-#: includes/admin/views/settings-notifications.php:103
+#: includes/admin/views/settings-notifications.php:84
 #, php-format
 msgid "The subject, body, and branding use BuddyPress's email template. <a href=\"%s\">Edit the contact-message email →</a>"
 msgstr ""
 
-#: includes/admin/views/settings-notifications.php:107
+#: includes/admin/views/settings-notifications.php:88
 msgid "Customize subject, body, and branding under Dashboard → Emails."
 msgstr ""
 
-#: includes/admin/views/settings-notifications.php:118
+#: includes/admin/views/settings-notifications.php:99
 msgid "Send a Copy To…"
 msgstr ""
 
-#: includes/admin/views/settings-notifications.php:119
+#: includes/admin/views/settings-notifications.php:100
 msgid "Who else should receive a copy of the message when it is sent. Useful for monitoring, support audit trails, or giving the sender a receipt."
 msgstr ""
 
-#: includes/admin/views/settings-notifications.php:123
+#: includes/admin/views/settings-notifications.php:104
 msgid "Site admin"
 msgstr ""
 
-#: includes/admin/views/settings-notifications.php:130
+#: includes/admin/views/settings-notifications.php:111
 msgid "Send every site admin their own copy of each message"
 msgstr ""
 
-#: includes/admin/views/settings-notifications.php:132
-msgid "Helpful for moderation — you can see what members are sending each other without opening every conversation."
+#: includes/admin/views/settings-notifications.php:113
+msgid "Helpful for moderation: you can see what members are sending each other without opening every conversation."
 msgstr ""
 
-#: includes/admin/views/settings-notifications.php:136
+#: includes/admin/views/settings-notifications.php:117
 msgid "Sender"
 msgstr ""
 
-#: includes/admin/views/settings-notifications.php:143
+#: includes/admin/views/settings-notifications.php:124
 msgid "Also send a copy to the sender so they have a record"
 msgstr ""
 
+#: includes/admin/views/settings-notifications.php:126
+msgid "Logged-in members only. Visitors never get a copy, so the form cannot be used to email someone else."
+msgstr ""
+
 #. translators: do not remove {} brackets or translate their contents.
-#: includes/email/class-bcm-email-installer.php:111
+#: includes/email/class-bcm-email-installer.php:141
 msgid "[{{{site.name}}}] {{sender.name}} sent you a contact message"
 msgstr ""
 
 #. translators: do not remove {} brackets or translate their contents.
-#: includes/email/class-bcm-email-installer.php:113
+#: includes/email/class-bcm-email-installer.php:143
 msgid ""
 "<a href=\"{{{inbox.url}}}\">{{sender.name}}</a> sent you a contact message:\n"
 "\n"
@@ -626,7 +625,7 @@ msgid ""
 msgstr ""
 
 #. translators: do not remove {} brackets or translate their contents.
-#: includes/email/class-bcm-email-installer.php:118
+#: includes/email/class-bcm-email-installer.php:148
 msgid ""
 "{{sender.name}} sent you a contact message:\n"
 "\n"
@@ -637,17 +636,17 @@ msgid ""
 "Open the message in your inbox to reply or delete it: {{{inbox.url}}}"
 msgstr ""
 
-#: includes/email/class-bcm-email-installer.php:122
+#: includes/email/class-bcm-email-installer.php:152
 msgid "A member (or visitor) sent a contact message from your profile."
 msgstr ""
 
 #. translators: do not remove {} brackets or translate their contents.
-#: includes/email/class-bcm-email-installer.php:126
+#: includes/email/class-bcm-email-installer.php:156
 msgid "[{{{site.name}}}] Copy of your message to {{contact.recipient}}"
 msgstr ""
 
 #. translators: do not remove {} brackets or translate their contents.
-#: includes/email/class-bcm-email-installer.php:128
+#: includes/email/class-bcm-email-installer.php:158
 msgid ""
 "Here is a copy of the contact message you sent to {{contact.recipient}}:\n"
 "\n"
@@ -657,7 +656,7 @@ msgid ""
 msgstr ""
 
 #. translators: do not remove {} brackets or translate their contents.
-#: includes/email/class-bcm-email-installer.php:133
+#: includes/email/class-bcm-email-installer.php:163
 msgid ""
 "Here is a copy of the contact message you sent to {{contact.recipient}}:\n"
 "\n"
@@ -666,17 +665,17 @@ msgid ""
 "\"{{contact.message}}\""
 msgstr ""
 
-#: includes/email/class-bcm-email-installer.php:137
+#: includes/email/class-bcm-email-installer.php:167
 msgid "A copy of a contact message, sent to the member or visitor who wrote it."
 msgstr ""
 
 #. translators: do not remove {} brackets or translate their contents.
-#: includes/email/class-bcm-email-installer.php:141
+#: includes/email/class-bcm-email-installer.php:171
 msgid "[{{{site.name}}}] {{sender.name}} sent {{contact.recipient}} a contact message"
 msgstr ""
 
 #. translators: do not remove {} brackets or translate their contents.
-#: includes/email/class-bcm-email-installer.php:143
+#: includes/email/class-bcm-email-installer.php:173
 msgid ""
 "{{sender.name}} sent {{contact.recipient}} a contact message:\n"
 "\n"
@@ -686,7 +685,7 @@ msgid ""
 msgstr ""
 
 #. translators: do not remove {} brackets or translate their contents.
-#: includes/email/class-bcm-email-installer.php:148
+#: includes/email/class-bcm-email-installer.php:178
 msgid ""
 "{{sender.name}} sent {{contact.recipient}} a contact message:\n"
 "\n"
@@ -695,84 +694,97 @@ msgid ""
 "\"{{contact.message}}\""
 msgstr ""
 
-#: includes/email/class-bcm-email-installer.php:152
+#: includes/email/class-bcm-email-installer.php:182
 msgid "A copy of a contact message, sent to site administrators."
 msgstr ""
 
-#: includes/frontend/class-bcm-frontend-assets.php:117
+#: includes/frontend/class-bcm-frontend-assets.php:94
 msgid "Confirm"
 msgstr ""
 
-#: includes/frontend/class-bcm-frontend-assets.php:145
+#: includes/frontend/class-bcm-frontend-assets.php:120
 msgid "Delete this message? This cannot be undone."
 msgstr ""
 
-#: includes/frontend/class-bcm-frontend-assets.php:146
+#: includes/frontend/class-bcm-frontend-assets.php:121
 msgid "Could not delete the message. Please try again."
 msgstr ""
 
-#: includes/frontend/class-bcm-frontend-assets.php:147
+#: includes/frontend/class-bcm-frontend-assets.php:122
 msgid "Sending…"
 msgstr ""
 
-#: includes/frontend/class-bcm-frontend-assets.php:148
-#: includes/frontend/class-bcm-frontend-submit.php:113
+#: includes/frontend/class-bcm-frontend-assets.php:123
 #: includes/rest/class-bcm-rest-messages.php:165
-#: public/partials/tab-form.php:65
+#: public/partials/tab-form.php:57
 msgid "Message sent."
 msgstr ""
 
-#: includes/frontend/class-bcm-frontend-assets.php:150
-#: public/partials/tab-inbox.php:237
-#: public/partials/tab-message.php:168
+#: includes/frontend/class-bcm-frontend-assets.php:124
+msgid "Dismiss"
+msgstr ""
+
+#: includes/frontend/class-bcm-frontend-assets.php:126
+#: public/partials/tab-inbox.php:212
+#: public/partials/tab-message.php:159
 msgid "Delete"
 msgstr ""
 
-#: includes/frontend/class-bcm-frontend-assets.php:151
+#: includes/frontend/class-bcm-frontend-assets.php:127
 msgid "This field is required."
 msgstr ""
 
-#: includes/frontend/class-bcm-frontend-assets.php:152
-#: includes/frontend/class-bcm-frontend-submit.php:173
+#: includes/frontend/class-bcm-frontend-assets.php:128
+#: includes/frontend/class-bcm-frontend-submit.php:206
 msgid "Enter a valid email address."
 msgstr ""
 
 #. translators: %d: minimum character count.
-#: includes/frontend/class-bcm-frontend-assets.php:154
+#: includes/frontend/class-bcm-frontend-assets.php:130
 #, php-format
 msgid "At least %d characters."
 msgstr ""
 
 #. translators: %d: maximum character count.
-#: includes/frontend/class-bcm-frontend-assets.php:156
+#: includes/frontend/class-bcm-frontend-assets.php:132
 #, php-format
 msgid "No more than %d characters."
 msgstr ""
 
-#: includes/frontend/class-bcm-frontend-assets.php:157
+#: includes/frontend/class-bcm-frontend-assets.php:133
 msgid "Link copied."
 msgstr ""
 
-#: includes/frontend/class-bcm-frontend-assets.php:158
+#: includes/frontend/class-bcm-frontend-assets.php:134
 msgid "Copy not supported in this browser."
 msgstr ""
 
-#: includes/frontend/class-bcm-frontend-nav.php:74
-#: includes/frontend/class-bcm-frontend-nav.php:359
+#: includes/frontend/class-bcm-frontend-nav.php:99
+#: includes/frontend/class-bcm-frontend-nav.php:381
 msgid "Contact"
 msgstr ""
 
-#: includes/frontend/class-bcm-frontend-nav.php:96
+#: includes/frontend/class-bcm-frontend-nav.php:121
 msgid "Inbox"
 msgstr ""
 
-#: includes/frontend/class-bcm-frontend-nav.php:107
+#: includes/frontend/class-bcm-frontend-nav.php:132
 msgid "Preferences"
 msgstr ""
 
-#: includes/frontend/class-bcm-frontend-nav.php:119
-#: public/partials/tab-form.php:206
+#: includes/frontend/class-bcm-frontend-nav.php:144
+#: public/partials/tab-form.php:214
 msgid "Send message"
+msgstr ""
+
+#: includes/frontend/class-bcm-frontend-nav.php:182
+#: includes/frontend/class-bcm-frontend-submit.php:127
+#: includes/rest/class-bcm-rest-messages.php:137
+msgid "Session expired. Please refresh the page and try again."
+msgstr ""
+
+#: includes/frontend/class-bcm-frontend-nav.php:187
+msgid "Preferences saved."
 msgstr ""
 
 #. translators: %d: number of unread contact messages.
@@ -794,66 +806,67 @@ msgid "%s sent you a contact message."
 msgstr ""
 
 #. translators: %1$d, %2$d: numbers in the math question
-#: includes/frontend/class-bcm-frontend-submit.php:47
+#: includes/frontend/class-bcm-frontend-submit.php:65
 #, php-format
 msgid "What is %1$d plus %2$d?"
 msgstr ""
 
-#: includes/frontend/class-bcm-frontend-submit.php:131
+#: includes/frontend/class-bcm-frontend-submit.php:154
 msgid "You are not allowed to send messages."
 msgstr ""
 
-#: includes/frontend/class-bcm-frontend-submit.php:137
-msgid "Recipient not found."
-msgstr ""
-
-#: includes/frontend/class-bcm-frontend-submit.php:140
-msgid "You cannot send a contact message to yourself."
-msgstr ""
-
-#: includes/frontend/class-bcm-frontend-submit.php:143
-msgid "This member is not accepting contact messages right now."
-msgstr ""
-
-#: includes/frontend/class-bcm-frontend-submit.php:169
-msgid "Name must be 2 to 100 characters."
-msgstr ""
-
-#: includes/frontend/class-bcm-frontend-submit.php:177
-msgid "Subject must be 3 to 200 characters."
-msgstr ""
-
-#: includes/frontend/class-bcm-frontend-submit.php:180
-msgid "Message must be 10 to 5000 characters."
-msgstr ""
-
-#: includes/frontend/class-bcm-frontend-submit.php:183
+#: includes/frontend/class-bcm-frontend-submit.php:161
+#: includes/frontend/class-bcm-frontend-submit.php:215
 msgid "Your message was flagged as spam. Please rephrase and try again."
 msgstr ""
 
-#: includes/frontend/class-bcm-frontend-submit.php:193
-#: includes/frontend/class-bcm-frontend-submit.php:275
+#: includes/frontend/class-bcm-frontend-submit.php:167
+msgid "Recipient not found."
+msgstr ""
+
+#: includes/frontend/class-bcm-frontend-submit.php:170
+msgid "You cannot send a contact message to yourself."
+msgstr ""
+
+#: includes/frontend/class-bcm-frontend-submit.php:173
+msgid "This member is not accepting contact messages right now."
+msgstr ""
+
+#: includes/frontend/class-bcm-frontend-submit.php:178
+msgid "You have sent several messages in a short time. Please wait a few minutes and try again."
+msgstr ""
+
+#: includes/frontend/class-bcm-frontend-submit.php:203
+msgid "Name must be 2 to 100 characters."
+msgstr ""
+
+#: includes/frontend/class-bcm-frontend-submit.php:209
+msgid "Subject must be 3 to 200 characters."
+msgstr ""
+
+#: includes/frontend/class-bcm-frontend-submit.php:212
+msgid "Message must be 10 to 5000 characters."
+msgstr ""
+
+#: includes/frontend/class-bcm-frontend-submit.php:225
+#: includes/frontend/class-bcm-frontend-submit.php:359
 msgid "The security question has expired. Please reload the page and try again."
 msgstr ""
 
-#: includes/frontend/class-bcm-frontend-submit.php:208
+#: includes/frontend/class-bcm-frontend-submit.php:240
 msgid "Could not save your message. Please try again."
 msgstr ""
 
-#: includes/frontend/class-bcm-frontend-submit.php:266
+#: includes/frontend/class-bcm-frontend-submit.php:350
 msgid "Please complete the security check and try again."
 msgstr ""
 
-#: includes/frontend/class-bcm-frontend-submit.php:271
+#: includes/frontend/class-bcm-frontend-submit.php:355
 msgid "Please solve the security question."
 msgstr ""
 
-#: includes/frontend/class-bcm-frontend-submit.php:278
+#: includes/frontend/class-bcm-frontend-submit.php:362
 msgid "The security answer is incorrect."
-msgstr ""
-
-#: includes/frontend/class-bcm-frontend-submit.php:338
-msgid "Let other members contact me through a form on my profile"
 msgstr ""
 
 #: includes/rest/class-bcm-rest-messages.php:113
@@ -868,17 +881,31 @@ msgstr ""
 msgid "You may only act on your own messages."
 msgstr ""
 
-#: includes/rest/class-bcm-rest-messages.php:137
-msgid "Session expired. Please refresh the page and try again."
-msgstr ""
-
-#: includes/rest/class-bcm-rest-messages.php:189
-msgid "Message deleted."
-msgstr ""
-
 #: includes/rest/class-bcm-rest-messages.php:190
 msgid "Could not delete the message."
 msgstr ""
+
+#: includes/rest/class-bcm-rest-messages.php:201
+msgid "Message deleted."
+msgstr ""
+
+#. translators: %d: total messages
+#: includes/rest/class-bcm-rest-messages.php:208
+#: public/partials/tab-inbox.php:117
+#, php-format
+msgid "%d message"
+msgid_plural "%d messages"
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: %d: unread message count
+#: includes/rest/class-bcm-rest-messages.php:210
+#: public/partials/tab-inbox.php:114
+#, php-format
+msgid "%d unread message"
+msgid_plural "%d unread messages"
+msgstr[0] ""
+msgstr[1] ""
 
 #: public/partials/tab-form.php:20
 msgid "You cannot send contact messages"
@@ -909,30 +936,30 @@ msgid "Other members use this form to message you. You cannot send a contact mes
 msgstr ""
 
 #. translators: %s: recipient display name
-#: public/partials/tab-form.php:83
+#: public/partials/tab-form.php:81
 #, php-format
 msgid "Send %s a message"
 msgstr ""
 
 #. translators: %s: sender display name (bolded).
-#: public/partials/tab-form.php:92
+#: public/partials/tab-form.php:90
 #, php-format
 msgid "You are sending as %s. Your name and profile link are shared with the recipient."
 msgstr ""
 
-#: public/partials/tab-form.php:98
-msgid "Your message is delivered privately — only the recipient sees it. Your email is shared so they can reply."
+#: public/partials/tab-form.php:96
+msgid "Your message is delivered privately. Only the recipient sees it, and your email is shared so they can reply."
 msgstr ""
 
-#: public/partials/tab-form.php:107
+#: public/partials/tab-form.php:105
 msgid "Your name"
 msgstr ""
 
-#: public/partials/tab-form.php:118
+#: public/partials/tab-form.php:117
 msgid "2 to 100 characters."
 msgstr ""
 
-#: public/partials/tab-form.php:122
+#: public/partials/tab-form.php:121
 msgid "Email"
 msgstr ""
 
@@ -944,119 +971,113 @@ msgstr ""
 msgid "Subject"
 msgstr ""
 
-#: public/partials/tab-form.php:147
+#: public/partials/tab-form.php:148
 msgid "3 to 200 characters."
 msgstr ""
 
-#: public/partials/tab-form.php:152
+#: public/partials/tab-form.php:153
 msgid "Message"
 msgstr ""
 
-#: public/partials/tab-form.php:163
+#: public/partials/tab-form.php:164
 msgid "10 to 5000 characters."
 msgstr ""
 
-#: public/partials/tab-form.php:176
+#: public/partials/tab-form.php:177
 msgid "Security check"
 msgstr ""
 
-#: public/partials/tab-form.php:193
+#: public/partials/tab-form.php:194
 msgid "Please solve the math problem."
 msgstr ""
 
-#: public/partials/tab-inbox.php:80
+#: public/partials/tab-form.php:202
+msgid "Leave this field empty"
+msgstr ""
+
+#: public/partials/tab-inbox.php:58
 msgid "How Contact works"
 msgstr ""
 
-#: public/partials/tab-inbox.php:82
-msgid "Members and visitors can send you a private message from your profile — no email required. New messages land here, trigger a notification, and (optionally) send you an email."
+#: public/partials/tab-inbox.php:60
+msgid "Members and visitors can send you a private message from your profile, no email address needed. New messages land here, trigger a notification, and can also send you an email."
 msgstr ""
 
-#: public/partials/tab-inbox.php:85
+#: public/partials/tab-inbox.php:63
 msgid "Manage preferences"
 msgstr ""
 
-#: public/partials/tab-inbox.php:88
-#: public/partials/tab-inbox.php:121
+#: public/partials/tab-inbox.php:66
+#: public/partials/tab-inbox.php:99
 msgid "Copy my contact link"
 msgstr ""
 
-#: public/partials/tab-inbox.php:92
+#: public/partials/tab-inbox.php:70
 msgid "Dismiss this tip"
 msgstr ""
 
-#: public/partials/tab-inbox.php:112
-msgid "Your inbox is quiet — for now."
+#: public/partials/tab-inbox.php:90
+msgid "Your inbox is quiet for now."
 msgstr ""
 
-#: public/partials/tab-inbox.php:114
+#: public/partials/tab-inbox.php:92
 msgid "When someone sends you a message from your profile's Contact tab, it'll show up here."
 msgstr ""
 
-#: public/partials/tab-inbox.php:118
+#: public/partials/tab-inbox.php:96
 msgid "View my profile"
 msgstr ""
 
-#. translators: %d: unread message count
-#: public/partials/tab-inbox.php:136
-#, php-format
-msgid "%d unread message"
-msgid_plural "%d unread messages"
-msgstr[0] ""
-msgstr[1] ""
-
-#. translators: %d: total messages
-#: public/partials/tab-inbox.php:139
-#, php-format
-msgid "%d message"
-msgid_plural "%d messages"
-msgstr[0] ""
-msgstr[1] ""
-
-#: public/partials/tab-inbox.php:143
+#: public/partials/tab-inbox.php:121
 msgid "Filter messages"
 msgstr ""
 
-#: public/partials/tab-inbox.php:147
+#: public/partials/tab-inbox.php:125
 msgid "All"
 msgstr ""
 
-#: public/partials/tab-inbox.php:153
+#: public/partials/tab-inbox.php:131
 msgid "Unread"
 msgstr ""
 
-#: public/partials/tab-inbox.php:162
-msgid "You have no unread messages right now. Nice — inbox zero."
+#: public/partials/tab-inbox.php:140
+msgid "You have no unread messages right now."
 msgstr ""
 
-#: public/partials/tab-inbox.php:166
+#: public/partials/tab-inbox.php:144
 msgid "Back to all messages"
 msgstr ""
 
 #. translators: %s: time-ago string (e.g. "3 hours")
-#: public/partials/tab-inbox.php:197
+#: public/partials/tab-inbox.php:174
 #, php-format
 msgid "%s ago"
 msgstr ""
 
-#: public/partials/tab-inbox.php:220
-#: public/partials/tab-message.php:114
+#. translators: %s: sender name
+#: public/partials/tab-inbox.php:179
+#, php-format
+msgid "Delete message from %s"
+msgstr ""
+
+#: public/partials/tab-inbox.php:197
+#: public/partials/tab-message.php:107
 msgid "Guest"
 msgstr ""
 
-#: public/partials/tab-inbox.php:223
+#: public/partials/tab-inbox.php:200
 msgid "New"
 msgstr ""
 
-#: public/partials/tab-inbox.php:245
+#: public/partials/tab-inbox.php:222
 msgid "Inbox pagination"
 msgstr ""
 
-#: public/partials/tab-inbox.php:254
+#: public/partials/tab-inbox.php:231
 msgid "« Prev"
 msgstr ""
 
-#: public/partials/tab-inbox.php:255
+#: public/partials/tab-inbox.php:232
 msgid "Next »"
 msgstr ""
 
@@ -1069,86 +1090,82 @@ msgid "This message may have been deleted or it was never addressed to you."
 msgstr ""
 
 #: public/partials/tab-message.php:31
-#: public/partials/tab-message.php:91
+#: public/partials/tab-message.php:84
 msgid "Back to inbox"
 msgstr ""
 
-#: public/partials/tab-message.php:108
+#: public/partials/tab-message.php:101
 msgid "From"
 msgstr ""
 
-#: public/partials/tab-message.php:113
+#: public/partials/tab-message.php:106
 msgid "This person is not a registered member."
 msgstr ""
 
-#: public/partials/tab-message.php:133
+#: public/partials/tab-message.php:125
 msgid "This sender didn't leave any contact details, so there's no way to reply. You can still visit their profile or delete the message below."
 msgstr ""
 
-#: public/partials/tab-message.php:148
+#: public/partials/tab-message.php:139
 msgid "Send private message"
 msgstr ""
 
-#: public/partials/tab-message.php:155
+#: public/partials/tab-message.php:146
 msgid "Reply by email"
 msgstr ""
 
-#: public/partials/tab-message.php:162
+#: public/partials/tab-message.php:153
 msgid "Visit profile"
 msgstr ""
 
-#: public/partials/tab-preferences.php:31
-msgid "Preferences saved."
-msgstr ""
-
-#: public/partials/tab-preferences.php:57
+#: public/partials/tab-preferences.php:30
 msgid "Contact preferences"
 msgstr ""
 
-#: public/partials/tab-preferences.php:59
+#: public/partials/tab-preferences.php:32
 msgid "Control who can reach you through your profile contact form."
 msgstr ""
 
-#: public/partials/tab-preferences.php:70
+#: public/partials/tab-preferences.php:43
 msgid "Let other members contact me"
 msgstr ""
 
-#: public/partials/tab-preferences.php:72
+#: public/partials/tab-preferences.php:45
 msgid "When enabled, a Contact form appears on your profile and both members and visitors can send you messages. You can turn this off at any time."
 msgstr ""
 
-#: public/partials/tab-preferences.php:80
+#: public/partials/tab-preferences.php:53
 msgid "Save preferences"
 msgstr ""
 
-#: public/partials/tab-preferences.php:86
+#: public/partials/tab-preferences.php:59
 msgid "Share your contact link"
 msgstr ""
 
-#: public/partials/tab-preferences.php:88
+#: public/partials/tab-preferences.php:61
 msgid "Paste this link into your bio, email signature or social media to let people reach you without giving out your email address."
 msgstr ""
 
-#: public/partials/tab-preferences.php:91
+#: public/partials/tab-preferences.php:64
 msgid "Your public contact link"
 msgstr ""
 
-#: public/partials/tab-preferences.php:93
+#: public/partials/tab-preferences.php:66
 msgid "Copy link"
 msgstr ""
 
-#: public/partials/tab-preferences.php:99
+#: public/partials/tab-preferences.php:72
 msgid "Not receiving messages?"
 msgstr ""
 
-#: public/partials/tab-preferences.php:101
-msgid "Check your spam folder — some providers route contact-form emails there."
+#: public/partials/tab-preferences.php:74
+msgid "Check your spam folder. Some providers route contact-form emails there."
 msgstr ""
 
-#: public/partials/tab-preferences.php:102
+#: public/partials/tab-preferences.php:75
 msgid "Make sure the toggle above is on so your Contact tab is visible."
 msgstr ""
 
-#: public/partials/tab-preferences.php:103
-msgid "If the form won't submit, reload the page — your session may have expired."
+#: public/partials/tab-preferences.php:76
+msgid "If the form won't submit, reload the page. Your session may have expired."
 msgstr ""

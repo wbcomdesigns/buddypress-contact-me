@@ -94,7 +94,7 @@ Namespace: `bcm/v1`. Defined in `includes/rest/class-bcm-rest-messages.php`.
 
 | Key | Purpose |
 |---|---|
-| `buddypress_contact_me_db_version` | Upgrade tracker |
+| `bcm_db_version` | Schema version tracker (the old buddypress_contact_me_db_version is no longer read) |
 
 ---
 
@@ -126,7 +126,6 @@ Namespace: `bcm/v1`. Defined in `includes/rest/class-bcm-rest-messages.php`.
 | File | Context | Purpose |
 |---|---|---|
 | `public/js/buddypress-contact-me-public.js` | Profile pages | Inbox + send form interactivity |
-| `public/js/toast.js` | Profile pages | Toast notification util |
 | `public/js/confirm.js` | Profile pages | Confirm modal util |
 | `assets/js/admin.js` | Admin settings | Settings UI |
 

@@ -91,16 +91,10 @@
       "controls": "License expiration date - managed via EDD API"
     },
     {
-      "key": "buddypress_contact_me_db_version",
-      "storage": "wp_options",
-      "type": "string",
-      "controls": "Plugin database version for upgrade tracking"
-    },
-    {
       "key": "contact_me_button",
       "storage": "wp_usermeta",
       "type": "bool",
-      "controls": "Per-user toggle: accept contact messages on/off"
+      "controls": "Per-user opt-out. Only 'off' blocks contact; absent means accepts. Saved only from Contact > Preferences (BCM_Frontend_Nav::screen_preferences); the Settings > General copy was removed in 1.5.1."
     },
     {
       "key": "bcm_intro_dismissed",
@@ -149,7 +143,7 @@
       "name": "bp_contact_me_form_save",
       "type": "action",
       "args_count": 3,
-      "where": "includes/frontend/class-bcm-frontend-submit.php:150",
+      "where": "includes/frontend/class-bcm-frontend-submit.php:254",
       "args_signature": [
         "int $message_id",
         "int $recipient_id",
@@ -173,7 +167,7 @@
       "name": "bcm_spam_check",
       "type": "filter",
       "args_count": 3,
-      "where": "includes/frontend/class-bcm-frontend-submit.php:221,227,230",
+      "where": "includes/frontend/class-bcm-frontend-submit.php:384,390,393",
       "consumed_by": [],
       "purpose": "Custom spam validation extensibility hook"
     },
@@ -188,7 +182,7 @@
       "name": "bp_core_template_plugin",
       "type": "filter",
       "args_count": 1,
-      "where": "includes/frontend/class-bcm-frontend-nav.php:141,149,157",
+      "where": "includes/frontend/class-bcm-frontend-nav.php:161,170,196",
       "consumed_by": [],
       "note": "BuddyPress core hook; fired 3 times (inbox, preferences, send screens)"
     },
@@ -198,6 +192,30 @@
       "args_count": 2,
       "where": "edd-license/class-edd-bp-contact-me-plugin-updater.php:485",
       "consumed_by": []
+    },
+    {
+      "name": "bcm_rate_limit",
+      "type": "filter",
+      "args_count": 2,
+      "where": "includes/frontend/class-bcm-frontend-submit.php:284",
+      "args_signature": [
+        "array $rule {limit,window}",
+        "int $sender_id"
+      ],
+      "consumed_by": [],
+      "since": "1.5.1"
+    },
+    {
+      "name": "bcm_display_timezone",
+      "type": "filter",
+      "args_count": 2,
+      "where": "includes/functions.php:27",
+      "args_signature": [
+        "DateTimeZone $tz",
+        "int $user_id"
+      ],
+      "consumed_by": [],
+      "since": "1.5.1"
     }
   ],
   "capabilities": [
@@ -229,14 +247,10 @@
     ],
     "public_js": [
       "public/js/buddypress-contact-me-public.js",
-      "public/js/min/buddypress-contact-me-public.min.js",
-      "public/js/toast.js",
       "public/js/confirm.js"
     ],
     "public_css": [
-      "public/css/buddypress-contact-me-public.css",
-      "public/css/min/buddypress-contact-me-public.min.css",
-      "public/css/rtl/buddypress-contact-me-public.rtl.css"
+      "public/css/buddypress-contact-me-public.css"
     ]
   },
   "buddypress_integration": {
@@ -275,12 +289,13 @@
       "edd_wbcom_contact_me_nonce (license activate/deactivate)"
     ],
     "rest_nonce": "wp_rest",
-    "anonymous_submission_gate": "Logged-out submissions require captcha; logged-in submissions gated by BCM_Frontend_Nav::viewer_can_send() role allow-list (bcm_who_contact setting)"
+    "anonymous_submission_gate": "Guests: role allow-list (Visitors), honeypot field bcm_website, one-time captcha or CAPTCHA Manager, per-IP throttle. Members: viewer_can_send() role allow-list + per-user throttle. Sender copy email only to logged-in senders; member account email never displayed."
   },
   "static_analysis": {
     "dead_listeners": [],
     "wppqa_baseline": "audit/wppqa-baseline-2026-05-11/SUMMARY.md",
-    "wppqa_findings_2026_05_11": "5 high-severity nonce-no-cap (2x EDD license activate/deactivate, 2x frontend submit handler — public path, intentional; the role gate is BCM_Frontend_Nav::viewer_can_send not current_user_can, 1x preferences tab — own-profile only). 1 low tap-target warning (admin.css:556). wiring-completeness skipped (no templates/ dir). rest-js-contract clean."
+    "wppqa_findings_2026_05_11": "5 high-severity nonce-no-cap (2x EDD license activate/deactivate, 2x frontend submit handler — public path, intentional; the role gate is BCM_Frontend_Nav::viewer_can_send not current_user_can, 1x preferences tab — own-profile only). 1 low tap-target warning (admin.css:556). wiring-completeness skipped (no templates/ dir). rest-js-contract clean.",
+    "note_1_5_1": "1.5.1: wppqa findings above are from 2026-05-11 and predate the 1.5.1 rewrite (loader, flash class and settings-general toggle removed). Re-run the baseline at release."
   },
   "category_sources": {
     "rest": [
@@ -318,6 +333,65 @@
     "head_commit": "887783c",
     "schema_version": "v2.1",
     "scan_scope": "fallback_defaults",
-    "php_file_count": 33
+    "php_file_count": 33,
+    "delta_1_5_1": "Manual delta 2026-11-18 on branch 1.5.1: hooks, transients, integrations, entry-point exception, privacy note."
+  },
+  "transients": [
+    {
+      "key": "bcm_captcha_{token}",
+      "ttl": "30 min",
+      "where": "includes/frontend/class-bcm-frontend-submit.php:58",
+      "purpose": "One-time guest math answer; deleted when the message is saved (replay guard)."
+    },
+    {
+      "key": "bcm_throttle_u{user_id} | bcm_throttle_ip{md5(ip)}",
+      "ttl": "rest of the window",
+      "where": "includes/frontend/class-bcm-frontend-submit.php:245",
+      "purpose": "Per-sender send counter (filter bcm_rate_limit, default 5 per 600 s)."
+    }
+  ],
+  "hooks_consumed": [
+    {
+      "name": "reign_bp_nav_icons",
+      "type": "filter",
+      "callback": "BCM_Frontend_Nav::reign_nav_icons",
+      "where": "includes/frontend/class-bcm-frontend-nav.php:43",
+      "purpose": "Reign theme subnav icons for contact, inbox, send, preferences."
+    },
+    {
+      "name": "deleted_user / wpmu_delete_user",
+      "type": "action",
+      "callback": "BCM_Messages_Repo::delete_for_user",
+      "where": "buddypress-contact-me.php:129-130",
+      "purpose": "Delete messages the user received, 500 per query."
+    },
+    {
+      "name": "bp_init",
+      "type": "action",
+      "priority": 20,
+      "callback": "BuddyPress_Contact_Me_Activator::maybe_upgrade",
+      "purpose": "Version router: schema, one-time UTC conversion, email install."
+    }
+  ],
+  "integrations": {
+    "captcha_manager": {
+      "detect": "function_exists('wbc_captcha_service_manager')",
+      "form": "contact_me",
+      "where": "includes/frontend/class-bcm-frontend-submit.php:77,342",
+      "purpose": "When active with a service on, guests get the site CAPTCHA instead of the math question."
+    }
+  },
+  "entry_point_exceptions": [
+    {
+      "store": "{prefix}contact_me",
+      "frontend": "member inbox, single view, delete; contact form + shortcode",
+      "rest": "POST /bcm/v1/messages, DELETE /bcm/v1/messages/{id}",
+      "admin": "Overview totals only",
+      "exception": "Owner decision (1.5.1): no admin message list and no REST list endpoint. Messages are private between members; site owners moderate through the admin copy email."
+    }
+  ],
+  "privacy": {
+    "user_deletion": "Messages the user received are deleted on deleted_user / wpmu_delete_user; messages they sent stay with recipients. BP removes their notifications.",
+    "exporters_erasers": "Not registered (out of scope for 1.5.1, owner decision). Add wp_privacy_personal_data_exporters / erasers if a GDPR request flow is needed."
   }
 }

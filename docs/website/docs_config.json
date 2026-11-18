@@ -1,4 +1,7 @@
 {
+  "product": "BuddyPress Contact Me",
+  "productType": "plugin",
+  "shortId": "bcm",
   "plugin": {
     "name": "BuddyPress Contact Me",
     "slug": "buddypress-contact-me",
@@ -8,190 +11,132 @@
       "live": 876
     }
   },
-  "short_id": "bcm",
-  "parent_category_name": "BuddyPress Contact Me",
-  "categories": [
+  "sections": [
     {
+      "slug": "getting-started",
+      "title": "Getting Started",
       "name": "Getting Started",
-      "slug": "intro-bp-contact-me",
       "folder": "getting-started",
-      "docs": [
+      "description": "What Contact Me adds to a community, requirements and installation.",
+      "pages": [
         {
-          "file": "intro.md",
-          "title": "What BuddyPress Contact Me Does",
-          "slug": "intro-bp-contact-me",
-          "images": ["admin-overview.png"]
+          "slug": "intro"
+        },
+        {
+          "slug": "installation"
         }
       ]
     },
     {
-      "name": "Installation",
-      "slug": "installation-bp-contact-me",
-      "folder": "getting-started",
-      "docs": [
-        {
-          "file": "installation.md",
-          "title": "Install & Activate the Plugin",
-          "slug": "installation-bp-contact-me",
-          "images": ["admin-overview.png"]
-        }
-      ]
-    },
-    {
-      "name": "License",
-      "slug": "license-bp-contact-me",
-      "folder": "license",
-      "docs": [
-        {
-          "file": "license-activation.md",
-          "title": "Activate Your License Key for Updates",
-          "slug": "license-activation-bp-contact-me",
-          "images": ["admin-license.png"]
-        }
-      ]
-    },
-    {
+      "slug": "features",
+      "title": "Features",
       "name": "Features",
-      "slug": "frontend-view-bp-contact-me",
       "folder": "features",
-      "docs": [
+      "description": "The contact form, guest contact, inbox, message view, notifications, opt-out, shortcode and dark mode.",
+      "pages": [
         {
-          "file": "profile-contact-form.md",
-          "title": "Profile Contact Form on Every Member Profile",
-          "slug": "profile-contact-form-bp-contact-me",
-          "images": ["frontend-contact-tab.png"]
+          "slug": "profile-contact-form"
         },
         {
-          "file": "guest-contact.md",
-          "title": "Guest Contact with Math Captcha & Spam Heuristic",
-          "slug": "guest-contact-bp-contact-me",
-          "images": ["frontend-guest-form.png"]
+          "slug": "guest-contact"
         },
         {
-          "file": "inbox.md",
-          "title": "Inbox on the Member's Own Profile",
-          "slug": "inbox-bp-contact-me",
-          "images": ["frontend-inbox.png"]
+          "slug": "inbox"
         },
         {
-          "file": "single-message-view.md",
-          "title": "Single Message View — Reply, Visit, Delete",
-          "slug": "single-message-view-bp-contact-me",
-          "images": ["frontend-message-view.png"]
+          "slug": "single-message-view"
         },
         {
-          "file": "notifications.md",
-          "title": "BuddyPress Notifications & Email Delivery",
-          "slug": "notifications-bp-contact-me",
-          "images": ["admin-notifications.png"]
+          "slug": "notifications"
         },
         {
-          "file": "opt-out.md",
-          "title": "Per-Member Opt-Out from BP Settings",
-          "slug": "opt-out-bp-contact-me",
-          "images": ["frontend-contact-tab.png"]
+          "slug": "opt-out"
         },
         {
-          "file": "shortcode.md",
-          "title": "Shortcode for Embedding the Form Anywhere",
-          "slug": "shortcode-bp-contact-me",
-          "images": ["frontend-contact-tab.png"]
+          "slug": "shortcode"
         },
         {
-          "file": "dark-mode.md",
-          "title": "Dark Mode Support for BuddyX, Reign, BuddyBoss",
-          "slug": "dark-mode-bp-contact-me",
-          "images": ["admin-overview.png"]
+          "slug": "dark-mode"
         }
       ]
     },
     {
+      "slug": "settings",
+      "title": "Settings",
       "name": "Settings",
-      "slug": "global-settings-bp-contact-me",
       "folder": "settings",
-      "docs": [
+      "description": "Each admin tab: Overview, Notifications, Access and License.",
+      "pages": [
         {
-          "file": "overview-tab.md",
-          "title": "Overview Tab — Stats & Configuration Snapshot",
-          "slug": "overview-tab-bp-contact-me",
-          "images": ["admin-overview.png"]
+          "slug": "overview-tab"
         },
         {
-          "file": "notifications-tab.md",
-          "title": "Notifications Tab — Recipient & Copy Settings",
-          "slug": "notifications-tab-bp-contact-me",
-          "images": ["admin-notifications.png"]
+          "slug": "notifications-tab"
         },
         {
-          "file": "access-tab.md",
-          "title": "Access Tab — Who Can Send & Be Contacted",
-          "slug": "access-tab-bp-contact-me",
-          "images": ["admin-access.png"]
+          "slug": "access-tab"
         },
         {
-          "file": "license-tab.md",
-          "title": "License Tab — Activate & Rotate Keys",
-          "slug": "license-tab-bp-contact-me",
-          "images": ["admin-license.png"]
+          "slug": "license-tab"
         }
       ]
     },
     {
+      "slug": "license",
+      "title": "License",
+      "name": "License",
+      "folder": "license",
+      "description": "Activate your license key so updates reach your site.",
+      "pages": [
+        {
+          "slug": "license-activation"
+        }
+      ]
+    },
+    {
+      "slug": "developer-guide",
+      "title": "Developer Guide",
       "name": "Developer Guide",
-      "slug": "developer-guide-bcm",
       "folder": "developer-guide",
-      "docs": [
+      "description": "REST routes, hooks and filters, the email pipeline and safe customisation.",
+      "pages": [
         {
-          "file": "rest-api.md",
-          "title": "REST API Endpoints (bcm/v1)",
-          "slug": "rest-api-bcm",
-          "images": []
+          "slug": "rest-api"
         },
         {
-          "file": "hooks-and-filters.md",
-          "title": "Action Hooks & Filters Reference",
-          "slug": "hooks-and-filters-bcm",
-          "images": []
+          "slug": "hooks-and-filters"
         },
         {
-          "file": "email-pipeline.md",
-          "title": "BuddyPress Email Pipeline & Tokens",
-          "slug": "email-pipeline-bcm",
-          "images": []
+          "slug": "email-pipeline"
         },
         {
-          "file": "overrides.md",
-          "title": "Customising Behaviour Without Forking",
-          "slug": "overrides-bcm",
-          "images": []
+          "slug": "overrides"
         }
       ]
     },
     {
-      "name": "FAQs & Troubleshooting",
-      "slug": "faqs-bp-contact-me",
-      "folder": "faqs",
-      "docs": [
+      "slug": "faq",
+      "title": "FAQ",
+      "name": "FAQ",
+      "folder": "faq",
+      "description": "Short answers about multisite, data, privacy and support.",
+      "pages": [
         {
-          "file": "common-issues.md",
-          "title": "Common Issues & Frequently Asked Questions",
-          "slug": "common-issues-bp-contact-me",
-          "images": []
+          "slug": "faq"
+        }
+      ]
+    },
+    {
+      "slug": "troubleshooting",
+      "title": "Troubleshooting",
+      "name": "Troubleshooting",
+      "folder": "troubleshooting",
+      "description": "Fixes for the problems site owners hit most often.",
+      "pages": [
+        {
+          "slug": "common-issues"
         }
       ]
     }
-  ],
-  "images": {
-    "folder": "../images",
-    "files": [
-      "admin-overview.png",
-      "admin-notifications.png",
-      "admin-access.png",
-      "admin-license.png",
-      "frontend-contact-tab.png",
-      "frontend-inbox.png",
-      "frontend-message-view.png",
-      "frontend-guest-form.png"
-    ]
-  }
+  ]
 }

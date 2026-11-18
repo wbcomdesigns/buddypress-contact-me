@@ -1,8 +1,8 @@
 # Shortcode for Embedding the Form Anywhere
 
-The `[buddypress-contact-me]` shortcode renders the contact form on any post, page, or widget area — useful for landing pages, "Contact the team" pages, or Elementor blocks where the form needs to live outside a member's profile.
+The `[buddypress-contact-me]` shortcode renders the contact form on any post, page, or widget area - useful for landing pages, "Contact the team" pages, or Elementor blocks where the form needs to live outside a member's profile.
 
-![Contact form on a member profile](../images/frontend-contact-tab.png)
+![Contact form on a member profile](../images/frontend-contact-tab.webp)
 
 ## Basic syntax
 
@@ -10,7 +10,7 @@ The `[buddypress-contact-me]` shortcode renders the contact form on any post, pa
 [buddypress-contact-me]
 ```
 
-With no attributes, the shortcode targets the displayed BuddyPress user — useful inside member-profile templates. On non-profile pages with no displayed user, the shortcode renders nothing.
+With no attributes, the shortcode targets the displayed BuddyPress user - useful inside member-profile templates. On non-profile pages with no displayed user, the shortcode renders nothing.
 
 ## Target a specific user by ID
 
@@ -40,18 +40,18 @@ If none of these resolve to a real user, the shortcode renders nothing.
 
 ## Opt-out is respected
 
-The shortcode runs the same `BCM_Frontend_Nav::user_accepts_contact()` check used by the profile tab. If the targeted user has opted out via BuddyPress Settings → General, or if their role is excluded from the **Who can be contacted** allow-list, the shortcode returns an empty string. There is no error — pages stay clean.
+The shortcode runs the same `BCM_Frontend_Nav::user_accepts_contact()` check used by the profile tab. If the targeted user has opted out under Contact > Preferences, or if their role is excluded from the **Who can be contacted** allow-list, the shortcode returns an empty string. There is no error - pages stay clean.
 
 ## Visibility for senders
 
-The form itself respects the **Who can send messages** allow-list. A logged-out visitor on a page where Visitors are disallowed will see no form even if the recipient accepts contact. This keeps gating consistent with the profile-tab experience.
+The form itself respects the **Who can send messages** allow-list. When Visitors are not allowed, a logged-out visitor sees a short card that says the community does not accept messages from visitors, with a **Sign in** button that brings them back to the same page. This keeps gating consistent with the profile-tab experience.
 
 ## Putting it on a page
 
 1. Create or edit any page or post.
 2. Add a Shortcode block (Block editor) or paste the shortcode directly into a Classic editor.
 3. Pick the recipient with `id` or `user`.
-4. Save and visit the page — the form is fully wired up, including the math captcha for guests.
+4. Save and visit the page - the form is fully wired up, including the math captcha for guests.
 
 ## Caching plugins
 

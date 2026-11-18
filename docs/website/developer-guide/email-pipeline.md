@@ -12,7 +12,7 @@ Contact-message emails are not custom-templated by the plugin. They go through `
 | Taxonomy        | `bp-email-type` (BuddyPress core) |
 | Admin label     | "A member received a contact message" |
 
-The post is created idempotently on activation and on every version bump via `BCM_Email_Installer::install()`. Once the post exists — i.e. once the term is in the database — the installer is a no-op, so admin edits at **Dashboard → Emails** are never overwritten on future plugin upgrades.
+The three posts (`bcm-contact-message`, `bcm-contact-message-sender-copy`, `bcm-contact-message-admin-copy`) are created on activation and on every version update by `BCM_Email_Installer::install()`. The installer skips any type that already has a post, so admin edits at **Dashboard → Emails** are never overwritten, and a deleted email comes back on the next activation or update.
 
 ## Tokens
 
@@ -21,12 +21,12 @@ These tokens are registered at send time in `BCM_Frontend_Notifications::build_t
 | Token | Resolves to |
 |-------|-------------|
 | `{{sender.name}}`     | Display name of the sender, or the guest-supplied name when sender is `0`. |
-| `{{recipient.name}}`  | Recipient's display name (`display_name` from `get_userdata()`). |
-| `{{contact.subject}}` | Message subject, stripped of HTML and slashes. |
-| `{{contact.message}}` | Message body, stripped of HTML, slashed cleared, run through `wpautop()` for paragraphing. Triple-braces in the template (`{{{contact.message}}}`) because it embeds HTML. |
+| `{{contact.recipient}}` | Display name of the member the message was sent to. |
+| `{{contact.subject}}` | Message subject, stripped of HTML. |
+| `{{contact.message}}` | Message body, stripped of HTML and run through `wpautop()` for paragraphing (plain text in the plain-text email). Triple-braces in the template (`{{{contact.message}}}`) because it embeds HTML. |
 | `{{inbox.url}}`       | Deep link to `/contact/inbox/{message-id}/` on the recipient's profile. Triple-braces in the template (`{{{inbox.url}}}`) because it embeds a URL. |
 
-BP-native tokens like `{{{site.name}}}`, `{{recipient.email}}`, and `{{unsubscribe}}` are also available — provided by the framework, not this plugin.
+BP-native tokens like `{{{site.name}}}`, `{{recipient.email}}`, and `{{unsubscribe}}` are also available - provided by the framework, not this plugin.
 
 ## Default email content
 
@@ -42,19 +42,15 @@ Subject: [{{{site.name}}}] {{sender.name}} sent you a contact message
 <a href="{{{inbox.url}}}">Open the message in your inbox</a> to reply or delete it.
 ```
 
-This is the value emitted by `BCM_Email_Installer::schema()` on activation. After the post exists, all edits happen at **Dashboard → Emails → "A member received a contact message"** — there is no plugin setting that mirrors the body content.
+This is the value emitted by `BCM_Email_Installer::schema()` on activation. After the post exists, all edits happen at **Dashboard → Emails → "A member received a contact message"** - there is no plugin setting that mirrors the body content.
 
 ## Recipient assembly
 
-`BCM_Frontend_Notifications::collect_recipients()` builds the recipient list per send:
+`BCM_Frontend_Notifications::send_email()` sends, in order:
 
-1. Always includes the message recipient (by user ID).
-2. If **Sender copy** is on:
-   - Sender is a member → adds them by user ID.
-   - Sender is a guest → adds them as a `BP_Email_Recipient(email, name)` so BuddyPress does not try to look up an email-only string against the users table (avoids PHP 8.2+ undefined-property warnings).
-3. If **Site admin copy** is on, adds every user with the `administrator` role.
-
-Recipients are de-duplicated by user ID and lowercase email address — you can never get a duplicate email even if a member is also an admin.
+1. The message email to the recipient (by user ID).
+2. If **Sender copy** is on and the sender is a logged-in member, the sender copy to them. Guests never get a copy.
+3. If **Site admin copy** is on, the admin copy to every user with the `administrator` role, skipping the recipient and the sender so nobody gets two emails.
 
 ## Per-recipient delivery
 
@@ -67,7 +63,7 @@ Recipients are de-duplicated by user ID and lowercase email address — you can 
 ```php
 $ob_started = ob_start();
 try {
-    bp_send_email( BCM_Email_Installer::TYPE, $recipients, array( 'tokens' => $tokens ) );
+    bp_send_email( $type, $user_id, array( 'tokens' => $tokens ) );
 } finally {
     if ( $ob_started ) {
         $leaked = ob_get_clean();
@@ -78,12 +74,12 @@ try {
 }
 ```
 
-When `WP_DEBUG` is on, leaked output is captured and logged via `error_log()` so root causes are still surfaced — they just do not break apiFetch with "response is not a valid JSON response".
+When `WP_DEBUG` is on, leaked output is captured and logged via `error_log()` so root causes are still surfaced - they just do not break apiFetch with "response is not a valid JSON response".
 
 ## What you cannot do
 
-- There is no `bcm_email_subject` or `bcm_email_body` filter — edit the post at **Dashboard → Emails** instead.
-- There is no per-role email template — all roles use the same email post.
-- There is no scheduled / digest mode — emails are sent in real time during the submit request.
+- There is no `bcm_email_subject` or `bcm_email_body` filter - edit the post at **Dashboard → Emails** instead.
+- There is no per-role email template - all roles use the same email post.
+- There is no scheduled / digest mode - emails are sent in real time during the submit request.
 
 If you need conditional templating (different copy for VIP recipients, for example), unhook `BCM_Frontend_Notifications::send_email()` and reimplement it in your own plugin against the same `bp_contact_me_form_save` action.

@@ -17,11 +17,12 @@ BuddyPress Contact Me drops a private contact form into every member's BuddyPres
 
 Highlights:
 
-* A "Contact" tab on every member profile with a modal or inline form.
+* A "Contact" tab on every member profile with a private contact form, plus a shortcode for any page.
 * BuddyPress notifications + email notifications, with optional admin and sender copies.
-* Editable email template with placeholders for sender, subject, message, and site name.
+* Three editable BuddyPress emails (to the member, a sender copy, an admin copy) with placeholders for sender, recipient, subject, message, and inbox link.
 * Role-based access control: choose who can send messages and whose profiles show the form.
-* Per-member opt-out - members can hide their own form even when their role allows it.
+* Per-member opt-out under Contact > Preferences - members can hide their own form even when their role allows it.
+* Spam protection for visitors: a one-time math question or your CAPTCHA Manager service, a hidden trap field, and a per-sender send limit.
 * Clean, modern admin UI shared across every Wbcom plugin via the "WB Plugins" hub.
 
 == Installation ==
@@ -30,12 +31,16 @@ Requires BuddyPress 12.0 or higher (or BuddyBoss Platform).
 
 1. Upload the `buddypress-contact-me` folder to `/wp-content/plugins/`.
 2. Activate the plugin through the Plugins menu in WordPress.
-3. Go to WB Plugins → Contact Me and configure notifications, email template, and access rules.
+3. Go to WB Plugins → Contact Me and configure notifications and access rules.
 
 == Changelog ==
 
 = 1.5.1 - November 2026 =
 
+* New      - Each sender can send 5 messages in 10 minutes (members by account, visitors by IP address); change it with the bcm_rate_limit filter.
+* New      - A hidden trap field on the visitor form stops bots that fill every field.
+* New      - Messages a member received are deleted when their account is deleted.
+* New      - Reign shows matching icons on the Contact, Inbox, Send message and Preferences tabs.
 * New      - When Wbcom CAPTCHA Manager is active and its Contact Me Form switch is on, logged-out visitors solve your site's CAPTCHA instead of the math question.
 * Improve  - Activating the plugin no longer updates every member account, so it stays fast on large sites.
 * Improve  - Uninstall removes all of the plugin's stored settings.
@@ -44,7 +49,7 @@ Requires BuddyPress 12.0 or higher (or BuddyBoss Platform).
 * Fix      - Buttons follow the theme's dark mode toggle and keep readable label colours on BuddyX, BuddyX Pro and Reign.
 * Fix      - Delete button stacks full width with the other message actions on phones.
 * Fix      - Several unread contact messages now show as one "You have N new contact messages" notification that opens your inbox, instead of naming only the first sender.
-* Fix      - Right-to-left sites load the mirrored stylesheet.
+* Fix      - Right-to-left sites lay out the contact screens correctly from one stylesheet.
 * Fix      - Settings screen fits phones without sideways scrolling or clipped text.
 * Fix      - Copy-link messages are now translatable.
 * Fix      - Plugin zip installs on hosts that block files named shell.php.
@@ -53,21 +58,36 @@ Requires BuddyPress 12.0 or higher (or BuddyBoss Platform).
 * Fix      - Deleting a message also removes its notification, and older leftover notifications show readable text.
 * Fix      - Turning off the profile Contact tab no longer stops the contact shortcode from showing or sending.
 * Fix      - Members who stop accepting messages keep their own Contact inbox and preferences, and older message links open again.
-* Fix      - Visitors who send a message now receive their copy by email.
 * Fix      - Signed-in members whose role may not send now see why, instead of a sign-in prompt.
 * Fix      - The plain-text version of contact emails no longer shows HTML tags.
 * Fix      - The Back to inbox arrow points the right way on right-to-left sites.
 * Fix      - The site admin copy setting now says each admin gets their own email.
+* Fix      - The contact preference shows only under Contact > Preferences; the copy on Settings > General that did not save was removed.
+* Fix      - Saving Contact > Preferences shows a "Preferences saved." notice.
+* Fix      - Backslashes in a subject or message are kept as typed.
+* Fix      - Without JavaScript, a form error keeps what you typed and shows the error above the form, and a sent message returns to the form with a confirmation.
+* Fix      - Unread counts on the Contact tab, the Unread filter and the inbox always agree, also after a delete.
+* Fix      - Opening a page number past the last inbox page shows the last page.
+* Fix      - Notices and messages use the same look as other BuddyPress notices, in light and dark mode.
+* Fix      - After a message is sent, keyboard focus returns to the form.
+* Fix      - The Delete button in the inbox has a screen reader label on touch devices and a visible focus ring.
+* Fix      - The Guest badge is readable in dark mode.
+* Fix      - Reactivating the plugin brings back a contact email that was deleted under Dashboard > Emails.
+* Fix      - Messages to a deleted or unknown member are refused.
 * Security - The visitor math question now works once per message, so a solved answer cannot be replayed, even by requests sent at the same moment.
+* Security - A member's account email is never shown to the recipient; only a visitor's typed reply address is shown.
+* Security - Visitors no longer get a sender copy, so the form cannot send the site's email to an address someone typed in.
 * Security - The sender copy and admin copies go out as separate emails, so the recipient's email address is no longer shared, and each copy is worded for its reader.
-* Compat   - Requires WordPress 6.5 and PHP 8.1, tested up to WordPress 7.1.
+* Dev      - Removed the Grunt build and the minified and RTL copies; the plugin ships readable CSS and JavaScript, and bin/build-release.sh builds the zip.
+* Dev      - New bcm_display_timezone filter; all dates go through one formatter.
+* Compat   - Requires WordPress 6.5 and PHP 8.1, tested up to WordPress 7.1 and PHP 8.5.
 
 = 1.5.0 - June 2026 =
 
 * New      - Rebuilt admin UI as a clean card-panel layout with a sidebar, page header, and plain-English labels, replacing the legacy wrapper chrome.
 * New      - WB Plugins hub gives every Wbcom plugin a single top-level menu with a card-grid dashboard so the admin sidebar stays tidy.
 * New      - Overview dashboard shows live counts of total messages, unique senders, unique recipients, and members with the Contact Me button on.
-* New      - Dedicated Notifications, Email Template, Access, and License tabs, each focused on a single decision.
+* New      - Dedicated Notifications, Access, and License tabs, each focused on a single decision.
 * New      - License tab lets you enter, activate, and check your license key without leaving the plugin's admin page.
 * Improve  - Inbox list view is now ready for accounts with thousands of received messages via new composite and single-column indexes added on upgrade.
 * Improve  - Unread-messages count uses a dedicated SELECT COUNT(*) instead of loading every unread ID into PHP, cutting memory use on large accounts.
@@ -76,7 +96,7 @@ Requires BuddyPress 12.0 or higher (or BuddyBoss Platform).
 * Improve  - Access tab uses a role-chip grid with select-all and clear-all actions instead of a dropdown, friendlier on mobile.
 * Improve  - Admin assets load only on the plugin's own screens and the shared hub, reducing conflicts with third-party plugins.
 * Improve  - Toast notifications and an accessible confirmation modal replace browser alerts and confirms across the admin.
-* Improve  - Per-recipient email delivery by default, with an explicit toggle for the multi-recipient show-other-recipients mode.
+* Improve  - Each reader gets their own email, so no one sees another reader's address.
 * Improve  - Public REST calls now route through a centralised wrapper with a 15-second timeout so the UI always recovers from a hung server.
 * Fix      - Frontend Contact tab no longer paints WordPress-admin blue over the active theme, keeping each theme's accent color intact.
 * Fix      - Contact tab now follows the host theme's dark mode on BuddyX, BuddyX Pro, and Reign with readable surfaces and text.
