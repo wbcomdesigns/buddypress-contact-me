@@ -47,7 +47,7 @@ if ( $is_lifetime ) {
 } elseif ( '' !== $expires_raw ) {
 	$ts = strtotime( $expires_raw );
 	if ( $ts ) {
-		$expires_text = wp_date( get_option( 'date_format' ), $ts );
+		$expires_text = bcm_date_label( $ts, '', get_option( 'date_format' ) );
 		$days_left    = (int) floor( ( $ts - time() ) / DAY_IN_SECONDS );
 	}
 }

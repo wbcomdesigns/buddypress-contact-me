@@ -38,80 +38,19 @@ define( 'BUDDYPRESS_CONTACT_ME_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'BUDDYPRESS_CONTACT_ME_FILE', __FILE__ );
 
 /**
- * Run one-time upgrade steps when the stored version is older than the
- * current BUDDYPRESS_CONTACT_ME_VERSION. Safe to re-enter: every branch
- * is idempotent and version-gated.
- *
- * @since 1.5.0
- */
-function bcm_maybe_upgrade() {
-	$stored = get_option( 'buddypress_contact_me_db_version', '' );
-	if ( version_compare( (string) $stored, BUDDYPRESS_CONTACT_ME_VERSION, '>=' ) ) {
-		return;
-	}
-
-	// 1.5.0 — frontend rewrite + default-on semantics. Legacy versions
-	// stored empty-string meta to mean "opt out" and only 'on' to mean
-	// "opt in". The new nav layer treats anything except 'off' as
-	// enabled, so migrate any empty strings to 'on' to make the meta
-	// set self-consistent going forward.
-	global $wpdb;
-	// phpcs:ignore WordPress.DB.DirectDatabaseQuery -- one-time upgrade.
-	$wpdb->query(
-		$wpdb->prepare(
-			"UPDATE {$wpdb->usermeta} SET meta_value = %s WHERE meta_key = %s AND meta_value = ''",
-			'on',
-			'contact_me_button'
-		)
-	);
-
-	// 1.5.0 — install the BP email post so notifications render through
-	// BuddyPress's email template. No-op once the admin owns the post.
-	if ( class_exists( 'BCM_Email_Installer' ) ) {
-		BCM_Email_Installer::install();
-	}
-
-	update_option( 'buddypress_contact_me_db_version', BUDDYPRESS_CONTACT_ME_VERSION );
-}
-add_action( 'bp_init', 'bcm_maybe_upgrade', 20 );
-
-/**
  * Plugin activation callback function.
  */
 function activate_buddypress_contact_me() {
 	if ( class_exists( 'BuddyPress' ) ) {
-		include_once plugin_dir_path( __FILE__ ) . 'includes/class-buddypress-contact-me-activator.php';
 		BuddyPress_Contact_Me_Activator::activate();
-	} else {
-		add_action( 'admin_notices', 'bp_contact_me_required_plugin_admin_notice' );
 	}
 }
 
+require_once plugin_dir_path( __FILE__ ) . 'includes/class-buddypress-contact-me-activator.php';
 register_activation_hook( __FILE__, 'activate_buddypress_contact_me' );
 
-/**
- * Schema upgrade gate. Runs once per page load on `plugins_loaded` and is a
- * no-op unless the stored `bcm_db_version` lags behind the activator's
- * DB_VERSION constant. dbDelta is idempotent so re-running install_schema()
- * just confirms the current shape; only sites needing the new (reciever,
- * datetime, id) composite index pay the ALTER cost (once).
- */
-add_action(
-	'plugins_loaded',
-	function () {
-		if ( ! class_exists( 'BuddyPress_Contact_Me_Activator' ) ) {
-			include_once plugin_dir_path( __FILE__ ) . 'includes/class-buddypress-contact-me-activator.php';
-		}
-		BuddyPress_Contact_Me_Activator::maybe_upgrade();
-	},
-	5
-);
-
-/**
- * Core plugin class that defines internationalization,
- * admin-specific hooks, and public-facing site hooks.
- */
-require plugin_dir_path( __FILE__ ) . 'includes/class-buddypress-contact-me.php';
+// The one upgrade router (schema, data fixes, emails). See the activator.
+add_action( 'bp_init', array( 'BuddyPress_Contact_Me_Activator', 'maybe_upgrade' ), 20 );
 
 /**
  * Check if BuddyPress is active.
@@ -157,31 +96,47 @@ function bp_contact_me_activation_redirect_settings( $plugin ) {
 add_action( 'activated_plugin', 'bp_contact_me_activation_redirect_settings' );
 
 /**
- * Begin execution of the plugin.
+ * Load the plugin once BuddyPress (or BuddyBoss Platform) is loaded.
  */
 function run_buddypress_contact_me() {
-	$plugin = new BuddyPress_Contact_Me();
-	$plugin->run();
+	$base = plugin_dir_path( __FILE__ );
+	foreach ( array(
+		'includes/functions.php',
+		'includes/admin/class-bcm-admin.php',
+		'includes/data/class-bcm-messages-repo.php',
+		'includes/frontend/class-bcm-frontend-nav.php',
+		'includes/frontend/class-bcm-frontend-assets.php',
+		'includes/frontend/class-bcm-frontend-submit.php',
+		'includes/frontend/class-bcm-frontend-notifications.php',
+		'includes/frontend/class-bcm-frontend-shortcode.php',
+		'includes/rest/class-bcm-rest-messages.php',
+		'includes/email/class-bcm-email-installer.php',
+		'edd-license/edd-plugin-license.php',
+	) as $file ) {
+		require_once $base . $file;
+	}
+
+	( new BCM_Admin() )->register();
+	( new BCM_Frontend_Nav() )->register();
+	$assets = new BCM_Frontend_Assets( 'buddypress-contact-me', BUDDYPRESS_CONTACT_ME_VERSION );
+	$assets->register();
+	( new BCM_Frontend_Submit() )->register();
+	( new BCM_Frontend_Notifications() )->register();
+	( new BCM_Frontend_Shortcode( $assets ) )->register();
+	( new BCM_Rest_Messages() )->register();
+
+	// A deleted member's received messages go with them (single site and network delete).
+	add_action( 'deleted_user', array( 'BCM_Messages_Repo', 'delete_for_user' ) );
+	add_action( 'wpmu_delete_user', array( 'BCM_Messages_Repo', 'delete_for_user' ) );
 }
 add_action( 'bp_include', 'run_buddypress_contact_me' );
 
-/**
- * Get user private message link.
- *
- * @param  int $user_id User ID to send private message.
- * @return string       Private message URL.
- */
-function bp_contact_me_get_send_private_message_link( $user_id ) {
-	$compose_url = bp_loggedin_user_domain() . bp_get_messages_slug() . '/compose/?';
-	if ( $user_id ) {
-		if ( function_exists( 'buddypress' ) && isset( buddypress()->buddyboss ) ) {
-			$compose_url .= 'r=' . bp_core_get_username( $user_id );
-		} else {
-			$compose_url .= 'r=' . bp_members_get_user_slug( $user_id );
-		}
+add_action(
+	'init',
+	static function () {
+		load_plugin_textdomain( 'buddypress-contact-me', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
 	}
-	return wp_nonce_url( $compose_url );
-}
+);
 
 /**
  * Set plugin action links.

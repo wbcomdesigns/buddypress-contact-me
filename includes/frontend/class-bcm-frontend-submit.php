@@ -1,10 +1,10 @@
 <?php
 /**
- * Classic-POST handler for the Contact form.
+ * Contact form submission: validation, flood control and the classic-POST fallback.
  *
- * The form progressively enhances to JS fetch when available (see
- * buddypress-contact-me-public.js), but this handler is the non-JS
- * fallback and the single source of truth for validation.
+ * The form posts to REST through JS when it can (see
+ * buddypress-contact-me-public.js). Both paths call process_submission(),
+ * the single source of truth for validation.
  *
  * @package BuddyPress_Contact_Me
  */
@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Classic-POST handler for the contact form + BP Settings toggle.
+ * Contact form submission handler.
  */
 class BCM_Frontend_Submit {
 
@@ -24,6 +24,24 @@ class BCM_Frontend_Submit {
 	 * Transient prefix for one-time guest captcha tokens.
 	 */
 	const CAPTCHA_PREFIX = 'bcm_captcha_';
+
+	/**
+	 * Transient prefix for the per-sender send counter.
+	 */
+	const THROTTLE_PREFIX = 'bcm_throttle_';
+
+	/**
+	 * Honeypot field: hidden from people, bots fill it in.
+	 */
+	const HONEYPOT = 'bcm_website';
+
+	/**
+	 * Error messages from a classic POST on this request. The form partial
+	 * prints them above the form and refills what the visitor typed.
+	 *
+	 * @var string[]
+	 */
+	public static $errors = array();
 
 	/**
 	 * Create a one-time math question for a guest form.
@@ -65,55 +83,60 @@ class BCM_Frontend_Submit {
 	}
 
 	/**
+	 * A submitted text value, or '' when it is missing or not a string.
+	 *
+	 * @param array  $input Unslashed form input.
+	 * @param string $key   Field name.
+	 * @return string
+	 */
+	private static function field( array $input, $key ) {
+		return isset( $input[ $key ] ) && is_scalar( $input[ $key ] ) ? (string) $input[ $key ] : '';
+	}
+
+	/**
 	 * Read the guest captcha token from the submitted form.
 	 *
-	 * @param array $input Raw form input.
+	 * @param array $input Unslashed form input.
 	 * @return string Token, or '' when absent or malformed.
 	 */
 	private static function captcha_token( array $input ) {
-		$token = isset( $input['bcm_captcha_hash'] ) ? (string) wp_unslash( $input['bcm_captcha_hash'] ) : '';
+		$token = self::field( $input, 'bcm_captcha_hash' );
 		return ( 20 === strlen( $token ) && ctype_alnum( $token ) ) ? $token : '';
 	}
 
 	/**
-	 * Hook the submit handlers into BP's action lifecycle.
+	 * Hook the classic-POST handler into BP's action lifecycle.
 	 */
 	public function register() {
 		add_action( 'bp_actions', array( $this, 'maybe_handle' ), 5 );
-		add_action( 'bp_core_general_settings_before_submit', array( $this, 'render_settings_toggle' ) );
-		add_action( 'bp_actions', array( $this, 'save_settings_toggle' ) );
 	}
 
 	/**
-	 * Handle a classic (non-REST) POST of the contact form.
+	 * Handle a classic (non-JS) POST of the contact form.
+	 *
+	 * Success redirects back to the same page with `?bcm=sent`. An error does
+	 * not redirect: the page renders again with the error and the typed text.
 	 */
 	public function maybe_handle() {
 		if ( ! isset( $_POST['bcm_nonce'], $_POST['bp_contact_me_form_save'] ) ) {
 			return;
 		}
-		// PUBLIC path - logged-out users submit with captcha. The capability
-		// gate is BCM_Frontend_Nav::viewer_can_send() (role allow-list) inside
-		// process_submission() below, NOT current_user_can. Adding a WP cap
-		// check here would block anonymous submissions. wppqa-audited 2026-05-11.
+		// PUBLIC path - guests submit with a captcha. The capability gate is
+		// BCM_Frontend_Nav::viewer_can_send() inside process_submission().
 		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['bcm_nonce'] ) ), self::NONCE_ACTION ) ) {
+			self::$errors = array( __( 'Session expired. Please refresh the page and try again.', 'buddypress-contact-me' ) );
 			return;
 		}
 
-		$result = self::process_submission( $_POST );
+		$result = self::process_submission( wp_unslash( $_POST ) );
 
 		if ( is_wp_error( $result ) ) {
-			foreach ( $result->get_error_messages() as $msg ) {
-				BCM_Frontend_Flash::add( $msg, 'error' );
-			}
-			$redirect = wp_get_referer() ? wp_get_referer() : home_url( '/' );
-			wp_safe_redirect( $redirect );
-			exit;
+			self::$errors = $result->get_error_messages();
+			return;
 		}
 
-		BCM_Frontend_Flash::add( __( 'Message sent.', 'buddypress-contact-me' ), 'success' );
-		$recipient_id = (int) $result['recipient'];
-		$redirect     = $this->recipient_contact_url( $recipient_id );
-		wp_safe_redirect( add_query_arg( 'bcm', 'sent', $redirect ) );
+		// The form posts to its own URL, so this is the page it was on (profile tab or shortcode page).
+		wp_safe_redirect( add_query_arg( 'bcm', 'sent' ) );
 		exit;
 	}
 
@@ -123,7 +146,7 @@ class BCM_Frontend_Submit {
 	 * Shared by the classic POST handler and the REST endpoint so both
 	 * paths enforce identical rules.
 	 *
-	 * @param array $input Raw input (sanitized inside).
+	 * @param array $input Unslashed input (sanitized inside).
 	 * @return array{id:int,recipient:int,captcha:array{a:int,b:int,token:string,label:string}|null}|WP_Error
 	 */
 	public static function process_submission( array $input ) {
@@ -131,36 +154,47 @@ class BCM_Frontend_Submit {
 			return new WP_Error( 'bcm_not_allowed', __( 'You are not allowed to send messages.', 'buddypress-contact-me' ) );
 		}
 
+		$sender_id = get_current_user_id();
+
+		// Honeypot: people never see this field, so anything in it came from a bot.
+		if ( ! $sender_id && '' !== self::field( $input, self::HONEYPOT ) ) {
+			return new WP_Error( 'bcm_spam', __( 'Your message was flagged as spam. Please rephrase and try again.', 'buddypress-contact-me' ) );
+		}
+
 		// Resolve recipient.
 		$recipient_id = self::resolve_recipient( $input );
 		if ( ! $recipient_id ) {
 			return new WP_Error( 'bcm_recipient_missing', __( 'Recipient not found.', 'buddypress-contact-me' ) );
 		}
-		if ( get_current_user_id() === $recipient_id ) {
+		if ( $sender_id === $recipient_id ) {
 			return new WP_Error( 'bcm_self_contact', __( 'You cannot send a contact message to yourself.', 'buddypress-contact-me' ) );
 		}
 		if ( ! BCM_Frontend_Nav::user_accepts_contact( $recipient_id ) ) {
 			return new WP_Error( 'bcm_recipient_closed', __( 'This member is not accepting contact messages right now.', 'buddypress-contact-me' ) );
 		}
 
-		// Captcha — logged-out only, and always enforced when present.
+		$throttle = self::throttle();
+		if ( $throttle['limit'] > 0 && $throttle['hit']['count'] >= $throttle['limit'] ) {
+			return new WP_Error( 'bcm_throttled', __( 'You have sent several messages in a short time. Please wait a few minutes and try again.', 'buddypress-contact-me' ) );
+		}
+
+		// Captcha: guests only.
 		$captcha_check = self::validate_captcha( $input );
 		if ( is_wp_error( $captcha_check ) ) {
 			return $captcha_check;
 		}
 
-		// Fields.
-		$subject = isset( $input['bp_contact_me_subject'] ) ? sanitize_text_field( wp_unslash( $input['bp_contact_me_subject'] ) ) : '';
-		$message = isset( $input['bp_contact_me_msg'] ) ? sanitize_textarea_field( wp_unslash( $input['bp_contact_me_msg'] ) ) : '';
-
-		$sender_id = get_current_user_id();
+		$subject = sanitize_text_field( self::field( $input, 'bp_contact_me_subject' ) );
+		$message = sanitize_textarea_field( self::field( $input, 'bp_contact_me_msg' ) );
 
 		if ( $sender_id ) {
+			// A member's account email is never stored or shown: the recipient
+			// replies through the profile link or a private message.
 			$name  = bp_core_get_user_displayname( $sender_id );
-			$email = get_the_author_meta( 'user_email', $sender_id );
+			$email = '';
 		} else {
-			$name  = isset( $input['bp_contact_me_first_name'] ) ? sanitize_text_field( wp_unslash( $input['bp_contact_me_first_name'] ) ) : '';
-			$email = isset( $input['bp_contact_me_email'] ) ? sanitize_email( wp_unslash( $input['bp_contact_me_email'] ) ) : '';
+			$name  = sanitize_text_field( self::field( $input, 'bp_contact_me_first_name' ) );
+			$email = sanitize_email( self::field( $input, 'bp_contact_me_email' ) );
 		}
 
 		$errors = new WP_Error();
@@ -168,10 +202,8 @@ class BCM_Frontend_Submit {
 		if ( mb_strlen( $name ) < 2 || mb_strlen( $name ) > 100 ) {
 			$errors->add( 'bcm_name', __( 'Name must be 2 to 100 characters.', 'buddypress-contact-me' ) );
 		}
-		if ( ! $sender_id ) {
-			if ( '' === $email || ! is_email( $email ) ) {
-				$errors->add( 'bcm_email', __( 'Enter a valid email address.', 'buddypress-contact-me' ) );
-			}
+		if ( ! $sender_id && ( '' === $email || ! is_email( $email ) ) ) {
+			$errors->add( 'bcm_email', __( 'Enter a valid email address.', 'buddypress-contact-me' ) );
 		}
 		if ( mb_strlen( $subject ) < 3 || mb_strlen( $subject ) > 200 ) {
 			$errors->add( 'bcm_subject', __( 'Subject must be 3 to 200 characters.', 'buddypress-contact-me' ) );
@@ -208,6 +240,10 @@ class BCM_Frontend_Submit {
 			return new WP_Error( 'bcm_insert_failed', __( 'Could not save your message. Please try again.', 'buddypress-contact-me' ) );
 		}
 
+		// Ponytail: read-then-write counter, so two sends in the same instant can both pass. Fine for flood control.
+		++$throttle['hit']['count'];
+		set_transient( $throttle['key'], $throttle['hit'], max( 1, $throttle['hit']['start'] + $throttle['window'] - time() ) );
+
 		/**
 		 * Fires after a contact message is stored.
 		 *
@@ -225,19 +261,70 @@ class BCM_Frontend_Submit {
 	}
 
 	/**
+	 * The current sender's send counter: per member ID, per IP address for guests.
+	 *
+	 * @return array{key:string,limit:int,window:int,hit:array{count:int,start:int}}
+	 */
+	private static function throttle() {
+		$sender_id = get_current_user_id();
+		$ip        = isset( $_SERVER['REMOTE_ADDR'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) ) : '';
+		$key       = self::THROTTLE_PREFIX . ( $sender_id ? 'u' . $sender_id : 'ip' . md5( $ip ) );
+
+		/**
+		 * Filters how many contact messages one sender may send in a time window.
+		 *
+		 * Members are counted by user ID, guests by IP address. Return a limit of
+		 * 0 to turn the limit off.
+		 *
+		 * @since 1.5.1
+		 *
+		 * @param array $rule      { @type int $limit Messages allowed. @type int $window Window in seconds. }
+		 * @param int   $sender_id Sender user ID, 0 for a guest.
+		 */
+		$rule = (array) apply_filters(
+			'bcm_rate_limit',
+			array(
+				'limit'  => 5,
+				'window' => 10 * MINUTE_IN_SECONDS,
+			),
+			$sender_id
+		);
+
+		$hit = get_transient( $key );
+		if ( ! is_array( $hit ) || ! isset( $hit['count'], $hit['start'] ) ) {
+			$hit = array(
+				'count' => 0,
+				'start' => time(),
+			);
+		}
+
+		return array(
+			'key'    => $key,
+			'limit'  => max( 0, (int) ( $rule['limit'] ?? 5 ) ),
+			'window' => max( 1, (int) ( $rule['window'] ?? 10 * MINUTE_IN_SECONDS ) ),
+			'hit'    => array(
+				'count' => (int) $hit['count'],
+				'start' => (int) $hit['start'],
+			),
+		);
+	}
+
+	/**
 	 * Determine the recipient for this submission.
 	 *
-	 * Priority: shortcode id → shortcode username → displayed user.
+	 * Priority: shortcode id, then shortcode username, then the displayed user.
 	 *
-	 * @param array $input Sanitized form input.
+	 * @param array $input Unslashed form input.
 	 * @return int
 	 */
 	private static function resolve_recipient( array $input ) {
-		if ( ! empty( $input['bcm_shortcode_user_id'] ) ) {
-			return (int) $input['bcm_shortcode_user_id'];
+		$id = absint( self::field( $input, 'bcm_shortcode_user_id' ) );
+		if ( $id ) {
+			return $id;
 		}
-		if ( ! empty( $input['bcm_shortcode_username'] ) ) {
-			$user = get_user_by( 'login', sanitize_text_field( wp_unslash( $input['bcm_shortcode_username'] ) ) );
+		$login = sanitize_text_field( self::field( $input, 'bcm_shortcode_username' ) );
+		if ( '' !== $login ) {
+			$user = get_user_by( 'login', $login );
 			return $user ? (int) $user->ID : 0;
 		}
 		if ( function_exists( 'bp_displayed_user_id' ) && bp_displayed_user_id() ) {
@@ -247,12 +334,9 @@ class BCM_Frontend_Submit {
 	}
 
 	/**
-	 * Enforce the math captcha.
+	 * Enforce the guest captcha. Logged-in members skip it.
 	 *
-	 * Logged-in users bypass the captcha entirely — their identity is
-	 * established by auth. Logged-out visitors must pass.
-	 *
-	 * @param array $input Sanitized form input.
+	 * @param array $input Unslashed form input.
 	 * @return true|WP_Error
 	 */
 	private static function validate_captcha( array $input ) {
@@ -265,7 +349,7 @@ class BCM_Frontend_Submit {
 				? true
 				: new WP_Error( 'bcm_captcha_wrong', __( 'Please complete the security check and try again.', 'buddypress-contact-me' ) );
 		}
-		$answer = isset( $input['bcm_captcha_answer'] ) ? (int) $input['bcm_captcha_answer'] : 0;
+		$answer = absint( self::field( $input, 'bcm_captcha_answer' ) );
 		$token  = self::captcha_token( $input );
 		if ( $answer <= 0 || '' === $token ) {
 			return new WP_Error( 'bcm_captcha_missing', __( 'Please solve the security question.', 'buddypress-contact-me' ) );
@@ -307,59 +391,5 @@ class BCM_Frontend_Submit {
 		}
 
 		return (bool) apply_filters( 'bcm_spam_check', false, $message, '' );
-	}
-
-	/**
-	 * Build the recipient's public Contact tab URL.
-	 *
-	 * @param int $recipient_id Recipient user ID.
-	 * @return string
-	 */
-	private function recipient_contact_url( $recipient_id ) {
-		$domain = function_exists( 'bp_members_get_user_url' )
-			? bp_members_get_user_url( $recipient_id )
-			: bp_core_get_user_domain( $recipient_id );
-		return trailingslashit( $domain ) . BCM_Frontend_Nav::SLUG . '/';
-	}
-
-	/**
-	 * Per-user "accept / decline contact" toggle on BP Settings → General.
-	 */
-	public function render_settings_toggle() {
-		if ( ! is_user_logged_in() || bp_displayed_user_id() !== bp_loggedin_user_id() ) {
-			return;
-		}
-		$meta    = get_user_meta( bp_loggedin_user_id(), 'contact_me_button', true );
-		$enabled = ( 'off' !== $meta );
-		?>
-		<div class="bp-contact-me-settings-toggle">
-			<label>
-				<input type="checkbox" name="bcm_accept_contact" value="on" <?php checked( $enabled ); ?> />
-				<?php esc_html_e( 'Let other members contact me through a form on my profile', 'buddypress-contact-me' ); ?>
-			</label>
-		</div>
-		<?php
-	}
-
-	/**
-	 * Persist the per-user toggle.
-	 */
-	public function save_settings_toggle() {
-		if ( ! bp_is_post_request() || ! isset( $_POST['submit'] ) ) {
-			return;
-		}
-		// Own-profile gate: only runs on the BP "settings/general" tab of the
-		// logged-in user. Update target below is bp_loggedin_user_id(), not
-		// $_POST['user_id'], so a current_user_can check would be redundant.
-		// wppqa-audited 2026-05-11.
-		if ( ! function_exists( 'bp_is_settings_component' ) || ! bp_is_settings_component() || ! bp_is_current_action( 'general' ) ) {
-			return;
-		}
-		if ( ! check_admin_referer( 'bp_settings_general' ) ) {
-			return;
-		}
-
-		$enabled = ! empty( $_POST['bcm_accept_contact'] );
-		update_user_meta( bp_loggedin_user_id(), 'contact_me_button', $enabled ? 'on' : 'off' );
 	}
 }

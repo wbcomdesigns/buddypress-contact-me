@@ -1,6 +1,6 @@
 <?php
 /**
- * [buddypress-contact-me] shortcode — renders the Contact form targeting
+ * [buddypress-contact-me] shortcode: renders the Contact form targeting
  * a specific user (by id or login).
  *
  * @package BuddyPress_Contact_Me
@@ -70,12 +70,10 @@ class BCM_Frontend_Shortcode {
 		$this->assets->enqueue_assets();
 
 		ob_start();
-		$shortcode_atts         = $atts;
-		$shortcode_atts['id']   = $recipient_id;
-		$shortcode_atts['user'] = $atts['user'];
+		$atts['id'] = $recipient_id;
 
-		// The partial reads $shortcode_atts if set.
-		$GLOBALS['bcm_shortcode_atts'] = $shortcode_atts;
+		// The partial reads the shortcode attributes from this global.
+		$GLOBALS['bcm_shortcode_atts'] = $atts;
 		include BUDDYPRESS_CONTACT_ME_PLUGIN_PATH . 'public/partials/tab-form.php';
 		unset( $GLOBALS['bcm_shortcode_atts'] );
 

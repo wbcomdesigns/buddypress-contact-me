@@ -1,6 +1,6 @@
 <?php
 /**
- * Inbox — list of contact messages the current user has received.
+ * Inbox: list of contact messages the current user has received.
  *
  * @package BuddyPress_Contact_Me
  */
@@ -11,26 +11,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 $bcm_user_id  = get_current_user_id();
 $bcm_per_page = 10;
-$bcm_page     = isset( $_GET['cpage'] ) ? max( 1, (int) $_GET['cpage'] ) : 1; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 $bcm_filter   = isset( $_GET['filter'] ) && 'unread' === $_GET['filter'] ? 'unread' : 'all'; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 $bcm_total    = BCM_Messages_Repo::count_for_recipient( $bcm_user_id );
-// Count via dedicated COUNT(*) — `unread_message_ids()` is capped at
-// UNREAD_ID_HARD_CAP, so its return-array size is no longer a reliable
-// "total unread" for users with thousands of stale notifications.
 $bcm_unread_n = BCM_Messages_Repo::count_unread_for_recipient( $bcm_user_id );
-
-// Only load the unread-ID list when the Unread filter is actually active —
-// the All view never reads it, so save a query on every page load.
-$bcm_unread = ( 'unread' === $bcm_filter ) ? BCM_Messages_Repo::unread_message_ids( $bcm_user_id ) : array();
-
-if ( 'unread' === $bcm_filter ) {
-	$bcm_messages = BCM_Messages_Repo::list_for_recipient_in_ids( $bcm_user_id, $bcm_unread, $bcm_per_page, $bcm_page );
-	$bcm_shown    = $bcm_unread_n;
-} else {
-	$bcm_messages = BCM_Messages_Repo::list_for_recipient( $bcm_user_id, $bcm_per_page, $bcm_page );
-	$bcm_shown    = $bcm_total;
-}
-$bcm_pages = (int) ceil( max( 1, $bcm_shown ) / $bcm_per_page );
+$bcm_pages    = (int) ceil( max( 1, 'unread' === $bcm_filter ? $bcm_unread_n : $bcm_total ) / $bcm_per_page );
+// A page number past the end (an old link after deletes) shows the last page.
+$bcm_page     = isset( $_GET['cpage'] ) ? min( $bcm_pages, max( 1, (int) $_GET['cpage'] ) ) : 1; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+$bcm_messages = BCM_Messages_Repo::list_for_recipient( $bcm_user_id, $bcm_per_page, $bcm_page, 'unread' === $bcm_filter );
 
 // Batch-prefetch every sender on this page so the foreach below doesn't
 // fire N+1 user lookups against a cold cache. cache_users() primes the
@@ -61,15 +48,6 @@ $bcm_prefs_url       = trailingslashit( $bcm_profile_url ) . BCM_Frontend_Nav::S
 $bcm_contact_url     = trailingslashit( $bcm_profile_url ) . BCM_Frontend_Nav::SLUG . '/';
 $bcm_intro_dismissed = (bool) get_user_meta( $bcm_user_id, 'bcm_intro_dismissed', true );
 
-$bcm_flash = BCM_Frontend_Flash::consume();
-if ( $bcm_flash ) :
-	?>
-	<div class="bcm-alert bcm-alert--<?php echo esc_attr( $bcm_flash['type'] ); ?>" role="status" aria-live="polite">
-		<?php echo esc_html( $bcm_flash['message'] ); ?>
-	</div>
-	<?php
-endif;
-
 if ( ! $bcm_intro_dismissed ) :
 	?>
 	<div class="bcm-info" data-bcm-info>
@@ -79,7 +57,7 @@ if ( ! $bcm_intro_dismissed ) :
 		<div class="bcm-info__body">
 			<p class="bcm-info__title"><?php esc_html_e( 'How Contact works', 'buddypress-contact-me' ); ?></p>
 			<p class="bcm-info__text">
-				<?php esc_html_e( 'Members and visitors can send you a private message from your profile — no email required. New messages land here, trigger a notification, and (optionally) send you an email.', 'buddypress-contact-me' ); ?>
+				<?php esc_html_e( 'Members and visitors can send you a private message from your profile, no email address needed. New messages land here, trigger a notification, and can also send you an email.', 'buddypress-contact-me' ); ?>
 			</p>
 			<p class="bcm-info__links">
 				<a href="<?php echo esc_url( $bcm_prefs_url ); ?>"><?php esc_html_e( 'Manage preferences', 'buddypress-contact-me' ); ?></a>
@@ -109,7 +87,7 @@ if ( empty( $bcm_messages ) && 'all' === $bcm_filter ) :
 				<path d="M8 12h5" />
 			</svg>
 		</div>
-		<h3 class="bcm-empty__title"><?php esc_html_e( 'Your inbox is quiet — for now.', 'buddypress-contact-me' ); ?></h3>
+		<h3 class="bcm-empty__title"><?php esc_html_e( 'Your inbox is quiet for now.', 'buddypress-contact-me' ); ?></h3>
 		<p class="bcm-empty__body">
 			<?php esc_html_e( "When someone sends you a message from your profile's Contact tab, it'll show up here.", 'buddypress-contact-me' ); ?>
 		</p>
@@ -140,16 +118,16 @@ endif;
 			}
 			?>
 		</h3>
-		<nav class="bcm-inbox__filters" role="tablist" aria-label="<?php esc_attr_e( 'Filter messages', 'buddypress-contact-me' ); ?>">
+		<nav class="bcm-inbox__filters" aria-label="<?php esc_attr_e( 'Filter messages', 'buddypress-contact-me' ); ?>">
 			<a class="bcm-inbox__filter<?php echo 'all' === $bcm_filter ? ' is-active' : ''; ?>"
-				href="<?php echo esc_url( $bcm_all_url ); ?>"
-				role="tab" aria-selected="<?php echo 'all' === $bcm_filter ? 'true' : 'false'; ?>">
+				href="<?php echo esc_url( $bcm_all_url ); ?>" data-bcm-filter="all"
+				<?php echo 'all' === $bcm_filter ? 'aria-current="page"' : ''; ?>>
 				<?php esc_html_e( 'All', 'buddypress-contact-me' ); ?>
 				<span class="bcm-inbox__filter-count"><?php echo (int) $bcm_total; ?></span>
 			</a>
 			<a class="bcm-inbox__filter<?php echo 'unread' === $bcm_filter ? ' is-active' : ''; ?>"
-				href="<?php echo esc_url( $bcm_unread_url ); ?>"
-				role="tab" aria-selected="<?php echo 'unread' === $bcm_filter ? 'true' : 'false'; ?>">
+				href="<?php echo esc_url( $bcm_unread_url ); ?>" data-bcm-filter="unread"
+				<?php echo 'unread' === $bcm_filter ? 'aria-current="page"' : ''; ?>>
 				<?php esc_html_e( 'Unread', 'buddypress-contact-me' ); ?>
 				<span class="bcm-inbox__filter-count"><?php echo (int) $bcm_unread_n; ?></span>
 			</a>
@@ -159,7 +137,7 @@ endif;
 	<?php if ( empty( $bcm_messages ) ) : // Only the Unread filter gets here empty. ?>
 		<div class="bcm-empty bcm-empty--inline" role="status">
 			<p class="bcm-empty__body">
-				<?php esc_html_e( 'You have no unread messages right now. Nice — inbox zero.', 'buddypress-contact-me' ); ?>
+				<?php esc_html_e( 'You have no unread messages right now.', 'buddypress-contact-me' ); ?>
 			</p>
 			<p class="bcm-empty__actions">
 				<a class="button" href="<?php echo esc_url( $bcm_all_url ); ?>">
@@ -171,9 +149,8 @@ endif;
 
 		<ul class="bcm-messages" role="list">
 			<?php
-			$bcm_unread_map = array_flip( $bcm_unread );
 			foreach ( $bcm_messages as $msg ) :
-				$is_unread   = isset( $bcm_unread_map[ (int) $msg->id ] );
+				$is_unread   = ! empty( $msg->is_unread );
 				$sender_name = $msg->sender
 					? bp_core_get_user_displayname( $msg->sender )
 					: $msg->name;
@@ -197,9 +174,9 @@ endif;
 						__( '%s ago', 'buddypress-contact-me' ),
 						human_time_diff( $stamp )
 					)
-					: wp_date( get_option( 'date_format' ), $stamp );
-
-				$delete_nonce = wp_create_nonce( 'wp_rest' );
+					: bcm_date_label( $msg->datetime, '', get_option( 'date_format' ) );
+				/* translators: %s: sender name */
+				$delete_label = sprintf( __( 'Delete message from %s', 'buddypress-contact-me' ), $sender_name );
 				?>
 				<li class="bcm-message<?php echo $is_unread ? ' bcm-message--unread' : ''; ?>" data-bcm-row="<?php echo esc_attr( $msg->id ); ?>">
 					<div class="bcm-message__avatar">
@@ -232,9 +209,9 @@ endif;
 						</p>
 					</div>
 					<div class="bcm-message__actions">
-						<button type="button" class="bcm-message__action bcm-message__action--delete" data-bcm-delete="<?php echo esc_attr( $msg->id ); ?>">
+						<button type="button" class="bcm-message__action bcm-message__action--delete" data-bcm-delete="<?php echo esc_attr( $msg->id ); ?>" title="<?php esc_attr_e( 'Delete', 'buddypress-contact-me' ); ?>">
 							<span class="dashicons dashicons-trash" aria-hidden="true"></span>
-							<span class="bcm-message__action-label"><?php esc_html_e( 'Delete', 'buddypress-contact-me' ); ?></span>
+							<span class="bcm-sr-only"><?php echo esc_html( $delete_label ); ?></span>
 						</button>
 					</div>
 				</li>

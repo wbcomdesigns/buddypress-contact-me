@@ -34,7 +34,7 @@ $wpdb->query( "DROP TABLE IF EXISTS {$table_name}" );
 $options = array(
 	// Main settings array.
 	'bcm_admin_general_setting',
-	// Upgrade / bookkeeping.
+	// Upgrade / bookkeeping (the first option is from before 1.5.1).
 	'buddypress_contact_me_db_version',
 	'bcm_db_version',
 	// EDD Software Licensing.
@@ -113,15 +113,14 @@ if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $bcm_notifications_t
 }
 // phpcs:enable
 
-// 7. Flash-notice and guest captcha transients written for logged-out
-// senders that never got consumed.
-// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
-$wpdb->query(
-	$wpdb->prepare(
-		"DELETE FROM {$wpdb->options} WHERE option_name LIKE %s OR option_name LIKE %s OR option_name LIKE %s OR option_name LIKE %s",
-		$wpdb->esc_like( '_transient_bcm_flash_' ) . '%',
-		$wpdb->esc_like( '_transient_timeout_bcm_flash_' ) . '%',
-		$wpdb->esc_like( '_transient_bcm_captcha_' ) . '%',
-		$wpdb->esc_like( '_transient_timeout_bcm_captcha_' ) . '%'
-	)
-);
+// 7. Guest captcha, send-limit counters, and flash notices from before 1.5.1.
+foreach ( array( 'bcm_flash_', 'bcm_captcha_', 'bcm_throttle_' ) as $bcm_prefix ) {
+	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+	$wpdb->query(
+		$wpdb->prepare(
+			"DELETE FROM {$wpdb->options} WHERE option_name LIKE %s OR option_name LIKE %s",
+			$wpdb->esc_like( '_transient_' . $bcm_prefix ) . '%',
+			$wpdb->esc_like( '_transient_timeout_' . $bcm_prefix ) . '%'
+		)
+	);
+}

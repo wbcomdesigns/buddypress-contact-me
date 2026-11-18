@@ -1,6 +1,6 @@
 <?php
 /**
- * Contact form — rendered on other members' profiles, also via shortcode.
+ * Contact form, rendered on other members' profiles, also via shortcode.
  *
  * @package BuddyPress_Contact_Me
  */
@@ -49,23 +49,21 @@ if ( is_user_logged_in() && get_current_user_id() === $bcm_target_id ) {
 	return;
 }
 
-$bcm_flash = BCM_Frontend_Flash::consume();
-if ( $bcm_flash ) :
-	?>
-	<div class="bcm-alert bcm-alert--<?php echo esc_attr( $bcm_flash['type'] ); ?>" role="status" aria-live="polite">
-		<?php echo esc_html( $bcm_flash['message'] ); ?>
-	</div>
-	<?php
-endif;
+// No-JS fallback: errors from this request's POST, or the success notice after its redirect.
+foreach ( BCM_Frontend_Submit::$errors as $bcm_error ) {
+	bcm_notice( $bcm_error, 'error' );
+}
+if ( empty( BCM_Frontend_Submit::$errors ) && isset( $_GET['bcm'] ) && 'sent' === $_GET['bcm'] ) { // phpcs:ignore WordPress.Security.NonceVerification
+	bcm_notice( __( 'Message sent.', 'buddypress-contact-me' ), 'success' );
+}
 
-// Show an inline success banner when we arrive with ?bcm=sent (for non-JS fallback).
-if ( isset( $_GET['bcm'] ) && 'sent' === $_GET['bcm'] ) : // phpcs:ignore WordPress.Security.NonceVerification
-	?>
-	<div class="bcm-alert bcm-alert--success" role="status" aria-live="polite">
-		<?php esc_html_e( 'Message sent.', 'buddypress-contact-me' ); ?>
-	</div>
-	<?php
-endif;
+// Refill what the visitor typed when the POST failed. The nonce was checked in BCM_Frontend_Submit::maybe_handle().
+$bcm_old = array();
+if ( BCM_Frontend_Submit::$errors ) {
+	foreach ( array( 'bp_contact_me_first_name', 'bp_contact_me_email', 'bp_contact_me_subject', 'bp_contact_me_msg' ) as $bcm_key ) {
+		$bcm_old[ $bcm_key ] = isset( $_POST[ $bcm_key ] ) && is_string( $_POST[ $bcm_key ] ) ? sanitize_textarea_field( wp_unslash( $_POST[ $bcm_key ] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing
+	}
+}
 
 $bcm_logged_in   = is_user_logged_in();
 $bcm_site_captcha = ! $bcm_logged_in && BCM_Frontend_Submit::uses_site_captcha();
@@ -95,7 +93,7 @@ $bcm_target_name = $bcm_target ? bp_core_get_user_displayname( $bcm_target_id ) 
 					'<strong>' . esc_html( $bcm_user_name ) . '</strong>'
 				);
 			} else {
-				esc_html_e( 'Your message is delivered privately — only the recipient sees it. Your email is shared so they can reply.', 'buddypress-contact-me' );
+				esc_html_e( 'Your message is delivered privately. Only the recipient sees it, and your email is shared so they can reply.', 'buddypress-contact-me' );
 			}
 			?>
 		</p>
@@ -113,6 +111,7 @@ $bcm_target_name = $bcm_target ? bp_core_get_user_displayname( $bcm_target_id ) 
 					maxlength="100"
 					required
 					autocomplete="name"
+					value="<?php echo esc_attr( $bcm_old['bp_contact_me_first_name'] ?? '' ); ?>"
 					aria-describedby="bcm-name-hint bcm-name-error"
 				/>
 				<span class="bcm-field__hint" id="bcm-name-hint"><?php esc_html_e( '2 to 100 characters.', 'buddypress-contact-me' ); ?></span>
@@ -126,6 +125,7 @@ $bcm_target_name = $bcm_target ? bp_core_get_user_displayname( $bcm_target_id ) 
 					name="bp_contact_me_email"
 					required
 					autocomplete="email"
+					value="<?php echo esc_attr( $bcm_old['bp_contact_me_email'] ?? '' ); ?>"
 					aria-describedby="bcm-email-hint bcm-email-error"
 				/>
 				<span class="bcm-field__hint" id="bcm-email-hint"><?php esc_html_e( 'So the member can reply to you.', 'buddypress-contact-me' ); ?></span>
@@ -142,6 +142,7 @@ $bcm_target_name = $bcm_target ? bp_core_get_user_displayname( $bcm_target_id ) 
 				minlength="3"
 				maxlength="200"
 				required
+				value="<?php echo esc_attr( $bcm_old['bp_contact_me_subject'] ?? '' ); ?>"
 				aria-describedby="bcm-subject-hint bcm-subject-error"
 			/>
 			<span class="bcm-field__hint" id="bcm-subject-hint"><?php esc_html_e( '3 to 200 characters.', 'buddypress-contact-me' ); ?></span>
@@ -158,7 +159,7 @@ $bcm_target_name = $bcm_target ? bp_core_get_user_displayname( $bcm_target_id ) 
 				rows="8"
 				required
 				aria-describedby="bcm-message-hint bcm-message-error"
-			></textarea>
+			><?php echo esc_textarea( $bcm_old['bp_contact_me_msg'] ?? '' ); ?></textarea>
 			<span class="bcm-field__hint" id="bcm-message-hint">
 				<?php esc_html_e( '10 to 5000 characters.', 'buddypress-contact-me' ); ?>
 				<span class="bcm-field__counter" data-bcm-counter aria-live="polite">0 / 5000</span>
@@ -194,6 +195,13 @@ $bcm_target_name = $bcm_target ? bp_core_get_user_displayname( $bcm_target_id ) 
 				<span class="bcm-field__error" id="bcm-captcha-error" role="alert"></span>
 			</div>
 			<input type="hidden" name="bcm_captcha_hash" value="<?php echo esc_attr( $bcm_captcha['token'] ); ?>" />
+		<?php endif; ?>
+
+		<?php if ( ! $bcm_logged_in ) : ?>
+			<div class="bcm-hp" aria-hidden="true">
+				<label for="bcm-website"><?php esc_html_e( 'Leave this field empty', 'buddypress-contact-me' ); ?></label>
+				<input type="text" id="bcm-website" name="<?php echo esc_attr( BCM_Frontend_Submit::HONEYPOT ); ?>" value="" tabindex="-1" autocomplete="off" />
+			</div>
 		<?php endif; ?>
 
 		<input type="hidden" name="bcm_shortcode_user_id" value="<?php echo (int) $bcm_target_id; ?>" />

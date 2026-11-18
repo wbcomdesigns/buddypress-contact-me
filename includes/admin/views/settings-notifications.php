@@ -110,7 +110,7 @@ foreach ( $tab_rendered_keys as $tab_rendered_key ) :
 						<?php checked( $admin_copy ); ?>>
 					<?php esc_html_e( 'Send every site admin their own copy of each message', 'buddypress-contact-me' ); ?>
 				</label>
-				<p class="description"><?php esc_html_e( 'Helpful for moderation — you can see what members are sending each other without opening every conversation.', 'buddypress-contact-me' ); ?></p>
+				<p class="description"><?php esc_html_e( 'Helpful for moderation: you can see what members are sending each other without opening every conversation.', 'buddypress-contact-me' ); ?></p>
 			</td>
 		</tr>
 		<tr>
@@ -123,6 +123,7 @@ foreach ( $tab_rendered_keys as $tab_rendered_key ) :
 						<?php checked( $sender_copy ); ?>>
 					<?php esc_html_e( 'Also send a copy to the sender so they have a record', 'buddypress-contact-me' ); ?>
 				</label>
+				<p class="description"><?php esc_html_e( 'Logged-in members only. Visitors never get a copy, so the form cannot be used to email someone else.', 'buddypress-contact-me' ); ?></p>
 			</td>
 		</tr>
 	</table>

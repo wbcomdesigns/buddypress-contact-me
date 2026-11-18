@@ -8,33 +8,14 @@
 
 defined( 'ABSPATH' ) || exit;
 
-global $wpdb;
-
 $settings = (array) get_option( 'bcm_admin_general_setting', array() );
 
-// Contact messages table name (defined in the activator).
-$table_name = $wpdb->prefix . 'contact_me';
-
-// Count total messages, distinct senders, and distinct recipients.
-// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-$total_messages = (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$table_name}" );
-// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-$unique_senders = (int) $wpdb->get_var( "SELECT COUNT(DISTINCT sender) FROM {$table_name} WHERE sender > 0" );
-// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-$unique_recipients = (int) $wpdb->get_var( "SELECT COUNT(DISTINCT reciever) FROM {$table_name} WHERE reciever > 0" );
-
+$stats             = BCM_Messages_Repo::stats();
+$total_messages    = $stats['total'];
+$unique_senders    = $stats['senders'];
+$unique_recipients = $stats['recipients'];
 // Members accepting messages: everyone except those who switched it off.
-$active_recipients = max(
-	0,
-	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
-	(int) get_user_count() - (int) $wpdb->get_var(
-		$wpdb->prepare(
-			"SELECT COUNT(*) FROM {$wpdb->usermeta} WHERE meta_key = %s AND meta_value = %s",
-			'contact_me_button',
-			'off'
-		)
-	)
-);
+$active_recipients = max( 0, (int) get_user_count() - $stats['opted_out'] );
 
 // Feature status flags.
 $bp_notifications_on = ! empty( $settings['bcm_allow_notification'] ) && 'yes' === $settings['bcm_allow_notification'];

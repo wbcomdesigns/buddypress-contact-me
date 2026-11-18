@@ -229,14 +229,12 @@ add_action( 'admin_init', 'edd_BCM_handle_activate' );
 function edd_BCM_format_activation_error( $code, $result ) {
 	switch ( $code ) {
 		case 'expired':
-			$expires_ts = isset( $result->expires )
-				? strtotime( $result->expires, current_time( 'timestamp' ) )
-				: false;
+			$expires_ts = isset( $result->expires ) ? strtotime( $result->expires ) : false;
 			return $expires_ts
 				? sprintf(
 					/* translators: %s: expiration date */
 					__( 'Your license key expired on %s.', 'buddypress-contact-me' ),
-					date_i18n( get_option( 'date_format' ), $expires_ts )
+					bcm_date_label( $expires_ts, '', get_option( 'date_format' ) )
 				)
 				: __( 'Your license key has expired.', 'buddypress-contact-me' );
 

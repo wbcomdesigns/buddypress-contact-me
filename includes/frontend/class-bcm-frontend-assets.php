@@ -2,8 +2,8 @@
 /**
  * Enqueue public-facing assets for the Contact tab.
  *
- * Loads on the Contact tab, the BP Settings screen and any page that shows
- * the [buddypress-contact-me] shortcode - zero footprint elsewhere.
+ * Loads on the Contact tab and any page that shows the
+ * [buddypress-contact-me] shortcode - zero footprint elsewhere.
  *
  * @package BuddyPress_Contact_Me
  */
@@ -71,42 +71,19 @@ class BCM_Frontend_Assets {
 			return;
 		}
 
-		// Prefer the minified build when the grunt output exists, otherwise
-		// fall back to the source file. This keeps local dev working
-		// without a grunt watch, and production fast after release build.
-		$plugin_dir = untrailingslashit( BUDDYPRESS_CONTACT_ME_PLUGIN_PATH );
-		$css_min_fs = $plugin_dir . '/public/css/min/buddypress-contact-me-public.min.css';
-		$js_min_fs  = $plugin_dir . '/public/js/min/buddypress-contact-me-public.min.js';
-		$css_url    = file_exists( $css_min_fs )
-			? BUDDYPRESS_CONTACT_ME_PLUGIN_URL . 'public/css/min/buddypress-contact-me-public.min.css'
-			: BUDDYPRESS_CONTACT_ME_PLUGIN_URL . 'public/css/buddypress-contact-me-public.css';
-		if ( is_rtl() ) {
-			$css_url = BUDDYPRESS_CONTACT_ME_PLUGIN_URL . 'public/css/rtl/buddypress-contact-me-public.rtl.css';
-		}
-		$js_url = file_exists( $js_min_fs )
-			? BUDDYPRESS_CONTACT_ME_PLUGIN_URL . 'public/js/min/buddypress-contact-me-public.min.js'
-			: BUDDYPRESS_CONTACT_ME_PLUGIN_URL . 'public/js/buddypress-contact-me-public.js';
-
+		// One readable stylesheet: logical properties cover right-to-left sites.
 		wp_enqueue_style(
 			$this->plugin_name,
-			$css_url,
+			BUDDYPRESS_CONTACT_ME_PLUGIN_URL . 'public/css/buddypress-contact-me-public.css',
 			array( 'dashicons' ),
 			$this->version,
 			'all'
 		);
 
 		wp_enqueue_script(
-			'bcm-toast',
-			BUDDYPRESS_CONTACT_ME_PLUGIN_URL . 'public/js/toast.js',
-			array(),
-			$this->version,
-			true
-		);
-
-		wp_enqueue_script(
 			'bcm-confirm',
 			BUDDYPRESS_CONTACT_ME_PLUGIN_URL . 'public/js/confirm.js',
-			array( 'bcm-toast' ),
+			array(),
 			$this->version,
 			true
 		);
@@ -121,16 +98,14 @@ class BCM_Frontend_Assets {
 
 		wp_enqueue_script(
 			$this->plugin_name,
-			$js_url,
-			array( 'wp-api-fetch', 'bcm-toast', 'bcm-confirm' ),
+			BUDDYPRESS_CONTACT_ME_PLUGIN_URL . 'public/js/buddypress-contact-me-public.js',
+			array( 'wp-api-fetch', 'bcm-confirm' ),
 			$this->version,
 			true
 		);
 
 		$current_user_id = get_current_user_id();
-		$unread_count    = $current_user_id
-			? count( BCM_Messages_Repo::unread_message_ids( $current_user_id ) )
-			: 0;
+		$unread_count    = $current_user_id ? BCM_Messages_Repo::count_unread_for_recipient( $current_user_id ) : 0;
 
 		wp_localize_script(
 			$this->plugin_name,
@@ -146,6 +121,7 @@ class BCM_Frontend_Assets {
 					'deleteError'   => __( 'Could not delete the message. Please try again.', 'buddypress-contact-me' ),
 					'sending'       => __( 'Sending…', 'buddypress-contact-me' ),
 					'sent'          => __( 'Message sent.', 'buddypress-contact-me' ),
+					'dismiss'       => __( 'Dismiss', 'buddypress-contact-me' ),
 					'cancel'        => __( 'Cancel', 'buddypress-contact-me' ),
 					'deleteLabel'   => __( 'Delete', 'buddypress-contact-me' ),
 					'fieldRequired' => __( 'This field is required.', 'buddypress-contact-me' ),
@@ -174,7 +150,6 @@ class BCM_Frontend_Assets {
 			return false;
 		}
 		return bp_is_current_component( BCM_Frontend_Nav::SLUG )
-			|| bp_is_current_component( BCM_Frontend_Nav::LEGACY_SLUG )
-			|| bp_is_current_component( 'settings' );
+			|| bp_is_current_component( BCM_Frontend_Nav::LEGACY_SLUG );
 	}
 }

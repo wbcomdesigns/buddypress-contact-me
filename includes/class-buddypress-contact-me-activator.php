@@ -156,6 +156,10 @@ class BuddyPress_Contact_Me_Activator {
 			self::convert_local_dates_to_utc();
 		}
 
+		// BuddyPress email posts: installs any that are missing, never touches an edited one.
+		require_once __DIR__ . '/email/class-bcm-email-installer.php';
+		BCM_Email_Installer::install();
+
 		// All required indexes present — safe to bump the stored version.
 		update_option( 'bcm_db_version', self::DB_VERSION, false );
 		return true;
@@ -189,14 +193,17 @@ class BuddyPress_Contact_Me_Activator {
 	}
 
 	/**
-	 * Run install_schema() on plugins_loaded if the stored db version is
-	 * older than the current one. Lets existing installs pick up new
-	 * indexes without re-activating the plugin.
+	 * The one upgrade router: runs install_schema() on `bp_init` (after
+	 * BuddyPress registers its email post type) when the stored db version
+	 * is older than the current one. Lets existing installs pick up new
+	 * indexes and emails without re-activating the plugin.
 	 *
 	 * Hardened for 500-site rollout (1.5.0):
-	 *   - Skipped on AJAX / REST / cron / WP-CLI requests so a frontend
-	 *     page load owns the migration window. Keeps debug visibility on
-	 *     a route where errors land where humans see them.
+	 *   - Skipped on AJAX / cron / WP-CLI requests so a page load owns the
+	 *     migration window. REST requests are not skipped and need not be:
+	 *     WordPress defines REST_REQUEST in parse_request, after `bp_init`,
+	 *     so the migration always finishes before any REST handler reads a
+	 *     row, and the version bump stops a second UTC shift.
 	 *   - Concurrency lock via wp_cache_add() so two simultaneous
 	 *     requests don't both fire ALTER TABLE on the same install.
 	 *   - install_schema() does its own post-condition check; only bumps
@@ -212,15 +219,9 @@ class BuddyPress_Contact_Me_Activator {
 			return;
 		}
 
-		// Don't run mid-AJAX / mid-REST / mid-cron / under WP-CLI — those
-		// requests are time-sensitive and have nowhere useful to surface
-		// debug output. A frontend or admin page load will pick it up.
-		if (
-			wp_doing_ajax() ||
-			wp_doing_cron() ||
-			( defined( 'WP_CLI' ) && WP_CLI ) ||
-			( defined( 'REST_REQUEST' ) && REST_REQUEST )
-		) {
+		// Not during AJAX, cron or WP-CLI: a page load picks it up. A REST
+		// check here could never fire: see the docblock.
+		if ( wp_doing_ajax() || wp_doing_cron() || ( defined( 'WP_CLI' ) && WP_CLI ) ) {
 			return;
 		}
 

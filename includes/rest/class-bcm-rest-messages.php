@@ -3,9 +3,9 @@
  * REST endpoints for the Contact form + inbox.
  *
  * Namespace: bcm/v1
- *   POST   /messages                       — submit a new contact message
- *   DELETE /messages/(?P<id>\d+)           — delete one of my own messages
- *   POST   /preferences/intro-dismiss      — dismiss the inbox intro panel
+ *   POST   /messages                       submit a new contact message
+ *   DELETE /messages/(?P<id>\d+)           delete one of my own messages
+ *   POST   /preferences/intro-dismiss      dismiss the inbox intro panel
  *
  * Permission: delete requires the current user to be the recipient of
  * that message. Submit is open but gated by captcha and the role
@@ -181,15 +181,36 @@ class BCM_Rest_Messages {
 	 * @return WP_REST_Response
 	 */
 	public function delete_one( WP_REST_Request $request ) {
-		$deleted = BCM_Messages_Repo::delete_for_recipient( (int) $request['id'], get_current_user_id() );
+		$user_id = get_current_user_id();
+		$deleted = BCM_Messages_Repo::delete_for_recipient( (int) $request['id'], $user_id );
+		if ( ! $deleted ) {
+			return new WP_REST_Response(
+				array(
+					'ok'      => false,
+					'message' => __( 'Could not delete the message.', 'buddypress-contact-me' ),
+				),
+				400
+			);
+		}
+		// New totals so the inbox header and filter counts update in place.
+		$total  = BCM_Messages_Repo::count_for_recipient( $user_id );
+		$unread = BCM_Messages_Repo::count_unread_for_recipient( $user_id );
 		return new WP_REST_Response(
 			array(
-				'ok'      => (bool) $deleted,
-				'message' => $deleted
-					? __( 'Message deleted.', 'buddypress-contact-me' )
-					: __( 'Could not delete the message.', 'buddypress-contact-me' ),
+				'ok'      => true,
+				'message' => __( 'Message deleted.', 'buddypress-contact-me' ),
+				'counts'  => array(
+					'all'    => $total,
+					'unread' => $unread,
+				),
+				'titles'  => array(
+					/* translators: %d: total messages */
+					'all'    => sprintf( _n( '%d message', '%d messages', $total, 'buddypress-contact-me' ), $total ),
+					/* translators: %d: unread message count */
+					'unread' => sprintf( _n( '%d unread message', '%d unread messages', $unread, 'buddypress-contact-me' ), $unread ),
+				),
 			),
-			$deleted ? 200 : 400
+			200
 		);
 	}
 }

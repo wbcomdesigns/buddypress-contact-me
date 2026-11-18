@@ -113,7 +113,7 @@ class BCM_Frontend_Notifications {
 	 * @param int $user_id Member ID.
 	 * @return string
 	 */
-	private static function inbox_url( $user_id ) {
+	public static function inbox_url( $user_id ) {
 		$user_domain = function_exists( 'bp_members_get_user_url' )
 			? bp_members_get_user_url( $user_id )
 			: bp_core_get_user_domain( $user_id );
@@ -180,13 +180,11 @@ class BCM_Frontend_Notifications {
 		$skip_ids = array( (int) $recipient_id );
 
 		if ( ! empty( $settings['bcm_allow_sender_copy_email'] ) && 'yes' === $settings['bcm_allow_sender_copy_email'] ) {
+			// Logged-in senders only. A guest's typed address is unverified, so a
+			// copy would let anyone mail the site's branded email to a stranger.
 			if ( $sender_id ) {
 				$skip_ids[] = (int) $sender_id;
 				$this->deliver( BCM_Email_Installer::TYPE_SENDER_COPY, (int) $sender_id, $tokens );
-			} elseif ( is_email( $message->email ) ) {
-				// Guest: BP_Email::set_to() turns each array entry into a
-				// recipient, so wrap address => name in an outer array.
-				$this->deliver( BCM_Email_Installer::TYPE_SENDER_COPY, array( array( $message->email => (string) $message->name ) ), $tokens );
 			}
 		}
 
@@ -207,9 +205,9 @@ class BCM_Frontend_Notifications {
 	/**
 	 * Send one BP email to one reader.
 	 *
-	 * @param string    $type   BP email type.
-	 * @param int|array $to     User ID, or array( array( email => name ) ) for a guest.
-	 * @param array     $tokens Email tokens.
+	 * @param string $type   BP email type.
+	 * @param int    $to     Reader's user ID.
+	 * @param array  $tokens Email tokens.
 	 */
 	private function deliver( $type, $to, $tokens ) {
 		// Output buffer the BP send. Two reasons:
@@ -273,17 +271,13 @@ class BCM_Frontend_Notifications {
 			? bp_core_get_user_displayname( $sender_id )
 			: $message->name;
 		$recipient   = get_userdata( $recipient_id );
-		$text        = wp_strip_all_tags( stripslashes( (string) $message->message ) );
-
-		$user_domain = function_exists( 'bp_members_get_user_url' )
-			? bp_members_get_user_url( $recipient_id )
-			: bp_core_get_user_domain( $recipient_id );
-		$inbox_url   = trailingslashit( $user_domain ) . BCM_Frontend_Nav::SLUG . '/' . BCM_Frontend_Nav::SUB_INBOX . '/' . (int) $message->id . '/';
+		$text        = wp_strip_all_tags( (string) $message->message );
+		$inbox_url   = trailingslashit( self::inbox_url( $recipient_id ) ) . (int) $message->id . '/';
 
 		return array(
 			'sender.name'          => $sender_name,
 			'contact.recipient'    => $recipient ? $recipient->display_name : '',
-			'contact.subject'      => wp_strip_all_tags( stripslashes( (string) $message->subject ) ),
+			'contact.subject'      => wp_strip_all_tags( (string) $message->subject ),
 			'contact.message'      => wpautop( $text ),
 			'contact.message.text' => $text,
 			'inbox.url'            => esc_url( $inbox_url ),

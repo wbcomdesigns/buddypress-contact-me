@@ -39,8 +39,9 @@ class BCM_Email_Installer {
 	const TYPE_ADMIN_COPY = 'bcm-contact-message-admin-copy';
 
 	/**
-	 * Install each email post + term that doesn't exist yet. Safe to call
-	 * on activation and on every version bump.
+	 * Install each email whose post is missing. Runs on activation and on
+	 * every version bump, so deactivating and reactivating restores a
+	 * deleted email. An existing post (the admin's edits) is never touched.
 	 */
 	public static function install() {
 		if ( ! function_exists( 'bp_get_email_post_type' ) || ! function_exists( 'bp_get_email_tax_type' ) ) {
@@ -50,9 +51,7 @@ class BCM_Email_Installer {
 		$tax_type = bp_get_email_tax_type();
 
 		foreach ( self::schema() as $type => $email ) {
-			// If the email-type term already exists, the admin owns the post
-			// now. Keep their edits intact.
-			if ( term_exists( $type, $tax_type ) ) {
+			if ( self::post_id( $type ) ) {
 				continue;
 			}
 
@@ -111,6 +110,7 @@ class BCM_Email_Installer {
 						'terms'    => (int) $term->term_id,
 					),
 				),
+				'post_status' => 'any',
 				'numberposts' => 1,
 				'fields'      => 'ids',
 			)
