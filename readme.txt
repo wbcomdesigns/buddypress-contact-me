@@ -77,6 +77,7 @@ Requires BuddyPress 12.0 or higher (or BuddyBoss Platform).
 * Fix      - The Guest badge is readable in dark mode.
 * Fix      - Reactivating the plugin brings back a contact email that was deleted under Dashboard > Emails.
 * Fix      - Messages to a deleted or unknown member are refused.
+* Fix      - After a message is deleted from the inbox, keyboard focus moves to the next message, or to the inbox heading when none are left.
 * Fix      - The License tab shows the result of Activate and Deactivate, and says when the license server could not be reached.
 * Security - The visitor math question now works once per message, so a solved answer cannot be replayed, even by requests sent at the same moment.
 * Security - A member's account email is never shown to the recipient; only a visitor's typed reply address is shown.

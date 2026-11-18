@@ -324,6 +324,17 @@
 	/* ---------- Inbox ---------- */
 
 	function initInbox() {
+		// After the last message on the page is deleted the inbox reloads; focus its heading.
+		var focusHeading = false;
+		try {
+			focusHeading = '1' === window.sessionStorage.getItem( 'bcmFocusInbox' );
+			window.sessionStorage.removeItem( 'bcmFocusInbox' );
+		} catch ( err ) { /* storage blocked: focus stays where the browser puts it */ }
+		if ( focusHeading ) {
+			var heading = document.querySelector( '.bcm-empty__title, .bcm-inbox__title' );
+			if ( heading ) { heading.focus(); }
+		}
+
 		var inbox = document.querySelector( '[data-bcm-inbox]' );
 		if ( ! inbox ) { return; }
 
@@ -386,14 +397,19 @@
 	function removeRow( inbox, id, response ) {
 		var row = inbox.querySelector( '[data-bcm-row="' + id + '"]' );
 		if ( ! row ) { return; }
+		// Focus goes to the next message, or the previous one when the last was deleted.
+		var neighbour = row.nextElementSibling || row.previousElementSibling;
+		var nextLink  = neighbour ? neighbour.querySelector( '.bcm-message__subject' ) : null;
 		row.style.opacity = '0';
 		window.setTimeout( function () {
 			row.remove();
 			var remaining = inbox.querySelectorAll( '[data-bcm-row]' ).length;
 			if ( remaining === 0 ) {
+				try { window.sessionStorage.setItem( 'bcmFocusInbox', '1' ); } catch ( err ) { /* ignore */ }
 				window.location.reload();
 				return;
 			}
+			if ( nextLink ) { nextLink.focus(); }
 			// Translated totals come back from the server with the delete.
 			if ( response && response.counts && response.titles ) {
 				var active = inbox.querySelector( '.bcm-inbox__filter.is-active' );

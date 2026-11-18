@@ -87,7 +87,7 @@ if ( empty( $bcm_messages ) && 'all' === $bcm_filter ) :
 				<path d="M8 12h5" />
 			</svg>
 		</div>
-		<h3 class="bcm-empty__title"><?php esc_html_e( 'Your inbox is quiet for now.', 'buddypress-contact-me' ); ?></h3>
+		<h3 class="bcm-empty__title" tabindex="-1"><?php esc_html_e( 'Your inbox is quiet for now.', 'buddypress-contact-me' ); ?></h3>
 		<p class="bcm-empty__body">
 			<?php esc_html_e( "When someone sends you a message from your profile's Contact tab, it'll show up here.", 'buddypress-contact-me' ); ?>
 		</p>
@@ -107,7 +107,7 @@ endif;
 ?>
 <div class="bcm-inbox" data-bcm-inbox>
 	<header class="bcm-inbox__header">
-		<h3 class="bcm-inbox__title">
+		<h3 class="bcm-inbox__title" tabindex="-1">
 			<?php
 			if ( 'unread' === $bcm_filter ) {
 				/* translators: %d: unread message count */
