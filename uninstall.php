@@ -41,6 +41,9 @@ $options = array(
 	'edd_wbcom_bp_contact_me_license_key',
 	'edd_wbcom_bp_contact_me_license_status',
 	'edd_wbcom_bp_contact_me_license_expires',
+	// Written by the EDD SL SDK's Manage License overlay on the Plugins screen.
+	'edd_wbcom_bp_contact_me_license_key_license',
+	'edd_wbcom_bp_contact_me_license_key_allow_tracking',
 );
 foreach ( $options as $option_name ) {
 	delete_option( $option_name );

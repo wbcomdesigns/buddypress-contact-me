@@ -3,6 +3,7 @@
 	<description>WordPress Coding Standards for BuddyPress Contact Me.</description>
 	<file>.</file>
 	<exclude-pattern>/edd-license/*</exclude-pattern>
+	<exclude-pattern>/libs/*</exclude-pattern>
 	<exclude-pattern>/node_modules/*</exclude-pattern>
 	<exclude-pattern>/vendor/*</exclude-pattern>
 	<exclude-pattern>/dist/*</exclude-pattern>

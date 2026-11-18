@@ -34,7 +34,8 @@ Deactivation submits inline - there is no confirmation popup (1.5.0 changed this
 ## What activation unlocks
 
 - Update notifications appear in **Plugins → Installed Plugins** when new releases ship.
-- One-click updates pull straight from `https://wbcomdesigns.com`.
+- One-click updates come from `updates.wbcomdesigns.com`, with `wbcomdesigns.com` as a fallback if the first cannot be reached.
+- Each update's signature is checked before WordPress installs it (a failed check is logged and the update still installs).
 - Priority support from the Wbcom Designs team.
 
 The plugin keeps every feature working without an active license. Only updates and support are gated. If you prefer manual updates, you can drop in a new ZIP and skip the License tab entirely.
@@ -46,6 +47,7 @@ Activation errors render inline on the License tab - you do not get bounced to a
 - **"Invalid license."** Mistyped or refunded key.
 - **"Your license is not active for this URL."** Key is in use elsewhere and the site count is exhausted. Deactivate it on the other site first or upgrade to a higher site count.
 - **"Your license key has expired."** The license renewal lapsed. Renew at wbcomdesigns.com to continue receiving updates.
+- **"Could not reach the license server. Please try again later."** Your site could not connect to the license server. The status you had before stays as it was. Check that your host allows outgoing connections to `updates.wbcomdesigns.com` and `wbcomdesigns.com`, then try again after a while.
 
 ## Multisite networks
 

@@ -37,6 +37,71 @@ define( 'BUDDYPRESS_CONTACT_ME_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
 define( 'BUDDYPRESS_CONTACT_ME_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'BUDDYPRESS_CONTACT_ME_FILE', __FILE__ );
 
+// Licence and update host; the SDK falls back to the store when it cannot be reached. Overridable from wp-config.
+if ( ! defined( 'BUDDYPRESS_CONTACT_ME_LICENCE_HOST' ) ) {
+	define( 'BUDDYPRESS_CONTACT_ME_LICENCE_HOST', 'https://updates.wbcomdesigns.com' );
+}
+define( 'BUDDYPRESS_CONTACT_ME_ITEM_ID', 1528584 );
+
+/**
+ * One licence-server request (activate, deactivate, check or version). Goes through the bundled SDK, so it uses
+ * the same host as update checks and falls back to the store when that host cannot be reached.
+ *
+ * @param array $params EDD Software Licensing parameters (edd_action, license, item_id).
+ * @return object|false Decoded reply, or false when no host answered.
+ */
+function buddypress_contact_me_licence_request( array $params ) {
+	if ( ! class_exists( \EasyDigitalDownloads\Updater\Requests\API::class ) ) {
+		return false;
+	}
+	// Name the fallback here too: on an early request the SDK registry has not run yet.
+	if ( method_exists( \EasyDigitalDownloads\Updater\Requests\API::class, 'set_fallback' ) ) {
+		\EasyDigitalDownloads\Updater\Requests\API::set_fallback( BUDDYPRESS_CONTACT_ME_LICENCE_HOST, 'https://wbcomdesigns.com' );
+	}
+	$reply = ( new \EasyDigitalDownloads\Updater\Requests\API( BUDDYPRESS_CONTACT_ME_LICENCE_HOST ) )->make_request( $params );
+	return is_object( $reply ) ? $reply : false;
+}
+
+add_action(
+	'edd_sl_sdk_registry',
+	static function ( $registry ) {
+		$registry->register(
+			array(
+				'id'           => 'buddypress-contact-me',
+				'url'          => BUDDYPRESS_CONTACT_ME_LICENCE_HOST,
+				'fallback_url' => 'https://wbcomdesigns.com',
+				'item_id'      => BUDDYPRESS_CONTACT_ME_ITEM_ID,
+				'version'      => BUDDYPRESS_CONTACT_ME_VERSION,
+				'file'         => BUDDYPRESS_CONTACT_ME_FILE,
+				// The key option the licence screen has always used, so activated sites stay activated.
+				'option_name'  => 'edd_wbcom_bp_contact_me_license_key',
+				'type'         => 'plugin',
+			)
+		);
+	}
+);
+
+// Load the vendored SDK only when complete; a stripped build degrades to "updates off", never a fatal error.
+if ( file_exists( BUDDYPRESS_CONTACT_ME_PLUGIN_PATH . 'libs/edd-sl-sdk/edd-sl-sdk.php' ) && file_exists( BUDDYPRESS_CONTACT_ME_PLUGIN_PATH . 'libs/edd-sl-sdk/src/Versions.php' ) ) {
+	require_once BUDDYPRESS_CONTACT_ME_PLUGIN_PATH . 'libs/edd-sl-sdk/edd-sl-sdk.php';
+}
+
+// Each update package must carry its release signature. Warn mode: the result is logged (option
+// package_signatures_log) and the update installs either way. The product name is the store slug.
+if ( file_exists( BUDDYPRESS_CONTACT_ME_PLUGIN_PATH . 'libs/package-signatures/package-signatures.php' ) ) {
+	require_once BUDDYPRESS_CONTACT_ME_PLUGIN_PATH . 'libs/package-signatures/package-signatures.php';
+	package_signatures_register(
+		array(
+			'product'  => 'buddypress-contact-me',
+			'plugin'   => plugin_basename( BUDDYPRESS_CONTACT_ME_FILE ),
+			'hosts'    => array( 'wbcomdesigns.com', 'updates.wbcomdesigns.com' ),
+			'keys'     => array( 'wbcom-2026-1' => 'kr+2P1WqRbENpZw0BXZmwFnA2tMLi6MlHbBa6jB13U4=' ),
+			'mode'     => 'warn',
+			'fallback' => 'https://wbcomdesigns.com/package-signatures/{product}/{version}/',
+		)
+	);
+}
+
 /**
  * Plugin activation callback function.
  */

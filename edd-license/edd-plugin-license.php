@@ -2,16 +2,17 @@
 /**
  * BuddyPress Contact Me - License handling.
  *
- * EDD Software Licensing client. Self-contained: every redirect lands
- * on `?page=buddypress-contact-me&tab=license`, no reference to any
- * other Wbcom plugin's admin pages.
+ * Licence screen (activate, deactivate, status). Every licence request goes
+ * through buddypress_contact_me_licence_request() in the main file (bundled
+ * EDD SL SDK: updates.wbcomdesigns.com with the store as fallback); updates
+ * come from the SDK registration there. Every redirect lands on
+ * `?page=buddypress-contact-me&tab=license`.
  *
  * Public surface (registered actions):
- *   admin_init    -> edd_BCM_plugin_updater (priority 0)
  *   admin_init    -> edd_BCM_register_option
  *   admin_init    -> edd_BCM_handle_activate
  *   admin_init    -> edd_BCM_handle_deactivate
- *   admin_notices -> edd_BCM_render_admin_notices
+ *   License tab   -> edd_BCM_render_admin_notices() (result notices)
  *
  * @package BuddyPress_Contact_Me
  */
@@ -22,14 +23,8 @@ defined( 'ABSPATH' ) || exit;
  * Constants                                                        *
  * ---------------------------------------------------------------- */
 
-if ( ! defined( 'EDD_BP_CONTACT_ME_STORE_URL' ) ) {
-	define( 'EDD_BP_CONTACT_ME_STORE_URL', 'https://wbcomdesigns.com/' );
-}
 if ( ! defined( 'EDD_BP_CONTACT_ME_ITEM_NAME' ) ) {
 	define( 'EDD_BP_CONTACT_ME_ITEM_NAME', 'BuddyPress Contact Me' );
-}
-if ( ! defined( 'EDD_BP_CONTACT_ME_ITEM_ID' ) ) {
-	define( 'EDD_BP_CONTACT_ME_ITEM_ID', 1528584 );
 }
 
 // Canonical license screen for this plugin.
@@ -47,32 +42,6 @@ const EDD_BCM_LICENSE_CACHE_KEY     = 'edd_wbcom_bp_contact_me_license_key_data'
 const EDD_BCM_LICENSE_CACHE_TTL     = 12 * HOUR_IN_SECONDS;
 const EDD_BCM_LICENSE_NONCE_ACTION  = 'edd_wbcom_contact_me_nonce';
 const EDD_BCM_LICENSE_NONCE_NAME    = 'edd_wbcom_contact_me_nonce';
-
-if ( ! class_exists( 'EDD_BP_CONTACT_ME_PLUGIN_UPDATER' ) ) {
-	include __DIR__ . '/class-edd-bp-contact-me-plugin-updater.php';
-}
-
-/* ---------------------------------------------------------------- *
- * Updater bootstrap                                                *
- * ---------------------------------------------------------------- */
-
-function edd_BCM_plugin_updater() {
-	$license_key = trim( (string) get_option( EDD_BCM_LICENSE_KEY_OPTION ) );
-
-	new EDD_BP_CONTACT_ME_PLUGIN_UPDATER(
-		EDD_BP_CONTACT_ME_STORE_URL,
-		BUDDYPRESS_CONTACT_ME_FILE,
-		array(
-			'version'   => BUDDYPRESS_CONTACT_ME_VERSION,
-			'license'   => $license_key,
-			'item_id'   => EDD_BP_CONTACT_ME_ITEM_ID,
-			'item_name' => EDD_BP_CONTACT_ME_ITEM_NAME,
-			'author'    => 'wbcomdesigns',
-			'url'       => home_url(),
-		)
-	);
-}
-add_action( 'admin_init', 'edd_BCM_plugin_updater', 0 );
 
 /* ---------------------------------------------------------------- *
  * Settings registration                                            *
@@ -109,54 +78,30 @@ function edd_BCM_sanitize_license( $new ) {
 
 /**
  * Single entry point for every license API round-trip. Returns
- * stdClass on success or WP_Error on failure - callers branch on
- * `is_wp_error()` and never type-check intermediate values.
+ * stdClass on a reply (a licence "no" is a reply) or WP_Error when
+ * no licence host answered - callers branch on `is_wp_error()`.
  *
  * @param string $action  EDD action: activate_license, deactivate_license, check_license.
  * @param string $license Key to send.
  * @return stdClass|WP_Error
  */
 function edd_BCM_call_api( $action, $license ) {
-	$response = wp_remote_post(
-		EDD_BP_CONTACT_ME_STORE_URL,
+	$result = buddypress_contact_me_licence_request(
 		array(
-			'timeout'   => 15,
-			'sslverify' => apply_filters( 'bcm_license_api_sslverify', true ),
-			'body'      => array(
-				'edd_action' => $action,
-				'license'    => $license,
-				'item_id'    => EDD_BP_CONTACT_ME_ITEM_ID,
-				'item_name'  => rawurlencode( EDD_BP_CONTACT_ME_ITEM_NAME ),
-				'url'        => home_url(),
-			),
+			'edd_action' => $action,
+			'license'    => $license,
+			'item_id'    => BUDDYPRESS_CONTACT_ME_ITEM_ID,
 		)
 	);
 
-	if ( is_wp_error( $response ) ) {
-		return $response;
-	}
-
-	$status = (int) wp_remote_retrieve_response_code( $response );
-	$body   = (string) wp_remote_retrieve_body( $response );
-
-	if ( 200 !== $status ) {
+	if ( false === $result ) {
 		return new WP_Error(
-			'bcm_license_http_error',
-			__( 'An error occurred, please try again.', 'buddypress-contact-me' ),
-			array( 'http_status' => $status )
+			'bcm_license_unreachable',
+			__( 'Could not reach the license server. Please try again later.', 'buddypress-contact-me' )
 		);
 	}
 
-	$decoded = '' !== $body ? json_decode( $body ) : null;
-
-	if ( ! is_object( $decoded ) ) {
-		return new WP_Error(
-			'bcm_license_invalid_response',
-			__( 'Invalid response from license server. Please try again.', 'buddypress-contact-me' )
-		);
-	}
-
-	return $decoded;
+	return $result;
 }
 
 /* ---------------------------------------------------------------- *
@@ -367,30 +312,40 @@ function edd_BCM_get_license_status() {
 }
 
 /* ---------------------------------------------------------------- *
- * Admin notices                                                    *
+ * Result notices                                                   *
  * ---------------------------------------------------------------- */
 
-function edd_BCM_render_admin_notices() {
-	if ( ! is_admin() ) {
-		return;
-	}
-
+/**
+ * Print the activate / deactivate result on the License tab. Called by the
+ * tab view: the plugin's screens drop every admin_notices callback.
+ *
+ * @param string $snapshot_message Status-check note from edd_BCM_get_license_status().
+ */
+function edd_BCM_render_admin_notices( $snapshot_message = '' ) {
 	// phpcs:disable WordPress.Security.NonceVerification.Recommended
 	$activation   = isset( $_GET['BCM_activation'] ) ? sanitize_text_field( wp_unslash( $_GET['BCM_activation'] ) ) : '';
 	$deactivation = isset( $_GET['BCM_deactivation'] ) ? sanitize_text_field( wp_unslash( $_GET['BCM_deactivation'] ) ) : '';
 	$message      = isset( $_GET['message'] ) ? rawurldecode( sanitize_text_field( wp_unslash( $_GET['message'] ) ) ) : '';
 	// phpcs:enable
 
+	$notice = static function ( $text, $type ) {
+		printf( '<div class="notice notice-%1$s inline"><p>%2$s</p></div>', esc_attr( $type ), esc_html( $text ) );
+	};
+
 	if ( 'true' === $activation ) {
-		printf( '<div class="notice notice-success is-dismissible"><p>%s</p></div>', esc_html__( 'License activated successfully.', 'buddypress-contact-me' ) );
+		$notice( __( 'License activated successfully.', 'buddypress-contact-me' ), 'success' );
 	} elseif ( 'false' === $activation && '' !== $message ) {
-		printf( '<div class="notice notice-error is-dismissible"><p>%s</p></div>', esc_html( $message ) );
+		$notice( $message, 'error' );
 	}
 
 	if ( 'true' === $deactivation ) {
-		printf( '<div class="notice notice-success is-dismissible"><p>%s</p></div>', esc_html__( 'License deactivated successfully.', 'buddypress-contact-me' ) );
+		$notice( __( 'License deactivated successfully.', 'buddypress-contact-me' ), 'success' );
 	} elseif ( 'false' === $deactivation && '' !== $message ) {
-		printf( '<div class="notice notice-error is-dismissible"><p>%s</p></div>', esc_html( $message ) );
+		$notice( $message, 'error' );
+	}
+
+	// The status check got no reply: the last-known status stays on the card, with this note.
+	if ( '' !== $snapshot_message && $snapshot_message !== $message ) {
+		$notice( $snapshot_message, 'warning' );
 	}
 }
-add_action( 'admin_notices', 'edd_BCM_render_admin_notices' );

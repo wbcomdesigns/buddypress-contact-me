@@ -8,7 +8,7 @@
     "main_file": "buddypress-contact-me.php",
     "text_domain": "buddypress-contact-me",
     "extends": null,
-    "license": "EDD (edd-license/)",
+    "license": "EDD SL SDK 1.0.4-wbcom.3 (libs/edd-sl-sdk), registered in buddypress-contact-me.php; licence screen in edd-license/edd-plugin-license.php",
     "requires": [
       "BuddyPress or BuddyBoss Platform"
     ]
@@ -75,8 +75,8 @@
       "key": "edd_wbcom_bp_contact_me_license_key",
       "storage": "wp_options",
       "type": "string",
-      "register_setting": "edd-license/edd-plugin-license.php:82",
-      "controls": "EDD license key for plugin updates"
+      "register_setting": "edd-license/edd-plugin-license.php:51",
+      "controls": "EDD license key; also the SDK registration option_name, so updates use it"
     },
     {
       "key": "edd_wbcom_bp_contact_me_license_status",
@@ -107,6 +107,12 @@
       "storage": "wp_options",
       "type": "string",
       "controls": "Schema version gate for install_schema() (DB_VERSION 1.5.1)"
+    },
+    {
+      "key": "edd_wbcom_bp_contact_me_license_key_license",
+      "storage": "wp_options",
+      "type": "object",
+      "controls": "Licence status written by the SDK's own plugin-row Manage License overlay (SDK-managed, not read by the plugin)"
     }
   ],
   "shortcodes": [
@@ -172,26 +178,12 @@
       "purpose": "Custom spam validation extensibility hook"
     },
     {
-      "name": "bcm_license_api_sslverify",
-      "type": "filter",
-      "args_count": 1,
-      "where": "edd-license/edd-plugin-license.php:124",
-      "consumed_by": []
-    },
-    {
       "name": "bp_core_template_plugin",
       "type": "filter",
       "args_count": 1,
       "where": "includes/frontend/class-bcm-frontend-nav.php:161,170,196",
       "consumed_by": [],
       "note": "BuddyPress core hook; fired 3 times (inbox, preferences, send screens)"
-    },
-    {
-      "name": "edd_bmpro_sl_api_request_verify_ssl",
-      "type": "filter",
-      "args_count": 2,
-      "where": "edd-license/class-edd-bp-contact-me-plugin-updater.php:485",
-      "consumed_by": []
     },
     {
       "name": "bcm_rate_limit",
@@ -371,6 +363,12 @@
       "priority": 20,
       "callback": "BuddyPress_Contact_Me_Activator::maybe_upgrade",
       "purpose": "Version router: schema, one-time UTC conversion, email install."
+    },
+    {
+      "name": "edd_sl_sdk_registry",
+      "type": "action",
+      "callback": "closure (registers buddypress-contact-me: url BUDDYPRESS_CONTACT_ME_LICENCE_HOST, fallback_url https://wbcomdesigns.com, item_id 1528584)",
+      "where": "buddypress-contact-me.php"
     }
   ],
   "integrations": {
@@ -379,6 +377,27 @@
       "form": "contact_me",
       "where": "includes/frontend/class-bcm-frontend-submit.php:77,342",
       "purpose": "When active with a service on, guests get the site CAPTCHA instead of the math question."
+    },
+    "edd_sl_sdk": {
+      "where": "buddypress-contact-me.php",
+      "sdk": "libs/edd-sl-sdk 1.0.4-wbcom.3 (registers as 1.0.4.3, vendored byte-identical; never patch)",
+      "host": "BUDDYPRESS_CONTACT_ME_LICENCE_HOST = https://updates.wbcomdesigns.com, fallback https://wbcomdesigns.com",
+      "helper": "buddypress_contact_me_licence_request( array $params ): object|false - every activate/deactivate/check goes through it (edd_BCM_call_api maps false to the 'Could not reach the license server' WP_Error)",
+      "item_id": 1528584
+    },
+    "package_signatures": {
+      "where": "buddypress-contact-me.php",
+      "lib": "libs/package-signatures 1.0.1",
+      "product": "buddypress-contact-me (store slug)",
+      "keys": [
+        "wbcom-2026-1"
+      ],
+      "mode": "warn",
+      "hosts": [
+        "wbcomdesigns.com",
+        "updates.wbcomdesigns.com"
+      ],
+      "log_option": "package_signatures_log"
     }
   },
   "entry_point_exceptions": [

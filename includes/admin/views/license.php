@@ -106,6 +106,10 @@ $license_status = isset( $status_map[ $snapshot['license'] ] )
 		'class' => $has_key ? 'is-pending' : 'is-inactive',
 		'label' => $has_key ? __( 'Saved, not activated', 'buddypress-contact-me' ) : __( 'Not activated', 'buddypress-contact-me' ),
 	);
+
+if ( function_exists( 'edd_BCM_render_admin_notices' ) ) {
+	edd_BCM_render_admin_notices( $snapshot['message'] );
+}
 ?>
 <div class="bcm-card">
 	<div class="bcm-card__head">

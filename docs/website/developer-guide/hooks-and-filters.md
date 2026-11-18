@@ -119,11 +119,9 @@ apply_filters( 'bcm_display_timezone', wp_timezone(), $user_id );
 
 **Source:** `includes/functions.php` line 27.
 
-## Filter: `bcm_license_api_sslverify`
+## License and update requests
 
-Whether license calls to wbcomdesigns.com verify the SSL certificate. Default `true`. Only turn it off on a local or staging host with a broken certificate store.
-
-**Source:** `edd-license/edd-plugin-license.php` line 124.
+License checks and updates go through the bundled EDD Software Licensing SDK. The `bcm_license_api_sslverify` filter was removed in 1.5.1; to change SSL verification for these requests use WordPress's `https_ssl_verify` filter, which receives the request URL. The host is `updates.wbcomdesigns.com`; define `BUDDYPRESS_CONTACT_ME_LICENCE_HOST` in `wp-config.php` to point it elsewhere.
 
 ## Theme integration: `reign_bp_nav_icons`
 

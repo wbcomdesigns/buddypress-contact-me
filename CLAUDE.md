@@ -15,7 +15,7 @@
 | Admin Page | `admin.php?page=buddypress-contact-me` |
 | Repo | `wbcomdesigns/buddypress-contact-me` |
 | Default Branch | `master` |
-| License | EDD (via `edd-license/`) |
+| License | EDD SL SDK in `libs/` (signed updates, see Licensing below); licence screen in `edd-license/` |
 | Requires | BuddyPress (or BuddyBoss Platform) |
 
 ## Architecture
@@ -36,7 +36,8 @@ includes/
   frontend/class-bcm-frontend-assets.php    # enqueue on Contact screens / shortcode pages
   rest/class-bcm-rest-messages.php          # REST API (bcm/v1)
   email/class-bcm-email-installer.php       # installs the 3 BP email posts
-edd-license/                                # vendored EDD updater + license forms (do not patch the updater)
+edd-license/edd-plugin-license.php          # License tab handlers (activate/deactivate/status)
+libs/edd-sl-sdk, libs/package-signatures   # vendored, byte-identical copies; never patch (fix upstream, re-copy)
 public/partials/                            # tab-form, tab-inbox, tab-message, tab-preferences
 public/css, public/js                       # readable source, shipped as-is (no build step)
 ```
@@ -78,5 +79,12 @@ public/css, public/js                       # readable source, shipped as-is (no
 - **Dark mode** keys only on `html[data-bx-mode="dark"]` and `body.buddyx-dark-theme`, token chains through `--bx-color-*`; never `prefers-color-scheme` on the frontend. Primary buttons use the paired `--bx-color-button-bg` / `--bx-color-button-fg`. No raw hex outside the token block.
 - **Assets** load on the member Contact screens and on any singular post that contains the `[buddypress-contact-me]` shortcode; the shortcode also enqueues on render. One stylesheet serves LTR and RTL through logical properties (no RTL copy).
 - **Admin shell view** is `includes/admin/views/layout.php` (hardened hosts reject zips containing `shell.php`).
-- **Build:** `bin/build-release.sh` runs `bin/local-ci.sh`, then zips to `dist/` (deflated, fails on plain-text PHP or dev files). No Grunt, no minified copies. POT: `wp i18n make-pot . languages/buddypress-contact-me.pot --exclude=node_modules,vendor,docs,audit,bin,dist`.
+- **Build:** `bin/build-release.sh` runs `bin/local-ci.sh`, then zips to `dist/` (deflated, fails on plain-text PHP or dev files). No Grunt, no minified copies. POT: `wp i18n make-pot . languages/buddypress-contact-me.pot --exclude=node_modules,vendor,libs,docs,audit,bin,dist`.
 - **Data entry points (owner exception):** messages have a member frontend and a REST submit/delete, but no admin list and no REST list by design; recorded in the manifest. Messages a deleted user received are removed on `deleted_user` / `wpmu_delete_user`. No privacy exporter/eraser yet (manifest note).
+
+## Licensing and updates
+
+- The main file registers the product with the bundled EDD SL SDK (`edd_sl_sdk_registry`): host `BUDDYPRESS_CONTACT_ME_LICENCE_HOST` (`https://updates.wbcomdesigns.com`), `fallback_url` `https://wbcomdesigns.com`, item 1528584, key option `edd_wbcom_bp_contact_me_license_key` (unchanged so activated sites stay activated).
+- Every licence call goes through `buddypress_contact_me_licence_request()`; `false` means no host answered and the License tab shows "Could not reach the license server" while keeping the last-known status. Never call the store with `wp_remote_*` directly.
+- Package signatures: product `buddypress-contact-me` (store slug), key `wbcom-2026-1`, warn mode. Process: `~/.claude/skills/wbcom-services/references/signed-updates.md`.
+- The admin screens drop every `admin_notices` callback, so License tab results are printed by the tab view (`edd_BCM_render_admin_notices()`).

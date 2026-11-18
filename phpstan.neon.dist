@@ -11,9 +11,13 @@ parameters:
         - public
     scanDirectories:
         - ../buddypress
+        - libs
     bootstrapFiles:
         - bin/phpstan-bootstrap.php
     dynamicConstantNames:
         - COOKIEPATH
     excludePaths:
         - edd-license
+    ignoreErrors:
+        # Older bundled SDK copies can win version arbitration and lack set_fallback() (signed-updates guideline step 3).
+        - '#Call to function method_exists\(\) with .+set_fallback.+ will always evaluate#'

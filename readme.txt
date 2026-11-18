@@ -44,6 +44,7 @@ Requires BuddyPress 12.0 or higher (or BuddyBoss Platform).
 * New      - When Wbcom CAPTCHA Manager is active and its Contact Me Form switch is on, logged-out visitors solve your site's CAPTCHA instead of the math question.
 * Improve  - Activating the plugin no longer updates every member account, so it stays fast on large sites.
 * Improve  - Uninstall removes all of the plugin's stored settings.
+* Improve  - Plugin updates and license checks come from updates.wbcomdesigns.com, with wbcomdesigns.com as a fallback; an activated license stays activated.
 * Fix      - Messages from a member whose account was deleted show "Deleted member" instead of a guest with a profile to visit.
 * Fix      - The delete confirmation opens on Cancel, so pressing Enter twice no longer deletes a message.
 * Fix      - Contact form styles and scripts load on any page that uses the contact shortcode, including for logged-out visitors.
@@ -76,11 +77,14 @@ Requires BuddyPress 12.0 or higher (or BuddyBoss Platform).
 * Fix      - The Guest badge is readable in dark mode.
 * Fix      - Reactivating the plugin brings back a contact email that was deleted under Dashboard > Emails.
 * Fix      - Messages to a deleted or unknown member are refused.
+* Fix      - The License tab shows the result of Activate and Deactivate, and says when the license server could not be reached.
 * Security - The visitor math question now works once per message, so a solved answer cannot be replayed, even by requests sent at the same moment.
 * Security - A member's account email is never shown to the recipient; only a visitor's typed reply address is shown.
 * Security - Visitors no longer get a sender copy, so the form cannot send the site's email to an address someone typed in.
 * Security - The sender copy and admin copies go out as separate emails, so the recipient's email address is no longer shared, and each copy is worded for its reader.
+* Security - Each update package's signature is checked before WordPress installs it (warn mode: a failed check is logged).
 * Dev      - Removed the Grunt build and the minified and RTL copies; the plugin ships readable CSS and JavaScript, and bin/build-release.sh builds the zip.
+* Dev      - The bundled EDD plugin updater class and the bcm_license_api_sslverify filter are removed; updates use the bundled EDD Software Licensing SDK 1.0.4-wbcom.3 and Package Signatures 1.0.1 (use the core https_ssl_verify filter).
 * Dev      - New bcm_display_timezone filter; all dates go through one formatter.
 * Compat   - Requires WordPress 6.5 and PHP 8.1, tested up to WordPress 7.1 and PHP 8.5.
 
