@@ -1,6 +1,6 @@
 <?php
 /**
- * [buddypress-contact-me] shortcode — renders the Contact form targeting
+ * [buddypress-contact-me] shortcode: renders the Contact form targeting
  * a specific user (by id or login).
  *
  * @package BuddyPress_Contact_Me
@@ -14,6 +14,22 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Registers and renders the [buddypress-contact-me] shortcode.
  */
 class BCM_Frontend_Shortcode {
+
+	/**
+	 * Asset loader, so the form gets its CSS + JS wherever it is embedded.
+	 *
+	 * @var BCM_Frontend_Assets
+	 */
+	private $assets;
+
+	/**
+	 * Store the asset loader.
+	 *
+	 * @param BCM_Frontend_Assets $assets Asset loader.
+	 */
+	public function __construct( BCM_Frontend_Assets $assets ) {
+		$this->assets = $assets;
+	}
 
 	/**
 	 * Attach the shortcode handler.
@@ -51,13 +67,13 @@ class BCM_Frontend_Shortcode {
 			return '';
 		}
 
-		ob_start();
-		$shortcode_atts         = $atts;
-		$shortcode_atts['id']   = $recipient_id;
-		$shortcode_atts['user'] = $atts['user'];
+		$this->assets->enqueue_assets();
 
-		// The partial reads $shortcode_atts if set.
-		$GLOBALS['bcm_shortcode_atts'] = $shortcode_atts;
+		ob_start();
+		$atts['id'] = $recipient_id;
+
+		// The partial reads the shortcode attributes from this global.
+		$GLOBALS['bcm_shortcode_atts'] = $atts;
 		include BUDDYPRESS_CONTACT_ME_PLUGIN_PATH . 'public/partials/tab-form.php';
 		unset( $GLOBALS['bcm_shortcode_atts'] );
 

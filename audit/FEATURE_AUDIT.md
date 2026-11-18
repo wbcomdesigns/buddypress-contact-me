@@ -94,7 +94,7 @@ Namespace: `bcm/v1`. Defined in `includes/rest/class-bcm-rest-messages.php`.
 
 | Key | Purpose |
 |---|---|
-| `buddypress_contact_me_db_version` | Upgrade tracker |
+| `bcm_db_version` | Schema version tracker (the old buddypress_contact_me_db_version is no longer read) |
 
 ---
 
@@ -126,7 +126,6 @@ Namespace: `bcm/v1`. Defined in `includes/rest/class-bcm-rest-messages.php`.
 | File | Context | Purpose |
 |---|---|---|
 | `public/js/buddypress-contact-me-public.js` | Profile pages | Inbox + send form interactivity |
-| `public/js/toast.js` | Profile pages | Toast notification util |
 | `public/js/confirm.js` | Profile pages | Confirm modal util |
 | `assets/js/admin.js` | Admin settings | Settings UI |
 
@@ -162,9 +161,7 @@ Minified variants under `public/js/min/` and `assets/js/min/` (where present). R
 |---|---|---|---|
 | `bcm_admin_tabs` | 1 | `includes/admin/class-bcm-admin.php:62` | Add/remove admin tabs |
 | `bcm_spam_check` | 3 | `includes/frontend/class-bcm-frontend-submit.php:221,227,230` | Custom spam validation extension point |
-| `bcm_license_api_sslverify` | 1 | `edd-license/edd-plugin-license.php:124` | Control SSL verify on EDD API calls |
 | `bp_core_template_plugin` | 1 | `includes/frontend/class-bcm-frontend-nav.php:141,149,157` | BP core template override (3 callsites: inbox, preferences, send) |
-| `edd_bmpro_sl_api_request_verify_ssl` | 2 | `edd-license/class-edd-bp-contact-me-plugin-updater.php:485` | EDD updater SSL verify |
 
 ---
 

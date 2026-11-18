@@ -77,7 +77,6 @@
 
 			function onKey( e ) {
 				if ( e.key === 'Escape' ) { close( false ); }
-				if ( e.key === 'Enter' && document.activeElement !== cancelBtn ) { close( true ); }
 			}
 
 			cancelBtn.addEventListener( 'click', function () { close( false ); } );
@@ -89,7 +88,8 @@
 
 			void overlay.offsetWidth;
 			overlay.classList.add( 'bcm-confirm-overlay--visible' );
-			window.setTimeout( function () { confirmBtn.focus(); }, 0 );
+			// A destructive dialog starts on Cancel (APG alertdialog), so Enter twice never deletes.
+			window.setTimeout( function () { ( opts.dangerous ? cancelBtn : confirmBtn ).focus(); }, 0 );
 		} );
 	};
 }() );

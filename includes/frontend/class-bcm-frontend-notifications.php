@@ -25,12 +25,13 @@ class BCM_Frontend_Notifications {
 		add_filter( 'bp_notifications_get_notifications_for_user', array( $this, 'format_notification' ), 10, 7 );
 		add_action( 'bp_contact_me_form_save', array( $this, 'queue_notification' ), 10, 3 );
 		add_action( 'bp_contact_me_form_save', array( $this, 'send_email' ), 20, 3 );
+		add_filter( 'bp_email_get_content_plaintext', array( $this, 'plaintext_message_token' ), 10, 4 );
 	}
 
 	/**
 	 * Register our custom BP notifications component.
 	 *
-	 * @param array $components Registered components.
+	 * @param mixed $components Registered components (filter value, may come back malformed from another plugin).
 	 * @return array
 	 */
 	public function register_component( $components = array() ) {
@@ -54,14 +55,34 @@ class BCM_Frontend_Notifications {
 	 * @return string|array
 	 */
 	public function format_notification( $action, $item_id, $secondary_item_id, $total_items, $format, $component_action_name, $component_name ) {
-		unset( $secondary_item_id, $total_items, $component_name );
+		unset( $secondary_item_id, $component_name );
 		if ( self::ACTION !== $component_action_name ) {
 			return $action;
 		}
 
+		// BuddyPress groups several unread messages into one row (admin-bar bubble): count them, link to the inbox.
+		$total_items = (int) $total_items;
+		if ( $total_items > 1 ) {
+			$text = sprintf(
+				/* translators: %d: number of unread contact messages. */
+				_n( 'You have %d new contact message.', 'You have %d new contact messages.', $total_items, 'buddypress-contact-me' ),
+				$total_items
+			);
+			$link = trailingslashit( self::inbox_url( get_current_user_id() ) );
+			return 'string' === $format ? '<a href="' . esc_url( $link ) . '">' . esc_html( $text ) . '</a>' : array(
+				'text' => $text,
+				'link' => $link,
+			);
+		}
+
 		$message = BCM_Messages_Repo::find( $item_id );
 		if ( ! $message ) {
-			return $action;
+			// Message deleted before this notification was (rows from older versions): show readable text, not the raw action slug.
+			$text = __( 'A contact message that has since been deleted.', 'buddypress-contact-me' );
+			return 'string' === $format ? esc_html( $text ) : array(
+				'text' => $text,
+				'link' => '',
+			);
 		}
 
 		$sender_name = $message->sender
@@ -71,11 +92,7 @@ class BCM_Frontend_Notifications {
 		// Deep-link: the notification is shown to the recipient, so take them to their own inbox.
 		$recipient_id = get_current_user_id();
 		$recipient    = $recipient_id ? $recipient_id : (int) $message->recipient;
-		$user_domain  = function_exists( 'bp_members_get_user_url' )
-			? bp_members_get_user_url( $recipient )
-			: bp_core_get_user_domain( $recipient );
-
-		$link = trailingslashit( $user_domain ) . BCM_Frontend_Nav::SLUG . '/' . BCM_Frontend_Nav::SUB_INBOX . '/' . (int) $message->id . '/';
+		$link         = trailingslashit( self::inbox_url( $recipient ) ) . (int) $message->id . '/';
 
 		/* translators: %s: sender display name. */
 		$text = sprintf( __( '%s sent you a contact message.', 'buddypress-contact-me' ), $sender_name );
@@ -88,6 +105,19 @@ class BCM_Frontend_Notifications {
 			'text' => $text,
 			'link' => $link,
 		);
+	}
+
+	/**
+	 * A member's Contact Me inbox URL.
+	 *
+	 * @param int $user_id Member ID.
+	 * @return string
+	 */
+	public static function inbox_url( $user_id ) {
+		$user_domain = function_exists( 'bp_members_get_user_url' )
+			? bp_members_get_user_url( $user_id )
+			: bp_core_get_user_domain( $user_id );
+		return trailingslashit( $user_domain ) . BCM_Frontend_Nav::SLUG . '/' . BCM_Frontend_Nav::SUB_INBOX;
 	}
 
 	/**
@@ -120,7 +150,8 @@ class BCM_Frontend_Notifications {
 	}
 
 	/**
-	 * Send the BP-templated email to the recipient (+ copies).
+	 * Send the BP-templated email to the recipient, then each enabled copy
+	 * (sender, administrators) as its own email.
 	 *
 	 * @param int $message_id   Message ID.
 	 * @param int $recipient_id Recipient user ID.
@@ -140,30 +171,61 @@ class BCM_Frontend_Notifications {
 			return;
 		}
 
-		$recipients = $this->collect_recipients( $settings, $message, $recipient_id, $sender_id );
-		if ( empty( $recipients ) ) {
-			return;
-		}
-
 		$tokens = $this->build_tokens( $message, $recipient_id, $sender_id );
 
+		// One email per reader, so no address is exposed to anyone else and
+		// each copy is worded for the person reading it.
+		$this->deliver( BCM_Email_Installer::TYPE, (int) $recipient_id, $tokens );
+
+		$skip_ids = array( (int) $recipient_id );
+
+		if ( ! empty( $settings['bcm_allow_sender_copy_email'] ) && 'yes' === $settings['bcm_allow_sender_copy_email'] ) {
+			// Logged-in senders only. A guest's typed address is unverified, so a
+			// copy would let anyone mail the site's branded email to a stranger.
+			if ( $sender_id ) {
+				$skip_ids[] = (int) $sender_id;
+				$this->deliver( BCM_Email_Installer::TYPE_SENDER_COPY, (int) $sender_id, $tokens );
+			}
+		}
+
+		if ( ! empty( $settings['bcm_allow_admin_copy_email'] ) && 'yes' === $settings['bcm_allow_admin_copy_email'] ) {
+			$admin_ids = get_users(
+				array(
+					'role'    => 'administrator',
+					'fields'  => 'ID',
+					'exclude' => $skip_ids,
+				)
+			);
+			foreach ( $admin_ids as $admin_id ) {
+				$this->deliver( BCM_Email_Installer::TYPE_ADMIN_COPY, (int) $admin_id, $tokens );
+			}
+		}
+	}
+
+	/**
+	 * Send one BP email to one reader.
+	 *
+	 * @param string $type   BP email type.
+	 * @param int    $to     Reader's user ID.
+	 * @param array  $tokens Email tokens.
+	 */
+	private function deliver( $type, $to, $tokens ) {
 		// Output buffer the BP send. Two reasons:
 		//
 		// 1. send_email() runs inside the bp_contact_me_form_save action,
-		//    which fires from the REST callback (and the classic-POST
-		//    handler). bp_send_email() walks third-party hooks and BP
-		//    internals — any of them emitting a PHP notice/warning with
-		//    WP_DEBUG_DISPLAY on would echo HTML into the response stream
-		//    BEFORE wp_send_json fires, breaking apiFetch with the
-		//    "response is not a valid JSON response" error visitors saw
-		//    in card 9828092913.
-		// 2. The notices themselves (e.g. BP_Email_Recipient property
-		//    reads against missing user lookups for guest emails) are
-		//    bp-core internals we can't fix from here — silencing display
-		//    while still preserving error_log() is the right boundary.
+		// which fires from the REST callback (and the classic-POST
+		// handler). bp_send_email() walks third-party hooks and BP
+		// internals — any of them emitting a PHP notice/warning with
+		// WP_DEBUG_DISPLAY on would echo HTML into the response stream
+		// BEFORE wp_send_json fires, breaking apiFetch with the
+		// "response is not a valid JSON response" error visitors saw
+		// in card 9828092913.
+		// 2. Notices from bp-core internals we can't fix from here —
+		// silencing display while still preserving error_log() is the
+		// right boundary.
 		$ob_started = ob_start();
 		try {
-			bp_send_email( BCM_Email_Installer::TYPE, $recipients, array( 'tokens' => $tokens ) );
+			bp_send_email( $type, $to, array( 'tokens' => $tokens ) );
 		} finally {
 			if ( $ob_started ) {
 				$leaked = ob_get_clean();
@@ -177,78 +239,23 @@ class BCM_Frontend_Notifications {
 	}
 
 	/**
-	 * Build the recipient list: the recipient of the message, plus any
-	 * copy addresses (sender copy, admin copy, multi-user copy) the admin
-	 * has enabled. Each entry is either a user ID (for members) or a
-	 * BP_Email_Recipient (for guests / raw emails).
+	 * Use the tag-free message in the plain-text part of our emails.
 	 *
-	 * @param array  $settings     Plugin settings array.
-	 * @param object $message      Message row from the repo.
-	 * @param int    $recipient_id Recipient user ID.
-	 * @param int    $sender_id    Sender user ID (0 for visitor).
-	 * @return array<int|BP_Email_Recipient>
+	 * Applied when the template is read, so templates installed by earlier
+	 * versions are covered without reinstalling them.
+	 *
+	 * @param string   $content       Plain-text template, before tokens are replaced.
+	 * @param string   $property_name Property name.
+	 * @param string   $transform     Transform.
+	 * @param BP_Email $email         Email being built.
+	 * @return string
 	 */
-	private function collect_recipients( $settings, $message, $recipient_id, $sender_id ) {
-		$recipients  = array();
-		$seen_ids    = array();
-		$seen_emails = array();
-
-		$add_user = static function ( $uid ) use ( &$recipients, &$seen_ids ) {
-			$uid = (int) $uid;
-			if ( $uid <= 0 || in_array( $uid, $seen_ids, true ) ) {
-				return;
-			}
-			$seen_ids[]   = $uid;
-			$recipients[] = $uid;
-		};
-
-		/*
-		 * Construct BP_Email_Recipient with (address, name) so BP can skip
-		 * its search-email fallback. When we pass just an email, BP tries
-		 * get_user_by('email', $address) and accesses user_object->ID /
-		 * user_object->user_email — which raises undefined-property warnings
-		 * on guest emails (no matching WP user) under PHP 8.2+.
-		 *
-		 * Using the sender's saved name here also means the "Copy of your
-		 * message" email the guest receives is addressed to them by name.
-		 *
-		 * Basecamp card 9823362550.
-		 */
-		$add_email = static function ( $email, $name = '' ) use ( &$recipients, &$seen_emails ) {
-			$email = sanitize_email( $email );
-			if ( ! $email || in_array( strtolower( $email ), $seen_emails, true ) ) {
-				return;
-			}
-			$seen_emails[] = strtolower( $email );
-			$name          = (string) $name;
-			$recipients[]  = class_exists( 'BP_Email_Recipient' )
-				? new BP_Email_Recipient( $email, $name )
-				: $email;
-		};
-
-		$add_user( $recipient_id );
-
-		if ( ! empty( $settings['bcm_allow_sender_copy_email'] ) && 'yes' === $settings['bcm_allow_sender_copy_email'] ) {
-			if ( $sender_id ) {
-				$add_user( $sender_id );
-			} elseif ( ! empty( $message->email ) ) {
-				$guest_name = isset( $message->name ) ? (string) $message->name : '';
-				$add_email( $message->email, $guest_name );
-			}
+	public function plaintext_message_token( $content, $property_name, $transform, $email ) {
+		$types = array( BCM_Email_Installer::TYPE, BCM_Email_Installer::TYPE_SENDER_COPY, BCM_Email_Installer::TYPE_ADMIN_COPY );
+		if ( ! in_array( $email->get( 'type' ), $types, true ) ) {
+			return $content;
 		}
-
-		if ( ! empty( $settings['bcm_allow_admin_copy_email'] ) && 'yes' === $settings['bcm_allow_admin_copy_email'] ) {
-			foreach ( get_users(
-				array(
-					'role'   => 'administrator',
-					'fields' => array( 'ID' ),
-				)
-			) as $admin ) {
-				$add_user( $admin->ID );
-			}
-		}
-
-		return $recipients;
+		return str_replace( '{{contact.message}}', '{{contact.message.text}}', (string) $content );
 	}
 
 	/**
@@ -264,18 +271,16 @@ class BCM_Frontend_Notifications {
 			? bp_core_get_user_displayname( $sender_id )
 			: $message->name;
 		$recipient   = get_userdata( $recipient_id );
-
-		$user_domain = function_exists( 'bp_members_get_user_url' )
-			? bp_members_get_user_url( $recipient_id )
-			: bp_core_get_user_domain( $recipient_id );
-		$inbox_url   = trailingslashit( $user_domain ) . BCM_Frontend_Nav::SLUG . '/' . BCM_Frontend_Nav::SUB_INBOX . '/' . (int) $message->id . '/';
+		$text        = wp_strip_all_tags( (string) $message->message );
+		$inbox_url   = trailingslashit( self::inbox_url( $recipient_id ) ) . (int) $message->id . '/';
 
 		return array(
-			'sender.name'     => $sender_name,
-			'recipient.name'  => $recipient ? $recipient->display_name : '',
-			'contact.subject' => wp_strip_all_tags( stripslashes( (string) $message->subject ) ),
-			'contact.message' => wpautop( wp_strip_all_tags( stripslashes( (string) $message->message ) ) ),
-			'inbox.url'       => esc_url( $inbox_url ),
+			'sender.name'          => $sender_name,
+			'contact.recipient'    => $recipient ? $recipient->display_name : '',
+			'contact.subject'      => wp_strip_all_tags( (string) $message->subject ),
+			'contact.message'      => wpautop( $text ),
+			'contact.message.text' => $text,
+			'inbox.url'            => esc_url( $inbox_url ),
 		);
 	}
 }

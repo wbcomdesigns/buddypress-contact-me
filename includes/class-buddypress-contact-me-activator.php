@@ -18,26 +18,19 @@ class BuddyPress_Contact_Me_Activator {
 	 * Schema version. Bump when CREATE TABLE shape changes so maybe_upgrade()
 	 * can re-run dbDelta on existing installs.
 	 */
-	const DB_VERSION = '1.5.0';
+	const DB_VERSION = '1.5.1';
 
 	/**
-	 * Short Description. (use period)
+	 * Activation: create the table and seed default settings.
 	 *
-	 * Long Description.
+	 * Members need no per-user meta: anything except 'off' means they accept
+	 * messages, so activation never loops over every user.
 	 *
 	 * @since 1.0.0
 	 */
 	public static function activate() {
 		self::install_schema();
 
-		$contact_me_option_setting = get_user_meta( get_current_user_id(), 'contact_me_button', true );
-		if ( false === $contact_me_option_setting || '' === $contact_me_option_setting ) {
-			$all_users = get_users();
-			foreach ( $all_users as $all_userdata ) {
-				$all_users_id = $all_userdata->ID;
-				update_user_meta( $all_users_id, 'contact_me_button', 'on' );
-			}
-		}
 		$bp_contact_me_admin_settings = get_option( 'bcm_admin_general_setting' );
 		if ( false === $bp_contact_me_admin_settings ) {
 
@@ -85,7 +78,7 @@ class BuddyPress_Contact_Me_Activator {
 	/**
 	 * Idempotent schema install — safe to call on activation OR upgrade.
 	 *
-	 * dbDelta is the right tool: it CREATEs missing tables AND ADDs missing
+	 * The dbDelta() call is the right tool: it CREATEs missing tables AND ADDs missing
 	 * keys to existing tables without dropping data. We rely on that here
 	 * so existing installs get the (reciever, datetime DESC, id DESC)
 	 * composite index without a manual ALTER TABLE script.
@@ -103,9 +96,9 @@ class BuddyPress_Contact_Me_Activator {
 		$table           = $wpdb->prefix . 'contact_me';
 
 		// Indexes added in 1.5.0 for big-site readiness:
-		//   bcm_recipient_recent — covers the inbox list query
-		//                          WHERE reciever = %d ORDER BY datetime DESC, id DESC
-		//   bcm_recipient        — covers count_for_recipient COUNT(*) WHERE reciever = %d
+		// bcm_recipient_recent — covers the inbox list query
+		// WHERE reciever = %d ORDER BY datetime DESC, id DESC
+		// bcm_recipient        — covers count_for_recipient COUNT(*) WHERE reciever = %d
 		// dbDelta uses key NAMES to detect existing keys, so renaming an
 		// existing key would orphan the old one. These names are stable;
 		// never rename them in a future release.
@@ -132,26 +125,40 @@ class BuddyPress_Contact_Me_Activator {
 		// perf fix would never land while looking like it had. SHOW INDEX
 		// is the canonical post-condition check; runs in microseconds.
 		foreach ( self::REQUIRED_INDEXES as $key_name ) {
-			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery
 			$found = $wpdb->get_var(
 				$wpdb->prepare(
-					"SHOW INDEX FROM {$table} WHERE Key_name = %s",
+					'SHOW INDEX FROM %i WHERE Key_name = %s',
+					$table,
 					$key_name
 				)
 			);
 			if ( ! $found ) {
 				if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
 					// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
-					error_log( sprintf(
-						'[buddypress-contact-me] Schema migration to %s failed: index "%s" missing on %s after dbDelta. The DB user may lack ALTER TABLE privilege on this host. db_version NOT bumped — next page load will retry.',
-						self::DB_VERSION,
-						$key_name,
-						$table
-					) );
+					error_log(
+						sprintf(
+							'[buddypress-contact-me] Schema migration to %s failed: index "%s" missing on %s after dbDelta. The DB user may lack ALTER TABLE privilege on this host. db_version NOT bumped — next page load will retry.',
+							self::DB_VERSION,
+							$key_name,
+							$table
+						)
+					);
 				}
 				return false;
 			}
 		}
+
+		// 1.5.1 stores message times in UTC. Shift rows written by older
+		// versions (site local time) once, right before the version bump so
+		// a failed index check above never shifts them twice.
+		if ( version_compare( (string) get_option( 'bcm_db_version', '0' ), '1.5.1', '<' ) ) {
+			self::convert_local_dates_to_utc();
+		}
+
+		// BuddyPress email posts: installs any that are missing, never touches an edited one.
+		require_once __DIR__ . '/email/class-bcm-email-installer.php';
+		BCM_Email_Installer::install();
 
 		// All required indexes present — safe to bump the stored version.
 		update_option( 'bcm_db_version', self::DB_VERSION, false );
@@ -159,14 +166,44 @@ class BuddyPress_Contact_Me_Activator {
 	}
 
 	/**
-	 * Run install_schema() on plugins_loaded if the stored db version is
-	 * older than the current one. Lets existing installs pick up new
-	 * indexes without re-activating the plugin.
+	 * Convert message times stored in site local time to UTC.
+	 *
+	 * Ponytail: uses today's UTC offset for every row, so rows from the other
+	 * side of a DST change are an hour off. Per-row conversion would need PHP
+	 * over the whole table; one UPDATE stays safe on big sites.
+	 *
+	 * @since 1.5.1
+	 */
+	private static function convert_local_dates_to_utc() {
+		global $wpdb;
+		$offset = (int) wp_timezone()->getOffset( new DateTimeImmutable( 'now', new DateTimeZone( 'UTC' ) ) );
+		if ( 0 === $offset ) {
+			return;
+		}
+		$table = $wpdb->prefix . 'contact_me';
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery
+		$wpdb->query(
+			$wpdb->prepare(
+				"UPDATE %i SET datetime = DATE_FORMAT( DATE_SUB( datetime, INTERVAL %d SECOND ), '%%Y-%%m-%%d %%H:%%i:%%s' ) WHERE datetime LIKE %s",
+				$table,
+				$offset,
+				'____-__-__ __:__:__'
+			)
+		);
+	}
+
+	/**
+	 * The one upgrade router: runs install_schema() on `bp_init` (after
+	 * BuddyPress registers its email post type) when the stored db version
+	 * is older than the current one. Lets existing installs pick up new
+	 * indexes and emails without re-activating the plugin.
 	 *
 	 * Hardened for 500-site rollout (1.5.0):
-	 *   - Skipped on AJAX / REST / cron / WP-CLI requests so a frontend
-	 *     page load owns the migration window. Keeps debug visibility on
-	 *     a route where errors land where humans see them.
+	 *   - Skipped on AJAX / cron / WP-CLI requests so a page load owns the
+	 *     migration window. REST requests are not skipped and need not be:
+	 *     WordPress defines REST_REQUEST in parse_request, after `bp_init`,
+	 *     so the migration always finishes before any REST handler reads a
+	 *     row, and the version bump stops a second UTC shift.
 	 *   - Concurrency lock via wp_cache_add() so two simultaneous
 	 *     requests don't both fire ALTER TABLE on the same install.
 	 *   - install_schema() does its own post-condition check; only bumps
@@ -182,15 +219,9 @@ class BuddyPress_Contact_Me_Activator {
 			return;
 		}
 
-		// Don't run mid-AJAX / mid-REST / mid-cron / under WP-CLI — those
-		// requests are time-sensitive and have nowhere useful to surface
-		// debug output. A frontend or admin page load will pick it up.
-		if (
-			( defined( 'DOING_AJAX' ) && DOING_AJAX ) ||
-			( defined( 'DOING_CRON' ) && DOING_CRON ) ||
-			( defined( 'WP_CLI' ) && WP_CLI ) ||
-			( defined( 'REST_REQUEST' ) && REST_REQUEST )
-		) {
+		// Not during AJAX, cron or WP-CLI: a page load picks it up. A REST
+		// check here could never fire: see the docblock.
+		if ( wp_doing_ajax() || wp_doing_cron() || ( defined( 'WP_CLI' ) && WP_CLI ) ) {
 			return;
 		}
 

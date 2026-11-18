@@ -2,7 +2,7 @@
 
 Activation links your license key to your site so the plugin can fetch updates directly from the WordPress Plugins screen.
 
-![License tab](../images/admin-license.png)
+![License tab](../images/admin-license.webp)
 
 ## Activate the key
 
@@ -19,25 +19,27 @@ To use the same key on another site:
 1. Go to **License** on the source site.
 2. Click **Deactivate License**.
 
-The field unlocks and the slot frees up on your account so you can paste it into a new site. Deactivation submits inline — there is no confirmation popup (1.5.0 changed this to match the standard EDD pattern).
+The field unlocks and the slot frees up on your account so you can paste it into a new site. Deactivation submits inline - there is no confirmation popup (1.5.0 changed this to match the standard EDD pattern).
 
 ## What activation unlocks
 
 - Update notifications appear in **Plugins → Installed Plugins** when a new release is available.
-- One-click updates pull straight from `https://wbcomdesigns.com`.
+- One-click updates come from `updates.wbcomdesigns.com`, with `wbcomdesigns.com` as a fallback if the first cannot be reached.
+- Each update's signature is checked before WordPress installs it (a failed check is logged and the update still installs).
 - Priority support from the Wbcom Designs team.
 
 ## What if I never activate?
 
-The plugin keeps working at full capability — there is no gated feature. Only updates and support are gated. If you prefer to update manually, you can drop in a new ZIP whenever a new release ships and skip the License tab entirely.
+The plugin keeps working at full capability - there is no gated feature. Only updates and support are gated. If you prefer to update manually, you can drop in a new ZIP whenever a new release ships and skip the License tab entirely.
 
 ## Inline status messages
 
-Activation problems render inline on the License tab — you do not get bounced to a different screen. Common messages and what they mean:
+Activation problems render inline on the License tab - you do not get bounced to a different screen. Common messages and what they mean:
 
 - **"Invalid license."** The key is mistyped, expired, or refunded. Double-check the key in your Wbcom Designs account.
 - **"Your license is not active for this URL."** The key is in use on another site that has hit the activation limit. Deactivate it there first, or upgrade the licence to a higher site count.
-- **"Key saved but not activated."** The key is stored locally but the site has not contacted the activation server. Click **Activate License** again — usually a transient connectivity issue.
+- **"Key saved but not activated."** The key is stored locally but the site has not contacted the activation server. Click **Activate License** again - usually a transient connectivity issue.
+- **"Could not reach the license server. Please try again later."** Your site could not connect to the license server. The status you had before stays as it was. Check that your host allows outgoing connections to `updates.wbcomdesigns.com` and `wbcomdesigns.com`, then try again after a while.
 
 ## What's next
 

@@ -1,29 +1,9 @@
 {
   "name": "buddypress-contact-me",
-  "version": "1.5.0",
-  "url": "https://github.com/wbcomdesigns/buddypress-contact-me",
+  "version": "1.5.1",
+  "private": true,
+  "description": "BuddyPress Contact Me. No build step: CSS and JS ship as written. Release zip: bin/build-release.sh.",
   "license": "GPL-2.0+",
-  "description": "buddypress-contact-me",
-  "devDependencies": {
-    "grunt": "^1.6.2",
-    "grunt-checktextdomain": "^1.0.1",
-    "grunt-contrib-clean": "^2.0.1",
-    "grunt-contrib-compress": "^2.0.0",
-    "grunt-contrib-cssmin": "^5.0.0",
-    "grunt-contrib-uglify": "^5.2.2",
-    "grunt-contrib-watch": "^1.1.0",
-    "grunt-rtlcss": "^2.0.2",
-    "grunt-shell": "^4.0.0",
-    "grunt-wp-i18n": "^1.0.4",
-    "load-grunt-tasks": "^5.1.0"
-  },
-  "overrides": {
-    "minimatch": "^3.1.5",
-    "postcss": "^8.5.10"
-  },
-  "engines": {
-    "node": ">=6.9.1"
-  },
   "repository": {
     "type": "git",
     "url": "https://github.com/wbcomdesigns/buddypress-contact-me"

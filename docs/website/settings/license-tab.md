@@ -1,8 +1,8 @@
-# License Tab — Activate & Rotate Keys
+# License Tab - Activate & Rotate Keys
 
 The License tab is where you connect your Wbcom Designs purchase to this site so the plugin can pull updates.
 
-![License tab](../images/admin-license.png)
+![License tab](../images/admin-license.webp)
 
 ## Activate a key
 
@@ -16,10 +16,10 @@ You will find your key in the purchase confirmation email or under **My Account 
 
 ## Status states
 
-- **No key entered** — initial state, the field is empty.
-- **Key saved but not activated** — you saved a key locally but the activation server has not been contacted yet. Click **Activate License** again — usually a transient connectivity issue.
-- **Active: receiving updates** — the key is bound to this site and the slot is consumed on your account.
-- **Inactive** — the key was deactivated or the activation expired. Updates will not pull until you reactivate.
+- **No key entered** - initial state, the field is empty.
+- **Key saved but not activated** - you saved a key locally but the activation server has not been contacted yet. Click **Activate License** again - usually a transient connectivity issue.
+- **Active: receiving updates** - the key is bound to this site and the slot is consumed on your account.
+- **Inactive** - the key was deactivated or the activation expired. Updates will not pull until you reactivate.
 
 ## Deactivate to move the key
 
@@ -29,23 +29,25 @@ When you want to use the same key on a different site:
 2. The field unlocks and the slot frees up on your wbcomdesigns.com account.
 3. Paste the key into the new site and activate there.
 
-Deactivation submits inline — there is no confirmation popup (1.5.0 changed this to match the standard EDD pattern). If you accidentally deactivate, just click **Activate License** to bind it back.
+Deactivation submits inline - there is no confirmation popup (1.5.0 changed this to match the standard EDD pattern). If you accidentally deactivate, just click **Activate License** to bind it back.
 
 ## What activation unlocks
 
 - Update notifications appear in **Plugins → Installed Plugins** when new releases ship.
-- One-click updates pull straight from `https://wbcomdesigns.com`.
+- One-click updates come from `updates.wbcomdesigns.com`, with `wbcomdesigns.com` as a fallback if the first cannot be reached.
+- Each update's signature is checked before WordPress installs it (a failed check is logged and the update still installs).
 - Priority support from the Wbcom Designs team.
 
 The plugin keeps every feature working without an active license. Only updates and support are gated. If you prefer manual updates, you can drop in a new ZIP and skip the License tab entirely.
 
 ## Inline error messages
 
-Activation errors render inline on the License tab — you do not get bounced to a different screen. Common messages:
+Activation errors render inline on the License tab - you do not get bounced to a different screen. Common messages:
 
 - **"Invalid license."** Mistyped or refunded key.
 - **"Your license is not active for this URL."** Key is in use elsewhere and the site count is exhausted. Deactivate it on the other site first or upgrade to a higher site count.
 - **"Your license key has expired."** The license renewal lapsed. Renew at wbcomdesigns.com to continue receiving updates.
+- **"Could not reach the license server. Please try again later."** Your site could not connect to the license server. The status you had before stays as it was. Check that your host allows outgoing connections to `updates.wbcomdesigns.com` and `wbcomdesigns.com`, then try again after a while.
 
 ## Multisite networks
 

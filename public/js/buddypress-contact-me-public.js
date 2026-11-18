@@ -1,8 +1,8 @@
 /**
- * BuddyPress Contact Me — public behaviour.
+ * BuddyPress Contact Me: public behaviour.
  *
- * Vanilla JS, uses wp.apiFetch for REST calls, bcmToast for feedback and
- * bcmConfirm for confirmation. No window.confirm / window.alert anywhere.
+ * Vanilla JS, uses wp.apiFetch for REST calls, the BuddyPress family toast
+ * for feedback and bcmConfirm for confirmation. No window.confirm / alert.
  */
 ( function () {
 	'use strict';
@@ -13,7 +13,47 @@
 		apiFetch.use( apiFetch.createNonceMiddleware( cfg.restNonce ) );
 	}
 
-	var toast = function ( m, t ) { if ( window.bcmToast ) { window.bcmToast( m, t ); } };
+	/*
+	 * BP family toast (same look as every Wbcom BuddyPress add-on): BuddyPress's
+	 * own .bp-feedback notice inside .buddypress-wrap so the theme paints it,
+	 * bottom centre, one at a time, closed by its button or Escape. No auto-hide.
+	 */
+	var toastEl = null;
+
+	function hideToast() {
+		if ( toastEl ) {
+			toastEl.remove();
+			toastEl = null;
+		}
+	}
+
+	function toast( message, type ) {
+		if ( ! message ) { return; }
+		hideToast();
+		type = type || 'info';
+		toastEl = document.createElement( 'div' );
+		toastEl.className = 'bcm-toast';
+		toastEl.setAttribute( 'role', 'error' === type ? 'alert' : 'status' );
+		var box = document.createElement( 'div' );
+		box.className = 'bp-feedback bp-messages bcm-alert ' + type;
+		box.innerHTML = '<span class="bp-icon" aria-hidden="true"></span>';
+		var p = document.createElement( 'p' );
+		p.textContent = message;
+		box.appendChild( p );
+		var close = document.createElement( 'button' );
+		close.type = 'button';
+		close.className = 'bcm-toast__close';
+		close.setAttribute( 'aria-label', ( cfg.i18n && cfg.i18n.dismiss ) || 'Dismiss' );
+		close.innerHTML = '<span class="dashicons dashicons-no-alt" aria-hidden="true"></span>';
+		close.addEventListener( 'click', hideToast );
+		box.appendChild( close );
+		toastEl.appendChild( box );
+		( document.querySelector( '.buddypress-wrap' ) || document.body ).appendChild( toastEl );
+	}
+
+	document.addEventListener( 'keydown', function ( e ) {
+		if ( 'Escape' === e.key ) { hideToast(); }
+	} );
 
 	/* ============================================================
 	 * REST helpers — every apiFetch call goes through bcmApi()
@@ -70,7 +110,9 @@
 			method: opts.method || 'GET',
 			signal: bcmTimeoutSignal( opts.timeout || DEFAULT_TIMEOUT_MS ),
 		};
-		if ( opts.data ) {
+		if ( opts.body ) {
+			request.body = opts.body; // FormData: posted as a normal form, so CAPTCHA tokens arrive in $_POST.
+		} else if ( opts.data ) {
 			request.data = opts.data;
 		}
 		return apiFetch( request );
@@ -98,7 +140,6 @@
 		initCopyLink();
 		initIntroDismiss();
 		injectSubnavUnreadCount();
-		showArrivalToast();
 	} );
 
 	function injectSubnavUnreadCount() {
@@ -120,8 +161,8 @@
 		btn.addEventListener( 'click', function () {
 			var id   = btn.getAttribute( 'data-bcm-delete-page' );
 			var back = btn.getAttribute( 'data-bcm-back' );
-			confirmDeleteMessage( id, function () {
-				toast( cfg.i18n.sent, 'success' );
+			confirmDeleteMessage( id, function ( response ) {
+				toast( response && response.message, 'success' );
 				window.setTimeout( function () { window.location.href = back; }, 600 );
 			} );
 		} );
@@ -140,14 +181,8 @@
 				url:     bcmRoute( '/preferences/intro-dismiss' ),
 				method:  'POST',
 				timeout: 5000, // Best-effort; the panel is already removed from DOM. Shorter ceiling than the 15s default.
-			} ).catch( function () { /* silent — dismissal is best-effort */ } );
+			} ).catch( function () { /* silent: dismissal is best-effort */ } );
 		} );
-	}
-
-	function showArrivalToast() {
-		if ( window.location.search.indexOf( 'bcm=sent' ) !== -1 ) {
-			toast( cfg.i18n.sent, 'success' );
-		}
 	}
 
 	/* ---------- Contact form ---------- */
@@ -186,30 +221,40 @@
 			} );
 			if ( ! ok ) { return; }
 
-			var fd   = new FormData( form );
-			var data = {};
-			fd.forEach( function ( v, k ) { data[ k ] = v; } );
-
 			setSubmitting( submitBtn, true );
 
 			bcmApi( {
 				url:    cfg.restUrl,
 				method: 'POST',
-				data:   data,
+				body:   new FormData( form ),
 			} ).then( function ( response ) {
 				setSubmitting( submitBtn, false );
 				form.reset();
 				if ( counter && textarea ) {
 					counter.textContent = '0 / ' + textarea.maxLength;
 				}
+				// Guests get a new one-time question; the one just used is spent.
+				if ( response && response.captcha ) {
+					var sum   = form.querySelector( '.bcm-captcha__sum' );
+					var input = form.querySelector( '[name="bcm_captcha_answer"]' );
+					var token = form.querySelector( '[name="bcm_captcha_hash"]' );
+					if ( sum ) { sum.textContent = response.captcha.sum; }
+					if ( input ) { input.setAttribute( 'aria-label', response.captcha.label ); }
+					if ( token ) { token.value = response.captcha.token; }
+				}
+				refreshSiteCaptcha( form );
 				toast( ( response && response.message ) || cfg.i18n.sent, 'success' );
+				// Focus back to the first field, ready for another message.
+				var first = form.querySelector( 'input:not([type="hidden"]):not([tabindex="-1"]), textarea' );
+				if ( first ) { first.focus(); }
 			} ).catch( function ( err ) {
 				// AbortError from bcmApi's timeout signal also lands here, so
 				// re-enabling the submit button on .catch ensures the UI
 				// recovers from a hung server (the original hang-risk bug).
 				setSubmitting( submitBtn, false );
+				refreshSiteCaptcha( form );
 				if ( err && err.errors && err.errors.length ) {
-					err.errors.forEach( function ( e ) { toast( e.message, 'error' ); } );
+					toast( err.errors.map( function ( e ) { return e.message; } ).join( ' ' ), 'error' );
 				} else {
 					// Reuses deleteError as the generic "something went wrong" copy;
 					// kept for backward i18n compatibility (no new translation strings).
@@ -217,6 +262,13 @@
 				}
 			} );
 		} );
+	}
+
+	// CAPTCHA Manager tokens are single-use: reset the widget after every send attempt.
+	function refreshSiteCaptcha( form ) {
+		if ( window.wbcCaptcha && typeof window.wbcCaptcha.refresh === 'function' ) {
+			window.wbcCaptcha.refresh( form );
+		}
 	}
 
 	function validateField( el ) {
@@ -272,6 +324,17 @@
 	/* ---------- Inbox ---------- */
 
 	function initInbox() {
+		// After the last message on the page is deleted the inbox reloads; focus its heading.
+		var focusHeading = false;
+		try {
+			focusHeading = '1' === window.sessionStorage.getItem( 'bcmFocusInbox' );
+			window.sessionStorage.removeItem( 'bcmFocusInbox' );
+		} catch ( err ) { /* storage blocked: focus stays where the browser puts it */ }
+		if ( focusHeading ) {
+			var heading = document.querySelector( '.bcm-empty__title, .bcm-inbox__title' );
+			if ( heading ) { heading.focus(); }
+		}
+
 		var inbox = document.querySelector( '[data-bcm-inbox]' );
 		if ( ! inbox ) { return; }
 
@@ -286,8 +349,8 @@
 
 	function confirmAndDelete( id, inbox ) {
 		confirmDeleteMessage( id, function ( response ) {
-			removeRow( inbox, id );
-			toast( ( response && response.message ) || cfg.i18n.sent, 'success' );
+			removeRow( inbox, id, response );
+			toast( response && response.message, 'success' );
 		} );
 	}
 
@@ -331,20 +394,37 @@
 		} );
 	}
 
-	function removeRow( inbox, id ) {
+	function removeRow( inbox, id, response ) {
 		var row = inbox.querySelector( '[data-bcm-row="' + id + '"]' );
 		if ( ! row ) { return; }
+		// Focus goes to the next message, or the previous one when the last was deleted.
+		var neighbour = row.nextElementSibling || row.previousElementSibling;
+		var nextLink  = neighbour ? neighbour.querySelector( '.bcm-message__subject' ) : null;
 		row.style.opacity = '0';
 		window.setTimeout( function () {
 			row.remove();
 			var remaining = inbox.querySelectorAll( '[data-bcm-row]' ).length;
 			if ( remaining === 0 ) {
+				try { window.sessionStorage.setItem( 'bcmFocusInbox', '1' ); } catch ( err ) { /* ignore */ }
 				window.location.reload();
 				return;
 			}
-			var title = inbox.querySelector( '.bcm-inbox__title' );
-			if ( title ) {
-				title.textContent = remaining === 1 ? '1 message' : remaining + ' messages';
+			if ( nextLink ) { nextLink.focus(); }
+			// Translated totals come back from the server with the delete.
+			if ( response && response.counts && response.titles ) {
+				var active = inbox.querySelector( '.bcm-inbox__filter.is-active' );
+				var filter = active ? active.getAttribute( 'data-bcm-filter' ) : 'all';
+				var title  = inbox.querySelector( '.bcm-inbox__title' );
+				if ( title && response.titles[ filter ] ) {
+					title.textContent = response.titles[ filter ];
+				}
+				inbox.querySelectorAll( '[data-bcm-filter]' ).forEach( function ( link ) {
+					var count = link.querySelector( '.bcm-inbox__filter-count' );
+					var key   = link.getAttribute( 'data-bcm-filter' );
+					if ( count && key in response.counts ) {
+						count.textContent = response.counts[ key ];
+					}
+				} );
 			}
 		}, 200 );
 	}
@@ -358,7 +438,7 @@
 				if ( ! url ) { return; }
 
 				var done = function () {
-					toast( cfg.i18n.sent ? 'Link copied.' : 'Copied.', 'success' );
+					toast( cfg.i18n.linkCopied, 'success' );
 				};
 
 				if ( navigator.clipboard && navigator.clipboard.writeText ) {
@@ -375,7 +455,7 @@
 					ta.style.left     = '-9999px';
 					document.body.appendChild( ta );
 					ta.select();
-					try { document.execCommand( 'copy' ); done(); } catch ( e ) { toast( 'Copy not supported in this browser.', 'warning' ); }
+					try { document.execCommand( 'copy' ); done(); } catch ( e ) { toast( cfg.i18n.copyFailed, 'warning' ); }
 					document.body.removeChild( ta );
 				}
 			} );

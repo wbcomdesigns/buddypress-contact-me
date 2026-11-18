@@ -1,6 +1,6 @@
 <?php
 /**
- * Overview dashboard partial: rendered inside shell.php.
+ * Overview dashboard partial: rendered inside layout.php.
  *
  * @package Buddypress_Contact_Me
  * @since   1.5.0
@@ -8,34 +8,14 @@
 
 defined( 'ABSPATH' ) || exit;
 
-/**
- * Parent view provides $settings.
- *
- * @var array $settings bcm_admin_general_setting already loaded by parent view.
- */
+$settings = (array) get_option( 'bcm_admin_general_setting', array() );
 
-global $wpdb;
-
-// Contact messages table name (defined in the activator).
-$table_name = $wpdb->prefix . 'contact_me';
-
-// Count total messages, distinct senders, and distinct recipients.
-// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-$total_messages = (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$table_name}" );
-// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-$unique_senders = (int) $wpdb->get_var( "SELECT COUNT(DISTINCT sender) FROM {$table_name} WHERE sender > 0" );
-// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-$unique_recipients = (int) $wpdb->get_var( "SELECT COUNT(DISTINCT reciever) FROM {$table_name} WHERE reciever > 0" );
-
-// Count members who have the Contact Me button visible (usermeta contact_me_button = on).
-// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
-$active_recipients = (int) $wpdb->get_var(
-	$wpdb->prepare(
-		"SELECT COUNT(*) FROM {$wpdb->usermeta} WHERE meta_key = %s AND meta_value = %s",
-		'contact_me_button',
-		'on'
-	)
-);
+$stats             = BCM_Messages_Repo::stats();
+$total_messages    = $stats['total'];
+$unique_senders    = $stats['senders'];
+$unique_recipients = $stats['recipients'];
+// Members accepting messages: everyone except those who switched it off.
+$active_recipients = max( 0, (int) get_user_count() - $stats['opted_out'] );
 
 // Feature status flags.
 $bp_notifications_on = ! empty( $settings['bcm_allow_notification'] ) && 'yes' === $settings['bcm_allow_notification'];
@@ -51,29 +31,9 @@ $access_url        = admin_url( 'admin.php?page=buddypress-contact-me&tab=access
 // fall back to the notifications tab (which has the same link in its
 // description) so the button is never dead.
 $email_url      = $notifications_url;
-$bcm_email_term = function_exists( 'get_term_by' ) ? get_term_by( 'slug', 'bcm-contact-message', 'bp-email-type' ) : false;
-if ( $bcm_email_term ) {
-	// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query -- Admin-only, runs once per overview render.
-	$bcm_email_posts = get_posts(
-		array(
-			'post_type'   => 'bp-email',
-			'tax_query'   => array(
-				array(
-					'taxonomy' => 'bp-email-type',
-					'field'    => 'term_id',
-					'terms'    => (int) $bcm_email_term->term_id,
-				),
-			),
-			'numberposts' => 1,
-			'fields'      => 'ids',
-		)
-	);
-	if ( ! empty( $bcm_email_posts ) ) {
-		$bcm_email_edit_url = get_edit_post_link( (int) $bcm_email_posts[0], 'url' );
-		if ( $bcm_email_edit_url ) {
-			$email_url = $bcm_email_edit_url;
-		}
-	}
+$bcm_email_id = BCM_Email_Installer::post_id();
+if ( $bcm_email_id && get_edit_post_link( $bcm_email_id, 'url' ) ) {
+	$email_url = get_edit_post_link( $bcm_email_id, 'url' );
 }
 ?>
 

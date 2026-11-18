@@ -1,6 +1,6 @@
 <?php
 /**
- * Contact → Inbox → Single message view (/contact/inbox/{id}/).
+ * Contact > Inbox > single message view (/contact/inbox/{id}/).
  *
  * Full-page render with actions: Reply by email, Send private message,
  * Visit profile, Delete, Back to inbox.
@@ -36,18 +36,13 @@ if ( ! $bcm_msg || (int) $bcm_msg->recipient !== $bcm_user_id ) {
 	return;
 }
 
-$bcm_flash = BCM_Frontend_Flash::consume();
-if ( $bcm_flash ) :
-	?>
-	<div class="bcm-alert bcm-alert--<?php echo esc_attr( $bcm_flash['type'] ); ?>" role="status" aria-live="polite">
-		<?php echo esc_html( $bcm_flash['message'] ); ?>
-	</div>
-	<?php
-endif;
-
-$bcm_sender_id    = (int) $bcm_msg->sender;
-$bcm_sender_name  = $bcm_sender_id ? bp_core_get_user_displayname( $bcm_sender_id ) : $bcm_msg->name;
-$bcm_sender_email = $bcm_sender_id ? get_the_author_meta( 'user_email', $bcm_sender_id ) : $bcm_msg->email;
+// A sender whose account was deleted is shown as such, with no profile or reply links.
+$bcm_sender_deleted = $bcm_msg->sender && ! get_userdata( (int) $bcm_msg->sender );
+$bcm_sender_id      = $bcm_sender_deleted ? 0 : (int) $bcm_msg->sender;
+$bcm_sender_name    = $bcm_sender_id ? bp_core_get_user_displayname( $bcm_sender_id ) : ( $bcm_sender_deleted ? __( 'Deleted member', 'buddypress-contact-me' ) : $bcm_msg->name );
+// Only a guest's own typed reply address is shown. A member's account email
+// never is (rows from before 1.5.1 may still hold it): reply in the site.
+$bcm_sender_email = ( $bcm_sender_id || $bcm_sender_deleted ) ? '' : (string) $bcm_msg->email;
 $bcm_avatar       = $bcm_sender_id
 	? bp_core_fetch_avatar(
 		array(
@@ -67,13 +62,12 @@ if ( $bcm_sender_id ) {
 		: bp_core_get_user_domain( $bcm_sender_id );
 
 	if ( function_exists( 'bp_is_active' ) && bp_is_active( 'messages' ) && function_exists( 'bp_loggedin_user_domain' ) ) {
-		$slug_fn = ( function_exists( 'buddypress' ) && isset( buddypress()->buddyboss ) )
-			? 'bp_core_get_username'
-			: 'bp_members_get_user_slug';
-		if ( function_exists( $slug_fn ) ) {
-			$compose    = trailingslashit( bp_loggedin_user_domain() ) . bp_get_messages_slug() . '/compose/';
-			$bcm_pm_url = wp_nonce_url( add_query_arg( 'r', $slug_fn( $bcm_sender_id ), $compose ) );
-		}
+		// BuddyBoss and BuddyPress before 12.0 only have bp_core_get_username().
+		$bcm_slug   = function_exists( 'bp_members_get_user_slug' ) && ! isset( buddypress()->buddyboss )
+			? bp_members_get_user_slug( $bcm_sender_id )
+			: bp_core_get_username( $bcm_sender_id );
+		$compose    = trailingslashit( bp_loggedin_user_domain() ) . bp_get_messages_slug() . '/compose/';
+		$bcm_pm_url = wp_nonce_url( add_query_arg( 'r', $bcm_slug, $compose ) );
 	}
 }
 
@@ -81,14 +75,14 @@ $bcm_mailto = $bcm_sender_email
 	? 'mailto:' . rawurlencode( $bcm_sender_email ) . '?subject=' . rawurlencode( 'Re: ' . $bcm_msg->subject )
 	: '';
 
-$bcm_stamp        = strtotime( $bcm_msg->datetime ) ? strtotime( $bcm_msg->datetime ) : time();
-$bcm_time_display = date_i18n( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ), $bcm_stamp );
+$bcm_stamp        = BCM_Messages_Repo::timestamp( $bcm_msg->datetime );
+$bcm_time_display = bcm_date_label( $bcm_msg->datetime );
 ?>
 
 <div class="bcm-message-view">
 	<p class="bcm-message-view__back">
 		<a href="<?php echo esc_url( $bcm_inbox_url ); ?>">
-			<span class="dashicons dashicons-arrow-left-alt" aria-hidden="true"></span>
+			<span class="dashicons <?php echo is_rtl() ? 'dashicons-arrow-right-alt' : 'dashicons-arrow-left-alt'; ?>" aria-hidden="true"></span>
 			<?php esc_html_e( 'Back to inbox', 'buddypress-contact-me' ); ?>
 		</a>
 	</p>
@@ -111,9 +105,11 @@ $bcm_time_display = date_i18n( get_option( 'date_format' ) . ' ' . get_option( '
 					<a href="<?php echo esc_url( $bcm_profile_url ); ?>"><?php echo esc_html( $bcm_sender_name ); ?></a>
 				<?php else : ?>
 					<span><?php echo esc_html( $bcm_sender_name ); ?></span>
+					<?php if ( ! $bcm_sender_deleted ) : ?>
 					<span class="bcm-badge bcm-badge--guest" title="<?php esc_attr_e( 'This person is not a registered member.', 'buddypress-contact-me' ); ?>">
 						<?php esc_html_e( 'Guest', 'buddypress-contact-me' ); ?>
 					</span>
+					<?php endif; ?>
 				<?php endif; ?>
 				<?php if ( $bcm_sender_email ) : ?>
 					· <a href="mailto:<?php echo esc_attr( $bcm_sender_email ); ?>"><?php echo esc_html( $bcm_sender_email ); ?></a>
@@ -130,9 +126,14 @@ $bcm_time_display = date_i18n( get_option( 'date_format' ) . ' ' . get_option( '
 	</article>
 
 	<?php if ( ! $bcm_pm_url && ! $bcm_mailto ) : ?>
-		<div class="bcm-alert bcm-alert--warning" role="status">
-			<?php esc_html_e( "This sender didn't leave any contact details, so there's no way to reply. You can still visit their profile or delete the message below.", 'buddypress-contact-me' ); ?>
-		</div>
+		<?php
+		bcm_notice(
+			$bcm_profile_url
+				? __( "This sender didn't leave any contact details, so there's no way to reply. You can still visit their profile or delete the message below.", 'buddypress-contact-me' )
+				: __( "There's no way to reply to this sender. You can delete the message below.", 'buddypress-contact-me' ),
+			'warning'
+		);
+		?>
 	<?php endif; ?>
 
 	<footer class="bcm-message-view__actions">

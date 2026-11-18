@@ -31,7 +31,7 @@ Before testing, review the complete documentation suite:
    - No PHP notices in `wp-content/debug.log`.
    - A new sidebar entry **WB Plugins → Contact Me** appears (the hub menu is shared across every Wbcom plugin).
    - `wp option get bcm_admin_general_setting` returns the default array with `bcm_allow_contact_tab`, `bcm_who_contact`, `bcm_who_contacted`, `bcm_allow_notification`, `bcm_allow_email`, `bcm_allow_admin_copy_email`, `bcm_allow_sender_copy_email` keys populated.
-   - `wp option get buddypress_contact_me_db_version` returns the current version.
+   - `wp option get bcm_db_version` returns the current schema version (1.5.1).
    - A `wp_contact_me` table exists (check `wp db query "SHOW TABLES LIKE '%contact_me%'"`).
    - Every existing user has `contact_me_button = 'on'` in `wp_usermeta`.
    - A BuddyPress email post titled "A new contact message" (or similar) exists in **Dashboard → Emails**.
@@ -47,7 +47,7 @@ Before testing, review the complete documentation suite:
 2. **Expected:**
    - `wp_contact_me` table is gone (`wp db query "SHOW TABLES LIKE '%contact_me%'"` returns empty).
    - `wp option get bcm_admin_general_setting` → null.
-   - `wp option get buddypress_contact_me_db_version` → null.
+   - `wp option get bcm_db_version` → null.
    - All `edd_wbcom_bp_contact_me_license_*` options gone.
    - `contact_me_button` and `bcm_intro_dismissed` user meta cleared.
    - The BP email post + `bp-email-type` term for this template is removed.
@@ -119,7 +119,7 @@ Before testing, review the complete documentation suite:
 
 1. Enable **Send admin a copy** (`bcm_allow_admin_copy_email`). Save.
 2. Send a message.
-3. **Expected:** The site admin email receives a CC/BCC copy. Subject is prefixed or clearly marked as an admin copy.
+3. **Expected:** Each site admin receives their own separate copy (only their address in To). Subject is prefixed or clearly marked as an admin copy.
 
 ### 4.4 Sender copy
 
@@ -291,7 +291,7 @@ Before tagging `v1.5.0`:
 - [ ] All sections 1–12 pass.
 - [ ] `phpcs --standard=WordPress` → 0 errors on plugin code (exclude `edd-license/` via `.phpcs.xml.dist`).
 - [ ] `php -l` clean on every PHP file.
-- [ ] `grunt build` (or equivalent) completed; `.min.css`, `.min.js`, RTL variants, `.pot` are fresh.
+- [ ] `bin/build-release.sh` completed and `.pot` is fresh (no Grunt, no minified or RTL copies since 1.5.1).
 - [ ] README.txt **Stable tag** matches the release version and **Requires at least** matches the plugin header (6.0).
 - [ ] Changelog entry exists for 1.5.0 describing the rewrite + BP email template + WPCS clean + PCP sweep.
 - [ ] No `debug.log` entries during the full QA run.

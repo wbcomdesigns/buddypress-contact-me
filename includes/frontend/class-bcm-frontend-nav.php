@@ -11,8 +11,8 @@
  * email links, and notification URLs continue to work.
  *
  * Default behaviour: every role-allowed member has contact enabled by
- * default. A user must explicitly opt out via their Preferences sub-tab
- * (contact_me_button === 'off') for the form to hide.
+ * default. A member opts out from Contact > Preferences
+ * (contact_me_button === 'off'), the one opt-out switch.
  *
  * @package BuddyPress_Contact_Me
  */
@@ -38,13 +38,38 @@ class BCM_Frontend_Nav {
 	public function register() {
 		add_action( 'bp_setup_nav', array( $this, 'setup_nav' ), 20 );
 		add_action( 'template_redirect', array( $this, 'redirect_legacy_slug' ), 1 );
-		add_action( 'body_class', array( $this, 'body_class' ) );
+		add_filter( 'body_class', array( $this, 'body_class' ) );
 		add_action( 'bp_setup_admin_bar', array( $this, 'admin_bar' ), 90 );
+		add_filter( 'reign_bp_nav_icons', array( $this, 'reign_nav_icons' ) );
 	}
 
 	/**
-	 * Register the Contact tab + its sub-tabs on every member profile
-	 * that accepts contact.
+	 * Icons for the Contact tab and its sub-tabs in Reign's icon navigation
+	 * (instead of Reign's generic info glyph). Keys are nav item CSS ids,
+	 * values are Reign icon names. Sub-tab slugs are generic, so they are
+	 * only mapped on Contact screens; icons another plugin already set win.
+	 *
+	 * @param array $icons Nav item id => Reign icon name.
+	 * @return array
+	 */
+	public function reign_nav_icons( $icons ) {
+		$icons = (array) $icons + array(
+			'bp_contact_count' => 'contact',
+			self::SLUG         => 'contact',
+		);
+		if ( function_exists( 'bp_is_current_component' ) && bp_is_current_component( self::SLUG ) ) {
+			$icons += array(
+				self::SUB_INBOX       => 'inbox',
+				self::SUB_SEND        => 'send',
+				self::SUB_PREFERENCES => 'sliders-horizontal',
+			);
+		}
+		return $icons;
+	}
+
+	/**
+	 * Register the Contact tab + its sub-tabs: always on the member's own
+	 * profile, on other profiles only when they accept contact.
 	 */
 	public function setup_nav() {
 		if ( ! function_exists( 'bp_displayed_user_id' ) ) {
@@ -56,17 +81,21 @@ class BCM_Frontend_Nav {
 			return;
 		}
 
-		if ( ! self::user_accepts_contact( $displayed_user_id ) ) {
+		$is_own = ( bp_loggedin_user_id() === $displayed_user_id );
+
+		// Members always keep their own Inbox + Preferences (even after opting
+		// out, or with the profile tab off) so old messages and notification
+		// links stay reachable. Only the visitor-facing Send tab is gated.
+		if ( ! $is_own && ( ! self::contact_tab_enabled() || ! self::user_accepts_contact( $displayed_user_id ) ) ) {
 			return;
 		}
 
-		$is_own      = ( bp_loggedin_user_id() === $displayed_user_id );
 		$user_domain = function_exists( 'bp_members_get_user_url' )
 			? bp_members_get_user_url( $displayed_user_id )
 			: bp_core_get_user_domain( $displayed_user_id );
 		$parent_url  = trailingslashit( $user_domain ) . self::SLUG;
 
-		$parent_unread = $is_own ? count( BCM_Messages_Repo::unread_message_ids( $displayed_user_id ) ) : 0;
+		$parent_unread = $is_own ? BCM_Messages_Repo::count_unread_for_recipient( $displayed_user_id ) : 0;
 		$parent_label  = __( 'Contact', 'buddypress-contact-me' );
 		if ( $parent_unread > 0 ) {
 			$parent_label .= ' <span class="count">' . (int) $parent_unread . '</span>';
@@ -82,7 +111,7 @@ class BCM_Frontend_Nav {
 				'default_subnav_slug'     => $default_sub,
 				'show_for_displayed_user' => true,
 				'item_css_id'             => 'bp_contact_count',
-				'screen_function'         => array( $this, 'screen_redirect' ),
+				'screen_function'         => array( $this, $is_own ? 'screen_inbox' : 'screen_send' ),
 			)
 		);
 
@@ -125,15 +154,6 @@ class BCM_Frontend_Nav {
 	}
 
 	/**
-	 * Hitting /contact/ directly — BP routes here; we let it load the
-	 * default sub-nav screen.
-	 */
-	public function screen_redirect() {
-		// BP handles the default subnav redirect automatically when
-		// `default_subnav_slug` is set, so this callback can stay empty.
-	}
-
-	/**
 	 * BP screen callback: Inbox sub-tab.
 	 */
 	public function screen_inbox() {
@@ -145,8 +165,27 @@ class BCM_Frontend_Nav {
 	 * BP screen callback: Preferences sub-tab.
 	 */
 	public function screen_preferences() {
+		$this->save_preferences();
 		add_action( 'bp_template_content', array( $this, 'render_preferences' ) );
 		bp_core_load_template( apply_filters( 'bp_core_template_plugin', 'members/single/plugins' ) );
+	}
+
+	/**
+	 * Save the Preferences form. Runs in the screen callback, before any
+	 * output, so the redirect and the BuddyPress notice always work.
+	 */
+	private function save_preferences() {
+		if ( ! bp_is_post_request() || ! isset( $_POST['bcm_preferences_nonce'] ) || ! bp_is_my_profile() ) {
+			return;
+		}
+		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['bcm_preferences_nonce'] ) ), 'bcm_preferences_save' ) ) {
+			bp_core_add_message( __( 'Session expired. Please refresh the page and try again.', 'buddypress-contact-me' ), 'error' );
+			return;
+		}
+		// Own profile only (bp_is_my_profile above); the target is always the logged-in member.
+		update_user_meta( bp_loggedin_user_id(), 'contact_me_button', empty( $_POST['bcm_accept_contact'] ) ? 'off' : 'on' );
+		bp_core_add_message( __( 'Preferences saved.', 'buddypress-contact-me' ) );
+		bp_core_redirect( bp_get_requested_url() );
 	}
 
 	/**
@@ -187,22 +226,10 @@ class BCM_Frontend_Nav {
 	 * @param int $message_id Contact-message ID.
 	 */
 	public static function mark_message_read( $message_id ) {
-		if ( ! function_exists( 'bp_is_active' ) || ! bp_is_active( 'notifications' ) ) {
+		if ( ! function_exists( 'bp_notifications_mark_notifications_by_item_id' ) || ! bp_is_active( 'notifications' ) ) {
 			return;
 		}
-		global $wpdb;
-		$table = buddypress()->notifications->table_name;
-		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery
-		$wpdb->query(
-			$wpdb->prepare(
-			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-				"UPDATE {$table} SET is_new = 0 WHERE user_id = %d AND item_id = %d AND component_name = %s AND component_action = %s",
-				get_current_user_id(),
-				(int) $message_id,
-				'bcm_user_notifications',
-				'bcm_user_notifications_action'
-			)
-		);
+		bp_notifications_mark_notifications_by_item_id( get_current_user_id(), (int) $message_id, BCM_Frontend_Notifications::COMPONENT, BCM_Frontend_Notifications::ACTION, false, 0 );
 	}
 
 	/**
@@ -226,35 +253,43 @@ class BCM_Frontend_Nav {
 	 * @return bool
 	 */
 	public static function user_accepts_contact( $user_id ) {
-		$user_id = (int) $user_id;
-		if ( $user_id <= 0 ) {
+		$user = $user_id > 0 ? get_userdata( (int) $user_id ) : false;
+		if ( ! $user ) {
 			return false;
 		}
 
-		$meta = get_user_meta( $user_id, 'contact_me_button', true );
+		$meta = get_user_meta( $user->ID, 'contact_me_button', true );
 		if ( 'off' === $meta ) {
 			return false;
 		}
 
-		$settings    = get_option( 'bcm_admin_general_setting', array() );
-		$allowed     = isset( $settings['bcm_who_contacted'] ) && is_array( $settings['bcm_who_contacted'] )
+		$settings = get_option( 'bcm_admin_general_setting', array() );
+		$allowed  = isset( $settings['bcm_who_contacted'] ) && is_array( $settings['bcm_who_contacted'] )
 			? $settings['bcm_who_contacted']
 			: array();
-		$tab_enabled = ! empty( $settings['bcm_allow_contact_tab'] ) && 'yes' === $settings['bcm_allow_contact_tab'];
-		if ( ! $tab_enabled ) {
-			return false;
-		}
 		if ( empty( $allowed ) ) {
 			return true;
 		}
 
-		$user  = get_userdata( $user_id );
-		$roles = $user ? (array) $user->roles : array();
+		$roles = (array) $user->roles;
 		if ( in_array( 'administrator', $roles, true ) ) {
 			return true;
 		}
 
 		return (bool) array_intersect( $roles, $allowed );
+	}
+
+	/**
+	 * Whether the site shows the Contact tab on member profiles.
+	 *
+	 * Only controls the profile tab. The shortcode and REST sending work
+	 * either way, so the tab can be turned off for shortcode-only sites.
+	 *
+	 * @return bool
+	 */
+	public static function contact_tab_enabled() {
+		$settings = get_option( 'bcm_admin_general_setting', array() );
+		return ! empty( $settings['bcm_allow_contact_tab'] ) && 'yes' === $settings['bcm_allow_contact_tab'];
 	}
 
 	/**
@@ -266,12 +301,13 @@ class BCM_Frontend_Nav {
 			? $settings['bcm_who_contact']
 			: array();
 
-		if ( empty( $allowed ) ) {
-			return true;
-		}
-
+		// Visitors must be ticked explicitly: an empty list means every logged-in member, never guests.
 		if ( ! is_user_logged_in() ) {
 			return in_array( 'visitors', $allowed, true );
+		}
+
+		if ( empty( $allowed ) ) {
+			return true;
 		}
 
 		$user  = wp_get_current_user();
@@ -321,7 +357,7 @@ class BCM_Frontend_Nav {
 	}
 
 	/**
-	 * Add a "Contact" shortcut under the BP admin bar entry.
+	 * Add a "Contact" shortcut (the member's own inbox) under the BP admin bar entry.
 	 */
 	public function admin_bar() {
 		if ( ! is_user_logged_in() ) {
@@ -333,9 +369,6 @@ class BCM_Frontend_Nav {
 		}
 
 		$user_id = get_current_user_id();
-		if ( ! self::user_accepts_contact( $user_id ) ) {
-			return;
-		}
 
 		$user_domain = function_exists( 'bp_members_get_user_url' )
 			? bp_members_get_user_url( $user_id )

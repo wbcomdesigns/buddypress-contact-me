@@ -1,13 +1,13 @@
 # BuddyPress Contact Me
 
-> **READ FIRST:** [`audit/manifest.json`](audit/manifest.json) is the canonical inventory — 3 REST endpoints, 0 AJAX, 2 admin pages, 1 shortcode, 1 custom table (`{prefix}contact_me`), 6 hooks fired, 7 settings keys, 0 cron, 0 CPTs. Read it before grepping. See also [`audit/FEATURE_AUDIT.md`](audit/FEATURE_AUDIT.md), [`audit/CODE_FLOWS.md`](audit/CODE_FLOWS.md), [`audit/ROLE_MATRIX.md`](audit/ROLE_MATRIX.md), [`audit/wppqa-baseline-2026-05-11/SUMMARY.md`](audit/wppqa-baseline-2026-05-11/SUMMARY.md). Refresh via `/wp-plugin-onboard --refresh` after non-trivial structural changes.
+> **READ FIRST:** [`audit/manifest.json`](audit/manifest.json) is the canonical inventory - 3 REST endpoints, 0 AJAX, 2 admin pages, 1 shortcode, 1 custom table (`{prefix}contact_me`), 0 cron, 0 CPTs. Read it before grepping. See also [`audit/FEATURE_AUDIT.md`](audit/FEATURE_AUDIT.md), [`audit/CODE_FLOWS.md`](audit/CODE_FLOWS.md), [`audit/ROLE_MATRIX.md`](audit/ROLE_MATRIX.md), [`audit/wppqa-baseline-2026-05-11/SUMMARY.md`](audit/wppqa-baseline-2026-05-11/SUMMARY.md). Refresh via `/wp-plugin-onboard --refresh` after non-trivial structural changes.
 
 ## Quick Reference
 
 | Field | Value |
 |-------|-------|
 | Slug | `buddypress-contact-me` |
-| Version | 1.5.0 (in-flight on `master`; last released tag is `v1.4.0`) |
+| Version | 1.5.1 (dev branch `1.5.1`; last released tag is `v1.5.0`) |
 | Text Domain | `buddypress-contact-me` |
 | Prefix | `bcm_` / `BCM_` |
 | Option Key | `bcm_admin_general_setting` |
@@ -15,29 +15,31 @@
 | Admin Page | `admin.php?page=buddypress-contact-me` |
 | Repo | `wbcomdesigns/buddypress-contact-me` |
 | Default Branch | `master` |
-| License | EDD (via `edd-license/`) |
+| License | EDD SL SDK in `libs/` (signed updates, see Licensing below); licence screen in `edd-license/` |
 | Requires | BuddyPress (or BuddyBoss Platform) |
 
 ## Architecture
 
-Classic WordPress Plugin Boilerplate (Loader pattern). Bootstrap → core orchestrator → Loader registers hooks. Source layout:
+No loader or orchestrator: the bootstrap file wires everything. Each class has a `register()` that adds its own hooks.
 
 ```
-buddypress-contact-me.php          # bootstrap, activator/deactivator
+buddypress-contact-me.php          # bootstrap: activation hook, bp_include wiring, textdomain on init, deleted_user cleanup
 includes/
-  class-buddypress-contact-me.php           # orchestrator
-  class-buddypress-contact-me-loader.php    # hook registry
-  class-buddypress-contact-me-activator.php # creates {prefix}contact_me
-  admin/class-bcm-admin.php                 # admin menu + settings
-  frontend/class-bcm-frontend-submit.php    # form handler (PUBLIC)
-  frontend/class-bcm-frontend-nav.php       # BP profile nav + role gates
+  functions.php                             # bcm_display_timezone(), bcm_date_label(), bcm_notice()
+  class-buddypress-contact-me-activator.php # schema, version router (maybe_upgrade on bp_init:20), email install
+  data/class-bcm-messages-repo.php          # ALL SQL for {prefix}contact_me
+  admin/class-bcm-admin.php + views/        # admin menu, tabs, settings (views/hub.php is the shared Wbcom hub: do not edit)
+  frontend/class-bcm-frontend-submit.php    # classic POST (bp_actions:5) + process_submission() shared with REST
+  frontend/class-bcm-frontend-nav.php       # BP nav, screens, preferences save, role gates, reign_bp_nav_icons
   frontend/class-bcm-frontend-shortcode.php # [buddypress-contact-me]
-  frontend/class-bcm-frontend-notifications.php  # BP notification + email
+  frontend/class-bcm-frontend-notifications.php  # BP notification + emails
+  frontend/class-bcm-frontend-assets.php    # enqueue on Contact screens / shortcode pages
   rest/class-bcm-rest-messages.php          # REST API (bcm/v1)
-  email/class-bcm-email-installer.php       # installs BP email post
-edd-license/                                # EDD updater + license forms
-public/partials/                            # frontend templates
-  inbox.php  send.php  tab-preferences.php
+  email/class-bcm-email-installer.php       # installs the 3 BP email posts
+edd-license/edd-plugin-license.php          # License tab handlers (activate/deactivate/status)
+libs/edd-sl-sdk, libs/package-signatures   # vendored, byte-identical copies; never patch (fix upstream, re-copy)
+public/partials/                            # tab-form, tab-inbox, tab-message, tab-preferences
+public/css, public/js                       # readable source, shipped as-is (no build step)
 ```
 
 ## Key entry points
@@ -64,24 +66,25 @@ public/partials/                            # frontend templates
 
 - **Prefix:** `bcm_` for snake_case (option keys, hook names), `BCM_` for class names.
 - **Column name `reciever` is intentionally misspelled in the schema.** Every query reads/writes that literal string. Renaming would break installs in the field.
-- **No raw `$wpdb` outside `includes/rest/` and `includes/frontend/class-bcm-frontend-submit.php`.** Other modules go through the activator/REST controller.
+- **Message SQL lives in `includes/data/class-bcm-messages-repo.php`** (including the Overview `stats()`). Schema SQL lives in the activator. No raw `$wpdb` anywhere else.
 
-## Known issues (from wppqa baseline 2026-05-11)
+## Frontend and data conventions
 
-| File | Severity | Note |
-|---|---|---|
-| `edd-license/edd-plugin-license.php:170` | high | nonce-no-cap on license activate — fix with `current_user_can('manage_options')` (same pattern as buddypress-auto-friends commit 9c5f15f) |
-| `edd-license/edd-plugin-license.php:271` | high | nonce-no-cap on license deactivate — same fix |
-| `includes/frontend/class-bcm-frontend-submit.php:39+275` | high (intentional public path) | role gate is `viewer_can_send`, not `current_user_can`. Audit but likely safe-by-design. |
-| `public/partials/tab-preferences.php:23` | high (own-profile path) | Verify `get_current_user_id()` is the update target, not `$_POST[user_id]` |
-| `assets/css/admin.css:556` | low | button 36px tap target (a11y nit) |
+- **Times are UTC.** `BCM_Messages_Repo::insert()` stores `current_time( 'mysql', true )`; every displayed date goes through `bcm_date_label()` (timezone from `bcm_display_timezone()`, filterable). Never call `wp_date()`, `date_i18n()` or `mysql2date()` directly. Rows from before 1.5.1 are converted once in `install_schema()` (DB_VERSION 1.5.1).
+- **Schema changes** bump `BuddyPress_Contact_Me_Activator::DB_VERSION`; `maybe_upgrade()` (bp_init:20, skipped for AJAX, cron and WP-CLI) re-runs `install_schema()` behind a cache lock and only bumps `bcm_db_version` after the `REQUIRED_INDEXES` check passes. `install_schema()` also installs missing emails. One-time data fixes go just before that bump.
+- **Upgrade notes:** the 1.5.1 UTC conversion of old rows runs once, guarded only by `bcm_db_version`. Restoring an options backup from before 1.5.1 (without the matching table) would shift message times a second time. The old `buddypress_contact_me_db_version` option is no longer read.
+- **Contact preference:** one switch, Contact > Preferences (`contact_me_button`). No per-user meta is seeded; anything except `off` means the member accepts messages. `user_accepts_contact()` checks the user exists first.
+- **Abuse limits:** per-sender throttle (`bcm_throttle_*` transients, `bcm_rate_limit` filter), guest honeypot field `bcm_website`, one-time guest captcha (`bcm_captcha_*` transients) unless CAPTCHA Manager (`wbc_captcha_service_manager`, form `contact_me`) is active. Sender copy email goes to logged-in senders only; a member's account email is never shown.
+- **Notices:** `bcm_notice()` emits BuddyPress `.bp-feedback` markup; JS toasts use the BP family toast (`.bcm-toast` > `.bp-feedback`), bottom centre, no auto-hide. No flash transients.
+- **Dark mode** keys only on `html[data-bx-mode="dark"]` and `body.buddyx-dark-theme`, token chains through `--bx-color-*`; never `prefers-color-scheme` on the frontend. Primary buttons use the paired `--bx-color-button-bg` / `--bx-color-button-fg`. No raw hex outside the token block.
+- **Assets** load on the member Contact screens and on any singular post that contains the `[buddypress-contact-me]` shortcode; the shortcode also enqueues on render. One stylesheet serves LTR and RTL through logical properties (no RTL copy).
+- **Admin shell view** is `includes/admin/views/layout.php` (hardened hosts reject zips containing `shell.php`).
+- **Build:** `bin/build-release.sh` runs `bin/local-ci.sh`, then zips to `dist/` (deflated, fails on plain-text PHP or dev files). No Grunt, no minified copies. POT: `wp i18n make-pot . languages/buddypress-contact-me.pot --exclude=node_modules,vendor,libs,docs,audit,bin,dist`.
+- **Data entry points (owner exception):** messages have a member frontend and a REST submit/delete, but no admin list and no REST list by design; recorded in the manifest. Messages a deleted user received are removed on `deleted_user` / `wpmu_delete_user`. No privacy exporter/eraser yet (manifest note).
 
-## Recent changes
+## Licensing and updates
 
-| Date | Description |
-|---|---|
-| 2026-05-11 | Onboarded — manifest + audit reports + wppqa baseline at `audit/`, READ-FIRST pointer added |
-| 2026-05-11 | 1.5.0 (in-flight) — EDD license cap checks added; public REST layer refactored into `bcmApi()` wrapper with 15s timeout + shared `confirmDeleteMessage()` helper. wppqa 5 high → 3 high (all 3 remaining audited safe-by-design with inline comments). |
-| 2026-05-14 | 1.5.0 (in-flight) — Frontend palette neutralised so the plugin no longer paints WP-admin blue over the active theme (basecamp 9890995245). New `--bcm-color-on-primary` token keeps text auto-inverted between light and dark mode without per-rule overrides. |
-| 2026-05-14 | 1.5.0 (in-flight) — **Migration hardening for 500-site rollout**. The `dbDelta` index migration shipped earlier today is now production-safe: skips on AJAX / REST / cron / WP-CLI; concurrency-locked via `wp_cache_add( 'bcm_db_upgrade_lock', ..., 60 )` so simultaneous requests don't double-ALTER; post-condition `SHOW INDEX` check on every required key (`REQUIRED_INDEXES` const) before bumping `bcm_db_version`; `error_log()` under `WP_DEBUG` when the verify fails (typical case: managed host with DB user lacking `ALTER` privilege). Verified by deleting `bcm_db_version`, hitting a frontend page, confirming both indexes still present + version bumped. |
-| 2026-05-14 | 1.5.0 (in-flight) — **Big-site readiness for the inbox**. Added `(reciever, datetime, id)` composite + `(reciever)` single-column indexes via a `dbDelta` migration that runs once per install on `plugins_loaded` (gated by `bcm_db_version` option). `BCM_Messages_Repo::unread_message_ids()` is now hard-capped at 1,000 rows ordered newest-first so the `IN (...)` clause downstream can't blow `max_allowed_packet`. New `BCM_Messages_Repo::count_unread_for_recipient()` returns the true unread COUNT(*) so the "Unread (N)" badge stays accurate above the cap. Inbox template batch-prefetches every sender via `cache_users()` before the render loop, killing N+1 user lookups on cold cache. EXPLAIN confirms: was `type: ALL` + `Using filesort`, now `type: ref` + `bcm_recipient_recent` + no filesort. |
+- The main file registers the product with the bundled EDD SL SDK (`edd_sl_sdk_registry`): host `BUDDYPRESS_CONTACT_ME_LICENCE_HOST` (`https://updates.wbcomdesigns.com`), `fallback_url` `https://wbcomdesigns.com`, item 1528584, key option `edd_wbcom_bp_contact_me_license_key` (unchanged so activated sites stay activated).
+- Every licence call goes through `buddypress_contact_me_licence_request()`; `false` means no host answered and the License tab shows "Could not reach the license server" while keeping the last-known status. Never call the store with `wp_remote_*` directly.
+- Package signatures: product `buddypress-contact-me` (store slug), key `wbcom-2026-1`, warn mode. Process: `~/.claude/skills/wbcom-services/references/signed-updates.md`.
+- The admin screens drop every `admin_notices` callback, so License tab results are printed by the tab view (`edd_BCM_render_admin_notices()`).

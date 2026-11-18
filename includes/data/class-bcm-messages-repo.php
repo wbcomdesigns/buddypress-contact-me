@@ -2,8 +2,8 @@
 /**
  * Data access for contact messages.
  *
- * All SQL against the {$prefix}contact_me table lives here — no raw $wpdb
- * in templates, controllers, or REST endpoints.
+ * All SQL against the {$prefix}contact_me table lives here: no raw $wpdb
+ * in templates, controllers, admin views or REST endpoints.
  *
  * @package BuddyPress_Contact_Me
  */
@@ -18,6 +18,17 @@ if ( ! defined( 'ABSPATH' ) ) {
 class BCM_Messages_Repo {
 
 	/**
+	 * Unix timestamp of a stored message time (stored in UTC since 1.5.1).
+	 *
+	 * @param string $datetime Stored `Y-m-d H:i:s` value.
+	 * @return int
+	 */
+	public static function timestamp( $datetime ) {
+		$ts = strtotime( (string) $datetime . ' UTC' );
+		return $ts ? $ts : time();
+	}
+
+	/**
 	 * Return the fully-prefixed table name.
 	 *
 	 * @return string
@@ -28,71 +39,53 @@ class BCM_Messages_Repo {
 	}
 
 	/**
-	 * Paged list of messages received by a user.
+	 * SQL that is 1 when message row `m` still has an unread BuddyPress
+	 * notification for its recipient, or '0' without the notifications component.
 	 *
-	 * @param int $user_id Recipient user ID.
-	 * @param int $per_page Items per page.
-	 * @param int $page 1-based page number.
-	 * @return array<int, object> Messages (newest first).
+	 * @return string Prepared SQL fragment.
 	 */
-	public static function list_for_recipient( $user_id, $per_page = 10, $page = 1 ) {
+	private static function unread_sql() {
+		if ( ! function_exists( 'bp_is_active' ) || ! bp_is_active( 'notifications' ) ) {
+			return '0';
+		}
 		global $wpdb;
-
-		$user_id  = (int) $user_id;
-		$per_page = max( 1, (int) $per_page );
-		$page     = max( 1, (int) $page );
-		$offset   = ( $page - 1 ) * $per_page;
-		$table    = self::table();
-
-		// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery
-		return $wpdb->get_results(
-			$wpdb->prepare(
-				"SELECT id, sender, reciever AS recipient, subject, message, name, email, datetime
-				 FROM {$table}
-				 WHERE reciever = %d
-				 ORDER BY datetime DESC, id DESC
-				 LIMIT %d OFFSET %d",
-				$user_id,
-				$per_page,
-				$offset
-			)
+		return $wpdb->prepare(
+			'EXISTS ( SELECT 1 FROM %i n WHERE n.user_id = m.reciever AND n.item_id = m.id AND n.component_name = %s AND n.component_action = %s AND n.is_new = 1 )',
+			buddypress()->notifications->table_name,
+			BCM_Frontend_Notifications::COMPONENT,
+			BCM_Frontend_Notifications::ACTION
 		);
-		// phpcs:enable
 	}
 
 	/**
-	 * Paged list of messages received by a user, restricted to the given
-	 * IDs (used for the "Unread" filter).
+	 * Paged list of messages received by a user, newest first. Each row carries `is_unread`.
 	 *
-	 * @param int   $user_id Recipient user ID.
-	 * @param int[] $ids Message IDs to limit to.
-	 * @param int   $per_page Items per page.
-	 * @param int   $page 1-based page number.
-	 * @return array<int, object> Messages (newest first).
+	 * @param int  $user_id     Recipient user ID.
+	 * @param int  $per_page    Items per page.
+	 * @param int  $page        1-based page number.
+	 * @param bool $unread_only Only messages with an unread notification.
+	 * @return array<int, object>
 	 */
-	public static function list_for_recipient_in_ids( $user_id, array $ids, $per_page = 10, $page = 1 ) {
+	public static function list_for_recipient( $user_id, $per_page = 10, $page = 1, $unread_only = false ) {
 		global $wpdb;
 
-		$ids = array_values( array_unique( array_filter( array_map( 'absint', $ids ) ) ) );
-		if ( empty( $ids ) ) {
-			return array();
-		}
-		$user_id      = (int) $user_id;
-		$per_page     = max( 1, (int) $per_page );
-		$page         = max( 1, (int) $page );
-		$offset       = ( $page - 1 ) * $per_page;
-		$table        = self::table();
-		$placeholders = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
+		$per_page = max( 1, (int) $per_page );
+		$offset   = ( max( 1, (int) $page ) - 1 ) * $per_page;
+		$unread   = self::unread_sql();
+		$where    = $unread_only ? "AND {$unread}" : '';
 
-		// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber
+		// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery -- $unread is prepared above.
 		return $wpdb->get_results(
 			$wpdb->prepare(
-				"SELECT id, sender, reciever AS recipient, subject, message, name, email, datetime
-				 FROM {$table}
-				 WHERE reciever = %d AND id IN ({$placeholders})
-				 ORDER BY datetime DESC, id DESC
+				"SELECT m.id, m.sender, m.reciever AS recipient, m.subject, m.message, m.name, m.email, m.datetime, {$unread} AS is_unread
+				 FROM %i m
+				 WHERE m.reciever = %d {$where}
+				 ORDER BY m.datetime DESC, m.id DESC
 				 LIMIT %d OFFSET %d",
-				array_merge( array( $user_id ), $ids, array( $per_page, $offset ) )
+				self::table(),
+				(int) $user_id,
+				$per_page,
+				$offset
 			)
 		);
 		// phpcs:enable
@@ -106,13 +99,35 @@ class BCM_Messages_Repo {
 	 */
 	public static function count_for_recipient( $user_id ) {
 		global $wpdb;
-		$table = self::table();
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery
+		return (int) $wpdb->get_var( $wpdb->prepare( 'SELECT COUNT(*) FROM %i WHERE reciever = %d', self::table(), (int) $user_id ) );
+	}
 
-		// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery
-		return (int) $wpdb->get_var(
-			$wpdb->prepare( "SELECT COUNT(*) FROM {$table} WHERE reciever = %d", (int) $user_id )
+	/**
+	 * Messages a user has not opened yet: rows that still exist and have an
+	 * unread notification, so the count always matches the Unread list.
+	 * Remembered for the request (the nav badge and the script data both ask).
+	 *
+	 * @param int $recipient_id Recipient user ID.
+	 * @return int
+	 */
+	public static function count_unread_for_recipient( $recipient_id ) {
+		static $memo = array();
+		$recipient_id = (int) $recipient_id;
+		if ( isset( $memo[ $recipient_id ] ) ) {
+			return $memo[ $recipient_id ];
+		}
+		$unread = self::unread_sql();
+		if ( '0' === $unread ) {
+			return 0;
+		}
+		global $wpdb;
+		// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery -- $unread is prepared above.
+		$memo[ $recipient_id ] = (int) $wpdb->get_var(
+			$wpdb->prepare( "SELECT COUNT(*) FROM %i m WHERE m.reciever = %d AND {$unread}", self::table(), $recipient_id )
 		);
 		// phpcs:enable
+		return $memo[ $recipient_id ];
 	}
 
 	/**
@@ -123,18 +138,14 @@ class BCM_Messages_Repo {
 	 */
 	public static function find( $id ) {
 		global $wpdb;
-		$table = self::table();
-
-		// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery
 		$row = $wpdb->get_row(
 			$wpdb->prepare(
-				"SELECT id, sender, reciever AS recipient, subject, message, name, email, datetime
-				 FROM {$table} WHERE id = %d",
+				'SELECT id, sender, reciever AS recipient, subject, message, name, email, datetime FROM %i WHERE id = %d',
+				self::table(),
 				(int) $id
 			)
 		);
-		// phpcs:enable
-
 		return $row ? $row : null;
 	}
 
@@ -154,15 +165,11 @@ class BCM_Messages_Repo {
 			'message'  => (string) ( $data['message'] ?? '' ),
 			'name'     => (string) ( $data['name'] ?? '' ),
 			'email'    => (string) ( $data['email'] ?? '' ),
-			'datetime' => current_datetime()->format( 'Y-m-d H:i:s' ),
+			'datetime' => current_time( 'mysql', true ),
 		);
 
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery
-		$ok = $wpdb->insert(
-			self::table(),
-			$row,
-			array( '%d', '%d', '%s', '%s', '%s', '%s', '%s' )
-		);
+		$ok = $wpdb->insert( self::table(), $row, array( '%d', '%d', '%s', '%s', '%s', '%s', '%s' ) );
 
 		return $ok ? (int) $wpdb->insert_id : false;
 	}
@@ -193,94 +200,63 @@ class BCM_Messages_Repo {
 			array( '%d', '%d' )
 		);
 
+		// Drop the recipient's BuddyPress notification for this message so no orphan row is left behind.
+		if ( $deleted && function_exists( 'bp_notifications_delete_notifications_by_item_id' ) ) {
+			bp_notifications_delete_notifications_by_item_id( $recipient_id, $id, BCM_Frontend_Notifications::COMPONENT, BCM_Frontend_Notifications::ACTION );
+		}
+
 		return (bool) $deleted;
 	}
 
 	/**
-	 * Hard cap on how many unread message IDs we'll pull into PHP. Sites
-	 * with members carrying tens of thousands of stale BP notifications
-	 * would otherwise build a ten-thousand-element IN (...) clause that
-	 * trips MySQL's max_allowed_packet and balloons memory. The "Unread"
-	 * filter keeps working — it just shows the most recent N entries.
+	 * Delete every message a deleted member received, 500 rows per query.
 	 *
-	 * @since 1.5.0
+	 * Hooked to `deleted_user` and `wpmu_delete_user`. BuddyPress removes the
+	 * member's notifications itself. Messages the member sent stay with their
+	 * recipients.
+	 *
+	 * @since 1.5.1
+	 *
+	 * @param int $user_id Deleted user ID.
 	 */
-	const UNREAD_ID_HARD_CAP = 1000;
-
-	/**
-	 * IDs of messages that still have an unread BP notification for the
-	 * given recipient. Returns empty array if notifications component is
-	 * unavailable.
-	 *
-	 * @since 1.5.0  Hard-capped at UNREAD_ID_HARD_CAP rows ordered newest-first
-	 *               so the IN (...) clause downstream never explodes.
-	 *
-	 * @param int $recipient_id Recipient user ID.
-	 * @return int[]
-	 */
-	public static function unread_message_ids( $recipient_id ) {
-		if ( ! function_exists( 'bp_is_active' ) || ! bp_is_active( 'notifications' ) ) {
-			return array();
-		}
+	public static function delete_for_user( $user_id ) {
 		global $wpdb;
-
-		$table = buddypress()->notifications->table_name;
-
-		// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery
-		$ids = $wpdb->get_col(
-			$wpdb->prepare(
-				"SELECT item_id FROM {$table}
-				 WHERE user_id = %d
-				   AND component_name = %s
-				   AND component_action = %s
-				   AND is_new = 1
-				 ORDER BY id DESC
-				 LIMIT %d",
-				(int) $recipient_id,
-				'bcm_user_notifications',
-				'bcm_user_notifications_action',
-				self::UNREAD_ID_HARD_CAP
-			)
-		);
-		// phpcs:enable
-
-		return array_map( 'intval', (array) $ids );
+		$user_id = (int) $user_id;
+		if ( $user_id <= 0 ) {
+			return;
+		}
+		do {
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery
+			$deleted = (int) $wpdb->query( $wpdb->prepare( 'DELETE FROM %i WHERE reciever = %d LIMIT 500', self::table(), $user_id ) );
+		} while ( $deleted > 0 );
 	}
 
 	/**
-	 * Total unread BP notifications for the given recipient.
+	 * Totals for the admin Overview tab.
 	 *
-	 * Always counts via SELECT COUNT(*) so the displayed "Unread (N)"
-	 * number is accurate even when the unread-IDs lookup is capped at
-	 * UNREAD_ID_HARD_CAP. Returns 0 if the notifications component is
-	 * unavailable.
+	 * Ponytail: two full scans per Overview load (admin only, no cache). Cache
+	 * in a short transient if a site with millions of messages finds it slow.
 	 *
-	 * @since 1.5.0
+	 * @since 1.5.1
 	 *
-	 * @param int $recipient_id Recipient user ID.
-	 * @return int
+	 * @return array{total:int,senders:int,recipients:int,opted_out:int}
 	 */
-	public static function count_unread_for_recipient( $recipient_id ) {
-		if ( ! function_exists( 'bp_is_active' ) || ! bp_is_active( 'notifications' ) ) {
-			return 0;
-		}
+	public static function stats() {
 		global $wpdb;
-
-		$table = buddypress()->notifications->table_name;
-
-		// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery
-		return (int) $wpdb->get_var(
-			$wpdb->prepare(
-				"SELECT COUNT(*) FROM {$table}
-				 WHERE user_id = %d
-				   AND component_name = %s
-				   AND component_action = %s
-				   AND is_new = 1",
-				(int) $recipient_id,
-				'bcm_user_notifications',
-				'bcm_user_notifications_action'
-			)
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery
+		$row       = (array) $wpdb->get_row(
+			$wpdb->prepare( 'SELECT COUNT(*) AS total, COUNT(DISTINCT NULLIF(sender, 0)) AS senders, COUNT(DISTINCT reciever) AS recipients FROM %i', self::table() ),
+			ARRAY_A
+		);
+		$opted_out = (int) $wpdb->get_var(
+			$wpdb->prepare( "SELECT COUNT(*) FROM {$wpdb->usermeta} WHERE meta_key = %s AND meta_value = %s", 'contact_me_button', 'off' )
 		);
 		// phpcs:enable
+		return array(
+			'total'      => (int) ( $row['total'] ?? 0 ),
+			'senders'    => (int) ( $row['senders'] ?? 0 ),
+			'recipients' => (int) ( $row['recipients'] ?? 0 ),
+			'opted_out'  => $opted_out,
+		);
 	}
 }

@@ -104,7 +104,7 @@ JS click -> apiFetch DELETE /bcm/v1/messages/{id}
 
 | File | Role |
 |---|---|
-| `buddypress-contact-me.php` | Bootstrap, activator/deactivator hooks, plugin header |
+| `buddypress-contact-me.php` | Bootstrap, activation hook, plugin header |
 | `includes/class-buddypress-contact-me.php` | Core orchestrator — wires hooks via Loader |
 | `includes/class-buddypress-contact-me-loader.php` | Hook registry (also exposes the `add_shortcode` wrapper) |
 | `includes/class-buddypress-contact-me-activator.php` | Creates `{prefix}contact_me` table on activation |

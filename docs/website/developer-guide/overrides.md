@@ -4,15 +4,15 @@ This page covers the supported ways to change Contact Me behaviour from a sister
 
 ## Customise the email content
 
-Do not filter the email — edit the post.
+Do not filter the email - edit the post.
 
 1. Go to **Dashboard → Emails**.
 2. Find "A member received a contact message".
 3. Click **Edit** and tweak subject, body, and any token usage.
 
-Once you have edited the post, the plugin will not overwrite your changes on future upgrades — `BCM_Email_Installer::install()` exits early when the email type term already exists.
+Once you have edited the post, the plugin will not overwrite your changes on future upgrades: `BCM_Email_Installer::install()` skips any email type that already has a post.
 
-The five tokens you have available are documented in [Email pipeline](email-pipeline.md): `{{sender.name}}`, `{{recipient.name}}`, `{{contact.subject}}`, `{{contact.message}}`, `{{inbox.url}}`.
+The five tokens you have available are documented in [Email pipeline](email-pipeline.md): `{{sender.name}}`, `{{contact.recipient}}`, `{{contact.subject}}`, `{{contact.message}}`, `{{inbox.url}}`.
 
 ## React to a saved message
 
@@ -57,34 +57,34 @@ add_filter( 'bcm_admin_tabs', function ( $tabs ) {
 } );
 ```
 
-The plugin's renderer maps tab slugs through a hard-coded `$view_map` array, so a brand-new slug will fall back to rendering the Overview view. To actually render your custom tab content, render it from your own plugin's hook (e.g., on `admin_init` check `$_GET['page']` and `$_GET['tab']`) and either echo before the shell or use a sister-plugin admin shell.
+The plugin's renderer maps tab slugs through a hard-coded `$view_map` array, so a brand-new slug will fall back to rendering the Overview view. To actually render your custom tab content, render it from your own plugin's hook (e.g., on `admin_init` check `$_GET['page']` and `$_GET['tab']`) and either echo before the layout or use a sister-plugin admin layout.
 
 ## Override a template partial
 
 The plugin's frontend partials live in `public/partials/`:
 
-- `tab-form.php` — the contact form.
-- `tab-inbox.php` — the inbox listing.
-- `tab-message.php` — the single-message view.
-- `tab-preferences.php` — the per-member opt-out toggle on the member's own profile.
+- `tab-form.php` - the contact form.
+- `tab-inbox.php` - the inbox listing.
+- `tab-message.php` - the single-message view.
+- `tab-preferences.php` - the per-member opt-out toggle on the member's own profile.
 
-These partials are included directly via `BUDDYPRESS_CONTACT_ME_PLUGIN_PATH . 'public/partials/...'` — they are not filtered through `locate_template()`, so theme-level overrides are not supported. To customise the markup, either:
+These partials are included directly via `BUDDYPRESS_CONTACT_ME_PLUGIN_PATH . 'public/partials/...'` - they are not filtered through `locate_template()`, so theme-level overrides are not supported. To customise the markup, either:
 
 1. Unhook the screen callbacks (`BCM_Frontend_Nav::screen_inbox`, `screen_send`, etc.) and re-register your own. The hooks are added in `BCM_Frontend_Nav::register()`.
-2. Or use CSS to restyle the existing markup — every visible element has a stable `bcm-*` class.
+2. Or use CSS to restyle the existing markup - every visible element has a stable `bcm-*` class.
 
 ## Disable a sub-feature entirely
 
 The plugin's main loader registers each subsystem as its own class. To disable email notifications without changing settings:
 
-```php
-add_action( 'bp_init', function () {
-    // BCM hooks itself on bp_init via the loader; remove the email handler.
-    remove_action( 'bp_contact_me_form_save', array( bcm()->frontend_notifications ?? null, 'send_email' ), 20 );
-}, 99 );
-```
+To send your own email instead of the plugin's, turn off **Email notification** on the Notifications tab and send yours from the same action:
 
-Note: there is no global `bcm()` accessor in v1.5.0 — the example above is illustrative. In practice you would track the `BCM_Frontend_Notifications` instance via the action's class binding or replace the action wholesale by unhooking with a higher priority.
+```php
+add_action( 'bp_contact_me_form_save', function ( $message_id, $recipient_id, $sender_id ) {
+    $message = BCM_Messages_Repo::find( $message_id );
+    // Build and send your own email here.
+}, 30, 3 );
+```
 
 ## Filter the hub's wrapper helper slugs
 
@@ -102,9 +102,9 @@ This is the same filter every migrated Wbcom plugin participates in.
 ## What is intentionally not extensible
 
 - Validation rules (length limits on subject, message, name) are not filterable. They are content-quality controls, not preferences.
-- Recipient list assembly is internal — admin copy and sender copy are the only two configurable add-on recipients.
-- The math captcha is not pluggable — replacing it with reCAPTCHA / hCaptcha would require unhooking `BCM_Frontend_Submit::register()` and reimplementing the entire submit pipeline. If you need that level of integration, ship your own plugin and unregister this one's classic-POST handler.
+- Recipient list assembly is internal - admin copy and sender copy are the only two configurable add-on recipients.
+- The math captcha is not pluggable on its own. To use Turnstile, reCAPTCHA or hCaptcha for guests, activate the Wbcom CAPTCHA Manager plugin: Contact Me uses its active service (form name `contact_me`) instead of the math question.
 
 ## Versioning promise
 
-The hooks documented here and in [Hooks & filters](hooks-and-filters.md) plus the REST routes in [REST API](rest-api.md) are the *only* surface guaranteed to remain stable across minor versions. Internal class methods, private hook arguments, and template partial markup may change between minor releases without a deprecation notice — bind to the public surface.
+The hooks documented here and in [Hooks & filters](hooks-and-filters.md) plus the REST routes in [REST API](rest-api.md) are the *only* surface guaranteed to remain stable across minor versions. Internal class methods, private hook arguments, and template partial markup may change between minor releases without a deprecation notice - bind to the public surface.

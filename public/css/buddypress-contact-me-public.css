@@ -1,8 +1,9 @@
 /**
- * BuddyPress Contact Me — public styles.
+ * BuddyPress Contact Me: public styles.
  *
- * Token-based, BEM-ish. Loads only on the Contact tab. Works on BuddyX,
- * BuddyBoss, and Twenty* themes.
+ * Token-based, BEM-ish. Loads on the Contact tab, BP Settings and pages
+ * with the [buddypress-contact-me] shortcode. Colours chain to the BuddyX /
+ * Reign tokens with literal fallbacks for any other theme.
  */
 
 :root {
@@ -23,8 +24,14 @@
 	--bcm-color-text: var(--bx-color-fg, var(--reign-site-body-text-color, #1e2327 ) );
 	--bcm-color-text-muted: var(--bx-color-fg-muted, var(--reign-site-alternate-text-color, #5f6b77 ) );
 	--bcm-color-link: var(--bx-color-link, var(--reign-site-link-color, #2271b1 ) );
-	--bcm-color-primary: var(--bx-color-accent, var(--reign-colors-theme, #2271b1 ) );
-	--bcm-color-primary-hover: var(--bx-color-link-hover, var(--reign-site-link-hover-color, #135e96 ) );
+	/* Primary fills use the theme's button pair so the label colour always
+	 * matches the fill (BuddyX dark: light-coral fill, near-black text). */
+	--bcm-color-primary: var(--bx-color-button-bg, var(--bx-color-accent, var(--reign-colors-theme, #2271b1 ) ) );
+	--bcm-color-primary-hover: var(--bx-color-button-bg-hover, var(--bx-color-link-hover, var(--reign-site-link-hover-color, #135e96 ) ) );
+	--bcm-color-on-primary: var(--bx-color-button-fg, #ffffff );
+	/* Inverted chip (toast, tooltip): page text colour as the fill. */
+	--bcm-color-inverse-bg: var(--bx-color-fg, var(--reign-site-body-text-color, #1e2327 ) );
+	--bcm-color-inverse-fg: var(--bx-color-fg-inverse, #ffffff );
 
 	/* Faint accent wash for "unread"/selected surfaces. Derived from the live
 	 * accent so it follows a customised theme instead of a baked-in blue. The
@@ -40,70 +47,131 @@
 	--bcm-color-success: #00a32a;
 	--bcm-color-warning: #dba617;
 	--bcm-color-focus: var(--bx-color-accent, var(--reign-colors-theme, #2271b1 ) );
+	--bcm-color-on-danger: #ffffff;
+
+	/* Status tints for banners and hover washes, derived from the status
+	 * colour so they flip with it. rgba lines are the no-color-mix fallback. */
+	--bcm-color-success-soft: rgba( 0, 163, 42, 0.1 );
+	--bcm-color-success-soft: color-mix( in srgb, var( --bcm-color-success ) 12%, transparent );
+	--bcm-color-danger-soft: rgba( 214, 54, 56, 0.1 );
+	--bcm-color-danger-soft: color-mix( in srgb, var( --bcm-color-danger ) 12%, transparent );
+	--bcm-color-warning-soft: rgba( 219, 166, 23, 0.12 );
+	--bcm-color-warning-soft: color-mix( in srgb, var( --bcm-color-warning ) 14%, transparent );
+	--bcm-color-info-soft: rgba( 34, 113, 177, 0.1 );
+	--bcm-color-info-soft: color-mix( in srgb, var( --bcm-color-primary ) 12%, transparent );
 
 	/* QA-canonical aliases (surface / page / text) used by the dark contract. */
 	--bcm-bg: var( --bcm-color-bg );
 	--bcm-card-bg: var( --bcm-color-surface );
 	--bcm-text: var( --bcm-color-text );
 
+	/* Focus rings and the confirm-dialog backdrop, derived from tokens above. */
+	--bcm-color-focus-ring: color-mix( in srgb, var( --bcm-color-focus ) 22%, transparent );
+	--bcm-color-danger-ring: color-mix( in srgb, var( --bcm-color-danger ) 18%, transparent );
+	--bcm-color-hover-wash: color-mix( in srgb, var( --bcm-color-text ) 6%, transparent );
+	--bcm-color-chip: color-mix( in srgb, var( --bcm-color-text ) 10%, transparent );
+	--bcm-color-overlay: rgba( 16, 24, 40, 0.55 );
+
 	--bcm-shadow-sm: 0 1px 2px rgba( 16, 24, 40, 0.06 );
 	--bcm-shadow-md: 0 8px 24px rgba( 16, 24, 40, 0.12 );
 	--bcm-shadow-lg: 0 20px 50px rgba( 16, 24, 40, 0.18 );
 }
 
-/* ---------- Alerts / banners ---------- */
-
-.bcm-alert {
+/* ---------- Notices ---------- *
+ *
+ * Notices and toasts are BuddyPress `.bp-feedback` markup, so Nouveau and the
+ * theme paint them like every other BuddyPress notice. The rules below are a
+ * zero-specificity fallback for pages where nothing styles `.bp-feedback`
+ * (a shortcode on a plain page).
+ */
+:where( .bcm-alert ) {
+	display: flex;
+	align-items: center;
+	gap: var( --bcm-gap-sm );
 	margin: 0 0 var( --bcm-gap );
-	padding: 12px 16px;
+	padding: 10px 15px;
+	border: 1px solid var( --bcm-color-border );
+	border-inline-start-width: 4px;
 	border-radius: var( --bcm-radius-sm );
-	border-left: 4px solid var( --bcm-color-border );
-	background: var( --bcm-color-bg-soft );
+	background: var( --bcm-color-surface );
 	color: var( --bcm-color-text );
 	font-size: 14px;
 	line-height: 1.5;
 }
 
-.bcm-alert--success { border-left-color: var( --bcm-color-success ); background: #edfaef; }
-.bcm-alert--error   { border-left-color: var( --bcm-color-danger );  background: #fcecec; }
-.bcm-alert--warning { border-left-color: var( --bcm-color-warning ); background: #fff8e5; }
-.bcm-alert--info    { border-left-color: var( --bcm-color-primary ); background: #eaf2fa; }
+:where( .bcm-alert ) p { margin: 0; }
+:where( .bcm-alert.success ) { border-inline-start-color: var( --bcm-color-success ); }
+:where( .bcm-alert.error ) { border-inline-start-color: var( --bcm-color-danger ); }
+:where( .bcm-alert.warning ) { border-inline-start-color: var( --bcm-color-warning ); }
+:where( .bcm-alert.info ) { border-inline-start-color: var( --bcm-color-primary ); }
 
-/* ---------- Toast ---------- */
-
-.bcm-toast-container {
-	position: fixed;
-	right: 24px;
-	bottom: 24px;
-	z-index: 100000;
-	display: flex;
-	flex-direction: column;
-	gap: 10px;
-	max-width: calc( 100vw - 48px );
-	pointer-events: none;
-}
-
+/* Family action toast: one at a time, bottom centre, closed by its button or Escape. */
 .bcm-toast {
-	min-width: 240px;
-	max-width: 360px;
-	padding: 12px 16px;
-	border-radius: var( --bcm-radius );
-	background: #1e2327;
-	color: #ffffff;
-	font-size: 14px;
-	line-height: 1.45;
-	box-shadow: var( --bcm-shadow-lg );
-	opacity: 0;
-	transform: translateY( 8px );
-	transition: opacity 180ms ease, transform 180ms ease;
-	pointer-events: auto;
+	position: fixed;
+	inset-inline: var( --bcm-gap );
+	inset-block-end: 24px;
+	z-index: 100000;
+	max-width: 480px;
+	margin-inline: auto;
+	border-radius: var( --bcm-radius-sm );
+	box-shadow: var( --bcm-shadow-md );
 }
 
-.bcm-toast--visible { opacity: 1; transform: translateY( 0 ); }
-.bcm-toast--success { background: #0a6b2c; }
-.bcm-toast--error   { background: #a71d1f; }
-.bcm-toast--warning { background: #8c6d14; }
-.bcm-toast--info    { background: #1a5889; }
+.bcm-toast .bp-feedback {
+	display: flex;
+	align-items: center;
+	gap: var( --bcm-gap-sm );
+	margin: 0;
+}
+
+.bcm-toast .bp-feedback p {
+	flex: 1;
+	min-width: 0;
+	margin: 0;
+}
+
+/* Beats `.buddypress .buddypress-wrap button` (0,2,1) so the close button is not a filled theme button. */
+.bcm-toast .bp-feedback button.bcm-toast__close {
+	display: inline-flex;
+	flex: 0 0 auto;
+	align-items: center;
+	justify-content: center;
+	width: 32px;
+	height: 32px;
+	margin: 0;
+	padding: 0;
+	border: 0;
+	border-radius: 50%;
+	background: transparent;
+	box-shadow: none;
+	color: inherit;
+	cursor: pointer;
+}
+
+.bcm-toast .bp-feedback button.bcm-toast__close:hover,
+.bcm-toast .bp-feedback button.bcm-toast__close:focus-visible {
+	background: var( --bcm-color-hover-wash );
+	color: inherit;
+}
+
+/* Keeps a text label in the accessibility tree while hiding it on screen. */
+.bcm-sr-only {
+	position: absolute !important;
+	width: 1px !important;
+	height: 1px !important;
+	overflow: hidden !important;
+	clip-path: inset( 50% ) !important;
+	white-space: nowrap !important;
+}
+
+/* Honeypot: off screen for people, still in the form for bots. */
+.bcm-hp {
+	position: absolute !important;
+	inset-inline-start: -10000px !important;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+}
 
 /* ---------- Contact form ---------- */
 
@@ -124,8 +192,8 @@
 
 .bcm-form__header {
 	margin: 0 0 var( --bcm-gap-lg );
-	padding-bottom: var( --bcm-gap );
-	border-bottom: 1px solid var( --bcm-color-border );
+	padding-block-end: var( --bcm-gap );
+	border-block-end: 1px solid var( --bcm-color-border );
 }
 
 .bcm-form__title {
@@ -162,7 +230,7 @@
 
 .bcm-field__required {
 	color: var( --bcm-color-danger );
-	margin-left: 2px;
+	margin-inline-start: 2px;
 }
 
 .bcm-field input,
@@ -185,7 +253,7 @@
 .bcm-field input:focus,
 .bcm-field textarea:focus {
 	border-color: var( --bcm-color-focus );
-	box-shadow: 0 0 0 3px rgba( 34, 113, 177, 0.2 );
+	box-shadow: 0 0 0 3px var( --bcm-color-focus-ring );
 }
 
 .bcm-field input:focus-visible,
@@ -198,7 +266,7 @@
 .bcm-field input.bcm-field__input--error,
 .bcm-field textarea.bcm-field__input--error {
 	border-color: var( --bcm-color-danger );
-	box-shadow: 0 0 0 3px rgba( 214, 54, 56, 0.15 );
+	box-shadow: 0 0 0 3px var( --bcm-color-danger-ring );
 }
 
 .bcm-field__hint {
@@ -243,7 +311,7 @@
 .bcm-form__actions {
 	display: flex;
 	justify-content: flex-end;
-	padding-top: 6px;
+	padding-block-start: 6px;
 }
 
 .bcm-submit.button {
@@ -255,7 +323,7 @@
 	padding: 10px 18px;
 	font-size: 15px;
 	font-weight: 600;
-	color: #ffffff;
+	color: var( --bcm-color-on-primary );
 	background: var( --bcm-color-primary );
 	border: 1px solid var( --bcm-color-primary );
 	border-radius: var( --bcm-radius-sm );
@@ -272,8 +340,8 @@
 	width: 14px;
 	height: 14px;
 	border-radius: 50%;
-	border: 2px solid rgba( 255, 255, 255, 0.5 );
-	border-top-color: #ffffff;
+	border: 2px solid currentColor;
+	border-top-color: transparent;
 	animation: bcm-spin 720ms linear infinite;
 }
 .bcm-submit__spinner { display: none; }
@@ -300,8 +368,8 @@
 	align-items: baseline;
 	justify-content: space-between;
 	gap: 12px;
-	padding-bottom: 10px;
-	border-bottom: 1px solid var( --bcm-color-border );
+	padding-block-end: 10px;
+	border-block-end: 1px solid var( --bcm-color-border );
 }
 
 .bcm-inbox__title { margin: 0; font-size: 18px; font-weight: 600; }
@@ -309,7 +377,7 @@
 .bcm-inbox__unread {
 	padding: 2px 10px;
 	background: var( --bcm-color-primary );
-	color: #ffffff;
+	color: var( --bcm-color-on-primary );
 	border-radius: 999px;
 	font-size: 12px;
 	font-weight: 600;
@@ -339,12 +407,12 @@
 	transition: background-color 150ms ease, color 150ms ease;
 }
 
-.bcm-inbox__filter:hover { color: var( --bcm-color-text ); background: rgba( 34, 113, 177, 0.06 ); }
+.bcm-inbox__filter:hover { color: var( --bcm-color-text ); background: var( --bcm-color-hover-wash ); }
 
 .bcm-inbox__filter.is-active {
 	background: var( --bcm-color-bg );
 	color: var( --bcm-color-text );
-	box-shadow: 0 1px 2px rgba( 0, 0, 0, 0.06 );
+	box-shadow: var( --bcm-shadow-sm );
 }
 
 .bcm-inbox__filter-count {
@@ -355,13 +423,13 @@
 	height: 18px;
 	padding: 0 6px;
 	border-radius: 999px;
-	background: rgba( 0, 0, 0, 0.08 );
+	background: var( --bcm-color-chip );
 	color: inherit;
 	font-size: 11px;
 	font-weight: 600;
 }
 
-.bcm-inbox__filter.is-active .bcm-inbox__filter-count { background: var( --bcm-color-primary ); color: #ffffff; }
+.bcm-inbox__filter.is-active .bcm-inbox__filter-count { background: var( --bcm-color-primary ); color: var( --bcm-color-on-primary ); }
 
 .bcm-empty--inline {
 	padding: 24px;
@@ -388,8 +456,8 @@
 	height: 18px;
 	margin-inline-start: 6px;
 	padding: 0 6px;
-	background: var( --color-theme-primary, var( --reign-colors-theme, var( --bcm-color-primary ) ) );
-	color: #ffffff;
+	background: var( --bcm-color-primary );
+	color: var( --bcm-color-on-primary );
 	border-radius: 999px;
 	font-size: 11px;
 	font-weight: 600;
@@ -413,9 +481,9 @@
 .bcm-message:hover { border-color: var( --bcm-color-border-strong ); }
 
 .bcm-message--unread {
-	background: linear-gradient( to right, var( --bcm-color-primary-soft ) 0%, transparent 40% );
-	border-left: 3px solid var( --bcm-color-primary );
-	padding-left: 12px;
+	background: var( --bcm-color-primary-soft );
+	border-inline-start: 3px solid var( --bcm-color-primary );
+	padding-inline-start: 12px;
 }
 
 .bcm-message__avatar img { width: 48px; height: 48px; border-radius: 50%; display: block; }
@@ -442,7 +510,7 @@
 	font-weight: 700;
 	text-transform: uppercase;
 	letter-spacing: 0.06em;
-	color: #ffffff;
+	color: var( --bcm-color-on-primary );
 	background: var( --bcm-color-primary );
 	border-radius: 999px;
 }
@@ -459,9 +527,9 @@
 }
 
 .bcm-badge--guest {
-	color: #8c6d14;
-	background: #fff8e5;
-	border: 1px solid #f1d789;
+	color: var( --bcm-color-text );
+	background: var( --bcm-color-warning-soft );
+	border: 1px solid var( --bcm-color-warning );
 }
 
 .bcm-message__subject {
@@ -502,8 +570,8 @@
 	line-height: 1;
 }
 
-.bcm-message__view:hover   { color: var( --bcm-color-primary ); background: #eaf2fa; }
-.bcm-message__delete:hover { color: var( --bcm-color-danger );  background: #fcecec; }
+.bcm-message__view:hover   { color: var( --bcm-color-primary ); background: var( --bcm-color-info-soft ); }
+.bcm-message__delete:hover { color: var( --bcm-color-danger );  background: var( --bcm-color-danger-soft ); }
 
 .bcm-pagination { display: flex; justify-content: center; gap: 4px; padding: 16px 0 4px; }
 
@@ -521,7 +589,7 @@
 .bcm-pagination .page-numbers:hover {
 	background: var( --bcm-color-primary );
 	border-color: var( --bcm-color-primary );
-	color: #ffffff;
+	color: var( --bcm-color-on-primary );
 }
 
 /* ---------- Empty state ---------- */
@@ -536,7 +604,7 @@
 	background: var( --bcm-color-bg-soft );
 }
 
-.bcm-empty__icon   { color: var( --bcm-color-primary ); opacity: 0.75; margin-bottom: 12px; }
+.bcm-empty__icon   { color: var( --bcm-color-primary ); opacity: 0.75; margin-block-end: 12px; }
 .bcm-empty__title  { margin: 0 0 8px; font-size: 17px; font-weight: 600; color: var( --bcm-color-text ); }
 .bcm-empty__body   { margin: 0 0 var( --bcm-gap ); color: var( --bcm-color-text-muted ); font-size: 14px; }
 .bcm-empty__actions { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin: 0; }
@@ -551,7 +619,7 @@
 	border: 1px solid transparent;
 	cursor: pointer;
 }
-.bcm-empty__actions .button-link:hover { background: #eaf2fa; }
+.bcm-empty__actions .button-link:hover { background: var( --bcm-color-info-soft ); }
 
 /* ---------- Confirm overlay (bcmConfirm) ---------- */
 
@@ -559,7 +627,7 @@
 	position: fixed;
 	inset: 0;
 	z-index: 100001;
-	background: rgba( 16, 24, 40, 0.55 );
+	background: var( --bcm-color-overlay );
 	backdrop-filter: blur( 2px );
 	display: flex;
 	align-items: center;
@@ -575,7 +643,8 @@
 	width: 100%;
 	max-width: 420px;
 	padding: 20px;
-	background: #ffffff;
+	background: var( --bcm-color-surface );
+	border: 1px solid var( --bcm-color-border );
 	border-radius: var( --bcm-radius );
 	box-shadow: var( --bcm-shadow-lg );
 	transform: translateY( -6px );
@@ -584,8 +653,8 @@
 
 .bcm-confirm-overlay--visible .bcm-confirm { transform: translateY( 0 ); }
 
-.bcm-confirm__title   { margin: 0 0 6px;  font-size: 16px; font-weight: 600; color: #1e2327; }
-.bcm-confirm__message { margin: 0 0 16px; font-size: 14px; line-height: 1.5; color: #5f6b77; }
+.bcm-confirm__title   { margin: 0 0 6px;  font-size: 16px; font-weight: 600; color: var( --bcm-color-text ); }
+.bcm-confirm__message { margin: 0 0 16px; font-size: 14px; line-height: 1.5; color: var( --bcm-color-text-muted ); }
 
 .bcm-confirm__actions { display: flex; justify-content: flex-end; gap: 8px; }
 
@@ -595,36 +664,11 @@
 	font-weight: 600;
 	border-radius: 6px;
 	cursor: pointer;
-	border: 1px solid #c7ced6;
-	background: #ffffff;
-	color: #1e2327;
-}
-.bcm-confirm__btn:hover { background: #f6f7f9; }
-
-.bcm-confirm__btn--confirm { background: #2271b1; border-color: #2271b1; color: #ffffff; }
-.bcm-confirm__btn--confirm:hover { background: #135e96; border-color: #135e96; }
-
-.bcm-confirm__btn--dangerous { background: #d63638; border-color: #d63638; color: #ffffff; }
-.bcm-confirm__btn--dangerous:hover { background: #b32d2e; border-color: #b32d2e; }
-
-/* ---------- Per-user BP settings toggle ---------- */
-
-.bp-contact-me-settings-toggle {
-	margin: 16px 0;
-	padding: 10px 12px;
-	background: var( --bcm-color-bg-soft );
-	border: 1px solid var( --bcm-color-border );
-	border-radius: var( --bcm-radius-sm );
-}
-
-.bp-contact-me-settings-toggle label {
-	display: flex;
-	align-items: center;
-	gap: 8px;
-	font-size: 14px;
+	border: 1px solid var( --bcm-color-border-strong );
+	background: var( --bcm-color-surface );
 	color: var( --bcm-color-text );
-	cursor: pointer;
 }
+.bcm-confirm__btn:hover { background: var( --bcm-color-bg-soft ); }
 
 /* ---------- Info card (intro / how-it-works) ---------- */
 
@@ -635,15 +679,15 @@
 	align-items: flex-start;
 	margin: 0 0 var( --bcm-gap );
 	padding: 14px 16px;
-	background: #eaf2fa;
-	border: 1px solid #c6dbf0;
+	background: var( --bcm-color-info-soft );
+	border: 1px solid var( --bcm-color-border );
 	border-radius: var( --bcm-radius );
 	transition: opacity 200ms ease;
 }
 
 .bcm-info__icon {
 	color: var( --bcm-color-primary );
-	padding-top: 2px;
+	padding-block-start: 2px;
 }
 
 .bcm-info__body {
@@ -674,8 +718,8 @@
 	color: var( --bcm-color-text-muted );
 }
 
-.bcm-info__links a,
-.bcm-info__links .button-link {
+.bcm-info[data-bcm-info] .bcm-info__links a,
+.bcm-info[data-bcm-info] .bcm-info__links button.button-link {
 	color: var( --bcm-color-primary );
 	text-decoration: none;
 	background: none;
@@ -685,12 +729,12 @@
 	font-size: inherit;
 }
 
-.bcm-info__links a:hover,
-.bcm-info__links .button-link:hover {
+.bcm-info[data-bcm-info] .bcm-info__links a:hover,
+.bcm-info[data-bcm-info] .bcm-info__links button.button-link:hover {
 	text-decoration: underline;
 }
 
-.bcm-info__close {
+.bcm-info[data-bcm-info] button.bcm-info__close {
 	background: transparent;
 	border: 0;
 	padding: 2px;
@@ -700,8 +744,8 @@
 	align-self: flex-start;
 }
 
-.bcm-info__close:hover {
-	background: rgba( 0, 0, 0, 0.06 );
+.bcm-info[data-bcm-info] button.bcm-info__close:hover {
+	background: var( --bcm-color-bg-soft );
 	color: var( --bcm-color-text );
 }
 
@@ -713,14 +757,12 @@
 	gap: 2px;
 	align-self: center;
 	opacity: 0;
-	transform: translateX( 4px );
-	transition: opacity 140ms ease, transform 140ms ease;
+	transition: opacity 140ms ease;
 }
 
 .bcm-message:hover .bcm-message__actions,
 .bcm-message:focus-within .bcm-message__actions {
 	opacity: 1;
-	transform: translateX( 0 );
 }
 
 .bcm-message__action {
@@ -740,7 +782,8 @@
 	position: relative;
 }
 
-.bcm-message__action:focus-visible {
+/* (0,4,0) beats BuddyPress Nouveau's `.buddypress .buddypress-wrap button:focus { outline: 0 }` (0,3,1). */
+.bcm-messages .bcm-message .bcm-message__action:focus-visible {
 	outline: 2px solid var( --bcm-color-focus );
 	outline-offset: 2px;
 }
@@ -752,41 +795,11 @@
 	line-height: 1;
 }
 
-.bcm-message__action-label {
-	position: absolute;
-	inset-block-end: calc( 100% + 6px );
-	inset-inline-start: 50%;
-	transform: translate( -50%, 4px );
-	padding: 4px 8px;
-	font-size: 11px;
-	font-weight: 500;
-	color: #ffffff;
-	background: #1e2327;
-	border-radius: 4px;
-	white-space: nowrap;
-	pointer-events: none;
-	opacity: 0;
-	transition: opacity 120ms ease, transform 120ms ease;
-}
-
-.bcm-message__action:hover .bcm-message__action-label,
-.bcm-message__action:focus-visible .bcm-message__action-label {
-	opacity: 1;
-	transform: translate( -50%, 0 );
-}
-
-.bcm-message__action--delete:hover {
-	color: var( --bcm-color-danger );
-	background: #fcecec !important;
-}
-
 /* Mobile / coarse pointers: always show actions since there is no hover. */
 @media ( hover: none ) {
 	.bcm-message__actions {
 		opacity: 1;
-		transform: none;
 	}
-	.bcm-message__action-label { display: none; }
 }
 
 /* ---------- Single message view ---------- */
@@ -824,8 +837,8 @@
 	grid-template-columns: 64px 1fr;
 	gap: 16px;
 	align-items: center;
-	padding-bottom: var( --bcm-gap );
-	border-bottom: 1px solid var( --bcm-color-border );
+	padding-block-end: var( --bcm-gap );
+	border-block-end: 1px solid var( --bcm-color-border );
 }
 
 /* Pin the avatar column so theme rules that force `img { width: 100% }`
@@ -906,7 +919,7 @@
 	display: flex;
 	flex-wrap: wrap;
 	gap: 8px;
-	padding-top: 6px;
+	padding-block-start: 6px;
 }
 
 .bcm-message-view__action {
@@ -943,7 +956,7 @@
 }
 
 .bcm-message-view__action--primary {
-	color: #ffffff;
+	color: var( --bcm-color-on-primary );
 	background: var( --bcm-color-primary );
 	border-color: var( --bcm-color-primary );
 }
@@ -952,11 +965,11 @@
 .bcm-message-view__action--primary:focus-visible {
 	background: var( --bcm-color-primary-hover );
 	border-color: var( --bcm-color-primary-hover );
-	color: #ffffff;
+	color: var( --bcm-color-on-primary );
 }
 
 .bcm-message-view__action--danger {
-	margin-left: auto;
+	margin-inline-start: auto;
 	color: var( --bcm-color-danger );
 	background: var( --bcm-color-bg );
 	border-color: var( --bcm-color-border );
@@ -964,15 +977,15 @@
 
 .bcm-message-view__action--danger:hover,
 .bcm-message-view__action--danger:focus-visible {
-	color: #ffffff;
+	color: var( --bcm-color-on-danger );
 	background: var( --bcm-color-danger );
 	border-color: var( --bcm-color-danger );
 }
 
 @media ( max-width: 600px ) {
 	.bcm-message-view__actions { flex-direction: column; align-items: stretch; }
-	.bcm-message-view__action.button { justify-content: center; }
-	.bcm-message-view__action--danger.button { margin-left: 0; }
+	.bcm-message-view__action { justify-content: center; }
+	.bcm-message-view__action--danger { margin-inline-start: 0; }
 }
 
 /* ---------- Preferences screen ---------- */
@@ -985,8 +998,8 @@
 }
 
 .bcm-preferences__header {
-	padding-bottom: 10px;
-	border-bottom: 1px solid var( --bcm-color-border );
+	padding-block-end: 10px;
+	border-block-end: 1px solid var( --bcm-color-border );
 }
 
 .bcm-preferences__title {
@@ -1001,9 +1014,10 @@
 	color: var( --bcm-color-text-muted );
 }
 
-.bcm-preferences__form {
+.bcm-preferences__form,
+.bcm-preferences__panel {
 	padding: 16px;
-	background: var( --bcm-color-bg );
+	background: var( --bcm-color-surface );
 	border: 1px solid var( --bcm-color-border );
 	border-radius: var( --bcm-radius );
 }
@@ -1016,7 +1030,7 @@
 }
 
 .bcm-preferences__toggle input {
-	margin-top: 3px;
+	margin-block-start: 3px;
 	width: 18px;
 	height: 18px;
 }
@@ -1038,23 +1052,16 @@
 	font-size: 13px;
 	color: var( --bcm-color-text-muted );
 	line-height: 1.5;
-	margin-top: 2px;
+	margin-block-start: 2px;
 }
 
 .bcm-preferences__actions {
-	margin-top: 14px;
+	margin-block-start: 14px;
 	display: flex;
 	justify-content: flex-end;
 }
 
-.bcm-preferences__panel {
-	padding: 16px;
-	background: var( --bcm-color-bg-soft );
-	border: 1px solid var( --bcm-color-border );
-	border-radius: var( --bcm-radius );
-}
-
-.bcm-preferences__panel-title {
+.bcm-preferences .bcm-preferences__panel-title {
 	margin: 0 0 6px;
 	font-size: 14px;
 	font-weight: 600;
@@ -1085,13 +1092,13 @@
 
 .bcm-preferences__tips {
 	margin: 0;
-	padding-left: 20px;
+	padding-inline-start: 20px;
 	font-size: 13px;
 	color: var( --bcm-color-text-muted );
 	line-height: 1.6;
 }
 
-.bcm-preferences__tips li { margin-bottom: 4px; }
+.bcm-preferences__tips li { margin-block-end: 4px; }
 
 /* ---------- Responsive ---------- */
 
@@ -1107,176 +1114,50 @@
 
 /* ---------- Dark mode (theme-driven) ---------- *
  *
- * All colours hang on CSS custom properties, so themes that ship dark
- * mode get our palette automatically once the sentinel class is on the
- * body.
+ * Keyed only on the theme's own dark switch: `html[data-bx-mode="dark"]`
+ * (BuddyX 5.1+, BuddyX Pro, Reign 8) and `body.buddyx-dark-theme` (older
+ * BuddyX). Never prefers-color-scheme: the site's toggle decides, not the OS.
  *
- * The sentinel `body.bcm-dark` is set by an inline observer in
- * BCM_Frontend_Assets::output_dark_mode_mirror() that watches both
- * <html> and <body> for the dark-mode classes BuddyX
- * (`buddyx-dark-theme`), Reign (`dark-mode` on <html>), BuddyBoss
- * (`bb-dark-mode` / `bb-dark-mode-on`), and the wp-dark-mode plugin
- * (`wp-dark-mode-active`) emit. Centralising detection in one script
- * means future themes only need their own dark class added to that
- * list — every dark rule below stays untouched.
- *
- * We deliberately do NOT hook into prefers-color-scheme: site owners
- * pick the trigger, not the OS.
+ * The themes flip their --bx-color-* tokens in dark mode, so every chain is
+ * re-declared here (it must resolve where the dark switch sits) with dark
+ * fallbacks for a theme that only sets the switch. Status colours keep their
+ * own dark values so "error" never borrows the accent.
  */
-html.dark-mode,
-body.dark-mode,
-body.dark-scheme,
-html.dark,
-[data-theme="dark"],
 html[data-bx-mode="dark"],
-.buddyx-dark-mode,
-.buddyx-dark-theme,
-.bb-dark-mode,
-body.bcm-dark {
-	/* Explicit dark values — deliberately NOT chained through --bx-* / --reign-*:
-	 * those vars stay light unless the theme itself is in dark mode, so chaining
-	 * here would resolve to the light palette on a generic dark toggle. BuddyX /
-	 * Reign native dark is already handled by the light :root chain flipping the
-	 * theme's own tokens; this block guarantees a correct dark surface for every
-	 * other dark trigger and a consistent baseline. */
-	--bcm-color-border: #3a4253;
-	--bcm-color-border-strong: #3c4654;
-	--bcm-color-bg: #16191f;
-	--bcm-color-bg-soft: #262c3a;
-	--bcm-color-surface: #1f2430;
-	--bcm-color-text: #e4e4e7;
-	--bcm-color-text-muted: #b4b4b8;
-	--bcm-color-link: #72b7ea;
-	--bcm-color-primary: #4fa3e3;
-	--bcm-color-primary-hover: #72b7ea;
+body.buddyx-dark-theme {
+	--bcm-color-border: var(--bx-color-border, var(--reign-site-border-color, #3a4253 ) );
+	--bcm-color-border-strong: var(--bx-color-border-strong, var(--bx-color-border, #3c4654 ) );
+	--bcm-color-bg: var(--bx-color-bg-page, var(--reign-site-body-bg-color, #16191f ) );
+	--bcm-color-bg-soft: var(--bx-color-bg-subtle, var(--reign-site-secondary-bg-color, #262c3a ) );
+	--bcm-color-surface: var(--bx-color-bg-elevated, var(--reign-site-sections-bg-color, #1f2430 ) );
+	--bcm-color-text: var(--bx-color-fg, var(--reign-site-body-text-color, #e4e4e7 ) );
+	--bcm-color-text-muted: var(--bx-color-fg-muted, var(--reign-site-alternate-text-color, #b4b4b8 ) );
+	--bcm-color-link: var(--bx-color-link, var(--reign-site-link-color, #72b7ea ) );
+	--bcm-color-primary: var(--bx-color-button-bg, var(--bx-color-accent, #4fa3e3 ) );
+	--bcm-color-primary-hover: var(--bx-color-button-bg-hover, var(--bx-color-link-hover, #72b7ea ) );
+	--bcm-color-on-primary: var(--bx-color-button-fg, #16191f );
+	--bcm-color-inverse-bg: var(--bx-color-fg, #e4e4e7 );
+	--bcm-color-inverse-fg: var(--bx-color-fg-inverse, #16191f );
+	--bcm-color-focus: var(--bx-color-accent, #4fa3e3 );
 	--bcm-color-danger: #f26c6e;
 	--bcm-color-danger-hover: #f58485;
+	--bcm-color-on-danger: #16191f;
 	--bcm-color-success: #34c759;
 	--bcm-color-warning: #f0b429;
-	--bcm-color-focus: #4fa3e3;
+	--bcm-color-primary-soft: color-mix( in srgb, var( --bcm-color-primary ) 12%, transparent );
+	--bcm-color-success-soft: color-mix( in srgb, var( --bcm-color-success ) 14%, transparent );
+	--bcm-color-danger-soft: color-mix( in srgb, var( --bcm-color-danger ) 16%, transparent );
+	--bcm-color-warning-soft: color-mix( in srgb, var( --bcm-color-warning ) 14%, transparent );
+	--bcm-color-info-soft: color-mix( in srgb, var( --bcm-color-primary ) 16%, transparent );
 
-	/* QA-canonical aliases get explicit dark values so the contract sees a real
-	 * flip (not an indirection that would still resolve light). */
-	--bcm-bg: #16191f;
-	--bcm-card-bg: #1f2430;
-	--bcm-text: #e4e4e7;
+	--bcm-bg: var( --bcm-color-bg );
+	--bcm-card-bg: var( --bcm-color-surface );
+	--bcm-text: var( --bcm-color-text );
 
 	--bcm-shadow-sm: 0 1px 2px rgba( 0, 0, 0, 0.4 );
 	--bcm-shadow-md: 0 8px 24px rgba( 0, 0, 0, 0.5 );
 	--bcm-shadow-lg: 0 20px 50px rgba( 0, 0, 0, 0.6 );
 }
-
-/* Banner tints need darker panel backgrounds too — the hard-coded
-   pastel fills above would wash out against the dark card. */
-html.dark-mode .bcm-alert--success,
-body.dark-mode .bcm-alert--success,
-[data-theme="dark"] .bcm-alert--success,
-html[data-bx-mode="dark"] .bcm-alert--success,
-.buddyx-dark-mode .bcm-alert--success,
-.buddyx-dark-theme .bcm-alert--success,
-.bb-dark-mode .bcm-alert--success,
-body.bcm-dark .bcm-alert--success { background: rgba( 52, 199, 89, 0.12 ); }
-html.dark-mode .bcm-alert--error,
-body.dark-mode .bcm-alert--error,
-[data-theme="dark"] .bcm-alert--error,
-html[data-bx-mode="dark"] .bcm-alert--error,
-.buddyx-dark-mode .bcm-alert--error,
-.buddyx-dark-theme .bcm-alert--error,
-.bb-dark-mode .bcm-alert--error,
-body.bcm-dark .bcm-alert--error { background: rgba( 242, 108, 110, 0.12 ); }
-html.dark-mode .bcm-alert--warning,
-body.dark-mode .bcm-alert--warning,
-[data-theme="dark"] .bcm-alert--warning,
-html[data-bx-mode="dark"] .bcm-alert--warning,
-.buddyx-dark-mode .bcm-alert--warning,
-.buddyx-dark-theme .bcm-alert--warning,
-.bb-dark-mode .bcm-alert--warning,
-body.bcm-dark .bcm-alert--warning { background: rgba( 240, 180, 41, 0.12 ); }
-html.dark-mode .bcm-alert--info,
-body.dark-mode .bcm-alert--info,
-[data-theme="dark"] .bcm-alert--info,
-html[data-bx-mode="dark"] .bcm-alert--info,
-.buddyx-dark-mode .bcm-alert--info,
-.buddyx-dark-theme .bcm-alert--info,
-.bb-dark-mode .bcm-alert--info,
-body.bcm-dark .bcm-alert--info { background: rgba( 79, 163, 227, 0.12 ); }
-
-/* ----------------------------------------------------------------------
- * Dark mode — non-tokenised surfaces + theme-bleed guards
- *
- * The block above only flips our design tokens. Three groups of styles
- * stay light regardless because they were authored with literal hex
- * (the confirm popup, the intro/info card) or because the host theme's
- * own `<button>` / `<a>` rules outrank our token-driven colours (the
- * action buttons + confirm buttons go the theme accent in dark mode).
- *
- * We scope a single shared dark selector group (`.bcm-dark` covers every
- * runtime trigger via the mirror script; the attribute/class twins keep
- * it working before the script runs, with no FOUC).
- * -------------------------------------------------------------------- */
-
-/* Convenience: one comma-list reused below. Kept verbose (no :is()) for
- * maximum browser support across the supported theme matrix. */
-
-/* Confirm popup — dark surface + readable copy. */
-html.dark-mode .bcm-confirm,
-body.dark-mode .bcm-confirm,
-[data-theme="dark"] .bcm-confirm,
-html[data-bx-mode="dark"] .bcm-confirm,
-.buddyx-dark-mode .bcm-confirm,
-.buddyx-dark-theme .bcm-confirm,
-.bb-dark-mode .bcm-confirm,
-body.bcm-dark .bcm-confirm {
-	background: var( --bcm-color-surface );
-	border: 1px solid var( --bcm-color-border );
-}
-html.dark-mode .bcm-confirm__title,
-body.dark-mode .bcm-confirm__title,
-[data-theme="dark"] .bcm-confirm__title,
-html[data-bx-mode="dark"] .bcm-confirm__title,
-.buddyx-dark-mode .bcm-confirm__title,
-.buddyx-dark-theme .bcm-confirm__title,
-.bb-dark-mode .bcm-confirm__title,
-body.bcm-dark .bcm-confirm__title { color: var( --bcm-color-text ); }
-html.dark-mode .bcm-confirm__message,
-body.dark-mode .bcm-confirm__message,
-[data-theme="dark"] .bcm-confirm__message,
-html[data-bx-mode="dark"] .bcm-confirm__message,
-.buddyx-dark-mode .bcm-confirm__message,
-.buddyx-dark-theme .bcm-confirm__message,
-.bb-dark-mode .bcm-confirm__message,
-body.bcm-dark .bcm-confirm__message { color: var( --bcm-color-text-muted ); }
-
-/* Info / intro card — derive from tokens instead of the baked pastel. */
-html.dark-mode .bcm-info,
-body.dark-mode .bcm-info,
-[data-theme="dark"] .bcm-info,
-html[data-bx-mode="dark"] .bcm-info,
-.buddyx-dark-mode .bcm-info,
-.buddyx-dark-theme .bcm-info,
-.bb-dark-mode .bcm-info,
-body.bcm-dark .bcm-info {
-	background: var( --bcm-color-bg-soft );
-	border-color: var( --bcm-color-border );
-}
-
-/* Empty-state ghost link + delete-icon hover used literal light tints. */
-html.dark-mode .bcm-empty__actions .button-link:hover,
-body.dark-mode .bcm-empty__actions .button-link:hover,
-[data-theme="dark"] .bcm-empty__actions .button-link:hover,
-html[data-bx-mode="dark"] .bcm-empty__actions .button-link:hover,
-.buddyx-dark-mode .bcm-empty__actions .button-link:hover,
-.buddyx-dark-theme .bcm-empty__actions .button-link:hover,
-.bb-dark-mode .bcm-empty__actions .button-link:hover,
-body.bcm-dark .bcm-empty__actions .button-link:hover { background: rgba( 79, 163, 227, 0.16 ); }
-html.dark-mode .bcm-message__action--delete:hover,
-body.dark-mode .bcm-message__action--delete:hover,
-[data-theme="dark"] .bcm-message__action--delete:hover,
-html[data-bx-mode="dark"] .bcm-message__action--delete:hover,
-.buddyx-dark-mode .bcm-message__action--delete:hover,
-.buddyx-dark-theme .bcm-message__action--delete:hover,
-.bb-dark-mode .bcm-message__action--delete:hover,
-body.bcm-dark .bcm-message__action--delete:hover { background: rgba( 242, 108, 110, 0.18 ) !important; }
 
 /* ----------------------------------------------------------------------
  * Button colour guards (all modes)
@@ -1294,7 +1175,7 @@ body.bcm-dark .bcm-message__action--delete:hover { background: rgba( 242, 108, 1
 .bcm-message-view__action--primary,
 .bcm-message-view__action--primary:hover,
 .bcm-message-view__action--primary:focus-visible {
-	color: #ffffff !important;
+	color: var( --bcm-color-on-primary ) !important;
 }
 .bcm-message-view__action--danger {
 	color: var( --bcm-color-danger ) !important;
@@ -1303,7 +1184,7 @@ body.bcm-dark .bcm-message__action--delete:hover { background: rgba( 242, 108, 1
 }
 .bcm-message-view__action--danger:hover,
 .bcm-message-view__action--danger:focus-visible {
-	color: #ffffff !important;
+	color: var( --bcm-color-on-danger ) !important;
 	background: var( --bcm-color-danger ) !important;
 	border-color: var( --bcm-color-danger ) !important;
 }
@@ -1318,6 +1199,7 @@ body.bcm-dark .bcm-message__action--delete:hover { background: rgba( 242, 108, 1
 }
 .bcm-message__action--delete:hover {
 	color: var( --bcm-color-danger ) !important;
+	background: var( --bcm-color-danger-soft ) !important;
 }
 
 /* Confirm dialog buttons — neutral cancel, accent confirm, red danger.
@@ -1331,7 +1213,7 @@ body.bcm-dark .bcm-message__action--delete:hover { background: rgba( 242, 108, 1
 	background: var( --bcm-color-bg-soft ) !important;
 }
 .bcm-confirm__btn--confirm {
-	color: #ffffff !important;
+	color: var( --bcm-color-on-primary ) !important;
 	background: var( --bcm-color-primary ) !important;
 	border-color: var( --bcm-color-primary ) !important;
 }
@@ -1340,7 +1222,7 @@ body.bcm-dark .bcm-message__action--delete:hover { background: rgba( 242, 108, 1
 	border-color: var( --bcm-color-primary-hover ) !important;
 }
 .bcm-confirm__btn--dangerous {
-	color: #ffffff !important;
+	color: var( --bcm-color-on-danger ) !important;
 	background: var( --bcm-color-danger ) !important;
 	border-color: var( --bcm-color-danger ) !important;
 }

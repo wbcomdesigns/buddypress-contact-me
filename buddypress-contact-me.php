@@ -15,9 +15,9 @@
  * Plugin Name:       Wbcom Designs - BuddyPress Contact Me
  * Plugin URI:        https://wbcomdesigns.com/downloads/buddypress-contact-me/
  * Description:       BuddyPress Contact Me displays a contact form on members' profiles, allowing both logged-in and non-logged-in visitors to connect with community members.
- * Version:           1.5.0
- * Requires at least: 6.0
- * Requires PHP:      7.4
+ * Version:           1.5.1
+ * Requires at least: 6.5
+ * Requires PHP:      8.1
  * Author:            Wbcom Designs
  * Author URI:        https://www.wbcomdesigns.com
  * License:           GPL-2.0+
@@ -32,106 +32,90 @@ if ( ! defined( 'WPINC' ) ) {
 }
 
 // Define constants for the plugin.
-define( 'BUDDYPRESS_CONTACT_ME_VERSION', '1.5.0' );
+define( 'BUDDYPRESS_CONTACT_ME_VERSION', '1.5.1' );
 define( 'BUDDYPRESS_CONTACT_ME_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
 define( 'BUDDYPRESS_CONTACT_ME_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'BUDDYPRESS_CONTACT_ME_FILE', __FILE__ );
 
-/**
- * Run one-time upgrade steps when the stored version is older than the
- * current BUDDYPRESS_CONTACT_ME_VERSION. Safe to re-enter: every branch
- * is idempotent and version-gated.
- *
- * @since 1.5.0
- */
-function bcm_maybe_upgrade() {
-	$stored = get_option( 'buddypress_contact_me_db_version', '' );
-	if ( version_compare( (string) $stored, BUDDYPRESS_CONTACT_ME_VERSION, '>=' ) ) {
-		return;
-	}
-
-	// 1.5.0 — frontend rewrite + default-on semantics. Legacy versions
-	// stored empty-string meta to mean "opt out" and only 'on' to mean
-	// "opt in". The new nav layer treats anything except 'off' as
-	// enabled, so migrate any empty strings to 'on' to make the meta
-	// set self-consistent going forward.
-	global $wpdb;
-	$wpdb->query(
-		$wpdb->prepare(
-			"UPDATE {$wpdb->usermeta} SET meta_value = %s WHERE meta_key = %s AND meta_value = ''",
-			'on',
-			'contact_me_button'
-		)
-	);
-
-	// 1.5.0 — install the BP email post so notifications render through
-	// BuddyPress's email template. No-op once the admin owns the post.
-	if ( class_exists( 'BCM_Email_Installer' ) ) {
-		BCM_Email_Installer::install();
-	}
-
-	update_option( 'buddypress_contact_me_db_version', BUDDYPRESS_CONTACT_ME_VERSION );
+// Licence and update host; the SDK falls back to the store when it cannot be reached. Overridable from wp-config.
+if ( ! defined( 'BUDDYPRESS_CONTACT_ME_LICENCE_HOST' ) ) {
+	define( 'BUDDYPRESS_CONTACT_ME_LICENCE_HOST', 'https://updates.wbcomdesigns.com' );
 }
-add_action( 'bp_init', 'bcm_maybe_upgrade', 20 );
+define( 'BUDDYPRESS_CONTACT_ME_ITEM_ID', 1528584 );
 
 /**
- * New users default to accepting contact messages — the plugin is
- * valuable because it "just works" out of the box.
+ * One licence-server request (activate, deactivate, check or version). Goes through the bundled SDK, so it uses
+ * the same host as update checks and falls back to the store when that host cannot be reached.
+ *
+ * @param array $params EDD Software Licensing parameters (edd_action, license, item_id).
+ * @return object|false Decoded reply, or false when no host answered.
  */
+function buddypress_contact_me_licence_request( array $params ) {
+	if ( ! class_exists( \EasyDigitalDownloads\Updater\Requests\API::class ) ) {
+		return false;
+	}
+	// Name the fallback here too: on an early request the SDK registry has not run yet.
+	if ( method_exists( \EasyDigitalDownloads\Updater\Requests\API::class, 'set_fallback' ) ) {
+		\EasyDigitalDownloads\Updater\Requests\API::set_fallback( BUDDYPRESS_CONTACT_ME_LICENCE_HOST, 'https://wbcomdesigns.com' );
+	}
+	$reply = ( new \EasyDigitalDownloads\Updater\Requests\API( BUDDYPRESS_CONTACT_ME_LICENCE_HOST ) )->make_request( $params );
+	return is_object( $reply ) ? $reply : false;
+}
+
 add_action(
-	'user_register',
-	function ( $user_id ) {
-		update_user_meta( $user_id, 'contact_me_button', 'on' );
+	'edd_sl_sdk_registry',
+	static function ( $registry ) {
+		$registry->register(
+			array(
+				'id'           => 'buddypress-contact-me',
+				'url'          => BUDDYPRESS_CONTACT_ME_LICENCE_HOST,
+				'fallback_url' => 'https://wbcomdesigns.com',
+				'item_id'      => BUDDYPRESS_CONTACT_ME_ITEM_ID,
+				'version'      => BUDDYPRESS_CONTACT_ME_VERSION,
+				'file'         => BUDDYPRESS_CONTACT_ME_FILE,
+				// The key option the licence screen has always used, so activated sites stay activated.
+				'option_name'  => 'edd_wbcom_bp_contact_me_license_key',
+				'type'         => 'plugin',
+			)
+		);
 	}
 );
 
+// Load the vendored SDK only when complete; a stripped build degrades to "updates off", never a fatal error.
+if ( file_exists( BUDDYPRESS_CONTACT_ME_PLUGIN_PATH . 'libs/edd-sl-sdk/edd-sl-sdk.php' ) && file_exists( BUDDYPRESS_CONTACT_ME_PLUGIN_PATH . 'libs/edd-sl-sdk/src/Versions.php' ) ) {
+	require_once BUDDYPRESS_CONTACT_ME_PLUGIN_PATH . 'libs/edd-sl-sdk/edd-sl-sdk.php';
+}
+
+// Each update package must carry its release signature. Warn mode: the result is logged (option
+// package_signatures_log) and the update installs either way. The product name is the store slug.
+if ( file_exists( BUDDYPRESS_CONTACT_ME_PLUGIN_PATH . 'libs/package-signatures/package-signatures.php' ) ) {
+	require_once BUDDYPRESS_CONTACT_ME_PLUGIN_PATH . 'libs/package-signatures/package-signatures.php';
+	package_signatures_register(
+		array(
+			'product'  => 'buddypress-contact-me',
+			'plugin'   => plugin_basename( BUDDYPRESS_CONTACT_ME_FILE ),
+			'hosts'    => array( 'wbcomdesigns.com', 'updates.wbcomdesigns.com' ),
+			'keys'     => array( 'wbcom-2026-1' => 'kr+2P1WqRbENpZw0BXZmwFnA2tMLi6MlHbBa6jB13U4=' ),
+			'mode'     => 'warn',
+			'fallback' => 'https://wbcomdesigns.com/package-signatures/{product}/{version}/',
+		)
+	);
+}
 
 /**
  * Plugin activation callback function.
  */
 function activate_buddypress_contact_me() {
 	if ( class_exists( 'BuddyPress' ) ) {
-		include_once plugin_dir_path( __FILE__ ) . 'includes/class-buddypress-contact-me-activator.php';
 		BuddyPress_Contact_Me_Activator::activate();
-	} else {
-		add_action( 'admin_notices', 'bp_contact_me_required_plugin_admin_notice' );
 	}
 }
 
-/**
- * Plugin deactivation callback function.
- */
-function deactivate_buddypress_contact_me() {
-	include_once plugin_dir_path( __FILE__ ) . 'includes/class-buddypress-contact-me-deactivator.php';
-	BuddyPress_Contact_Me_Deactivator::deactivate();
-}
-
+require_once plugin_dir_path( __FILE__ ) . 'includes/class-buddypress-contact-me-activator.php';
 register_activation_hook( __FILE__, 'activate_buddypress_contact_me' );
-register_deactivation_hook( __FILE__, 'deactivate_buddypress_contact_me' );
 
-/**
- * Schema upgrade gate. Runs once per page load on `plugins_loaded` and is a
- * no-op unless the stored `bcm_db_version` lags behind the activator's
- * DB_VERSION constant. dbDelta is idempotent so re-running install_schema()
- * just confirms the current shape; only sites needing the new (reciever,
- * datetime, id) composite index pay the ALTER cost (once).
- */
-add_action(
-	'plugins_loaded',
-	function () {
-		if ( ! class_exists( 'BuddyPress_Contact_Me_Activator' ) ) {
-			include_once plugin_dir_path( __FILE__ ) . 'includes/class-buddypress-contact-me-activator.php';
-		}
-		BuddyPress_Contact_Me_Activator::maybe_upgrade();
-	},
-	5
-);
-
-/**
- * Core plugin class that defines internationalization,
- * admin-specific hooks, and public-facing site hooks.
- */
-require plugin_dir_path( __FILE__ ) . 'includes/class-buddypress-contact-me.php';
+// The one upgrade router (schema, data fixes, emails). See the activator.
+add_action( 'bp_init', array( 'BuddyPress_Contact_Me_Activator', 'maybe_upgrade' ), 20 );
 
 /**
  * Check if BuddyPress is active.
@@ -177,31 +161,47 @@ function bp_contact_me_activation_redirect_settings( $plugin ) {
 add_action( 'activated_plugin', 'bp_contact_me_activation_redirect_settings' );
 
 /**
- * Begin execution of the plugin.
+ * Load the plugin once BuddyPress (or BuddyBoss Platform) is loaded.
  */
 function run_buddypress_contact_me() {
-	$plugin = new BuddyPress_Contact_Me();
-	$plugin->run();
+	$base = plugin_dir_path( __FILE__ );
+	foreach ( array(
+		'includes/functions.php',
+		'includes/admin/class-bcm-admin.php',
+		'includes/data/class-bcm-messages-repo.php',
+		'includes/frontend/class-bcm-frontend-nav.php',
+		'includes/frontend/class-bcm-frontend-assets.php',
+		'includes/frontend/class-bcm-frontend-submit.php',
+		'includes/frontend/class-bcm-frontend-notifications.php',
+		'includes/frontend/class-bcm-frontend-shortcode.php',
+		'includes/rest/class-bcm-rest-messages.php',
+		'includes/email/class-bcm-email-installer.php',
+		'edd-license/edd-plugin-license.php',
+	) as $file ) {
+		require_once $base . $file;
+	}
+
+	( new BCM_Admin() )->register();
+	( new BCM_Frontend_Nav() )->register();
+	$assets = new BCM_Frontend_Assets( 'buddypress-contact-me', BUDDYPRESS_CONTACT_ME_VERSION );
+	$assets->register();
+	( new BCM_Frontend_Submit() )->register();
+	( new BCM_Frontend_Notifications() )->register();
+	( new BCM_Frontend_Shortcode( $assets ) )->register();
+	( new BCM_Rest_Messages() )->register();
+
+	// A deleted member's received messages go with them (single site and network delete).
+	add_action( 'deleted_user', array( 'BCM_Messages_Repo', 'delete_for_user' ) );
+	add_action( 'wpmu_delete_user', array( 'BCM_Messages_Repo', 'delete_for_user' ) );
 }
 add_action( 'bp_include', 'run_buddypress_contact_me' );
 
-/**
- * Get user private message link.
- *
- * @param  int $user_id User ID to send private message.
- * @return string       Private message URL.
- */
-function bp_contact_me_get_send_private_message_link( $user_id ) {
-	$compose_url = bp_loggedin_user_domain() . bp_get_messages_slug() . '/compose/?';
-	if ( $user_id ) {
-		if ( function_exists( 'buddypress' ) && isset( buddypress()->buddyboss ) ) {
-			$compose_url .= 'r=' . bp_core_get_username( $user_id );
-		} else {
-			$compose_url .= 'r=' . bp_members_get_user_slug( $user_id );
-		}
+add_action(
+	'init',
+	static function () {
+		load_plugin_textdomain( 'buddypress-contact-me', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
 	}
-	return wp_nonce_url( $compose_url );
-}
+);
 
 /**
  * Set plugin action links.

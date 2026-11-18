@@ -33,10 +33,10 @@ unset( $all_roles['administrator'] );
  * so it doesn't bleed into the Who-Can-Be-Contacted grid (recipients are
  * always real users).
  */
-$sender_groups                = $all_roles;
-$sender_groups['visitors']    = __( 'Visitors (not logged in)', 'buddypress-contact-me' );
-$sender_total                 = count( $sender_groups );
-$sender_selected              = count( array_intersect( array_keys( $sender_groups ), $who_contact ) );
+$sender_groups             = $all_roles;
+$sender_groups['visitors'] = __( 'Visitors (not logged in)', 'buddypress-contact-me' );
+$sender_total              = count( $sender_groups );
+$sender_selected           = count( array_intersect( array_keys( $sender_groups ), $who_contact ) );
 
 // Sentinel inputs so the sanitizer can tell "user unchecked me" apart
 // from "this tab never rendered me". See class-bcm-admin.php::sanitize_settings()
@@ -79,7 +79,7 @@ foreach ( $array_rendered_keys as $array_rendered_key ) :
 						<?php checked( $contact_tab_on ); ?>>
 					<?php esc_html_e( 'Show a "Contact" tab on every member profile', 'buddypress-contact-me' ); ?>
 				</label>
-				<p class="description"><?php esc_html_e( 'Recommended ON. Each member can still individually opt out from their own profile settings.', 'buddypress-contact-me' ); ?></p>
+				<p class="description"><?php esc_html_e( 'Recommended ON. Each member can still opt out from Contact > Preferences on their profile.', 'buddypress-contact-me' ); ?></p>
 			</td>
 		</tr>
 	</table>
@@ -88,18 +88,18 @@ foreach ( $array_rendered_keys as $array_rendered_key ) :
 <div class="bcm-card">
 	<div class="bcm-card__head">
 		<p class="bcm-card__title"><?php esc_html_e( 'Who Can Send Messages', 'buddypress-contact-me' ); ?></p>
-		<p class="bcm-card__desc"><?php esc_html_e( 'Only members in the groups you pick can see the Contact Me form. Leave everything unchecked to allow every logged-in member.', 'buddypress-contact-me' ); ?></p>
+		<p class="bcm-card__desc"><?php esc_html_e( 'Only members with the roles you pick can see the Contact Me form. Leave everything unchecked to allow every logged-in member.', 'buddypress-contact-me' ); ?></p>
 	</div>
 	<div class="bcm-card__body">
 		<fieldset class="bcm-role-grid-wrap" data-bcm-role-grid>
-			<legend class="screen-reader-text"><?php esc_html_e( 'Groups allowed to send messages', 'buddypress-contact-me' ); ?></legend>
+			<legend class="screen-reader-text"><?php esc_html_e( 'Roles allowed to send messages', 'buddypress-contact-me' ); ?></legend>
 			<div class="bcm-role-grid-toolbar">
 				<span class="bcm-role-grid-count" aria-live="polite">
 					<?php
 					echo esc_html(
 						sprintf(
 							/* translators: 1: selected, 2: total */
-							__( '%1$d of %2$d groups selected', 'buddypress-contact-me' ),
+							__( '%1$d of %2$d roles selected', 'buddypress-contact-me' ),
 							$sender_selected,
 							$sender_total
 						)
@@ -140,7 +140,7 @@ foreach ( $array_rendered_keys as $array_rendered_key ) :
 <div class="bcm-card">
 	<div class="bcm-card__head">
 		<p class="bcm-card__title"><?php esc_html_e( 'Who Can Be Contacted', 'buddypress-contact-me' ); ?></p>
-		<p class="bcm-card__desc"><?php esc_html_e( 'Only members in the roles you pick here will have a Contact Me form on their profile. Useful to restrict inbound messages to mentors, support staff, or paid members.', 'buddypress-contact-me' ); ?></p>
+		<p class="bcm-card__desc"><?php esc_html_e( 'Only members with the roles you pick here will have a Contact Me form on their profile. Leave everything unchecked to allow every member. Useful to restrict inbound messages to mentors, support staff, or paid members.', 'buddypress-contact-me' ); ?></p>
 	</div>
 	<div class="bcm-card__body">
 		<fieldset class="bcm-role-grid-wrap" data-bcm-role-grid>
@@ -187,6 +187,6 @@ foreach ( $array_rendered_keys as $array_rendered_key ) :
 	<span class="dashicons dashicons-info" aria-hidden="true"></span>
 	<div>
 		<strong><?php esc_html_e( 'Members always have the final say.', 'buddypress-contact-me' ); ?></strong>
-		<?php esc_html_e( 'Even if their role is allowed here, each member can hide their own Contact Me form from their profile settings.', 'buddypress-contact-me' ); ?>
+		<?php esc_html_e( 'Even if their role is allowed here, each member can hide their own Contact Me form from Contact > Preferences.', 'buddypress-contact-me' ); ?>
 	</div>
 </div>
