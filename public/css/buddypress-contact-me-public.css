@@ -1,5 +1,5 @@
 /**
- * BuddyPress Contact Me — public styles.
+ * BuddyPress Contact Me: public styles.
  *
  * Token-based, BEM-ish. Loads on the Contact tab, BP Settings and pages
  * with the [buddypress-contact-me] shortcode. Colours chain to the BuddyX /
@@ -65,64 +65,113 @@
 	--bcm-card-bg: var( --bcm-color-surface );
 	--bcm-text: var( --bcm-color-text );
 
+	/* Focus rings and the confirm-dialog backdrop, derived from tokens above. */
+	--bcm-color-focus-ring: color-mix( in srgb, var( --bcm-color-focus ) 22%, transparent );
+	--bcm-color-danger-ring: color-mix( in srgb, var( --bcm-color-danger ) 18%, transparent );
+	--bcm-color-hover-wash: color-mix( in srgb, var( --bcm-color-text ) 6%, transparent );
+	--bcm-color-chip: color-mix( in srgb, var( --bcm-color-text ) 10%, transparent );
+	--bcm-color-overlay: rgba( 16, 24, 40, 0.55 );
+
 	--bcm-shadow-sm: 0 1px 2px rgba( 16, 24, 40, 0.06 );
 	--bcm-shadow-md: 0 8px 24px rgba( 16, 24, 40, 0.12 );
 	--bcm-shadow-lg: 0 20px 50px rgba( 16, 24, 40, 0.18 );
 }
 
-/* ---------- Alerts / banners ---------- */
-
-.bcm-alert {
+/* ---------- Notices ---------- *
+ *
+ * Notices and toasts are BuddyPress `.bp-feedback` markup, so Nouveau and the
+ * theme paint them like every other BuddyPress notice. The rules below are a
+ * zero-specificity fallback for pages where nothing styles `.bp-feedback`
+ * (a shortcode on a plain page).
+ */
+:where( .bcm-alert ) {
+	display: flex;
+	align-items: center;
+	gap: var( --bcm-gap-sm );
 	margin: 0 0 var( --bcm-gap );
-	padding: 12px 16px;
+	padding: 10px 15px;
+	border: 1px solid var( --bcm-color-border );
+	border-inline-start-width: 4px;
 	border-radius: var( --bcm-radius-sm );
-	border-left: 4px solid var( --bcm-color-border );
-	background: var( --bcm-color-bg-soft );
+	background: var( --bcm-color-surface );
 	color: var( --bcm-color-text );
 	font-size: 14px;
 	line-height: 1.5;
 }
 
-.bcm-alert--success { border-left-color: var( --bcm-color-success ); background: var( --bcm-color-success-soft ); }
-.bcm-alert--error   { border-left-color: var( --bcm-color-danger );  background: var( --bcm-color-danger-soft ); }
-.bcm-alert--warning { border-left-color: var( --bcm-color-warning ); background: var( --bcm-color-warning-soft ); }
-.bcm-alert--info    { border-left-color: var( --bcm-color-primary ); background: var( --bcm-color-info-soft ); }
+:where( .bcm-alert ) p { margin: 0; }
+:where( .bcm-alert.success ) { border-inline-start-color: var( --bcm-color-success ); }
+:where( .bcm-alert.error ) { border-inline-start-color: var( --bcm-color-danger ); }
+:where( .bcm-alert.warning ) { border-inline-start-color: var( --bcm-color-warning ); }
+:where( .bcm-alert.info ) { border-inline-start-color: var( --bcm-color-primary ); }
 
-/* ---------- Toast ---------- */
-
-.bcm-toast-container {
-	position: fixed;
-	right: 24px;
-	bottom: 24px;
-	z-index: 100000;
-	display: flex;
-	flex-direction: column;
-	gap: 10px;
-	max-width: calc( 100vw - 48px );
-	pointer-events: none;
-}
-
+/* Family action toast: one at a time, bottom centre, closed by its button or Escape. */
 .bcm-toast {
-	min-width: 240px;
-	max-width: 360px;
-	padding: 12px 16px;
-	border-radius: var( --bcm-radius );
-	background: var( --bcm-color-inverse-bg );
-	color: var( --bcm-color-inverse-fg );
-	font-size: 14px;
-	line-height: 1.45;
-	box-shadow: var( --bcm-shadow-lg );
-	opacity: 0;
-	transform: translateY( 8px );
-	transition: opacity 180ms ease, transform 180ms ease;
-	pointer-events: auto;
+	position: fixed;
+	inset-inline: var( --bcm-gap );
+	inset-block-end: 24px;
+	z-index: 100000;
+	max-width: 480px;
+	margin-inline: auto;
+	border-radius: var( --bcm-radius-sm );
+	box-shadow: var( --bcm-shadow-md );
 }
 
-.bcm-toast--visible { opacity: 1; transform: translateY( 0 ); }
-.bcm-toast--success { background: #0a6b2c; }
-.bcm-toast--error   { background: #a71d1f; }
-.bcm-toast--warning { background: #8c6d14; }
-.bcm-toast--info    { background: #1a5889; }
+.bcm-toast .bp-feedback {
+	display: flex;
+	align-items: center;
+	gap: var( --bcm-gap-sm );
+	margin: 0;
+}
+
+.bcm-toast .bp-feedback p {
+	flex: 1;
+	min-width: 0;
+	margin: 0;
+}
+
+/* Beats `.buddypress .buddypress-wrap button` (0,2,1) so the close button is not a filled theme button. */
+.bcm-toast .bp-feedback button.bcm-toast__close {
+	display: inline-flex;
+	flex: 0 0 auto;
+	align-items: center;
+	justify-content: center;
+	width: 32px;
+	height: 32px;
+	margin: 0;
+	padding: 0;
+	border: 0;
+	border-radius: 50%;
+	background: transparent;
+	box-shadow: none;
+	color: inherit;
+	cursor: pointer;
+}
+
+.bcm-toast .bp-feedback button.bcm-toast__close:hover,
+.bcm-toast .bp-feedback button.bcm-toast__close:focus-visible {
+	background: var( --bcm-color-hover-wash );
+	color: inherit;
+}
+
+/* Keeps a text label in the accessibility tree while hiding it on screen. */
+.bcm-sr-only {
+	position: absolute !important;
+	width: 1px !important;
+	height: 1px !important;
+	overflow: hidden !important;
+	clip-path: inset( 50% ) !important;
+	white-space: nowrap !important;
+}
+
+/* Honeypot: off screen for people, still in the form for bots. */
+.bcm-hp {
+	position: absolute !important;
+	inset-inline-start: -10000px !important;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+}
 
 /* ---------- Contact form ---------- */
 
@@ -143,8 +192,8 @@
 
 .bcm-form__header {
 	margin: 0 0 var( --bcm-gap-lg );
-	padding-bottom: var( --bcm-gap );
-	border-bottom: 1px solid var( --bcm-color-border );
+	padding-block-end: var( --bcm-gap );
+	border-block-end: 1px solid var( --bcm-color-border );
 }
 
 .bcm-form__title {
@@ -181,7 +230,7 @@
 
 .bcm-field__required {
 	color: var( --bcm-color-danger );
-	margin-left: 2px;
+	margin-inline-start: 2px;
 }
 
 .bcm-field input,
@@ -204,7 +253,7 @@
 .bcm-field input:focus,
 .bcm-field textarea:focus {
 	border-color: var( --bcm-color-focus );
-	box-shadow: 0 0 0 3px rgba( 34, 113, 177, 0.2 );
+	box-shadow: 0 0 0 3px var( --bcm-color-focus-ring );
 }
 
 .bcm-field input:focus-visible,
@@ -217,7 +266,7 @@
 .bcm-field input.bcm-field__input--error,
 .bcm-field textarea.bcm-field__input--error {
 	border-color: var( --bcm-color-danger );
-	box-shadow: 0 0 0 3px rgba( 214, 54, 56, 0.15 );
+	box-shadow: 0 0 0 3px var( --bcm-color-danger-ring );
 }
 
 .bcm-field__hint {
@@ -262,7 +311,7 @@
 .bcm-form__actions {
 	display: flex;
 	justify-content: flex-end;
-	padding-top: 6px;
+	padding-block-start: 6px;
 }
 
 .bcm-submit.button {
@@ -319,8 +368,8 @@
 	align-items: baseline;
 	justify-content: space-between;
 	gap: 12px;
-	padding-bottom: 10px;
-	border-bottom: 1px solid var( --bcm-color-border );
+	padding-block-end: 10px;
+	border-block-end: 1px solid var( --bcm-color-border );
 }
 
 .bcm-inbox__title { margin: 0; font-size: 18px; font-weight: 600; }
@@ -358,12 +407,12 @@
 	transition: background-color 150ms ease, color 150ms ease;
 }
 
-.bcm-inbox__filter:hover { color: var( --bcm-color-text ); background: rgba( 34, 113, 177, 0.06 ); }
+.bcm-inbox__filter:hover { color: var( --bcm-color-text ); background: var( --bcm-color-hover-wash ); }
 
 .bcm-inbox__filter.is-active {
 	background: var( --bcm-color-bg );
 	color: var( --bcm-color-text );
-	box-shadow: 0 1px 2px rgba( 0, 0, 0, 0.06 );
+	box-shadow: var( --bcm-shadow-sm );
 }
 
 .bcm-inbox__filter-count {
@@ -374,7 +423,7 @@
 	height: 18px;
 	padding: 0 6px;
 	border-radius: 999px;
-	background: rgba( 0, 0, 0, 0.08 );
+	background: var( --bcm-color-chip );
 	color: inherit;
 	font-size: 11px;
 	font-weight: 600;
@@ -432,9 +481,9 @@
 .bcm-message:hover { border-color: var( --bcm-color-border-strong ); }
 
 .bcm-message--unread {
-	background: linear-gradient( to right, var( --bcm-color-primary-soft ) 0%, transparent 40% );
-	border-left: 3px solid var( --bcm-color-primary );
-	padding-left: 12px;
+	background: var( --bcm-color-primary-soft );
+	border-inline-start: 3px solid var( --bcm-color-primary );
+	padding-inline-start: 12px;
 }
 
 .bcm-message__avatar img { width: 48px; height: 48px; border-radius: 50%; display: block; }
@@ -478,9 +527,9 @@
 }
 
 .bcm-badge--guest {
-	color: #8c6d14;
-	background: #fff8e5;
-	border: 1px solid #f1d789;
+	color: var( --bcm-color-text );
+	background: var( --bcm-color-warning-soft );
+	border: 1px solid var( --bcm-color-warning );
 }
 
 .bcm-message__subject {
@@ -555,7 +604,7 @@
 	background: var( --bcm-color-bg-soft );
 }
 
-.bcm-empty__icon   { color: var( --bcm-color-primary ); opacity: 0.75; margin-bottom: 12px; }
+.bcm-empty__icon   { color: var( --bcm-color-primary ); opacity: 0.75; margin-block-end: 12px; }
 .bcm-empty__title  { margin: 0 0 8px; font-size: 17px; font-weight: 600; color: var( --bcm-color-text ); }
 .bcm-empty__body   { margin: 0 0 var( --bcm-gap ); color: var( --bcm-color-text-muted ); font-size: 14px; }
 .bcm-empty__actions { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin: 0; }
@@ -578,7 +627,7 @@
 	position: fixed;
 	inset: 0;
 	z-index: 100001;
-	background: rgba( 16, 24, 40, 0.55 );
+	background: var( --bcm-color-overlay );
 	backdrop-filter: blur( 2px );
 	display: flex;
 	align-items: center;
@@ -621,25 +670,6 @@
 }
 .bcm-confirm__btn:hover { background: var( --bcm-color-bg-soft ); }
 
-/* ---------- Per-user BP settings toggle ---------- */
-
-.bp-contact-me-settings-toggle {
-	margin: 16px 0;
-	padding: 10px 12px;
-	background: var( --bcm-color-bg-soft );
-	border: 1px solid var( --bcm-color-border );
-	border-radius: var( --bcm-radius-sm );
-}
-
-.bp-contact-me-settings-toggle label {
-	display: flex;
-	align-items: center;
-	gap: 8px;
-	font-size: 14px;
-	color: var( --bcm-color-text );
-	cursor: pointer;
-}
-
 /* ---------- Info card (intro / how-it-works) ---------- */
 
 .bcm-info {
@@ -657,7 +687,7 @@
 
 .bcm-info__icon {
 	color: var( --bcm-color-primary );
-	padding-top: 2px;
+	padding-block-start: 2px;
 }
 
 .bcm-info__body {
@@ -727,14 +757,12 @@
 	gap: 2px;
 	align-self: center;
 	opacity: 0;
-	transform: translateX( 4px );
-	transition: opacity 140ms ease, transform 140ms ease;
+	transition: opacity 140ms ease;
 }
 
 .bcm-message:hover .bcm-message__actions,
 .bcm-message:focus-within .bcm-message__actions {
 	opacity: 1;
-	transform: translateX( 0 );
 }
 
 .bcm-message__action {
@@ -754,7 +782,8 @@
 	position: relative;
 }
 
-.bcm-message__action:focus-visible {
+/* (0,4,0) beats BuddyPress Nouveau's `.buddypress .buddypress-wrap button:focus { outline: 0 }` (0,3,1). */
+.bcm-messages .bcm-message .bcm-message__action:focus-visible {
 	outline: 2px solid var( --bcm-color-focus );
 	outline-offset: 2px;
 }
@@ -766,41 +795,11 @@
 	line-height: 1;
 }
 
-.bcm-message__action-label {
-	position: absolute;
-	inset-block-end: calc( 100% + 6px );
-	inset-inline-start: 50%;
-	transform: translate( -50%, 4px );
-	padding: 4px 8px;
-	font-size: 11px;
-	font-weight: 500;
-	color: var( --bcm-color-inverse-fg );
-	background: var( --bcm-color-inverse-bg );
-	border-radius: 4px;
-	white-space: nowrap;
-	pointer-events: none;
-	opacity: 0;
-	transition: opacity 120ms ease, transform 120ms ease;
-}
-
-.bcm-message__action:hover .bcm-message__action-label,
-.bcm-message__action:focus-visible .bcm-message__action-label {
-	opacity: 1;
-	transform: translate( -50%, 0 );
-}
-
-.bcm-message__action--delete:hover {
-	color: var( --bcm-color-danger );
-	background: #fcecec !important;
-}
-
 /* Mobile / coarse pointers: always show actions since there is no hover. */
 @media ( hover: none ) {
 	.bcm-message__actions {
 		opacity: 1;
-		transform: none;
 	}
-	.bcm-message__action-label { display: none; }
 }
 
 /* ---------- Single message view ---------- */
@@ -838,8 +837,8 @@
 	grid-template-columns: 64px 1fr;
 	gap: 16px;
 	align-items: center;
-	padding-bottom: var( --bcm-gap );
-	border-bottom: 1px solid var( --bcm-color-border );
+	padding-block-end: var( --bcm-gap );
+	border-block-end: 1px solid var( --bcm-color-border );
 }
 
 /* Pin the avatar column so theme rules that force `img { width: 100% }`
@@ -920,7 +919,7 @@
 	display: flex;
 	flex-wrap: wrap;
 	gap: 8px;
-	padding-top: 6px;
+	padding-block-start: 6px;
 }
 
 .bcm-message-view__action {
@@ -999,8 +998,8 @@
 }
 
 .bcm-preferences__header {
-	padding-bottom: 10px;
-	border-bottom: 1px solid var( --bcm-color-border );
+	padding-block-end: 10px;
+	border-block-end: 1px solid var( --bcm-color-border );
 }
 
 .bcm-preferences__title {
@@ -1015,9 +1014,10 @@
 	color: var( --bcm-color-text-muted );
 }
 
-.bcm-preferences__form {
+.bcm-preferences__form,
+.bcm-preferences__panel {
 	padding: 16px;
-	background: var( --bcm-color-bg );
+	background: var( --bcm-color-surface );
 	border: 1px solid var( --bcm-color-border );
 	border-radius: var( --bcm-radius );
 }
@@ -1030,7 +1030,7 @@
 }
 
 .bcm-preferences__toggle input {
-	margin-top: 3px;
+	margin-block-start: 3px;
 	width: 18px;
 	height: 18px;
 }
@@ -1052,23 +1052,16 @@
 	font-size: 13px;
 	color: var( --bcm-color-text-muted );
 	line-height: 1.5;
-	margin-top: 2px;
+	margin-block-start: 2px;
 }
 
 .bcm-preferences__actions {
-	margin-top: 14px;
+	margin-block-start: 14px;
 	display: flex;
 	justify-content: flex-end;
 }
 
-.bcm-preferences__panel {
-	padding: 16px;
-	background: var( --bcm-color-bg-soft );
-	border: 1px solid var( --bcm-color-border );
-	border-radius: var( --bcm-radius );
-}
-
-.bcm-preferences__panel-title {
+.bcm-preferences .bcm-preferences__panel-title {
 	margin: 0 0 6px;
 	font-size: 14px;
 	font-weight: 600;
@@ -1099,13 +1092,13 @@
 
 .bcm-preferences__tips {
 	margin: 0;
-	padding-left: 20px;
+	padding-inline-start: 20px;
 	font-size: 13px;
 	color: var( --bcm-color-text-muted );
 	line-height: 1.6;
 }
 
-.bcm-preferences__tips li { margin-bottom: 4px; }
+.bcm-preferences__tips li { margin-block-end: 4px; }
 
 /* ---------- Responsive ---------- */
 
@@ -1206,6 +1199,7 @@ body.buddyx-dark-theme {
 }
 .bcm-message__action--delete:hover {
 	color: var( --bcm-color-danger ) !important;
+	background: var( --bcm-color-danger-soft ) !important;
 }
 
 /* Confirm dialog buttons — neutral cancel, accent confirm, red danger.

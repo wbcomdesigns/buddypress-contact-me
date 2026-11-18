@@ -1,21 +1,22 @@
-# Files and directories excluded from the distributed plugin zip.
+# Files and directories excluded from the release zip (bin/build-release.sh).
+# edd-license/ and languages/ ship.
 .git
-.github/
+.github
 .gitignore
 .gitattributes
 .distignore
-CLAUDE.md
-audit/
-docs/
-bin/
-tests/
-node_modules/
-dist/
-package.json
-package-lock.json
-gruntfile.js
-Gruntfile.js
+.DS_Store
+.claude-tmp
+node_modules
+tests
+docs
+audit
+bin
+dist
 *.md
 *.map
+*.log
+package.json
+package-lock.json
 .phpcs.xml.dist
 phpstan.neon.dist

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Local CI: php -l on PHP 8.1 and 8.5 (Docker), WPCS, PHPStan, text domain.
+# Local CI: php -l on PHP 8.1 and 8.5 (Docker), WPCS (includes the text domain check), PHPStan.
 # Any failing step fails the script.
 set -euo pipefail
 cd "$(dirname "$0")/.."
@@ -10,4 +10,3 @@ for v in 8.1 8.5; do
 done
 echo "== phpcs (errors gate)"; phpcs -q -n
 echo "== phpstan"; phpstan analyse -c phpstan.neon.dist --no-progress --memory-limit=2G
-echo "== text domain"; npx grunt checktextdomain

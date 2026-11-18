@@ -1,2 +1,4 @@
-node_modules
-.DS_Store.claude-tmp/
+node_modules/
+dist/
+.DS_Store
+.claude-tmp/
