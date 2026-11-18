@@ -151,21 +151,23 @@ endif;
 			<?php
 			foreach ( $bcm_messages as $msg ) :
 				$is_unread   = ! empty( $msg->is_unread );
-				$sender_name = $msg->sender
-					? bp_core_get_user_displayname( $msg->sender )
-					: $msg->name;
-				if ( $msg->sender && function_exists( 'bp_core_fetch_avatar' ) ) {
+				$sender_deleted = $msg->sender && ! get_userdata( (int) $msg->sender ); // Users are primed by cache_users() above.
+				$sender_id      = $sender_deleted ? 0 : (int) $msg->sender;
+				$sender_name    = $sender_id
+					? bp_core_get_user_displayname( $sender_id )
+					: ( $sender_deleted ? __( 'Deleted member', 'buddypress-contact-me' ) : $msg->name );
+				if ( $sender_id && function_exists( 'bp_core_fetch_avatar' ) ) {
 					$avatar = bp_core_fetch_avatar(
 						array(
-							'item_id' => $msg->sender,
+							'item_id' => $sender_id,
 							'type'    => 'thumb',
 						)
 					);
 				} else {
-					$avatar = get_avatar( $msg->email ? $msg->email : '', 48, 'mystery' );
+					$avatar = get_avatar( ( ! $sender_deleted && $msg->email ) ? $msg->email : '', 48, 'mystery' );
 				}
-				$sender_url   = $msg->sender
-					? ( function_exists( 'bp_members_get_user_url' ) ? bp_members_get_user_url( $msg->sender ) : bp_core_get_user_domain( $msg->sender ) )
+				$sender_url   = $sender_id
+					? ( function_exists( 'bp_members_get_user_url' ) ? bp_members_get_user_url( $sender_id ) : bp_core_get_user_domain( $sender_id ) )
 					: '';
 				$stamp        = BCM_Messages_Repo::timestamp( $msg->datetime );
 				$time_display = ( time() - $stamp < DAY_IN_SECONDS )
@@ -194,7 +196,9 @@ endif;
 								<a href="<?php echo esc_url( $sender_url ); ?>"><?php echo esc_html( $sender_name ); ?></a>
 							<?php else : ?>
 								<?php echo esc_html( $sender_name ); ?>
+								<?php if ( ! $sender_deleted ) : ?>
 								<span class="bcm-badge bcm-badge--guest"><?php esc_html_e( 'Guest', 'buddypress-contact-me' ); ?></span>
+								<?php endif; ?>
 							<?php endif; ?>
 							<?php if ( $is_unread ) : ?>
 								<span class="bcm-message__badge"><?php esc_html_e( 'New', 'buddypress-contact-me' ); ?></span>

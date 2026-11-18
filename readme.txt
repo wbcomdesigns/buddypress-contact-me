@@ -44,6 +44,8 @@ Requires BuddyPress 12.0 or higher (or BuddyBoss Platform).
 * New      - When Wbcom CAPTCHA Manager is active and its Contact Me Form switch is on, logged-out visitors solve your site's CAPTCHA instead of the math question.
 * Improve  - Activating the plugin no longer updates every member account, so it stays fast on large sites.
 * Improve  - Uninstall removes all of the plugin's stored settings.
+* Fix      - Messages from a member whose account was deleted show "Deleted member" instead of a guest with a profile to visit.
+* Fix      - The delete confirmation opens on Cancel, so pressing Enter twice no longer deletes a message.
 * Fix      - Contact form styles and scripts load on any page that uses the contact shortcode, including for logged-out visitors.
 * Fix      - Message times show correctly on sites outside UTC; existing messages are converted once on update.
 * Fix      - Buttons follow the theme's dark mode toggle and keep readable label colours on BuddyX, BuddyX Pro and Reign.

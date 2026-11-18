@@ -36,11 +36,13 @@ if ( ! $bcm_msg || (int) $bcm_msg->recipient !== $bcm_user_id ) {
 	return;
 }
 
-$bcm_sender_id   = (int) $bcm_msg->sender;
-$bcm_sender_name = $bcm_sender_id ? bp_core_get_user_displayname( $bcm_sender_id ) : $bcm_msg->name;
+// A sender whose account was deleted is shown as such, with no profile or reply links.
+$bcm_sender_deleted = $bcm_msg->sender && ! get_userdata( (int) $bcm_msg->sender );
+$bcm_sender_id      = $bcm_sender_deleted ? 0 : (int) $bcm_msg->sender;
+$bcm_sender_name    = $bcm_sender_id ? bp_core_get_user_displayname( $bcm_sender_id ) : ( $bcm_sender_deleted ? __( 'Deleted member', 'buddypress-contact-me' ) : $bcm_msg->name );
 // Only a guest's own typed reply address is shown. A member's account email
 // never is (rows from before 1.5.1 may still hold it): reply in the site.
-$bcm_sender_email = $bcm_sender_id ? '' : (string) $bcm_msg->email;
+$bcm_sender_email = ( $bcm_sender_id || $bcm_sender_deleted ) ? '' : (string) $bcm_msg->email;
 $bcm_avatar       = $bcm_sender_id
 	? bp_core_fetch_avatar(
 		array(
@@ -103,9 +105,11 @@ $bcm_time_display = bcm_date_label( $bcm_msg->datetime );
 					<a href="<?php echo esc_url( $bcm_profile_url ); ?>"><?php echo esc_html( $bcm_sender_name ); ?></a>
 				<?php else : ?>
 					<span><?php echo esc_html( $bcm_sender_name ); ?></span>
+					<?php if ( ! $bcm_sender_deleted ) : ?>
 					<span class="bcm-badge bcm-badge--guest" title="<?php esc_attr_e( 'This person is not a registered member.', 'buddypress-contact-me' ); ?>">
 						<?php esc_html_e( 'Guest', 'buddypress-contact-me' ); ?>
 					</span>
+					<?php endif; ?>
 				<?php endif; ?>
 				<?php if ( $bcm_sender_email ) : ?>
 					· <a href="mailto:<?php echo esc_attr( $bcm_sender_email ); ?>"><?php echo esc_html( $bcm_sender_email ); ?></a>
@@ -122,7 +126,14 @@ $bcm_time_display = bcm_date_label( $bcm_msg->datetime );
 	</article>
 
 	<?php if ( ! $bcm_pm_url && ! $bcm_mailto ) : ?>
-		<?php bcm_notice( __( "This sender didn't leave any contact details, so there's no way to reply. You can still visit their profile or delete the message below.", 'buddypress-contact-me' ), 'warning' ); ?>
+		<?php
+		bcm_notice(
+			$bcm_profile_url
+				? __( "This sender didn't leave any contact details, so there's no way to reply. You can still visit their profile or delete the message below.", 'buddypress-contact-me' )
+				: __( "There's no way to reply to this sender. You can delete the message below.", 'buddypress-contact-me' ),
+			'warning'
+		);
+		?>
 	<?php endif; ?>
 
 	<footer class="bcm-message-view__actions">
