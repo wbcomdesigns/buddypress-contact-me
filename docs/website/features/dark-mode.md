@@ -2,8 +2,6 @@
 
 The Contact form, inbox, and admin panels render correctly in dark mode out of the box on every Wbcom theme and the BuddyBoss Platform.
 
-![Admin overview in light mode](../images/admin-overview.webp)
-
 ## Themes supported
 
 - **BuddyX** and **BuddyX Pro** - the free and premium Wbcom theme pair.

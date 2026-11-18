@@ -2,7 +2,7 @@
 
 BuddyPress Contact Me adds a private "Contact" tab to every member profile. Visitors and other members can send a message without ever seeing the recipient's email address. The recipient gets a BuddyPress notification, an email through the standard BuddyPress email template, or both - your choice.
 
-![Admin overview dashboard](../images/admin-overview.webp)
+![Admin overview](../images/admin-overview.webp)
 
 ## Who it is for
 
