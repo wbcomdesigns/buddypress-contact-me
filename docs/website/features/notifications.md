@@ -21,7 +21,7 @@ The plugin registers itself as a notifications component named `bcm_user_notific
 Powered by `bp_send_email()` and a dedicated email post of type `bcm-contact-message`, installed on activation and on each version update if it is missing. Because it goes through the BuddyPress email pipeline:
 
 - The email uses the same header, body card, footer, and unsubscribe link as every other BuddyPress email on the site - no theme work required.
-- Site admins can edit the subject and body from **Dashboard → Emails** and find the entry titled "A member received a contact message". Once an admin edits it, future plugin upgrades never overwrite their changes.
+- Site admins can edit the subject and body from **Dashboard → Emails** and find the entry whose subject reads "[Site name] Sender name sent you a contact message". Once an admin edits it, future plugin upgrades never overwrite their changes.
 - The available tokens are `{{sender.name}}`, `{{contact.recipient}}`, `{{contact.subject}}`, `{{contact.message}}`, and `{{{inbox.url}}}` (triple-braces because it embeds a URL). BP-native tokens like `{{{site.name}}}` and `{{unsubscribe}}` are also available.
 
 See the [Email pipeline](../developer-guide/email-pipeline.md) developer doc for the exact token list and post structure.

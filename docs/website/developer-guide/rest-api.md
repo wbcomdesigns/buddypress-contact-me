@@ -1,6 +1,6 @@
 # REST API Endpoints (bcm/v1)
 
-BuddyPress Contact Me ships a small REST surface under the `bcm/v1` namespace. There are exactly three routes - submit, delete, and intro-dismiss - and that is it. There are no `wp_ajax_` admin-ajax handlers; everything that used to be admin-ajax in older versions runs through these REST routes.
+BuddyPress Contact Me ships a small REST surface under the `bcm/v1` namespace. There are exactly three routes - submit, delete, and intro-dismiss - and that is it. The plugin's own code registers no `wp_ajax_` admin-ajax handlers; everything that used to be admin-ajax in older versions runs through these REST routes. (The bundled licensing SDK registers its own licence handlers under `wp_ajax_edd_sl_sdk_*`.)
 
 ## Authentication
 
@@ -43,7 +43,7 @@ Submit a new contact message. This is the same code path as the classic-POST han
 
 `captcha` is a fresh one-time question for a guest's next message, or `null` for members and when the site CAPTCHA service is in use.
 
-Sends are limited per sender (see `bcm_rate_limit`). Over the limit the route returns 422 with the error code `bcm_throttled`.
+Sends are limited per sender (see `bcm_rate_limit`). Over the limit the route returns 422 with an entry whose `field` is `bcm_throttled` in the `errors` array.
 
 **Validation error response (422):**
 
@@ -90,6 +90,26 @@ Persist the "I have seen the inbox intro panel" flag for the current user. Used 
 { "ok": true }
 ```
 
+## Error codes
+
+Every failed send returns these codes as the `field` of an `errors` entry (422), or as the REST error code for the delete route.
+
+| Code | Meaning |
+|---|---|
+| `bcm_name`, `bcm_email`, `bcm_subject`, `bcm_message` | The field failed validation (length or format). |
+| `bcm_spam` | The hidden trap field was filled, or the spam heuristic flagged the message. |
+| `bcm_not_allowed` | The sender's role is not allowed to send messages. |
+| `bcm_recipient_missing` | The recipient does not exist. |
+| `bcm_recipient_closed` | The recipient is not accepting contact messages (opted out or role not allowed to receive). |
+| `bcm_self_contact` | A member tried to message themselves. |
+| `bcm_throttled` | The sender hit the per-sender rate limit (see `bcm_rate_limit`). |
+| `bcm_captcha_missing`, `bcm_captcha_expired`, `bcm_captcha_wrong` | The guest security check was not answered, has expired, or is wrong. |
+| `bcm_insert_failed` | The message could not be saved. |
+| `bcm_auth_required` | Delete route: the request is not logged in (401). |
+| `bcm_not_found` | Delete route: the message does not exist (404). |
+| `bcm_forbidden` | Delete route: the message belongs to another member (403). |
+| `bcm_bad_nonce` | The request nonce is missing or expired (403). |
+
 ## What does *not* exist
 
 For the avoidance of doubt, these are NOT real endpoints:
@@ -97,6 +117,6 @@ For the avoidance of doubt, these are NOT real endpoints:
 - No `GET /bcm/v1/messages` listing endpoint.
 - No `PUT /bcm/v1/messages/{id}/read` mark-as-read endpoint. Marking-as-read happens automatically when a recipient opens the single-message view.
 - No bulk delete endpoint.
-- No admin-ajax actions (`wp_ajax_bcm_send_message`, `wp_ajax_bcm_delete_message`, etc.) - these were all removed during the 1.5.0 rewrite.
+- No plugin-owned admin-ajax actions (`wp_ajax_bcm_send_message`, `wp_ajax_bcm_delete_message`, etc.) - these were all removed during the 1.5.0 rewrite. Only the bundled licensing SDK registers `wp_ajax_edd_*` handlers.
 
 If you need to read messages programmatically, use `BCM_Messages_Repo::list_for_recipient()` from PHP. If you need a custom REST endpoint, register it in your own plugin - do not patch this one.

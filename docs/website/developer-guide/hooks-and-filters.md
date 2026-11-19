@@ -44,7 +44,7 @@ add_action( 'bp_contact_me_form_save', function ( $message_id, $recipient_id, $s
 
 ## Filter: `bcm_spam_check`
 
-Wraps the built-in spam heuristic so you can soften, harden, or replace it without forking. The filter runs three times during a single message validation pass - once for each pattern category and once for the URL count check. Your callback returns the final boolean.
+Wraps the built-in spam heuristic so you can soften, harden, or replace it without forking. The filter runs once per message validation, on whichever check decides the verdict: the first matching pattern, the URL count check, or the final negative pass. Your callback returns the final boolean.
 
 ```php
 apply_filters( 'bcm_spam_check', $is_spam, $message, $reason );
@@ -56,7 +56,7 @@ apply_filters( 'bcm_spam_check', $is_spam, $message, $reason );
 - `string $message` - the submitted message body.
 - `string $reason` - either the matched regex pattern or the literal string `'too_many_urls'` for the URL count gate, or empty string for the final negative pass.
 
-**Source:** `includes/frontend/class-bcm-frontend-submit.php` lines 384, 390, 393.
+**Source:** `includes/frontend/class-bcm-frontend-submit.php`, the spam heuristic method.
 
 **Example - whitelist a legitimate URL count for "share my links" pages:**
 
@@ -159,12 +159,12 @@ This is a *cross-plugin* filter - it is shared with every Wbcom plugin that has 
 
 ## What does *not* exist
 
-The following hooks are sometimes referenced in tutorials but **do not exist** in v1.5.0:
+The following hooks are sometimes referenced in tutorials but **do not exist** in v1.5.1:
 
 - `bcm_before_send_message` / `bcm_after_send_message` - replaced entirely by `bp_contact_me_form_save` above.
 - `bcm_message_data` / `bcm_message_content` - message data is built inline in `process_submission()` and not filterable; modify it post-save via `bp_contact_me_form_save` instead.
 - `bcm_email_subject` / `bcm_email_body` - the email is rendered through the BuddyPress email template; edit the post at **Dashboard → Emails** instead. See [Email pipeline](email-pipeline.md).
-- `bcm_notification_recipients` - recipient assembly is internal to `BCM_Frontend_Notifications::collect_recipients()` and not filterable.
+- `bcm_notification_recipients` - recipient assembly is inline in `BCM_Frontend_Notifications::send_email()` and not filterable.
 - `bcm_contact_form_visible` / `bcm_validate_message` / `bcm_message_saved` - none of these exist; they appear in some legacy third-party tutorials but were never shipped.
 
 If you need behaviour that requires one of these missing hooks, open a feature request at wbcomdesigns.com and we will evaluate whether to add it in a future version.

@@ -50,6 +50,9 @@ Requires BuddyPress 12.0 or higher (or BuddyBoss Platform).
 * Fix      - Contact form styles and scripts load on any page that uses the contact shortcode, including for logged-out visitors.
 * Fix      - Message times show correctly on sites outside UTC; existing messages are converted once on update.
 * Fix      - Buttons follow the theme's dark mode toggle and keep readable label colours on BuddyX, BuddyX Pro and Reign.
+* Fix      - Inbox links and message links no longer show a 404 on sites that saved custom BuddyPress member URL slugs.
+* Fix      - A member who turned off contact now shows a "Not accepting messages" notice on their Contact tab instead of a 404.
+* Fix      - BuddyX Pro shows matching icons on the Preferences and Send message tabs.
 * Fix      - Delete button stacks full width with the other message actions on phones.
 * Fix      - Several unread contact messages now show as one "You have N new contact messages" notification that opens your inbox, instead of naming only the first sender.
 * Fix      - Right-to-left sites lay out the contact screens correctly from one stylesheet.

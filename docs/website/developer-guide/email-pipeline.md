@@ -10,7 +10,7 @@ Contact-message emails are not custom-templated by the plugin. They go through `
 | Constant        | `BCM_Email_Installer::TYPE` |
 | Post type       | `bp-email` (BuddyPress core) |
 | Taxonomy        | `bp-email-type` (BuddyPress core) |
-| Admin label     | "A member received a contact message" |
+| Admin label     | "A member (or visitor) sent a contact message from your profile." |
 
 The three posts (`bcm-contact-message`, `bcm-contact-message-sender-copy`, `bcm-contact-message-admin-copy`) are created on activation and on every version update by `BCM_Email_Installer::install()`. The installer skips any type that already has a post, so admin edits at **Dashboard → Emails** are never overwritten, and a deleted email comes back on the next activation or update.
 
@@ -42,7 +42,7 @@ Subject: [{{{site.name}}}] {{sender.name}} sent you a contact message
 <a href="{{{inbox.url}}}">Open the message in your inbox</a> to reply or delete it.
 ```
 
-This is the value emitted by `BCM_Email_Installer::schema()` on activation. After the post exists, all edits happen at **Dashboard → Emails → "A member received a contact message"** - there is no plugin setting that mirrors the body content.
+This is the value emitted by `BCM_Email_Installer::schema()` on activation. After the post exists, all edits happen at **Dashboard → Emails**, on the entry whose subject reads "[Site name] Sender name sent you a contact message" - there is no plugin setting that mirrors the body content.
 
 ## Recipient assembly
 

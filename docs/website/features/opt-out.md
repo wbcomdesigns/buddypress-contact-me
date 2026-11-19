@@ -28,7 +28,7 @@ The user's `contact_me_button` user-meta is set to `'off'`. Every check (`BCM_Fr
 
 Every member is opted in until they switch it off: a member with no saved preference accepts contact, so new members need no setup.
 
-The 1.5.0 release migrated any pre-existing empty-string values to `'on'` so the meta is self-consistent: `'off'` means opted-out, anything else means opted-in.
+`'off'` means opted-out; any other value, or none, means opted-in. Visitors who open the Contact tab of a member who opted out see a "Not accepting messages" notice instead of the form; the member's own Inbox and Preferences keep working.
 
 ## Admin override
 
