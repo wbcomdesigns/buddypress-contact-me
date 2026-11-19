@@ -39,7 +39,7 @@ The Overview tab is read-only at the data level. There is no message moderation 
 
 ## Where the data comes from
 
-All counters query the `{prefix}contact_me` table directly via the data layer (`BCM_Messages_Repo`), not via cached transients - so the numbers are always accurate the moment you open the tab. On large message tables you may notice a slight load delay; the queries are indexed by recipient and a `COUNT(DISTINCT)` is fast in practice up to the hundreds of thousands.
+The message, sender and recipient counters query the `{prefix}contact_me` table directly via the data layer (`BCM_Messages_Repo`). **Active recipients** is the site's user count minus members who switched contact off (a user-meta count). None of them use cached transients - so the numbers are always accurate the moment you open the tab. On large message tables you may notice a slight load delay; the queries are indexed by recipient and a `COUNT(DISTINCT)` is fast in practice up to the hundreds of thousands.
 
 ## What's next
 

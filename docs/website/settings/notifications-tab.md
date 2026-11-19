@@ -9,7 +9,7 @@ The Notifications tab decides what happens **after** a message is submitted: who
 Two channels for the person receiving the message - both can be on at the same time:
 
 - **In-site notification** - sends a BuddyPress notification bell entry. Appears the next time the recipient visits the site, links straight to the single-message view at `/contact/inbox/{id}/`. Requires the BuddyPress Notifications component to be active.
-- **Email notification** - sends an email through the BuddyPress email template (subject, body, header, footer, unsubscribe). Edit the template content at **Dashboard → Emails** under "A member received a contact message".
+- **Email notification** - sends an email through the BuddyPress email template (subject, body, header, footer, unsubscribe). Edit the template content at **Dashboard → Emails** on the entry whose subject reads "[Site name] Sender name sent you a contact message".
 
 If both are off, the message is still saved to the database - it just sits in the recipient's inbox until they happen to visit the Contact tab. Most communities should leave at least one channel on.
 
@@ -26,7 +26,7 @@ Every copy goes out as its own email, so nobody sees another person's email addr
 
 ## Edit the email template
 
-Above the **Email notification** toggle there is an inline link: **Edit the contact-message email →**. Clicking it opens **Dashboard → Emails** filtered to the email post type term `bcm-contact-message`, so you can tweak subject and body without hunting through every BP email.
+Above the **Email notification** toggle there is an inline link: **Edit the contact-message email →**. Clicking it opens that email's editor directly, so you can tweak subject and body without hunting through every BP email.
 
 The tokens you can use in these templates are:
 

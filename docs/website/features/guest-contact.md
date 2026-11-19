@@ -1,6 +1,6 @@
 # Guest Contact with Captcha & Spam Protection
 
-Logged-out visitors can reach members through the same contact form, with two extra fields and a built-in spam defence.
+Logged-out visitors can reach members through the same contact form, with two extra fields, a security check and a built-in spam defence.
 
 ![Guest contact form](../images/frontend-guest-form.webp)
 
@@ -14,7 +14,7 @@ If the checkbox is unchecked, the form returns a "You are not allowed to send me
 
 ## What the visitor sees
 
-Three extra fields appear when no user is logged in:
+These extra fields appear when no user is logged in (a fourth, hidden spam-trap field is left empty by real visitors):
 
 - **Your name** - required, 2 to 100 characters.
 - **Email** - required, must pass `is_email()`; the recipient uses this to reply.
@@ -24,7 +24,7 @@ The subject and message fields are the same as the logged-in version (3–200 an
 
 ## Security check: how it works
 
-When the form renders, the server picks a random sum, stores the answer on the server for 30 minutes, and puts only a random token in the form. On submit the typed answer is checked against the stored one, and the question is used up once the message is saved, so it cannot be replayed. After a successful send the form gets a fresh question without a page reload.
+When the form renders, the server picks a random sum, stores the answer on the server for 30 minutes, and puts a random token in the form. The sum itself is visible in the page HTML; only the token is hidden. On submit the typed answer is checked against the stored one, and the question is used up once the message is saved, so it cannot be replayed. After a successful send the form gets a fresh question without a page reload.
 
 If the Wbcom CAPTCHA Manager plugin is active and a service is turned on, guests get that service (for example Turnstile or reCAPTCHA) instead of the math question, under the form name `contact_me`.
 

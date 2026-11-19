@@ -2,6 +2,7 @@
   "product": "BuddyPress Contact Me",
   "productType": "plugin",
   "shortId": "bcm",
+  "version": "1.5.1",
   "plugin": {
     "name": "BuddyPress Contact Me",
     "slug": "buddypress-contact-me",

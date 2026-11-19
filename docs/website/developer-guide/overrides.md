@@ -7,7 +7,7 @@ This page covers the supported ways to change Contact Me behaviour from a sister
 Do not filter the email - edit the post.
 
 1. Go to **Dashboard → Emails**.
-2. Find "A member received a contact message".
+2. Find the email whose subject reads "[Site name] Sender name sent you a contact message".
 3. Click **Edit** and tweak subject, body, and any token usage.
 
 Once you have edited the post, the plugin will not overwrite your changes on future upgrades: `BCM_Email_Installer::install()` skips any email type that already has a post.

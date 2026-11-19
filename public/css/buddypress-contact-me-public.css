@@ -1230,3 +1230,16 @@ body.buddyx-dark-theme {
 	background: var( --bcm-color-danger-hover ) !important;
 	border-color: var( --bcm-color-danger-hover ) !important;
 }
+
+/*
+ * BuddyX Pro iconic profile nav: its icon sheet maps no Preferences or Send
+ * sub-tab (they fall back to the generic info glyph), so name them here.
+ * Scoped to Contact screens; the ids are generic across BuddyPress.
+ */
+.wbcom-bp-contact .buddyx-nav-iconic #preferences-personal-li > a:before {
+	--bx-icon-mask: var( --bx-icon-settings );
+}
+
+.wbcom-bp-contact .buddyx-nav-iconic #send-personal-li > a:before {
+	--bx-icon-mask: var( --bx-icon-send );
+}

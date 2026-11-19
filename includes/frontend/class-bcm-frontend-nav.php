@@ -36,6 +36,7 @@ class BCM_Frontend_Nav {
 	 * Attach all BP nav hooks.
 	 */
 	public function register() {
+		add_action( 'bp_setup_canonical_stack', array( $this, 'restore_subnav_action' ), 1 );
 		add_action( 'bp_setup_nav', array( $this, 'setup_nav' ), 20 );
 		add_action( 'template_redirect', array( $this, 'redirect_legacy_slug' ), 1 );
 		add_filter( 'body_class', array( $this, 'body_class' ) );
@@ -68,6 +69,32 @@ class BCM_Frontend_Nav {
 	}
 
 	/**
+	 * Undo BuddyPress 12+ slug mangling on Contact URLs.
+	 *
+	 * When a site has saved custom member slugs, BuddyPress looks the URL
+	 * action up in them by value alone. Our `inbox` matches Messages'
+	 * `bp_member_messages_inbox`, so the action becomes
+	 * `bp-member-messages-inbox` and the screen 404s. The URL's own segment
+	 * is the truth: put the real slug back before BuddyPress builds its canonical URL and the nav.
+	 */
+	public function restore_subnav_action() {
+		if ( ! function_exists( 'bp_is_user' ) || ! bp_is_user() || self::SLUG !== bp_current_component() ) {
+			return;
+		}
+		$action = (string) bp_current_action();
+		if ( 0 !== strpos( $action, 'bp-member-' ) ) {
+			return;
+		}
+		foreach ( array( self::SUB_INBOX, self::SUB_PREFERENCES, self::SUB_SEND ) as $slug ) {
+			if ( substr( $action, -strlen( '-' . $slug ) ) === '-' . $slug ) {
+				// BuddyPress has no setter for the current action.
+				$GLOBALS['bp']->current_action = $slug;
+				return;
+			}
+		}
+	}
+
+	/**
 	 * Register the Contact tab + its sub-tabs: always on the member's own
 	 * profile, on other profiles only when they accept contact.
 	 */
@@ -85,8 +112,10 @@ class BCM_Frontend_Nav {
 
 		// Members always keep their own Inbox + Preferences (even after opting
 		// out, or with the profile tab off) so old messages and notification
-		// links stay reachable. Only the visitor-facing Send tab is gated.
-		if ( ! $is_own && ( ! self::contact_tab_enabled() || ! self::user_accepts_contact( $displayed_user_id ) ) ) {
+		// links stay reachable. Visitors get the Send tab whenever the site
+		// shows it; a member who opted out shows a "not accepting" card there
+		// (tab-form.php) instead of a 404.
+		if ( ! $is_own && ! self::contact_tab_enabled() ) {
 			return;
 		}
 

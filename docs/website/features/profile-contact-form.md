@@ -15,18 +15,18 @@ The plugin adds a "Contact" tab to every member profile that the access rules al
 - **Subject** - 3 to 200 characters.
 - **Message** - 10 to 5000 characters.
 
-The sender's name and email are pulled from their BuddyPress profile and shared with the recipient automatically. The form shows "You are sending as &lt;Display name&gt;. Your name and profile link are shared with the recipient." so there is no surprise.
+The sender's display name is pulled from their BuddyPress profile and shared with the recipient together with a link to their profile. A member's account email is never stored or shown. The form shows "You are sending as &lt;Display name&gt;. Your name and profile link are shared with the recipient." so there is no surprise.
 
 ## What logged-out visitors fill in
 
-Logged-out visitors see two extra fields and a math captcha. See the dedicated [Guest contact](guest-contact.md) page for the full guest experience.
+Logged-out visitors see two extra fields (name and email) and a security check, plus a hidden spam-trap field. See the dedicated [Guest contact](guest-contact.md) page for the full guest experience.
 
 ## Validation rules
 
 The same rules apply to both classic POST and the REST endpoint, so the experience is identical regardless of whether JavaScript is enabled:
 
 - Name - 2 to 100 characters.
-- Email - must pass `is_email()` for guests; pulled from the user record for members.
+- Email - guests only; must pass `is_email()`. Members are not asked for one.
 - Subject - 3 to 200 characters.
 - Message - 10 to 5000 characters.
 

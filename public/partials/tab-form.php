@@ -14,6 +14,16 @@ $bcm_atts      = isset( $GLOBALS['bcm_shortcode_atts'] ) && is_array( $GLOBALS['
 	: array();
 $bcm_target_id = (int) ( $bcm_atts['id'] ?? bp_displayed_user_id() );
 
+if ( $bcm_target_id && ! BCM_Frontend_Nav::user_accepts_contact( $bcm_target_id ) && get_current_user_id() !== $bcm_target_id ) {
+	?>
+	<div class="bcm-card bcm-card--closed" role="status">
+		<p class="bcm-card__title"><?php esc_html_e( 'Not accepting messages', 'buddypress-contact-me' ); ?></p>
+		<p class="bcm-card__body"><?php esc_html_e( 'This member is not accepting contact messages right now.', 'buddypress-contact-me' ); ?></p>
+	</div>
+	<?php
+	return;
+}
+
 if ( ! BCM_Frontend_Nav::viewer_can_send() && is_user_logged_in() ) {
 	?>
 	<div class="bcm-card bcm-card--closed" role="status">

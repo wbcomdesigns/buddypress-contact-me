@@ -14,11 +14,11 @@ Recommended ON. Each member can still individually opt out from their own profil
 
 ## Who can send messages
 
-A grid of role chips covering every WordPress role on the site, plus a special **Visitors (not logged in)** chip for guest contact.
+A grid of role chips covering every WordPress role except Administrator (administrators are always allowed and are not listed), plus a special **Visitors (not logged in)** chip for guest contact.
 
 - Tick the chips for the roles you want to allow.
 - Use **Select all** / **Clear all** to apply to the visible group.
-- An empty grid is persisted - you can intentionally lock all roles out (not common, but supported).
+- An empty grid means every logged-in member can send. Guests are never included implicitly: tick **Visitors (not logged in)** to allow them.
 
 The Visitors chip controls whether the form appears for logged-out users. When unticked, guests see no form on member profiles and the REST endpoint rejects unauthenticated submissions with "You are not allowed to send messages."
 

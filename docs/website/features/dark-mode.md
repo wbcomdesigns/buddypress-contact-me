@@ -1,6 +1,6 @@
 # Dark Mode Support for BuddyX, Reign, BuddyBoss
 
-The Contact form, inbox, and admin panels render correctly in dark mode out of the box on every Wbcom theme and the BuddyBoss Platform.
+The Contact form, inbox, and Preferences render correctly in dark mode out of the box on every Wbcom theme and the BuddyBoss Platform.
 
 ## Themes supported
 
@@ -9,7 +9,7 @@ The Contact form, inbox, and admin panels render correctly in dark mode out of t
 - **BuddyBoss Theme** - bundled with BuddyBoss Platform.
 - Any child theme of the above.
 
-These themes ship a system-wide dark-mode toggle. The Contact Me styles read the same CSS custom properties (`--bb-body-text-color`, `--bb-content-background-color`, `--bb-primary-color`, etc.) the parent theme exposes, so when the theme switches, every Contact Me surface follows.
+These themes ship a system-wide dark-mode toggle. The Contact Me styles read the theme's colour variables (`--bx-color-*` on BuddyX and BuddyX Pro, `--reign-*` on Reign) and fall back to built-in colours, so when the theme switches, every Contact Me screen on the profile follows. Dark styles apply only under the theme's own switch (`html[data-bx-mode="dark"]` or `body.buddyx-dark-theme`), never the operating system setting.
 
 ## Surfaces that adapt
 
@@ -17,19 +17,21 @@ These themes ship a system-wide dark-mode toggle. The Contact Me styles read the
 - The inbox listing rows (avatar, sender, subject, snippet, badges).
 - The single-message view (header, body, action buttons, alerts).
 - The Preferences sub-tab (per-member opt-out).
-- The admin Overview, Notifications, Access, and License tabs - including hub cards and toast notifications.
+- Toast notifications.
+
+The admin screens keep their own fixed light palette; the site dark-mode switch does not change them.
 
 ## How it works
 
-Instead of hard-coding hex colours for backgrounds, borders, and text, the plugin's stylesheets reference the BB theme tokens directly. There is no JavaScript theme detection or class swap - the CSS Variables cascade does the work. This means:
+Instead of hard-coding hex colours for backgrounds, borders, and text, the plugin's stylesheet references those theme tokens directly. There is no JavaScript theme detection or class swap - the CSS Variables cascade does the work. This means:
 
 - Dark-mode rendering does not depend on the user's role.
 - Site-wide dark-mode toggles take effect on the next page load with no plugin reconfiguration.
-- A custom theme that defines compatible BB-style variables also gets dark-mode for free.
+- A custom theme that defines the same `--bx-color-*` variables also gets dark-mode for free.
 
 ## Custom themes
 
-If you run a non-Wbcom theme that also implements dark mode, the easiest path is to define the BuddyBoss-compatible CSS variables in your theme's stylesheet (or `theme.json` for block themes). Once the variables resolve correctly, Contact Me follows automatically.
+If you run a non-Wbcom theme that also implements dark mode, the easiest path is to define the `--bx-color-*` variables in your theme's stylesheet (or `theme.json` for block themes). Once the variables resolve correctly, Contact Me follows automatically.
 
 If you want different colours specifically for Contact Me without touching the theme, target the plugin's body class `wbcom-bp-contact` (added by `BCM_Frontend_Nav::body_class()`) and override individual rules:
 

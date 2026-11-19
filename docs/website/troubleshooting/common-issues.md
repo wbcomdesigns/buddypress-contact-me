@@ -26,7 +26,7 @@ Check, in this order:
 
 1. **WB Plugins → Contact Me → Notifications** - is **Email notification** on?
 2. **WordPress core email delivery** - does any other email work? (e.g., new user notifications, password resets.) If not, install a transactional email plugin like FluentSMTP, WP Mail SMTP, or Post SMTP. The plugin uses `bp_send_email()`, which uses `wp_mail()`, which depends on the host's `mail()` function being able to actually send.
-3. **BuddyPress email post exists** - at **Dashboard → Emails**, look for "A member received a contact message". If missing, deactivate and reactivate Contact Me to re-run the installer.
+3. **BuddyPress email post exists** - at **Dashboard → Emails**, look for the email whose subject reads "[Site name] Sender name sent you a contact message". If missing, deactivate and reactivate Contact Me to re-run the installer.
 
 ## "The security question has expired"
 

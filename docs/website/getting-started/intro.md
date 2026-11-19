@@ -12,7 +12,7 @@ BuddyPress Contact Me adds a private "Contact" tab to every member profile. Visi
 
 ## What you get out of the box
 
-- A "Contact" tab on every member profile.
+- A "Contact" tab on member profiles where messaging is allowed. A member who opts out shows a "Not accepting messages" notice instead of the form.
 - A built-in inbox at `/contact/inbox/` on the member's own profile, with an "Unread" filter and unread badge in the nav.
 - Email notification to the recipient using the official BuddyPress email template - no custom templating to maintain.
 - BuddyPress notification bell entries for in-site notifications.
@@ -30,8 +30,8 @@ BuddyPress Contact Me adds a private "Contact" tab to every member profile. Visi
 
 ## Compatibility
 
-- WordPress 6.0 and above (tested up to 6.9).
-- PHP 7.4 and above (tested on 8.4).
+- WordPress 6.5 and above (tested up to 7.1).
+- PHP 8.1 and above (tested up to 8.5).
 - BuddyPress 12.x and 14.x, plus BuddyBoss Platform.
 - BuddyX, Reign, and BuddyBoss themes - including their dark-mode variants.
 
