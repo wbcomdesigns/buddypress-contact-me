@@ -17,7 +17,7 @@ This is the only place the switch lives. Versions before 1.5.1 also showed a cop
 
 When a member opts out, two things happen:
 
-- The "Contact" tab disappears from their public profile.
+- Visitors who open their Contact tab see a "Not accepting messages" notice instead of the form.
 - Submissions targeted at them via `[buddypress-contact-me id=...]` shortcode return an empty render.
 
 The member's own Contact tab stays: they can still read their Inbox, open older messages from notification and email links, and turn contact back on under Preferences.

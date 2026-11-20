@@ -27,7 +27,7 @@ A row of action buttons appears below the message body. Which buttons render dep
 - **Send private message** - primary action when the sender is a BuddyPress member and the Messages component is active. Opens the standard BP private-message compose form addressed to them.
 - **Reply by email** - guest senders only. Opens a `mailto:` to the address the guest typed, with the subject pre-filled as `Re: {original subject}`.
 - **Visit profile** - opens the sender's profile in a new tab. Only renders for member senders.
-- **Delete** - soft-confirm button that calls the REST delete endpoint with a fresh nonce, then routes back to the inbox.
+- **Delete** - asks for confirmation first (the dialog opens on Cancel, so pressing Enter twice does not delete), then calls the REST delete endpoint with a fresh nonce and routes back to the inbox. A delete also removes the message's notification.
 
 If there is no way to reply (a guest with no address, or a member when the Messages component is off), the page shows a notice saying so and still allows delete.
 

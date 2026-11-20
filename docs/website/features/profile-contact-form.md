@@ -30,6 +30,8 @@ The same rules apply to both classic POST and the REST endpoint, so the experien
 - Subject - 3 to 200 characters.
 - Message - 10 to 5000 characters.
 
+Without JavaScript, a form error keeps what you typed and shows the error above the form, and a sent message returns to the form with a confirmation. After a send with JavaScript, keyboard focus returns to the form. Backslashes in a subject or message are kept as typed, and members cannot send a message to themselves.
+
 If any field fails the form re-renders with a clear error and an inline message at the top.
 
 ## Where messages go
