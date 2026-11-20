@@ -16,7 +16,7 @@ The inbox URL is `/{user-slug}/contact/inbox/`. The default sub-nav slug for the
 
 Each row in the listing shows:
 
-- The sender's avatar (or a generic guest avatar for non-member submissions).
+- The sender's avatar (or a generic guest avatar for non-member submissions). Messages from a member whose account was later deleted show "Deleted member".
 - The sender's display name, with a **Guest** badge for non-member submissions and a **New** badge for unread messages.
 - The subject, bold.
 - The first line of the message, trimmed.
@@ -37,7 +37,7 @@ The "Contact" parent nav item shows a count badge when the inbox has unread mess
 
 ## Pagination
 
-Messages render 10 per page in newest-first order. Older pages link via standard BuddyPress pagination at the bottom of the listing.
+Messages render 10 per page in newest-first order. A page number past the last page shows the last page. After a message is deleted from the inbox, keyboard focus moves to the next message, or to the inbox heading when none are left. Older pages link via standard BuddyPress pagination at the bottom of the listing.
 
 ## Privacy
 

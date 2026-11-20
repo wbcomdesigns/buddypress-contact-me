@@ -24,9 +24,9 @@ The Visitors chip controls whether the form appears for logged-out users. When u
 
 ## Who can be contacted
 
-The same chip grid, applied to the **recipient** side. A member's Contact tab only renders if their role intersects this allow-list (or they are an administrator - admins are always contactable regardless).
+The same chip grid, applied to the **recipient** side. A member can only be sent messages if their role intersects this allow-list (or they are an administrator - admins are always contactable regardless).
 
-Use this to restrict inbound messages to a specific group: mentor accounts, support staff, paid members. Members in unchecked roles do not show the Contact tab on their profiles even when the global toggle above is on.
+Use this to restrict inbound messages to a specific group: mentor accounts, support staff, paid members. Members in unchecked roles show a "Not accepting messages" notice on their Contact tab instead of the form, even when the global toggle above is on.
 
 ## Members always have the final say
 

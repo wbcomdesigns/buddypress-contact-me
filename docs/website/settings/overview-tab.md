@@ -11,7 +11,7 @@ Four counters appear across the top of the page:
 - **Total messages** - every row in the `{prefix}contact_me` table. This is the all-time count, not "this month".
 - **Unique senders** - distinct user IDs that have sent at least one message. Guest submissions do not count toward this - guests are aggregated separately.
 - **Unique recipients** - distinct user IDs that have received at least one message.
-- **Active recipients** - members whose `contact_me_button` user-meta is anything other than `'off'`. This number tells you how many members currently show a Contact tab to anyone allowed by the role rules.
+- **Active recipients** - members whose `contact_me_button` user-meta is anything other than `'off'`. This number tells you how many members currently accept messages from anyone allowed by the role rules.
 
 ## Current configuration snapshot
 

@@ -10,6 +10,7 @@ Powered by the BuddyPress Notifications component. When enabled:
 
 - A new entry appears in the recipient's notification bell.
 - The entry text reads "{Sender display name} sent you a contact message." and links to `/contact/inbox/{message-id}/`.
+- When several messages are unread, BuddyPress groups them into one entry, "You have N new contact messages", that opens the inbox.
 - Opening the message clears the notification automatically - see [Single message view](single-message-view.md).
 
 If the BuddyPress Notifications component is disabled site-wide, this channel silently no-ops; nothing breaks.
